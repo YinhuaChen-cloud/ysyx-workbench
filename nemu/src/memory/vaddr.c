@@ -16,6 +16,8 @@
 #include <isa.h>
 #include <memory/paddr.h>
 
+// addr = cpu.pc
+// len = 4
 word_t vaddr_ifetch(vaddr_t addr, int len) {
   return paddr_read(addr, len);
 }

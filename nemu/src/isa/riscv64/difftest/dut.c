@@ -17,8 +17,23 @@
 #include <cpu/difftest.h>
 #include "../local-include/reg.h"
 
+#define GPR_NR 32
+
+extern const char *regs[];
+
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
-  return false;
+	bool theSame = true;
+	if(cpu.pc != ref_r->pc) {
+		theSame = false;
+	} else {
+		for(int i = 0; i < GPR_NR; i++)	{
+			if(cpu.gpr[i]._64 != ref_r->gpr[i]._64) {
+				theSame = false;
+				printf("-------regs (%s) differs, cpu = 0x%lx, ref = 0x%lx-------\n", regs[i], cpu.gpr[i]._64, ref_r->gpr[i]._64);
+			}
+		}
+	}
+  return theSame;
 }
 
 void isa_difftest_attach() {

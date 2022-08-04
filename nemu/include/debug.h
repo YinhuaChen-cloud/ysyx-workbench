@@ -20,6 +20,10 @@
 #include <stdio.h>
 #include <utils.h>
 
+// cyh add it here
+// volatile static int dummy;
+// cyh add it ends
+
 #define Log(format, ...) \
     _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
         __FILE__, __LINE__, __func__, ## __VA_ARGS__)

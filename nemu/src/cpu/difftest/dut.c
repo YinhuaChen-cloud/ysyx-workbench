@@ -59,6 +59,12 @@ void difftest_skip_dut(int nr_ref, int nr_dut) {
   }
 }
 
+//init_difftest()会额外进行以下初始化工作:
+//    打开传入的动态库文件ref_so_file.
+//    通过动态链接对动态库中的上述API符号进行符号解析和重定位, 返回它们的地址.
+//    对REF的DIffTest功能进行初始化, 具体行为因REF而异.
+//    将DUT的guest memory拷贝到REF中.
+//    将DUT的寄存器状态拷贝到REF中.
 void init_difftest(char *ref_so_file, long img_size, int port) {
   assert(ref_so_file != NULL);
 
@@ -93,9 +99,12 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 
 static void checkregs(CPU_state *ref, vaddr_t pc) {
   if (!isa_difftest_checkregs(ref, pc)) {
+		printf("Oh, isa_difftest_checkregs() fails!\n");
     nemu_state.state = NEMU_ABORT;
     nemu_state.halt_pc = pc;
     isa_reg_display();
+		extern void ref_isa_reg_display(CPU_state *ref);
+		ref_isa_reg_display(ref);
   }
 }
 

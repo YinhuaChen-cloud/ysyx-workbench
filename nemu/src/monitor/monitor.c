@@ -45,6 +45,12 @@ static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
+static char *elf_file = NULL;
+char *elf_content = NULL;
+static char *ftrace_file = NULL;
+FILE *ftrace_log = NULL;
+static char *dtrace_filename = NULL;
+FILE *dtrace_fp = NULL;
 
 static long load_img() {
   if (img_file == NULL) {
@@ -68,21 +74,71 @@ static long load_img() {
   return size;
 }
 
+static void init_dtrace(const char *dtrace_filename) {
+#ifdef CONFIG_DTRACE
+  if (dtrace_filename == NULL) {
+    Log("No dtrace_filename is given.");
+		return;
+  }
+
+	printf("debug by cyh, dtrace_filename = %s\n", dtrace_filename);
+
+  dtrace_fp = fopen(dtrace_filename, "w+");
+  Assert(dtrace_fp, "Can not open '%s'", dtrace_filename);
+
+#endif
+}
+
+#ifdef CONFIG_FTRACE
+static long load_elf() {
+  if (elf_file == NULL) {
+    Log("No elf file is given.");
+    return 0; // built-in image size
+  }
+
+  FILE *fp = fopen(elf_file, "rb");
+  Assert(fp, "Can not open '%s'", elf_file);
+
+  fseek(fp, 0, SEEK_END);
+  long size = ftell(fp);
+
+  Log("The elf_file is %s, size = %ld", elf_file, size);
+
+  fseek(fp, 0, SEEK_SET);
+	// TODO: we need to free elf_content after used it  
+	elf_content = (char *)malloc(size);
+  int ret = fread(elf_content, size, 1, fp);
+  assert(ret == 1);
+
+  fclose(fp);
+  return size;
+}
+#endif
+
+//int getopt_long(int argc, char * const argv[],
+//                  const char *optstring,
+//                  const struct option *longopts, int *longindex);
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
     {"batch"    , no_argument      , NULL, 'b'},
     {"log"      , required_argument, NULL, 'l'},
     {"diff"     , required_argument, NULL, 'd'},
     {"port"     , required_argument, NULL, 'p'},
+    {"elf"      , required_argument, NULL, 'e'},
+    {"dtrace"   , required_argument, NULL, 'D'},
+    {"ftrace"   , required_argument, NULL, 'f'},
     {"help"     , no_argument      , NULL, 'h'},
     {0          , 0                , NULL,  0 },
   };
   int o;
-  while ( (o = getopt_long(argc, argv, "-bhl:d:p:", table, NULL)) != -1) {
+  while ( (o = getopt_long(argc, argv, "-bhl:d:p:e:f:D:", table, NULL)) != -1) {
     switch (o) {
       case 'b': sdb_set_batch_mode(); break;
       case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
+      case 'e': elf_file = optarg; break;
+      case 'D': dtrace_filename = optarg; break;
+      case 'f': ftrace_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
       case 1: img_file = optarg; return 0;
       default:
@@ -91,6 +147,9 @@ static int parse_args(int argc, char *argv[]) {
         printf("\t-l,--log=FILE           output log to FILE\n");
         printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
         printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
+        printf("\t-e,--elf=ELF_FILE       Enable ftrace with ELF_FILE\n");
+        printf("\t-f,--ftrace=FTRACE_FILE  Store ftrace records in FTRACE_FILE\n");
+        printf("\t-D,--dtrace=DTRACE_FILE  Store dtrace records in DTRACE_FILE\n");
         printf("\n");
         exit(0);
     }
@@ -122,7 +181,18 @@ void init_monitor(int argc, char *argv[]) {
   /* Load the image to memory. This will overwrite the built-in image. */
   long img_size = load_img();
 
+	// open dtrace_file if exists
+	init_dtrace(dtrace_filename);
+
+#ifdef CONFIG_FTRACE
+	long elf_size = load_elf();
+	printf("elf size = %ld\n", elf_size);
+
+  ftrace_log = fopen(ftrace_file, "w+");
+  Assert(ftrace_log, "Can not open '%s'", ftrace_file);
+#endif
   /* Initialize differential testing. */
+	printf("diff_so_file = %s\n", diff_so_file);
   init_difftest(diff_so_file, img_size, difftest_port);
 
   /* Initialize the simple debugger. */

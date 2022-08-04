@@ -27,6 +27,15 @@ typedef struct Decode {
 } Decode;
 
 // --- pattern matching mechanism ---
+// 将模式字符串转换成3个整型变量, 其中key抽取了模式字符串中的0和1, 
+// mask表示key的掩码, 而shift则表示opcode距离最低位的比特数量, 
+// 用于帮助编译器进行优化.
+// def_INSTR_IDTAB("??????? ????? ????? ??? ????? 00000 11", I, load);
+// pattern_decode ("??????? ????? ????? ??? ????? 00000 11",
+// (sizeof ("??????? ????? ????? ??? ????? 00000 11") - 1),
+// &key, &mask, &shift);
+// len = the length of the str
+// str = string like "??????? ????? ????? ??? ????? 00000 11"
 __attribute__((always_inline))
 static inline void pattern_decode(const char *str, int len,
     uint64_t *key, uint64_t *mask, uint64_t *shift) {
@@ -57,6 +66,7 @@ finish:
   *key = __key >> __shift;
   *mask = __mask >> __shift;
   *shift = __shift;
+  // printf("__shift = %d, __mask = 0x%x, __key = 0x%x\n", __shift, __mask, __key);
 }
 
 __attribute__((always_inline))
@@ -85,7 +95,10 @@ finish:
   *shift = __shift;
 }
 
-
+// You may need them when you need to debug
+// printf("The current pattern = %s\n", pattern); 
+// printf("get_instr = 0x%x, shift = %d, mask = 0x%x, key = 0x%x\n", get_instr(s), shift, mask, key); 
+// printf("(get_instr(s) >> shift) & mask) = 0x%x, key = 0x%x\n", (get_instr(s) >> shift) & mask, key); 
 // --- pattern matching wrappers for decode ---
 #define INSTPAT(pattern, ...) do { \
   uint64_t key, mask, shift; \

@@ -23,6 +23,16 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
+#ifdef CONFIG_DIFFTEST
+void ref_isa_reg_display(CPU_state *ref) {
+	printf("-----------------The ref regs value is as follows: -------------\n");
+  for(int i = 0; i < sizeof(regs)/sizeof(char *); i++) {
+    printf("%s\t0x%lx\t%ld\n", regs[i], ref->gpr[i]._64, ref->gpr[i]._64);
+  }
+  printf("%s\t0x%lx\t%ld\n", "pc", ref->pc, ref->pc);
+}
+#endif
+
 // assume each name in the string array regs[] matches gpr number, not checked yet
 void isa_reg_display() {
   // format:  $(reg_name)\t$(hex_val)\t$(decimal_val)

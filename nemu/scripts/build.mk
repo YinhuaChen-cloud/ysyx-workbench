@@ -35,6 +35,7 @@ OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 # Compilation patterns 	
 $(OBJ_DIR)/%.o: %.c
 	@echo "INC_PATH = $(INC_PATH)"
+	@echo "CFLAGS = $(CFLAGS)"
 	@echo + CC $<
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c -o $@ $<
@@ -70,3 +71,36 @@ $(BINARY): $(OBJS) $(ARCHIVES)
 
 clean:
 	-rm -rf $(BUILD_DIR)
+
+# added by chenyinhua for macro flatten
+PREPROCESS_DIR = $(NEMU_HOME)/preprocess
+PRES = $(SRCS:%.c=$(PREPROCESS_DIR)/%.i) $(CXXSRC:%.cc=$(PREPROCESS_DIR)/%.i)
+
+$(PREPROCESS_DIR)/%.i: %.c
+	@echo "INC_PATH = $(INC_PATH)"
+	@echo + CC $<
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) -E -o $@ $<
+	$(call call_fixdep, $(@:.i=.d), $@)
+
+$(PREPROCESS_DIR)/%.i: %.cc
+	@echo + CXX $<
+	@echo "added by chenyinhua start"
+	@echo "$$@ = $@"
+	@echo "CXXSRC = $(CXXSRC)"
+	@echo "added by chenyinhua ends"
+	@mkdir -p $(dir $@)
+	@$(CXX) $(CFLAGS) $(CXXFLAGS) -E -o $@ $<
+	$(call call_fixdep, $(@:.i=.d), $@)
+
+-include $(PRES:.i=.d)
+
+pres: $(PRES)
+
+pres-clean:
+	-rm -rf $(PREPROCESS_DIR)
+
+indent:
+	$(shell indent $(PRES))
+
+.PHONY: pres-clean indent

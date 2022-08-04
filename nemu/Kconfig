@@ -151,6 +151,35 @@ config ITRACE_COND
   string "Only trace instructions when the condition is true"
   default "true"
 
+config IRINGBUF
+  depends on ITRACE
+  bool "Enable iringbuf"
+  default y
+
+config MTRACE
+	depends on ITRACE
+  bool "Enable mtrace"
+  default y
+
+config MTRACE_START
+  depends on MTRACE
+  int "When mtrace is enabled (content: the address where tracing starts)"
+  default 0
+
+config MTRACE_END
+  depends on MTRACE
+  hex "When mtrace is disabled (content: the address where tracing ends)"
+  default 0xFFFFFFFF
+
+config DTRACE
+	depends on ITRACE
+  bool "Enable dtrace"
+  default y
+
+config FTRACE
+  depends on TARGET_NATIVE_ELF
+  bool "Enable ftrace"
+  default y
 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF

@@ -1,3 +1,4 @@
+
 /***************************************************************************************
 * Copyright (c) 2014-2022 Zihao Yu, Nanjing University
 *
@@ -15,7 +16,12 @@
 
 #include <common.h>
 #include <sdb.h>
+
 #define BUFLEN 65600
+
+#ifdef CONFIG_IRINGBUF
+extern int iringbuf_p;
+#endif
 
 static char buf[BUFLEN] = {};
 void init_monitor(int, char *[]);
@@ -38,7 +44,11 @@ void arithmetic_test() {
     r = strtok(buf, " ");
     e = r + strlen(r) + 1;
     e[strlen(e)-1] = '\0';
+#ifndef CONFIG_TARGET_AM
     result = strtoul(r, NULL, 10);
+#else
+    result = atoi(r);
+#endif
     // printf("result = %lu\n", result); 
     calculated_result = expr(e, &success);
     assert(success);
@@ -63,10 +73,27 @@ int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
 #endif
 
-//  test_expr();
+#ifdef CONFIG_IRINGBUF
+  iringbuf_p = 0;
+#endif
+
+#ifdef CONFIG_MTRACE
+	extern int pmtrace;
+  pmtrace = 0;
+#endif
+
+#ifdef CONFIG_FTRACE
+	extern int ftrace_indent_space;
+	ftrace_indent_space = 0;
+	extern void get_symtab_strtab();
+	get_symtab_strtab();
+#endif
+
+  // test_expr();
 
   /* Start engine. */
   engine_start();
 
   return is_exit_status_bad();
 }
+

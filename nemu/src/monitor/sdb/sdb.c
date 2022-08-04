@@ -20,6 +20,7 @@
 #include "sdb.h"
 #include <memory/vaddr.h> // added by chenyinhua
 #include "watchpoint.h"
+#include <memory/paddr.h>
 
 static int is_batch_mode = false;
 
@@ -68,6 +69,11 @@ static int cmd_si(char *args) {
 
 // assume args is either r or w, we did not check args
 static int cmd_info(char *args) {
+  if(!args) {
+    printf("Please give your arguments\n");
+    return 0;
+  }
+
   if(!strcmp(args, "r"))
     isa_reg_display();
   else {
@@ -99,6 +105,24 @@ static int cmd_p_x (char *args) {
   else {
     printf("The EXPR cannot be recognized correctly, you can check detailed information in ./build/nemu-log.txt\n");
   }
+  return 0;
+}
+
+// the argument is a pointer 
+static int cmd_p_s (char *args) {
+  uint64_t addr = strtol(args, NULL, 16);
+  char ch;
+
+  if (likely(!in_pmem(addr))) {
+    printf("the address is not in pmem\n");
+    return 0;
+  }
+
+  while((ch = vaddr_read(addr, 1))) {
+    printf("%c", ch);
+    addr += 1;
+  }
+  printf("\n");
   return 0;
 }
 
@@ -143,6 +167,19 @@ static int cmd_x(char *args) {
 }
 
 // assume args is only a non-negative number
+static int cmd_b(char *args) {
+  int ret;
+  int args_len = strlen(args);
+  char *expr = (char *)malloc(args_len + 30);
+  strcpy(expr, "$pc == ");
+  strcat(expr, args);
+  ret = cmd_w(expr);
+  free(expr);
+  expr = NULL;
+  return ret;
+}
+
+// assume args is only a non-negative number
 static int cmd_d(char *args) {
   int NO = atoi(args);
   free_NO_wp(NO);
@@ -162,7 +199,9 @@ static struct {
   { "x", "x [n] [addr] prints n 32-bit val begining at addr in hex format", cmd_x },
   { "p", "p EXPR to get the result of an expression in decimal format", cmd_p },
   { "p/x", "p/x EXPR to get the result of an expression in hex format", cmd_p_x },
+  { "p/s", "p/s EXPR to get the result of an expression in string format", cmd_p_s },
   { "w", "w EXPR stop program when EXPR is changed", cmd_w },
+  { "b", "b EXPR to set breakpint(use watchpoint)", cmd_b },
   { "d", "d [n] delete watchpoint with NO [n]", cmd_d },
   /* TODO: Add more commands */
 
