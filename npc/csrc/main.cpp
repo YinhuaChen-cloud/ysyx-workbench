@@ -9,7 +9,7 @@
 int main(int argc, char** argv, char** env) {
 
 	// Create logs/ directory in case we have traces to put under it
-	Verilated::mkdir("../logs");
+	Verilated::mkdir("logs");
 
 	VerilatedContext* contextp = new VerilatedContext;
 
@@ -24,7 +24,7 @@ int main(int argc, char** argv, char** env) {
 	// for wave gen starts
 	top->trace(tfp, 99); // Trace 99 levels of hierarchy (or see below)
 	// tfp->dumpvars(1, "t"); // trace 1 level under "t"
-	tfp->open("../logs/simx.vcd");	
+	tfp->open("./logs/simx.vcd");	
 	// for wave gen ends
 
 	// for wave gen starts
