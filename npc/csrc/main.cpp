@@ -1,54 +1,39 @@
-#include "Vtop.h"
-#include "verilated.h"
-#include <stdio.h>
-#include <assert.h>
-// for wave gen starts
-#include "verilated_vcd_c.h"
-// for wave gen ends
+#include <nvboard.h>
+#include <Vtop.h>
 
-int main(int argc, char** argv, char** env) {
+static TOP_NAME dut;
 
-	// Create logs/ directory in case we have traces to put under it
-	Verilated::mkdir("logs");
+// 调用该文件中的nvboard_bind_all_pins(dut)函数即可完成所有信号的绑定。
+void nvboard_bind_all_pins(Vtop* top);
+// actually, nvboard_bind_all_pins invokes nvboard_bind_pin to complete its fucntion. You can check my words in build/auto_bind.cpp
 
-	VerilatedContext* contextp = new VerilatedContext;
+//static void single_cycle() {
+//  dut.clk = 0; dut.eval();
+//  dut.clk = 1; dut.eval();
+//}
+//
+//static void reset(int n) {
+//  dut.rst = 1;
+//  while (n -- > 0) single_cycle();
+//  dut.rst = 0;
+//}
 
-	// for wave gen starts
-	Verilated::traceEverOn(true);
-	VerilatedVcdC* tfp = new VerilatedVcdC;
-	// for wave gen ends
-	
-	contextp->commandArgs(argc, argv);
-	Vtop* top = new Vtop{contextp};
+int main() {
 
-	// for wave gen starts
-	top->trace(tfp, 99); // Trace 99 levels of hierarchy (or see below)
-	// tfp->dumpvars(1, "t"); // trace 1 level under "t"
-	tfp->open("./logs/simx.vcd");	
-	// for wave gen ends
+//在进入verilator仿真的循环前，先对引脚进行绑定，然后对NVBoard进行初始化
 
-	// for wave gen starts
-	int sim_time = 5;
-	while (contextp->time() < sim_time && !contextp->gotFinish()) {
-//	while (!contextp->gotFinish()) {
-		contextp->timeInc(1);
-	// for wave gen ends
-		int a = rand() & 1;
-		int b = rand() & 1;
-		top->a = a;
-		top->b = b;
-		top->eval();
-		printf("a = %d, b = %d, f = %d\n", a, b, top->f);
-		assert(top->f == a ^ b);
-		// for wave gen starts
-		tfp->dump(contextp->time());
-		// for wave gen ends
-	}
-	tfp->close();
+  nvboard_bind_all_pins(&dut);
+  nvboard_init(); // initialize NVBOARD nvboard_quit(): 退出NVBoard
 
-	delete top;
-	delete contextp;
+//  reset(10);
 
-	return 0;
+  while(1) {
+//在verilator仿真的循环中更新NVBoard各组件的状态
+    nvboard_update(); // 更新NVBoard中各组件的状态，每当电路状态发生改变时都需要调用该函数
+//    single_cycle();
+  }
+
+//退出verilator仿真的循环后，销毁NVBoard的相关资源
+	nvboard_quit();
 }
 
