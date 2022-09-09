@@ -52,20 +52,10 @@ void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___ctor_var_reset\n"); );
     // Body
-    vlSelf->Y = 0;
-    vlSelf->F = 0;
-    vlSelf->X0 = 0;
-    vlSelf->X1 = 0;
-    vlSelf->X2 = 0;
-    vlSelf->X3 = 0;
-    vlSelf->top__DOT__lut = 0;
-    for (int __Vi0=0; __Vi0<4; ++__Vi0) {
-        vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list[__Vi0] = 0;
-    }
-    for (int __Vi0=0; __Vi0<4; ++__Vi0) {
-        vlSelf->top__DOT__i0__DOT__i0__DOT__key_list[__Vi0] = 0;
-    }
-    for (int __Vi0=0; __Vi0<4; ++__Vi0) {
-        vlSelf->top__DOT__i0__DOT__i0__DOT__data_list[__Vi0] = 0;
-    }
+    vlSelf->result = 0;
+    vlSelf->Z = 0;
+    vlSelf->L = 0;
+    vlSelf->A = 0;
+    vlSelf->B = 0;
+    vlSelf->func = 0;
 }
