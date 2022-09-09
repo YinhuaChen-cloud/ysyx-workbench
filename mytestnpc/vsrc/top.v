@@ -18,7 +18,7 @@ module top(
 	wire [15:0] lut;
 
   generate
-    for (genvar n = 32'b0; n < 4; n = n + 1) begin
+    for (genvar n = 0; n < 4; n = n + 1) begin
 			assign lut[n*4+3:n*4] = {n[1:0], X0};
     end
   endgenerate
