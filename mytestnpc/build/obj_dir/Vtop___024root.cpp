@@ -11,49 +11,75 @@ VL_INLINE_OPT void Vtop___024root___combo__TOP__1(Vtop___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___combo__TOP__1\n"); );
+    // Variables
+    CData/*1:0*/ top__DOT__i0__DOT__i0__DOT__lut_out;
     // Body
-    vlSelf->top__DOT__choose_by_F0_1 = ((2U & (IData)(vlSelf->top__DOT__choose_by_F0_1)) 
-                                        | (1U & (((~ (IData)(vlSelf->F)) 
-                                                  & (IData)(vlSelf->X0)) 
-                                                 | ((IData)(vlSelf->F) 
-                                                    & (IData)(vlSelf->X1)))));
-    vlSelf->top__DOT__choose_by_F0_1 = ((1U & (IData)(vlSelf->top__DOT__choose_by_F0_1)) 
-                                        | (2U & (((
-                                                   (~ (IData)(vlSelf->F)) 
-                                                   << 1U) 
-                                                  & (IData)(vlSelf->X0)) 
-                                                 | (((IData)(vlSelf->F) 
-                                                     << 1U) 
-                                                    & (IData)(vlSelf->X1)))));
-    vlSelf->top__DOT__choose_by_F0_2 = ((2U & (IData)(vlSelf->top__DOT__choose_by_F0_2)) 
-                                        | (1U & (((~ (IData)(vlSelf->F)) 
-                                                  & (IData)(vlSelf->X2)) 
-                                                 | ((IData)(vlSelf->F) 
-                                                    & (IData)(vlSelf->X3)))));
-    vlSelf->top__DOT__choose_by_F0_2 = ((1U & (IData)(vlSelf->top__DOT__choose_by_F0_2)) 
-                                        | (2U & (((
-                                                   (~ (IData)(vlSelf->F)) 
-                                                   << 1U) 
-                                                  & (IData)(vlSelf->X2)) 
-                                                 | (((IData)(vlSelf->F) 
-                                                     << 1U) 
-                                                    & (IData)(vlSelf->X3)))));
-    vlSelf->Y = ((2U & (IData)(vlSelf->Y)) | (1U & 
-                                              (((~ 
-                                                 ((IData)(vlSelf->F) 
-                                                  >> 1U)) 
-                                                & (IData)(vlSelf->top__DOT__choose_by_F0_1)) 
-                                               | (((IData)(vlSelf->F) 
-                                                   >> 1U) 
-                                                  & (IData)(vlSelf->top__DOT__choose_by_F0_2)))));
-    vlSelf->Y = ((1U & (IData)(vlSelf->Y)) | (2U & 
-                                              ((((~ 
-                                                  ((IData)(vlSelf->F) 
-                                                   >> 1U)) 
-                                                 << 1U) 
-                                                & (IData)(vlSelf->top__DOT__choose_by_F0_1)) 
-                                               | ((IData)(vlSelf->F) 
-                                                  & (IData)(vlSelf->top__DOT__choose_by_F0_2)))));
+    vlSelf->top__DOT__lut = ((0xfff0U & (IData)(vlSelf->top__DOT__lut)) 
+                             | (IData)(vlSelf->X0));
+    vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list[0U] 
+        = (0xfU & (IData)(vlSelf->top__DOT__lut));
+    vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list[1U] 
+        = (0xfU & ((IData)(vlSelf->top__DOT__lut) >> 4U));
+    vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list[2U] 
+        = (0xfU & ((IData)(vlSelf->top__DOT__lut) >> 8U));
+    vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list[3U] 
+        = (0xfU & ((IData)(vlSelf->top__DOT__lut) >> 0xcU));
+    vlSelf->top__DOT__i0__DOT__i0__DOT__data_list[0U] 
+        = (3U & vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list
+           [0U]);
+    vlSelf->top__DOT__i0__DOT__i0__DOT__key_list[0U] 
+        = (3U & (vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list
+                 [0U] >> 2U));
+    vlSelf->top__DOT__i0__DOT__i0__DOT__data_list[1U] 
+        = (3U & vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list
+           [1U]);
+    vlSelf->top__DOT__i0__DOT__i0__DOT__key_list[1U] 
+        = (3U & (vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list
+                 [1U] >> 2U));
+    vlSelf->top__DOT__i0__DOT__i0__DOT__data_list[2U] 
+        = (3U & vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list
+           [2U]);
+    vlSelf->top__DOT__i0__DOT__i0__DOT__key_list[2U] 
+        = (3U & (vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list
+                 [2U] >> 2U));
+    vlSelf->top__DOT__i0__DOT__i0__DOT__data_list[3U] 
+        = (3U & vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list
+           [3U]);
+    vlSelf->top__DOT__i0__DOT__i0__DOT__key_list[3U] 
+        = (3U & (vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list
+                 [3U] >> 2U));
+    top__DOT__i0__DOT__i0__DOT__lut_out = ((- (IData)(
+                                                      ((IData)(vlSelf->F) 
+                                                       == 
+                                                       vlSelf->top__DOT__i0__DOT__i0__DOT__key_list
+                                                       [0U]))) 
+                                           & vlSelf->top__DOT__i0__DOT__i0__DOT__data_list
+                                           [0U]);
+    top__DOT__i0__DOT__i0__DOT__lut_out = ((IData)(top__DOT__i0__DOT__i0__DOT__lut_out) 
+                                           | ((- (IData)(
+                                                         ((IData)(vlSelf->F) 
+                                                          == 
+                                                          vlSelf->top__DOT__i0__DOT__i0__DOT__key_list
+                                                          [1U]))) 
+                                              & vlSelf->top__DOT__i0__DOT__i0__DOT__data_list
+                                              [1U]));
+    top__DOT__i0__DOT__i0__DOT__lut_out = ((IData)(top__DOT__i0__DOT__i0__DOT__lut_out) 
+                                           | ((- (IData)(
+                                                         ((IData)(vlSelf->F) 
+                                                          == 
+                                                          vlSelf->top__DOT__i0__DOT__i0__DOT__key_list
+                                                          [2U]))) 
+                                              & vlSelf->top__DOT__i0__DOT__i0__DOT__data_list
+                                              [2U]));
+    top__DOT__i0__DOT__i0__DOT__lut_out = ((IData)(top__DOT__i0__DOT__i0__DOT__lut_out) 
+                                           | ((- (IData)(
+                                                         ((IData)(vlSelf->F) 
+                                                          == 
+                                                          vlSelf->top__DOT__i0__DOT__i0__DOT__key_list
+                                                          [3U]))) 
+                                              & vlSelf->top__DOT__i0__DOT__i0__DOT__data_list
+                                              [3U]));
+    vlSelf->Y = top__DOT__i0__DOT__i0__DOT__lut_out;
 }
 
 void Vtop___024root___eval(Vtop___024root* vlSelf) {
