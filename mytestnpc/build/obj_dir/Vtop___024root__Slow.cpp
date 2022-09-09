@@ -58,4 +58,6 @@ void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->X2 = 0;
     vlSelf->X3 = 0;
     vlSelf->Y = 0;
+    vlSelf->top__DOT__choose_by_F0_1 = 0;
+    vlSelf->top__DOT__choose_by_F0_2 = 0;
 }

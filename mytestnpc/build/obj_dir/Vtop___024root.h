@@ -24,6 +24,10 @@ VL_MODULE(Vtop___024root) {
     VL_IN8(X3,1,0);
     VL_OUT8(Y,1,0);
 
+    // LOCAL SIGNALS
+    CData/*1:0*/ top__DOT__choose_by_F0_1;
+    CData/*1:0*/ top__DOT__choose_by_F0_2;
+
     // INTERNAL VARIABLES
     Vtop__Syms* vlSymsp;  // Symbol table
 
