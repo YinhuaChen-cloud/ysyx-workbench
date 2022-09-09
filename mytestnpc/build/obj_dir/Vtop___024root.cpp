@@ -27,31 +27,8 @@ VL_INLINE_OPT void Vtop___024root___combo__TOP__1(Vtop___024root* vlSelf) {
                         if ((4U != (IData)(vlSelf->func))) {
                             if ((5U != (IData)(vlSelf->func))) {
                                 if ((6U == (IData)(vlSelf->func))) {
-                                    vlSelf->L = 1U;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    vlSelf->Z = 0U;
-    if (((((((((0U == (IData)(vlSelf->func)) | (1U 
-                                                == (IData)(vlSelf->func))) 
-              | (2U == (IData)(vlSelf->func))) | (3U 
-                                                  == (IData)(vlSelf->func))) 
-            | (4U == (IData)(vlSelf->func))) | (5U 
-                                                == (IData)(vlSelf->func))) 
-          | (6U == (IData)(vlSelf->func))) | (7U == (IData)(vlSelf->func)))) {
-        if ((0U != (IData)(vlSelf->func))) {
-            if ((1U != (IData)(vlSelf->func))) {
-                if ((2U != (IData)(vlSelf->func))) {
-                    if ((3U != (IData)(vlSelf->func))) {
-                        if ((4U != (IData)(vlSelf->func))) {
-                            if ((5U != (IData)(vlSelf->func))) {
-                                if ((6U != (IData)(vlSelf->func))) {
-                                    vlSelf->Z = 1U;
+                                    vlSelf->L = ((IData)(vlSelf->A) 
+                                                 < (IData)(vlSelf->B));
                                 }
                             }
                         }
@@ -82,6 +59,31 @@ VL_INLINE_OPT void Vtop___024root___combo__TOP__1(Vtop___024root* vlSelf) {
             vlSelf->result = ((IData)(vlSelf->A) | (IData)(vlSelf->B));
         } else if ((5U == (IData)(vlSelf->func))) {
             vlSelf->result = ((IData)(vlSelf->A) ^ (IData)(vlSelf->B));
+        }
+    }
+    vlSelf->Z = 0U;
+    if (((((((((0U == (IData)(vlSelf->func)) | (1U 
+                                                == (IData)(vlSelf->func))) 
+              | (2U == (IData)(vlSelf->func))) | (3U 
+                                                  == (IData)(vlSelf->func))) 
+            | (4U == (IData)(vlSelf->func))) | (5U 
+                                                == (IData)(vlSelf->func))) 
+          | (6U == (IData)(vlSelf->func))) | (7U == (IData)(vlSelf->func)))) {
+        if ((0U != (IData)(vlSelf->func))) {
+            if ((1U != (IData)(vlSelf->func))) {
+                if ((2U != (IData)(vlSelf->func))) {
+                    if ((3U != (IData)(vlSelf->func))) {
+                        if ((4U != (IData)(vlSelf->func))) {
+                            if ((5U != (IData)(vlSelf->func))) {
+                                if ((6U != (IData)(vlSelf->func))) {
+                                    vlSelf->Z = ((IData)(vlSelf->A) 
+                                                 == (IData)(vlSelf->B));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

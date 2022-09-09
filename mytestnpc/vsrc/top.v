@@ -21,8 +21,8 @@ module top(
 			AND: result = A&B;
 			OR: result = A|B;
 			XOR: result = A^B;
-			LESS: L = 1;
-			EQ: Z = 1;
+			LESS: L = (A < B);
+			EQ: Z = (A == B);
 		endcase
 	end
 	
