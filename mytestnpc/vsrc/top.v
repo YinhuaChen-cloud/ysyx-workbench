@@ -16,10 +16,13 @@ module top(
 );
 
 	wire [15:0] lut;
+	wire [7:0] X;
+
+	assign X = {X3, X2, X1, X0};
 
   generate
     for (genvar n = 0; n < 4; n = n + 1) begin
-			assign lut[n*4+3:n*4] = {n[1:0], X0};
+			assign lut[n*4+3:n*4] = {n[1:0], X[n*2+1:n*2]};
     end
   endgenerate
 

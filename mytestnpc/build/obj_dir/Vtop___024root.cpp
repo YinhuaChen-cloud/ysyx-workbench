@@ -12,16 +12,25 @@ VL_INLINE_OPT void Vtop___024root___combo__TOP__1(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___combo__TOP__1\n"); );
     // Variables
+    CData/*7:0*/ top__DOT__X;
     CData/*1:0*/ top__DOT__i0__DOT__i0__DOT__lut_out;
     // Body
+    top__DOT__X = (((IData)(vlSelf->X3) << 6U) | (((IData)(vlSelf->X2) 
+                                                   << 4U) 
+                                                  | (((IData)(vlSelf->X1) 
+                                                      << 2U) 
+                                                     | (IData)(vlSelf->X0))));
     vlSelf->top__DOT__lut = ((0xff00U & (IData)(vlSelf->top__DOT__lut)) 
-                             | (0x40U | (((IData)(vlSelf->X0) 
-                                          << 4U) | (IData)(vlSelf->X0))));
+                             | (0x40U | ((0x30U & ((IData)(top__DOT__X) 
+                                                   << 2U)) 
+                                         | (3U & (IData)(top__DOT__X)))));
     vlSelf->top__DOT__lut = ((0xffU & (IData)(vlSelf->top__DOT__lut)) 
-                             | (0xc800U | (((IData)(vlSelf->X0) 
-                                            << 0xcU) 
-                                           | ((IData)(vlSelf->X0) 
-                                              << 8U))));
+                             | (0xc800U | ((0x3000U 
+                                            & ((IData)(top__DOT__X) 
+                                               << 6U)) 
+                                           | (0x300U 
+                                              & ((IData)(top__DOT__X) 
+                                                 << 4U)))));
     vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list[0U] 
         = (0xfU & (IData)(vlSelf->top__DOT__lut));
     vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list[1U] 
