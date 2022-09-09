@@ -14,8 +14,14 @@ VL_INLINE_OPT void Vtop___024root___combo__TOP__1(Vtop___024root* vlSelf) {
     // Variables
     CData/*1:0*/ top__DOT__i0__DOT__i0__DOT__lut_out;
     // Body
-    vlSelf->top__DOT__lut = ((0xfff0U & (IData)(vlSelf->top__DOT__lut)) 
-                             | (IData)(vlSelf->X0));
+    vlSelf->top__DOT__lut = ((0xff00U & (IData)(vlSelf->top__DOT__lut)) 
+                             | (0x40U | (((IData)(vlSelf->X0) 
+                                          << 4U) | (IData)(vlSelf->X0))));
+    vlSelf->top__DOT__lut = ((0xffU & (IData)(vlSelf->top__DOT__lut)) 
+                             | (0xc800U | (((IData)(vlSelf->X0) 
+                                            << 0xcU) 
+                                           | ((IData)(vlSelf->X0) 
+                                              << 8U))));
     vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list[0U] 
         = (0xfU & (IData)(vlSelf->top__DOT__lut));
     vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list[1U] 
