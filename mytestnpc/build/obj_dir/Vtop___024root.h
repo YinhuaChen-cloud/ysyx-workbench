@@ -17,15 +17,12 @@ VL_MODULE(Vtop___024root) {
   public:
 
     // PORTS
-    VL_IN8(clk,0,0);
-    VL_IN8(rst,0,0);
-    VL_OUT16(led,15,0);
-
-    // LOCAL SIGNALS
-    IData/*31:0*/ top__DOT__count;
-
-    // LOCAL VARIABLES
-    CData/*0:0*/ __Vclklast__TOP__clk;
+    VL_IN8(F,1,0);
+    VL_IN8(X0,1,0);
+    VL_IN8(X1,1,0);
+    VL_IN8(X2,1,0);
+    VL_IN8(X3,1,0);
+    VL_OUT8(Y,1,0);
 
     // INTERNAL VARIABLES
     Vtop__Syms* vlSymsp;  // Symbol table
