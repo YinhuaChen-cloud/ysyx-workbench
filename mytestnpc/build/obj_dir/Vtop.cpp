@@ -9,12 +9,9 @@
 
 Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     : vlSymsp{new Vtop__Syms(_vcontextp__, _vcname__, this)}
-    , result{vlSymsp->TOP.result}
-    , Z{vlSymsp->TOP.Z}
-    , L{vlSymsp->TOP.L}
-    , A{vlSymsp->TOP.A}
-    , B{vlSymsp->TOP.B}
-    , func{vlSymsp->TOP.func}
+    , clk{vlSymsp->TOP.clk}
+    , rst{vlSymsp->TOP.rst}
+    , q{vlSymsp->TOP.q}
     , rootp{&(vlSymsp->TOP)}
 {
 }
