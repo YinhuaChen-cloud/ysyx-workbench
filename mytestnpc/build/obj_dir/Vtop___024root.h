@@ -19,8 +19,8 @@ VL_MODULE(Vtop___024root) {
     // PORTS
     VL_IN8(clk,0,0);
     VL_IN8(rst,0,0);
-    VL_OUT8(seg1,7,0);
     VL_OUT8(seg2,7,0);
+    VL_OUT8(seg1,7,0);
     VL_OUT8(q,7,0);
 
     // LOCAL SIGNALS

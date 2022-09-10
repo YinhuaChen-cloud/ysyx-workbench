@@ -40,10 +40,10 @@ void Vtop___024root___settle__TOP__1(Vtop___024root* vlSelf) {
     vlSelf->top__DOT__segs[7U] = 0xe0U;
     vlSelf->top__DOT__new_in = (1U & VL_REDXOR_32((0x1dU 
                                                    & (IData)(vlSelf->q))));
-    vlSelf->seg1 = (0xffU & (~ vlSelf->top__DOT__segs
+    vlSelf->seg2 = (0xffU & (~ vlSelf->top__DOT__segs
                              [(0xfU & ((IData)(vlSelf->q) 
                                        >> 4U))]));
-    vlSelf->seg2 = (0xffU & (~ vlSelf->top__DOT__segs
+    vlSelf->seg1 = (0xffU & (~ vlSelf->top__DOT__segs
                              [(0xfU & (IData)(vlSelf->q))]));
 }
 
@@ -76,8 +76,8 @@ void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     // Body
     vlSelf->clk = 0;
     vlSelf->rst = 0;
-    vlSelf->seg1 = 0;
     vlSelf->seg2 = 0;
+    vlSelf->seg1 = 0;
     vlSelf->q = 0;
     vlSelf->top__DOT__new_in = 0;
     for (int __Vi0=0; __Vi0<16; ++__Vi0) {
