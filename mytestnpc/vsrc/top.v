@@ -25,7 +25,7 @@ module top(
 	assign segs[5] = 8'b10110110;
 	assign segs[6] = 8'b10111110;
 	assign segs[7] = 8'b11100000;
-	assign segs[8] = 8'b11111100;
+	assign segs[8] = 8'b11111110;
 
 	assign seg2 = ~segs[q[7:4]];
 	assign seg1 = ~segs[q[3:0]];
