@@ -38,6 +38,7 @@ void Vtop___024root___settle__TOP__1(Vtop___024root* vlSelf) {
     vlSelf->top__DOT__segs[5U] = 0xb6U;
     vlSelf->top__DOT__segs[6U] = 0xbeU;
     vlSelf->top__DOT__segs[7U] = 0xe0U;
+    vlSelf->top__DOT__segs[8U] = 0xfcU;
     vlSelf->top__DOT__new_in = (1U & VL_REDXOR_32((0x1dU 
                                                    & (IData)(vlSelf->q))));
     vlSelf->seg2 = (0xffU & (~ vlSelf->top__DOT__segs
