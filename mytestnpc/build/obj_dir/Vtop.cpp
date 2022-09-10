@@ -13,6 +13,7 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , rst{vlSymsp->TOP.rst}
     , seg1{vlSymsp->TOP.seg1}
     , seg2{vlSymsp->TOP.seg2}
+    , q{vlSymsp->TOP.q}
     , rootp{&(vlSymsp->TOP)}
 {
 }

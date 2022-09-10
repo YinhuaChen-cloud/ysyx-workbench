@@ -2,11 +2,11 @@ module top(
 	input clk,
 	input rst,
 	output [7:0] seg1, // high
-	output [7:0] seg2 // low
+	output [7:0] seg2, // low
+	output reg [7:0] q
 );
 
 	wire new_in;
-	reg [7:0] q;
 	
 	assign new_in = q[4]^q[3]^q[2]^q[0];
 

@@ -12,15 +12,16 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__2(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___sequent__TOP__2\n"); );
     // Body
-    vlSelf->top__DOT__q = ((IData)(vlSelf->rst) ? 1U
-                            : (((IData)(vlSelf->top__DOT__new_in) 
-                                << 7U) | (0x7fU & ((IData)(vlSelf->top__DOT__q) 
-                                                   >> 1U))));
+    vlSelf->q = ((IData)(vlSelf->rst) ? 1U : (((IData)(vlSelf->top__DOT__new_in) 
+                                               << 7U) 
+                                              | (0x7fU 
+                                                 & ((IData)(vlSelf->q) 
+                                                    >> 1U))));
     vlSelf->top__DOT__new_in = (1U & VL_REDXOR_32((0x1dU 
-                                                   & (IData)(vlSelf->top__DOT__q))));
-    vlSelf->seg1 = vlSelf->top__DOT__segs[(0xfU & ((IData)(vlSelf->top__DOT__q) 
+                                                   & (IData)(vlSelf->q))));
+    vlSelf->seg1 = vlSelf->top__DOT__segs[(0xfU & ((IData)(vlSelf->q) 
                                                    >> 4U))];
-    vlSelf->seg2 = vlSelf->top__DOT__segs[(0xfU & (IData)(vlSelf->top__DOT__q))];
+    vlSelf->seg2 = vlSelf->top__DOT__segs[(0xfU & (IData)(vlSelf->q))];
 }
 
 void Vtop___024root___eval(Vtop___024root* vlSelf) {
