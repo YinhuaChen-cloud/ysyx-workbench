@@ -40,9 +40,11 @@ void Vtop___024root___settle__TOP__1(Vtop___024root* vlSelf) {
     vlSelf->top__DOT__segs[7U] = 0xe0U;
     vlSelf->top__DOT__new_in = (1U & VL_REDXOR_32((0x1dU 
                                                    & (IData)(vlSelf->q))));
-    vlSelf->seg1 = vlSelf->top__DOT__segs[(0xfU & ((IData)(vlSelf->q) 
-                                                   >> 4U))];
-    vlSelf->seg2 = vlSelf->top__DOT__segs[(0xfU & (IData)(vlSelf->q))];
+    vlSelf->seg1 = (0xffU & (~ vlSelf->top__DOT__segs
+                             [(0xfU & ((IData)(vlSelf->q) 
+                                       >> 4U))]));
+    vlSelf->seg2 = (0xffU & (~ vlSelf->top__DOT__segs
+                             [(0xfU & (IData)(vlSelf->q))]));
 }
 
 void Vtop___024root___eval_initial(Vtop___024root* vlSelf) {
