@@ -1,35 +1,30 @@
-module top(
-	input clk,
-	input rst,
-	output [7:0] seg2, // high
-	output [7:0] seg1, // low
-	output reg [7:0] q
-);
+module top (clk, we, inaddr, outaddr, din, dout0,dout1,dout2);
+  input clk;
+  input we;
+  input [2:0] inaddr;
+  input [2:0] outaddr;
+  input [7:0] din;
+  output reg [7:0] dout0,dout1,dout2;
 
-	wire new_in;
-	
-	assign new_in = q[4]^q[3]^q[2]^q[0];
+  reg [7:0] ram [7:0];
 
-	always@(posedge clk)
-		if(rst)
-			q <= 1;
-		else
-			q <= {new_in, q[7:1]};
+  initial
+  begin
+  ram[7] = 8'hf0; ram[6] = 8'h23; ram[5] = 8'h20; ram[4] = 8'h50;
+  ram[3] = 8'h03; ram[2] = 8'h21; ram[1] = 8'h82; ram[0] = 8'h0D;
+  end
 
-	reg [7:0] segs [15:0];
-	assign segs[0] = 8'b11111101;
-	assign segs[1] = 8'b01100000;
-	assign segs[2] = 8'b11011010;
-	assign segs[3] = 8'b11110010;
-	assign segs[4] = 8'b01100110;
-	assign segs[5] = 8'b10110110;
-	assign segs[6] = 8'b10111110;
-	assign segs[7] = 8'b11100000;
-	assign segs[8] = 8'b11111110;
-	assign segs[9] = 8'b11110110;
-	assign segs[10] = 8'b11101110;
-
-	assign seg2 = ~segs[q[7:4]];
-	assign seg1 = ~segs[q[3:0]];
-
+  always @(posedge clk)
+  begin
+      if (we)
+          ram[inaddr] <= din;
+      else
+          dout0 <= ram[outaddr];
+  end
+  always @(negedge clk)
+  begin
+      if (!we)
+          dout1 <= ram[outaddr];
+  end
+  assign  dout2 = ram[outaddr];
 endmodule

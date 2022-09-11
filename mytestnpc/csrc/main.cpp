@@ -12,11 +12,11 @@ static void single_cycle() {
   dut.clk = 1; dut.eval();
 }
 
-static void reset(int n) {
-  dut.rst = 1;
-  while (n -- > 0) single_cycle();
-  dut.rst = 0;
-}
+//static void reset(int n) {
+//  dut.rst = 1;
+//  while (n -- > 0) single_cycle();
+//  dut.rst = 0;
+//}
 
 int main() {
 
@@ -25,7 +25,7 @@ int main() {
   nvboard_bind_all_pins(&dut);
   nvboard_init(); // initialize NVBOARD nvboard_quit(): 退出NVBoard
 
-  reset(10);
+//  reset(10);
 
   while(1) {
 //在verilator仿真的循环中更新NVBoard各组件的状态

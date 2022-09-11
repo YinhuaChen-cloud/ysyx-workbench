@@ -10,10 +10,13 @@
 Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     : vlSymsp{new Vtop__Syms(_vcontextp__, _vcname__, this)}
     , clk{vlSymsp->TOP.clk}
-    , rst{vlSymsp->TOP.rst}
-    , seg2{vlSymsp->TOP.seg2}
-    , seg1{vlSymsp->TOP.seg1}
-    , q{vlSymsp->TOP.q}
+    , we{vlSymsp->TOP.we}
+    , inaddr{vlSymsp->TOP.inaddr}
+    , outaddr{vlSymsp->TOP.outaddr}
+    , din{vlSymsp->TOP.din}
+    , dout0{vlSymsp->TOP.dout0}
+    , dout1{vlSymsp->TOP.dout1}
+    , dout2{vlSymsp->TOP.dout2}
     , rootp{&(vlSymsp->TOP)}
 {
 }

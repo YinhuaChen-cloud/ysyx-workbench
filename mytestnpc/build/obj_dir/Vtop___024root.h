@@ -18,14 +18,16 @@ VL_MODULE(Vtop___024root) {
 
     // PORTS
     VL_IN8(clk,0,0);
-    VL_IN8(rst,0,0);
-    VL_OUT8(seg2,7,0);
-    VL_OUT8(seg1,7,0);
-    VL_OUT8(q,7,0);
+    VL_IN8(we,0,0);
+    VL_IN8(inaddr,2,0);
+    VL_IN8(outaddr,2,0);
+    VL_IN8(din,7,0);
+    VL_OUT8(dout0,7,0);
+    VL_OUT8(dout1,7,0);
+    VL_OUT8(dout2,7,0);
 
     // LOCAL SIGNALS
-    CData/*0:0*/ top__DOT__new_in;
-    VlUnpacked<CData/*7:0*/, 16> top__DOT__segs;
+    VlUnpacked<CData/*7:0*/, 8> top__DOT__ram;
 
     // LOCAL VARIABLES
     CData/*0:0*/ __Vclklast__TOP__clk;
