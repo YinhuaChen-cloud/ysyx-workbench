@@ -14,9 +14,12 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , inaddr{vlSymsp->TOP.inaddr}
     , outaddr{vlSymsp->TOP.outaddr}
     , din{vlSymsp->TOP.din}
-    , dout0{vlSymsp->TOP.dout0}
-    , dout1{vlSymsp->TOP.dout1}
-    , dout2{vlSymsp->TOP.dout2}
+    , seg0{vlSymsp->TOP.seg0}
+    , seg1{vlSymsp->TOP.seg1}
+    , seg3{vlSymsp->TOP.seg3}
+    , seg4{vlSymsp->TOP.seg4}
+    , seg6{vlSymsp->TOP.seg6}
+    , seg7{vlSymsp->TOP.seg7}
     , rootp{&(vlSymsp->TOP)}
 {
 }
