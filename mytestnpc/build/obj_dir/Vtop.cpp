@@ -16,10 +16,6 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , din{vlSymsp->TOP.din}
     , seg0{vlSymsp->TOP.seg0}
     , seg1{vlSymsp->TOP.seg1}
-    , seg3{vlSymsp->TOP.seg3}
-    , seg4{vlSymsp->TOP.seg4}
-    , seg6{vlSymsp->TOP.seg6}
-    , seg7{vlSymsp->TOP.seg7}
     , rootp{&(vlSymsp->TOP)}
 {
 }

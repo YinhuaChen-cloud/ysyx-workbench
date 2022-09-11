@@ -31,10 +31,6 @@ class Vtop VL_NOT_FINAL {
     VL_IN8(&din,7,0);
     VL_OUT8(&seg0,7,0);
     VL_OUT8(&seg1,7,0);
-    VL_OUT8(&seg3,7,0);
-    VL_OUT8(&seg4,7,0);
-    VL_OUT8(&seg6,7,0);
-    VL_OUT8(&seg7,7,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
