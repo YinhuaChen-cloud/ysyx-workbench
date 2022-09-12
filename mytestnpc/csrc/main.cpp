@@ -36,6 +36,7 @@ int main() {
 //		dut.eval();
     single_cycle();
 //    dut.eval();
+		printf("dut.state_out = %d\n", dut.state_dout);
   }
 
 //退出verilator仿真的循环后，销毁NVBoard的相关资源
