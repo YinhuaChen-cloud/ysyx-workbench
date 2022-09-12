@@ -92,10 +92,13 @@ void Vps2_keyboard___024root___ctor_var_reset(Vps2_keyboard___024root* vlSelf) {
     vlSelf->ready = 0;
     vlSelf->seg0 = 0;
     vlSelf->seg1 = 0;
+    vlSelf->seg6 = 0;
+    vlSelf->seg7 = 0;
     vlSelf->ps2_keyboard__DOT__data = 0;
     vlSelf->ps2_keyboard__DOT__buffer = 0;
     vlSelf->ps2_keyboard__DOT__count = 0;
     vlSelf->ps2_keyboard__DOT__ps2_clk_sync = 0;
+    vlSelf->ps2_keyboard__DOT__timescounter = 0;
     for (int __Vi0=0; __Vi0<16; ++__Vi0) {
         vlSelf->ps2_keyboard__DOT__segs[__Vi0] = 0;
     }

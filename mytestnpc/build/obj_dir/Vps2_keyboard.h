@@ -31,6 +31,8 @@ class Vps2_keyboard VL_NOT_FINAL {
     VL_OUT8(&ready,0,0);
     VL_OUT8(&seg0,7,0);
     VL_OUT8(&seg1,7,0);
+    VL_OUT8(&seg6,7,0);
+    VL_OUT8(&seg7,7,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.

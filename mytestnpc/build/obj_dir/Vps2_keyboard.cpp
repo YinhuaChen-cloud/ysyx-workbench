@@ -16,6 +16,8 @@ Vps2_keyboard::Vps2_keyboard(VerilatedContext* _vcontextp__, const char* _vcname
     , ready{vlSymsp->TOP.ready}
     , seg0{vlSymsp->TOP.seg0}
     , seg1{vlSymsp->TOP.seg1}
+    , seg6{vlSymsp->TOP.seg6}
+    , seg7{vlSymsp->TOP.seg7}
     , rootp{&(vlSymsp->TOP)}
 {
 }

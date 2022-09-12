@@ -2,7 +2,9 @@ module ps2_keyboard(
     input clk,rst,ps2_clk,ps2_data,
     output reg ready,
 		output [7:0] seg0,
-		output [7:0] seg1
+		output [7:0] seg1,
+		output [7:0] seg6,
+		output [7:0] seg7
 );
     // internal signal, for test
     reg [15:0] data;
@@ -10,6 +12,7 @@ module ps2_keyboard(
     reg [3:0] count;  // count ps2_data bits
     // detect falling edge of ps2_clk
     reg [2:0] ps2_clk_sync;
+		reg [7:0] timescounter; // record pushtimes
 
     always @(posedge clk) begin // check negedge of ps2_clk
         ps2_clk_sync <=  {ps2_clk_sync[1:0],ps2_clk};
@@ -21,6 +24,7 @@ module ps2_keyboard(
         if (rst) begin // rst
             count <= 0; 
 						ready <= 0;
+						timescounter <= 0;
         end
         else begin
             if (sampling) begin
@@ -31,7 +35,12 @@ module ps2_keyboard(
                     $display("receive %x", buffer[8:1]);
 										data <= {data[7:0], buffer[8:1]};
                     $display("(data[7:0] == 8'hF0) %b", (data[7:0] == 8'hF0));
-										ready <= (data[7:0] == 8'hF0) ? 0 : 1;
+										if(data[7:0] == 8'hF0) begin
+											timescounter <= timescounter + 1;
+											ready <= 0;
+										end
+										else
+											ready <= 1;
                 end
                 count <= 0;     // for next
               end else begin

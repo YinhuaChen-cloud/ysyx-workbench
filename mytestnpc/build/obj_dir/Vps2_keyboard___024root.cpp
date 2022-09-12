@@ -14,9 +14,11 @@ VL_INLINE_OPT void Vps2_keyboard___024root___sequent__TOP__2(Vps2_keyboard___024
     // Variables
     CData/*2:0*/ __Vdly__ps2_keyboard__DOT__ps2_clk_sync;
     CData/*3:0*/ __Vdly__ps2_keyboard__DOT__count;
+    CData/*7:0*/ __Vdly__ps2_keyboard__DOT__timescounter;
     SData/*15:0*/ __Vdly__ps2_keyboard__DOT__data;
     // Body
     __Vdly__ps2_keyboard__DOT__ps2_clk_sync = vlSelf->ps2_keyboard__DOT__ps2_clk_sync;
+    __Vdly__ps2_keyboard__DOT__timescounter = vlSelf->ps2_keyboard__DOT__timescounter;
     __Vdly__ps2_keyboard__DOT__count = vlSelf->ps2_keyboard__DOT__count;
     __Vdly__ps2_keyboard__DOT__data = vlSelf->ps2_keyboard__DOT__data;
     __Vdly__ps2_keyboard__DOT__ps2_clk_sync = ((6U 
@@ -26,6 +28,7 @@ VL_INLINE_OPT void Vps2_keyboard___024root___sequent__TOP__2(Vps2_keyboard___024
     if (vlSelf->rst) {
         __Vdly__ps2_keyboard__DOT__count = 0U;
         vlSelf->ready = 0U;
+        __Vdly__ps2_keyboard__DOT__timescounter = 0U;
     } else if ((IData)((4U == (6U & (IData)(vlSelf->ps2_keyboard__DOT__ps2_clk_sync))))) {
         if ((0xaU == (IData)(vlSelf->ps2_keyboard__DOT__count))) {
             if (VL_UNLIKELY((((~ (IData)(vlSelf->ps2_keyboard__DOT__buffer)) 
@@ -45,8 +48,13 @@ VL_INLINE_OPT void Vps2_keyboard___024root___sequent__TOP__2(Vps2_keyboard___024
                                                          >> 1U)));
                 VL_WRITEF("(data[7:0] == 8'hF0) %b\n",
                           1,(0xf0U == (0xffU & (IData)(vlSelf->ps2_keyboard__DOT__data))));
-                vlSelf->ready = ((0xf0U == (0xffU & (IData)(vlSelf->ps2_keyboard__DOT__data)))
-                                  ? 0U : 1U);
+                if ((0xf0U == (0xffU & (IData)(vlSelf->ps2_keyboard__DOT__data)))) {
+                    __Vdly__ps2_keyboard__DOT__timescounter 
+                        = (0xffU & ((IData)(1U) + (IData)(vlSelf->ps2_keyboard__DOT__timescounter)));
+                    vlSelf->ready = 0U;
+                } else {
+                    vlSelf->ready = 1U;
+                }
             }
             __Vdly__ps2_keyboard__DOT__count = 0U;
         } else {
@@ -65,6 +73,7 @@ VL_INLINE_OPT void Vps2_keyboard___024root___sequent__TOP__2(Vps2_keyboard___024
         }
     }
     vlSelf->ps2_keyboard__DOT__count = __Vdly__ps2_keyboard__DOT__count;
+    vlSelf->ps2_keyboard__DOT__timescounter = __Vdly__ps2_keyboard__DOT__timescounter;
     vlSelf->ps2_keyboard__DOT__ps2_clk_sync = __Vdly__ps2_keyboard__DOT__ps2_clk_sync;
     vlSelf->ps2_keyboard__DOT__data = __Vdly__ps2_keyboard__DOT__data;
     if (vlSelf->ready) {

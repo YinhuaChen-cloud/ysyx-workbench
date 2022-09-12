@@ -24,10 +24,13 @@ VL_MODULE(Vps2_keyboard___024root) {
     VL_OUT8(ready,0,0);
     VL_OUT8(seg0,7,0);
     VL_OUT8(seg1,7,0);
+    VL_OUT8(seg6,7,0);
+    VL_OUT8(seg7,7,0);
 
     // LOCAL SIGNALS
     CData/*3:0*/ ps2_keyboard__DOT__count;
     CData/*2:0*/ ps2_keyboard__DOT__ps2_clk_sync;
+    CData/*7:0*/ ps2_keyboard__DOT__timescounter;
     SData/*15:0*/ ps2_keyboard__DOT__data;
     SData/*9:0*/ ps2_keyboard__DOT__buffer;
     VlUnpacked<CData/*7:0*/, 16> ps2_keyboard__DOT__segs;
