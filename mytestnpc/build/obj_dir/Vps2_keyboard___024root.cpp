@@ -35,14 +35,16 @@ VL_INLINE_OPT void Vps2_keyboard___024root___sequent__TOP__2(Vps2_keyboard___024
                                  & VL_REDXOR_32((0x1ffU 
                                                  & ((IData)(vlSelf->ps2_keyboard__DOT__buffer) 
                                                     >> 1U)))))) {
+                    VL_WRITEF("receive %x\n",8,(0xffU 
+                                                & ((IData)(vlSelf->ps2_keyboard__DOT__buffer) 
+                                                   >> 1U)));
                     __Vdly__ps2_keyboard__DOT__data 
                         = ((0xff00U & ((IData)(vlSelf->ps2_keyboard__DOT__data) 
                                        << 8U)) | (0xffU 
                                                   & ((IData)(vlSelf->ps2_keyboard__DOT__buffer) 
                                                      >> 1U)));
-                    VL_WRITEF("receive %x\n",8,(0xffU 
-                                                & ((IData)(vlSelf->ps2_keyboard__DOT__buffer) 
-                                                   >> 1U)));
+                    VL_WRITEF("(data[7:0] == 8'hF0) %b\n",
+                              1,(0xf0U == (0xffU & (IData)(vlSelf->ps2_keyboard__DOT__data))));
                     vlSelf->ready = ((0xf0U == (0xffU 
                                                 & (IData)(vlSelf->ps2_keyboard__DOT__data)))
                                       ? 0U : 1U);
