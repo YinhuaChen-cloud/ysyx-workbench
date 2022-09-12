@@ -1,4 +1,4 @@
-TOPNAME = FSM_bin
+TOPNAME = ps2_keyboard
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
 

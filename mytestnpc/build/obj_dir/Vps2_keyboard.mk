@@ -2,9 +2,9 @@
 # DESCRIPTION: Verilator output: Makefile for building Verilated archive or executable
 #
 # Execute this makefile from the object directory:
-#    make -f VFSM_bin.mk
+#    make -f Vps2_keyboard.mk
 
-default: /home/chenyinhua/sda3/ysyx-workbench/mytestnpc/build/FSM_bin
+default: /home/chenyinhua/sda3/ysyx-workbench/mytestnpc/build/ps2_keyboard
 
 ### Constants...
 # Perl executable (from $PERL)
@@ -30,13 +30,13 @@ VM_SC_TARGET_ARCH = linux
 
 ### Vars...
 # Design prefix (from --prefix)
-VM_PREFIX = VFSM_bin
+VM_PREFIX = Vps2_keyboard
 # Module prefix (from --prefix)
-VM_MODPREFIX = VFSM_bin
+VM_MODPREFIX = Vps2_keyboard
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
 	-I/home/chenyinhua/sda3/ysyx-workbench/nvboard/include \
-	-DTOP_NAME="VFSM_bin" \
+	-DTOP_NAME="Vps2_keyboard" \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
@@ -57,7 +57,7 @@ VM_USER_DIR = \
 
 ### Default rules...
 # Include list of all generated classes
-include VFSM_bin_classes.mk
+include Vps2_keyboard_classes.mk
 # Include global rules
 include $(VERILATOR_ROOT)/include/verilated.mk
 
@@ -70,7 +70,7 @@ main.o: /home/chenyinhua/sda3/ysyx-workbench/mytestnpc/csrc/main.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)
-/home/chenyinhua/sda3/ysyx-workbench/mytestnpc/build/FSM_bin: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
+/home/chenyinhua/sda3/ysyx-workbench/mytestnpc/build/ps2_keyboard: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
 	$(LINK) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o $@
 
 

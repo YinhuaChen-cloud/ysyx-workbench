@@ -1,16 +1,16 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "VFSM_bin__Syms.h"
-#include "VFSM_bin.h"
-#include "VFSM_bin___024root.h"
+#include "Vps2_keyboard__Syms.h"
+#include "Vps2_keyboard.h"
+#include "Vps2_keyboard___024root.h"
 
 // FUNCTIONS
-VFSM_bin__Syms::~VFSM_bin__Syms()
+Vps2_keyboard__Syms::~Vps2_keyboard__Syms()
 {
 }
 
-VFSM_bin__Syms::VFSM_bin__Syms(VerilatedContext* contextp, const char* namep,VFSM_bin* modelp)
+Vps2_keyboard__Syms::Vps2_keyboard__Syms(VerilatedContext* contextp, const char* namep,Vps2_keyboard* modelp)
     : VerilatedSyms{contextp}
     // Setup internal state of the Syms class
     , __Vm_modelp(modelp)

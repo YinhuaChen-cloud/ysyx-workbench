@@ -1,6 +1,6 @@
-#define CYHTOP FSM_bin
-#define CYHTOPHEADER <VFSM_bin.h>
-#define CYHTOPSTRUCT VFSM_bin
+#define CYHTOP ps2_keyboard
+#define CYHTOPHEADER <Vps2_keyboard.h>
+#define CYHTOPSTRUCT Vps2_keyboard
 #include <nvboard.h>
 #include CYHTOPHEADER
 
@@ -16,9 +16,9 @@ static void single_cycle() {
 }
 
 static void reset(int n) {
-  dut.reset = 1;
+  dut.rst = 1;
   while (n -- > 0) single_cycle();
-  dut.reset = 0;
+  dut.rst = 0;
 }
 
 int main() {
@@ -34,8 +34,7 @@ int main() {
 //在verilator仿真的循环中更新NVBoard各组件的状态
     nvboard_update(); // 更新NVBoard中各组件的状态，每当电路状态发生改变时都需要调用该函数
 //		dut.eval();
-//    single_cycle();
-    dut.eval();
+    single_cycle();
 //		printf("dut.state_out = %d\n", dut.state_dout);
   }
 

@@ -5,19 +5,19 @@
 // The class here is then constructed to instantiate the design.
 // See the Verilator manual for examples.
 
-#ifndef VERILATED_VFSM_BIN_H_
-#define VERILATED_VFSM_BIN_H_  // guard
+#ifndef VERILATED_VPS2_KEYBOARD_H_
+#define VERILATED_VPS2_KEYBOARD_H_  // guard
 
 #include "verilated_heavy.h"
 
-class VFSM_bin__Syms;
-class VFSM_bin___024root;
+class Vps2_keyboard__Syms;
+class Vps2_keyboard___024root;
 
 // This class is the main interface to the Verilated model
-class VFSM_bin VL_NOT_FINAL {
+class Vps2_keyboard VL_NOT_FINAL {
   private:
     // Symbol table holding complete model state (owned by this class)
-    VFSM_bin__Syms* const vlSymsp;
+    Vps2_keyboard__Syms* const vlSymsp;
 
   public:
 
@@ -25,10 +25,12 @@ class VFSM_bin VL_NOT_FINAL {
     // The application code writes and reads these signals to
     // propagate new values into/out from the Verilated model.
     VL_IN8(&clk,0,0);
-    VL_IN8(&in,0,0);
-    VL_IN8(&reset,0,0);
-    VL_OUT8(&out,0,0);
-    VL_OUT8(&state_dout,3,0);
+    VL_IN8(&rst,0,0);
+    VL_IN8(&ps2_clk,0,0);
+    VL_IN8(&ps2_data,0,0);
+    VL_OUT8(&ready,0,0);
+    VL_OUT8(&seg0,7,0);
+    VL_OUT8(&seg1,7,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
@@ -36,19 +38,19 @@ class VFSM_bin VL_NOT_FINAL {
 
     // Root instance pointer to allow access to model internals,
     // including inlined /* verilator public_flat_* */ items.
-    VFSM_bin___024root* const rootp;
+    Vps2_keyboard___024root* const rootp;
 
     // CONSTRUCTORS
     /// Construct the model; called by application code
     /// If contextp is null, then the model will use the default global context
     /// If name is "", then makes a wrapper with a
     /// single model invisible with respect to DPI scope names.
-    explicit VFSM_bin(VerilatedContext* contextp, const char* name = "TOP");
-    explicit VFSM_bin(const char* name = "TOP");
+    explicit Vps2_keyboard(VerilatedContext* contextp, const char* name = "TOP");
+    explicit Vps2_keyboard(const char* name = "TOP");
     /// Destroy the model; called (often implicitly) by application code
-    virtual ~VFSM_bin();
+    virtual ~Vps2_keyboard();
   private:
-    VL_UNCOPYABLE(VFSM_bin);  ///< Copying not allowed
+    VL_UNCOPYABLE(Vps2_keyboard);  ///< Copying not allowed
 
   public:
     // API METHODS
