@@ -12,14 +12,13 @@ module ps2_keyboard(
     reg [2:0] ps2_clk_sync;
 
     always @(posedge clk) begin // check negedge of ps2_clk
-				$display("in reset");
         ps2_clk_sync <=  {ps2_clk_sync[1:0],ps2_clk};
     end
 
     wire sampling = ps2_clk_sync[2] & ~ps2_clk_sync[1];
 
     always @(posedge clk) begin
-        if (rst == 0) begin // rst
+        if (rst) begin // rst
             count <= 0; 
 						ready <= 0;
         end
