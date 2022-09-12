@@ -48,6 +48,7 @@ module ps2_keyboard(
 //                    w_ptr <= w_ptr+3'b1;
 //                    ready <= 1'b1;
 //                    overflow <= overflow | (r_ptr == (w_ptr + 3'b1));
+                    $display("receive %x", buffer[8:1]);
 										data <= {data[7:0], buffer[8:1]};
 										ready <= (data[7:0] == 8'hF0) ? 0 : 1;
                 end
