@@ -34,9 +34,9 @@ int main() {
 //在verilator仿真的循环中更新NVBoard各组件的状态
     nvboard_update(); // 更新NVBoard中各组件的状态，每当电路状态发生改变时都需要调用该函数
 //		dut.eval();
-    single_cycle();
-//    dut.eval();
-		printf("dut.state_out = %d\n", dut.state_dout);
+//    single_cycle();
+    dut.eval();
+//		printf("dut.state_out = %d\n", dut.state_dout);
   }
 
 //退出verilator仿真的循环后，销毁NVBoard的相关资源
