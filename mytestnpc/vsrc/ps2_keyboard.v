@@ -78,8 +78,8 @@ module ps2_keyboard(
 
 	assign seg0 = ready ? ~segs[data[3:0]] : '1;
 	assign seg1 = ready ? ~segs[data[7:4]] : '1;
-	assign seg6 = segs[timescounter[3:0]];
-	assign seg7 = segs[timescounter[7:4]];
+	assign seg6 = ~segs[timescounter[3:0]];
+	assign seg7 = ~segs[timescounter[7:4]];
 
 	// show push times 
 endmodule
