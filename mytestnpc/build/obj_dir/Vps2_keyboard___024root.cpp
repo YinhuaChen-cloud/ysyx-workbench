@@ -26,43 +26,42 @@ VL_INLINE_OPT void Vps2_keyboard___024root___sequent__TOP__2(Vps2_keyboard___024
     if (vlSelf->rst) {
         __Vdly__ps2_keyboard__DOT__count = 0U;
         vlSelf->ready = 0U;
-    } else {
-        vlSelf->ready = 0U;
-        if ((IData)((4U == (6U & (IData)(vlSelf->ps2_keyboard__DOT__ps2_clk_sync))))) {
-            if ((0xaU == (IData)(vlSelf->ps2_keyboard__DOT__count))) {
-                if (VL_UNLIKELY((((~ (IData)(vlSelf->ps2_keyboard__DOT__buffer)) 
-                                  & (IData)(vlSelf->ps2_data)) 
-                                 & VL_REDXOR_32((0x1ffU 
-                                                 & ((IData)(vlSelf->ps2_keyboard__DOT__buffer) 
-                                                    >> 1U)))))) {
-                    VL_WRITEF("receive %x\n",8,(0xffU 
-                                                & ((IData)(vlSelf->ps2_keyboard__DOT__buffer) 
-                                                   >> 1U)));
-                    __Vdly__ps2_keyboard__DOT__data 
-                        = ((0xff00U & ((IData)(vlSelf->ps2_keyboard__DOT__data) 
-                                       << 8U)) | (0xffU 
-                                                  & ((IData)(vlSelf->ps2_keyboard__DOT__buffer) 
-                                                     >> 1U)));
-                    VL_WRITEF("(data[7:0] == 8'hF0) %b\n",
-                              1,(0xf0U == (0xffU & (IData)(vlSelf->ps2_keyboard__DOT__data))));
-                    vlSelf->ready = ((0xf0U == (0xffU 
-                                                & (IData)(vlSelf->ps2_keyboard__DOT__data)))
-                                      ? 0U : 1U);
-                }
-                __Vdly__ps2_keyboard__DOT__count = 0U;
-            } else {
-                vlSelf->ps2_keyboard__DOT____Vlvbound1 
-                    = vlSelf->ps2_data;
-                if (VL_LIKELY((9U >= (IData)(vlSelf->ps2_keyboard__DOT__count)))) {
-                    vlSelf->ps2_keyboard__DOT__buffer 
-                        = (((~ ((IData)(1U) << (IData)(vlSelf->ps2_keyboard__DOT__count))) 
-                            & (IData)(vlSelf->ps2_keyboard__DOT__buffer)) 
-                           | (0x3ffU & ((IData)(vlSelf->ps2_keyboard__DOT____Vlvbound1) 
-                                        << (IData)(vlSelf->ps2_keyboard__DOT__count))));
-                }
-                __Vdly__ps2_keyboard__DOT__count = 
-                    (0xfU & ((IData)(1U) + (IData)(vlSelf->ps2_keyboard__DOT__count)));
+    } else if ((IData)((4U == (6U & (IData)(vlSelf->ps2_keyboard__DOT__ps2_clk_sync))))) {
+        if ((0xaU == (IData)(vlSelf->ps2_keyboard__DOT__count))) {
+            if (VL_UNLIKELY((((~ (IData)(vlSelf->ps2_keyboard__DOT__buffer)) 
+                              & (IData)(vlSelf->ps2_data)) 
+                             & VL_REDXOR_32((0x1ffU 
+                                             & ((IData)(vlSelf->ps2_keyboard__DOT__buffer) 
+                                                >> 1U)))))) {
+                VL_WRITEF("receive %x\n",8,(0xffU & 
+                                            ((IData)(vlSelf->ps2_keyboard__DOT__buffer) 
+                                             >> 1U)));
+                __Vdly__ps2_keyboard__DOT__data = (
+                                                   (0xff00U 
+                                                    & ((IData)(vlSelf->ps2_keyboard__DOT__data) 
+                                                       << 8U)) 
+                                                   | (0xffU 
+                                                      & ((IData)(vlSelf->ps2_keyboard__DOT__buffer) 
+                                                         >> 1U)));
+                VL_WRITEF("(data[7:0] == 8'hF0) %b\n",
+                          1,(0xf0U == (0xffU & (IData)(vlSelf->ps2_keyboard__DOT__data))));
+                vlSelf->ready = ((0xf0U == (0xffU & (IData)(vlSelf->ps2_keyboard__DOT__data)))
+                                  ? 0U : 1U);
             }
+            __Vdly__ps2_keyboard__DOT__count = 0U;
+        } else {
+            vlSelf->ps2_keyboard__DOT____Vlvbound1 
+                = vlSelf->ps2_data;
+            if (VL_LIKELY((9U >= (IData)(vlSelf->ps2_keyboard__DOT__count)))) {
+                vlSelf->ps2_keyboard__DOT__buffer = 
+                    (((~ ((IData)(1U) << (IData)(vlSelf->ps2_keyboard__DOT__count))) 
+                      & (IData)(vlSelf->ps2_keyboard__DOT__buffer)) 
+                     | (0x3ffU & ((IData)(vlSelf->ps2_keyboard__DOT____Vlvbound1) 
+                                  << (IData)(vlSelf->ps2_keyboard__DOT__count))));
+            }
+            __Vdly__ps2_keyboard__DOT__count = (0xfU 
+                                                & ((IData)(1U) 
+                                                   + (IData)(vlSelf->ps2_keyboard__DOT__count)));
         }
     }
     vlSelf->ps2_keyboard__DOT__count = __Vdly__ps2_keyboard__DOT__count;
