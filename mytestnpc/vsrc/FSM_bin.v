@@ -61,5 +61,7 @@ module SimReg #(WIDTH = 4, RESET_VAL = 0) (clk, reset, state_din, state_dout, st
 		else
 			state <= state;
 
+	assign state_dout = state;
+			
 endmodule
 

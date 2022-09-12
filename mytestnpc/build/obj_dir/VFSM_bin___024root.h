@@ -24,9 +24,14 @@ VL_MODULE(VFSM_bin___024root) {
     VL_OUT8(state_dout,3,0);
 
     // LOCAL SIGNALS
+    CData/*3:0*/ FSM_bin__DOT__state_din;
+    CData/*3:0*/ FSM_bin__DOT__state__DOT__state;
     VlUnpacked<CData/*4:0*/, 9> FSM_bin__DOT__outMux__DOT__i0__DOT__pair_list;
     VlUnpacked<CData/*3:0*/, 9> FSM_bin__DOT__outMux__DOT__i0__DOT__key_list;
     VlUnpacked<CData/*0:0*/, 9> FSM_bin__DOT__outMux__DOT__i0__DOT__data_list;
+    VlUnpacked<CData/*7:0*/, 9> FSM_bin__DOT__stateMux__DOT__i0__DOT__pair_list;
+    VlUnpacked<CData/*3:0*/, 9> FSM_bin__DOT__stateMux__DOT__i0__DOT__key_list;
+    VlUnpacked<CData/*3:0*/, 9> FSM_bin__DOT__stateMux__DOT__i0__DOT__data_list;
 
     // LOCAL VARIABLES
     CData/*0:0*/ __Vclklast__TOP__clk;
