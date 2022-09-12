@@ -24,7 +24,7 @@ VL_INLINE_OPT void Vps2_keyboard___024root___sequent__TOP__2(Vps2_keyboard___024
                                                    << 1U)) 
                                                | (IData)(vlSelf->ps2_clk));
     if (vlSelf->rst) {
-        vlSelf->ready = 0U;
+        vlSelf->ready = 1U;
         if ((IData)((4U == (6U & (IData)(vlSelf->ps2_keyboard__DOT__ps2_clk_sync))))) {
             if ((0xaU == (IData)(vlSelf->ps2_keyboard__DOT__count))) {
                 if (VL_UNLIKELY((((~ (IData)(vlSelf->ps2_keyboard__DOT__buffer)) 

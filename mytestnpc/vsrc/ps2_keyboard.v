@@ -38,7 +38,7 @@ module ps2_keyboard(
 //                        ready <= 1'b0;
 //                end
 //            end
-						ready <= 0; 
+						ready <= 1; 
             if (sampling) begin
               if (count == 4'd10) begin
                 if ((buffer[0] == 0) &&  // start bit
