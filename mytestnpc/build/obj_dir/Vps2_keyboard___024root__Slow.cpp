@@ -46,6 +46,11 @@ void Vps2_keyboard___024root___settle__TOP__1(Vps2_keyboard___024root* vlSelf) {
     vlSelf->ps2_keyboard__DOT__segs[0xdU] = 0xfdU;
     vlSelf->ps2_keyboard__DOT__segs[0xeU] = 0x9eU;
     vlSelf->ps2_keyboard__DOT__segs[0xfU] = 0x8eU;
+    vlSelf->seg6 = vlSelf->ps2_keyboard__DOT__segs[
+        (0xfU & (IData)(vlSelf->ps2_keyboard__DOT__timescounter))];
+    vlSelf->seg7 = vlSelf->ps2_keyboard__DOT__segs[
+        (0xfU & ((IData)(vlSelf->ps2_keyboard__DOT__timescounter) 
+                 >> 4U))];
     if (vlSelf->ready) {
         vlSelf->seg0 = (0xffU & (~ vlSelf->ps2_keyboard__DOT__segs
                                  [(0xfU & (IData)(vlSelf->ps2_keyboard__DOT__data))]));

@@ -18,8 +18,8 @@ VL_INLINE_OPT void Vps2_keyboard___024root___sequent__TOP__2(Vps2_keyboard___024
     SData/*15:0*/ __Vdly__ps2_keyboard__DOT__data;
     // Body
     __Vdly__ps2_keyboard__DOT__ps2_clk_sync = vlSelf->ps2_keyboard__DOT__ps2_clk_sync;
-    __Vdly__ps2_keyboard__DOT__timescounter = vlSelf->ps2_keyboard__DOT__timescounter;
     __Vdly__ps2_keyboard__DOT__count = vlSelf->ps2_keyboard__DOT__count;
+    __Vdly__ps2_keyboard__DOT__timescounter = vlSelf->ps2_keyboard__DOT__timescounter;
     __Vdly__ps2_keyboard__DOT__data = vlSelf->ps2_keyboard__DOT__data;
     __Vdly__ps2_keyboard__DOT__ps2_clk_sync = ((6U 
                                                 & ((IData)(vlSelf->ps2_keyboard__DOT__ps2_clk_sync) 
@@ -73,9 +73,14 @@ VL_INLINE_OPT void Vps2_keyboard___024root___sequent__TOP__2(Vps2_keyboard___024
         }
     }
     vlSelf->ps2_keyboard__DOT__count = __Vdly__ps2_keyboard__DOT__count;
-    vlSelf->ps2_keyboard__DOT__timescounter = __Vdly__ps2_keyboard__DOT__timescounter;
     vlSelf->ps2_keyboard__DOT__ps2_clk_sync = __Vdly__ps2_keyboard__DOT__ps2_clk_sync;
+    vlSelf->ps2_keyboard__DOT__timescounter = __Vdly__ps2_keyboard__DOT__timescounter;
     vlSelf->ps2_keyboard__DOT__data = __Vdly__ps2_keyboard__DOT__data;
+    vlSelf->seg6 = vlSelf->ps2_keyboard__DOT__segs[
+        (0xfU & (IData)(vlSelf->ps2_keyboard__DOT__timescounter))];
+    vlSelf->seg7 = vlSelf->ps2_keyboard__DOT__segs[
+        (0xfU & ((IData)(vlSelf->ps2_keyboard__DOT__timescounter) 
+                 >> 4U))];
     if (vlSelf->ready) {
         vlSelf->seg0 = (0xffU & (~ vlSelf->ps2_keyboard__DOT__segs
                                  [(0xfU & (IData)(vlSelf->ps2_keyboard__DOT__data))]));
