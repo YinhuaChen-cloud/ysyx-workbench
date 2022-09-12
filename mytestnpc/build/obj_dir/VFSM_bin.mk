@@ -2,9 +2,9 @@
 # DESCRIPTION: Verilator output: Makefile for building Verilated archive or executable
 #
 # Execute this makefile from the object directory:
-#    make -f Vtop.mk
+#    make -f VFSM_bin.mk
 
-default: /home/chenyinhua/sda3/ysyx-workbench/mytestnpc/build/top
+default: /home/chenyinhua/sda3/ysyx-workbench/mytestnpc/build/FSM_bin
 
 ### Constants...
 # Perl executable (from $PERL)
@@ -30,13 +30,13 @@ VM_SC_TARGET_ARCH = linux
 
 ### Vars...
 # Design prefix (from --prefix)
-VM_PREFIX = Vtop
+VM_PREFIX = VFSM_bin
 # Module prefix (from --prefix)
-VM_MODPREFIX = Vtop
+VM_MODPREFIX = VFSM_bin
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
 	-I/home/chenyinhua/sda3/ysyx-workbench/nvboard/include \
-	-DTOP_NAME="Vtop" \
+	-DTOP_NAME="VFSM_bin" \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
@@ -57,7 +57,7 @@ VM_USER_DIR = \
 
 ### Default rules...
 # Include list of all generated classes
-include Vtop_classes.mk
+include VFSM_bin_classes.mk
 # Include global rules
 include $(VERILATOR_ROOT)/include/verilated.mk
 
@@ -70,7 +70,7 @@ main.o: /home/chenyinhua/sda3/ysyx-workbench/mytestnpc/csrc/main.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)
-/home/chenyinhua/sda3/ysyx-workbench/mytestnpc/build/top: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
+/home/chenyinhua/sda3/ysyx-workbench/mytestnpc/build/FSM_bin: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
 	$(LINK) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o $@
 
 

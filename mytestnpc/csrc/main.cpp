@@ -1,10 +1,13 @@
+#define CYHTOP FSM_bin
+#define CYHTOPHEADER <VFSM_bin.h>
+#define CYHTOPSTRUCT VFSM_bin
 #include <nvboard.h>
-#include <Vtop.h>
+#include CYHTOPHEADER
 
 static TOP_NAME dut;
 
 // 调用该文件中的nvboard_bind_all_pins(dut)函数即可完成所有信号的绑定。
-void nvboard_bind_all_pins(Vtop* top);
+void nvboard_bind_all_pins(CYHTOPSTRUCT* top);
 // actually, nvboard_bind_all_pins invokes nvboard_bind_pin to complete its fucntion. You can check my words in build/auto_bind.cpp
 
 static void single_cycle() {

@@ -1,4 +1,4 @@
-TOPNAME = top
+TOPNAME = FSM_bin
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
 
