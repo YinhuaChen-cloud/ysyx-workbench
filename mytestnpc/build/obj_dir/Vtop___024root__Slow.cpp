@@ -147,6 +147,34 @@ void Vtop___024root___settle__TOP__5(Vtop___024root* vlSelf) {
         [((IData)(top__DOT__asciidata) << 4U)];
     vlSelf->top__DOT__font[1U] = vlSelf->top__DOT__dotmatrix
         [(1U | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[2U] = vlSelf->top__DOT__dotmatrix
+        [(2U | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[3U] = vlSelf->top__DOT__dotmatrix
+        [(3U | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[4U] = vlSelf->top__DOT__dotmatrix
+        [(4U | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[5U] = vlSelf->top__DOT__dotmatrix
+        [(5U | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[6U] = vlSelf->top__DOT__dotmatrix
+        [(6U | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[7U] = vlSelf->top__DOT__dotmatrix
+        [(7U | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[8U] = vlSelf->top__DOT__dotmatrix
+        [(8U | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[9U] = vlSelf->top__DOT__dotmatrix
+        [(9U | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[0xaU] = vlSelf->top__DOT__dotmatrix
+        [(0xaU | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[0xbU] = vlSelf->top__DOT__dotmatrix
+        [(0xbU | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[0xcU] = vlSelf->top__DOT__dotmatrix
+        [(0xcU | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[0xdU] = vlSelf->top__DOT__dotmatrix
+        [(0xdU | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[0xeU] = vlSelf->top__DOT__dotmatrix
+        [(0xeU | ((IData)(top__DOT__asciidata) << 4U))];
+    vlSelf->top__DOT__font[0xfU] = vlSelf->top__DOT__dotmatrix
+        [(0xfU | ((IData)(top__DOT__asciidata) << 4U))];
     top__DOT__vga_data = (((0xbU >= (IData)(vlSelf->top__DOT__col_remainder)) 
                            & (vlSelf->top__DOT__font
                               [(0xfU & (IData)(vlSelf->top__DOT__v_addr))] 
