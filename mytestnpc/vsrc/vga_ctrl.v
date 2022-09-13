@@ -40,7 +40,8 @@ module vga_ctrl(
             x_cnt <= x_cnt + 10'd1;
       end
 
-  always @(posedge pclk)  //列像素计数
+		always @(posedge pclk) begin //列像素计数
+			$display("haha");
       if (reset == 1'b1)
         y_cnt <= 1;
       else
@@ -50,6 +51,7 @@ module vga_ctrl(
         else if (x_cnt == h_total)
             y_cnt <= y_cnt + 10'd1;
       end
+		end
   //生成同步信号
   assign hsync = (x_cnt > h_frontporch);
   assign vsync = (y_cnt > v_frontporch);

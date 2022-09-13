@@ -14,6 +14,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__3(Vtop___024root* vlSelf) {
     // Variables
     SData/*9:0*/ __Vdly__top__DOT__my_vga_ctrl__DOT__y_cnt;
     // Body
+    VL_WRITEF("haha\n");
     __Vdly__top__DOT__my_vga_ctrl__DOT__y_cnt = vlSelf->top__DOT__my_vga_ctrl__DOT__y_cnt;
     if (vlSelf->rst) {
         __Vdly__top__DOT__my_vga_ctrl__DOT__y_cnt = 1U;
