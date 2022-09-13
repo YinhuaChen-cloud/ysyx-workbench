@@ -61,18 +61,18 @@ void Vvga___024root___settle__TOP__4(Vvga___024root* vlSelf) {
                                                       >= (IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__y_cnt)));
     vlSelf->VGA_BLANK_N = ((IData)(vga__DOT__my_vga_ctrl__DOT__h_valid) 
                            & (IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__v_valid));
-    vga__DOT__vga_data = vlSelf->vga__DOT__vmem[((((IData)(vga__DOT__my_vga_ctrl__DOT__h_valid)
+    vga__DOT__vga_data = vlSelf->vga__DOT__vmem[((((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__v_valid)
                                                     ? 
-                                                   (0x3ffU 
-                                                    & ((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__x_cnt) 
-                                                       - (IData)(0x91U)))
+                                                   (0x1ffU 
+                                                    & ((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__y_cnt) 
+                                                       - (IData)(0x24U)))
                                                     : 0U) 
-                                                  << 9U) 
-                                                 | ((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__v_valid)
+                                                  << 0xaU) 
+                                                 | ((IData)(vga__DOT__my_vga_ctrl__DOT__h_valid)
                                                      ? 
-                                                    (0x1ffU 
-                                                     & ((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__y_cnt) 
-                                                        - (IData)(0x24U)))
+                                                    (0x3ffU 
+                                                     & ((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__x_cnt) 
+                                                        - (IData)(0x91U)))
                                                      : 0U))];
     vlSelf->VGA_R = (0xffU & (vga__DOT__vga_data >> 0x10U));
     vlSelf->VGA_G = (0xffU & (vga__DOT__vga_data >> 8U));

@@ -21,7 +21,8 @@ module vga(
 	// seems no need for this yet
 	 
 	// 3. VGA_CTRL
-	assign vga_data = vmem[{h_addr, v_addr[8:0]}];
+//	assign vga_data = vmem[{h_addr, v_addr[8:0]}];
+	assign vga_data = vmem[{v_addr[8:0], h_addr}];
 	vga_ctrl my_vga_ctrl(
     .pclk(clk),     
     .reset(rst),    
