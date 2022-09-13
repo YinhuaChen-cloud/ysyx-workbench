@@ -45,7 +45,7 @@ module top(
 			if(i*9 <= h_addr && h_addr < i*9 + 9)
 				col = i;
 			for(j = 0; j < 9; j = j+1)
-				if(i*70 + j == h_addr)
+				if(i*9 + j == h_addr)
 					col_remainder = j;
 		end
 	end

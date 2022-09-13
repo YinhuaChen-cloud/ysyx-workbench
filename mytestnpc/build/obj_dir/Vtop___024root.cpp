@@ -78,38 +78,38 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__4(Vtop___024root* vlSelf) {
                                                 * top__DOT__i))))) {
             vlSelf->top__DOT__col = (0x7fU & top__DOT__i);
         }
-        if ((((IData)(0x46U) * top__DOT__i) == (IData)(top__DOT__h_addr))) {
+        if ((((IData)(9U) * top__DOT__i) == (IData)(top__DOT__h_addr))) {
             vlSelf->top__DOT__col_remainder = 0U;
         }
-        if ((((IData)(1U) + ((IData)(0x46U) * top__DOT__i)) 
+        if ((((IData)(1U) + ((IData)(9U) * top__DOT__i)) 
              == (IData)(top__DOT__h_addr))) {
             vlSelf->top__DOT__col_remainder = 1U;
         }
-        if ((((IData)(2U) + ((IData)(0x46U) * top__DOT__i)) 
+        if ((((IData)(2U) + ((IData)(9U) * top__DOT__i)) 
              == (IData)(top__DOT__h_addr))) {
             vlSelf->top__DOT__col_remainder = 2U;
         }
-        if ((((IData)(3U) + ((IData)(0x46U) * top__DOT__i)) 
+        if ((((IData)(3U) + ((IData)(9U) * top__DOT__i)) 
              == (IData)(top__DOT__h_addr))) {
             vlSelf->top__DOT__col_remainder = 3U;
         }
-        if ((((IData)(4U) + ((IData)(0x46U) * top__DOT__i)) 
+        if ((((IData)(4U) + ((IData)(9U) * top__DOT__i)) 
              == (IData)(top__DOT__h_addr))) {
             vlSelf->top__DOT__col_remainder = 4U;
         }
-        if ((((IData)(5U) + ((IData)(0x46U) * top__DOT__i)) 
+        if ((((IData)(5U) + ((IData)(9U) * top__DOT__i)) 
              == (IData)(top__DOT__h_addr))) {
             vlSelf->top__DOT__col_remainder = 5U;
         }
-        if ((((IData)(6U) + ((IData)(0x46U) * top__DOT__i)) 
+        if ((((IData)(6U) + ((IData)(9U) * top__DOT__i)) 
              == (IData)(top__DOT__h_addr))) {
             vlSelf->top__DOT__col_remainder = 6U;
         }
-        if ((((IData)(7U) + ((IData)(0x46U) * top__DOT__i)) 
+        if ((((IData)(7U) + ((IData)(9U) * top__DOT__i)) 
              == (IData)(top__DOT__h_addr))) {
             vlSelf->top__DOT__col_remainder = 7U;
         }
-        if ((((IData)(8U) + ((IData)(0x46U) * top__DOT__i)) 
+        if ((((IData)(8U) + ((IData)(9U) * top__DOT__i)) 
              == (IData)(top__DOT__h_addr))) {
             vlSelf->top__DOT__col_remainder = 8U;
         }
