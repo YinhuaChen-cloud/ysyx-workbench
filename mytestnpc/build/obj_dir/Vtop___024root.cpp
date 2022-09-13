@@ -11,20 +11,6 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__2(Vtop___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___sequent__TOP__2\n"); );
-    // Body
-    vlSelf->__Vdly__top__DOT__my_vga_ctrl__DOT__x_cnt 
-        = vlSelf->top__DOT__my_vga_ctrl__DOT__x_cnt;
-    vlSelf->__Vdly__top__DOT__my_vga_ctrl__DOT__x_cnt 
-        = ((IData)(vlSelf->rst) ? 1U : ((0x320U == (IData)(vlSelf->top__DOT__my_vga_ctrl__DOT__x_cnt))
-                                         ? 1U : (0x3ffU 
-                                                 & ((IData)(1U) 
-                                                    + (IData)(vlSelf->top__DOT__my_vga_ctrl__DOT__x_cnt)))));
-}
-
-VL_INLINE_OPT void Vtop___024root___sequent__TOP__3(Vtop___024root* vlSelf) {
-    if (false && vlSelf) {}  // Prevent unused
-    Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___sequent__TOP__3\n"); );
     // Variables
     SData/*9:0*/ __Vdly__top__DOT__my_vga_ctrl__DOT__y_cnt;
     // Body
@@ -51,18 +37,28 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__3(Vtop___024root* vlSelf) {
                                  : 0U);
 }
 
-VL_INLINE_OPT void Vtop___024root___sequent__TOP__5(Vtop___024root* vlSelf) {
+VL_INLINE_OPT void Vtop___024root___sequent__TOP__3(Vtop___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___sequent__TOP__5\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___sequent__TOP__3\n"); );
     // Variables
     CData/*6:0*/ top__DOT__col;
+    CData/*3:0*/ top__DOT__col_remainder;
     CData/*0:0*/ top__DOT__my_vga_ctrl__DOT__h_valid;
     SData/*9:0*/ top__DOT__h_addr;
     IData/*31:0*/ top__DOT__i;
     IData/*23:0*/ top__DOT__vga_data;
     // Body
-    vlSelf->top__DOT__my_vga_ctrl__DOT__x_cnt = vlSelf->__Vdly__top__DOT__my_vga_ctrl__DOT__x_cnt;
+    vlSelf->top__DOT__my_vga_ctrl__DOT__x_cnt = ((IData)(vlSelf->rst)
+                                                  ? 1U
+                                                  : 
+                                                 ((0x320U 
+                                                   == (IData)(vlSelf->top__DOT__my_vga_ctrl__DOT__x_cnt))
+                                                   ? 1U
+                                                   : 
+                                                  (0x3ffU 
+                                                   & ((IData)(1U) 
+                                                      + (IData)(vlSelf->top__DOT__my_vga_ctrl__DOT__x_cnt)))));
     vlSelf->VGA_HSYNC = (0x60U < (IData)(vlSelf->top__DOT__my_vga_ctrl__DOT__x_cnt));
     top__DOT__my_vga_ctrl__DOT__h_valid = ((0x90U < (IData)(vlSelf->top__DOT__my_vga_ctrl__DOT__x_cnt)) 
                                            & (0x310U 
@@ -74,6 +70,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__5(Vtop___024root* vlSelf) {
                                       - (IData)(0x91U)))
                          : 0U);
     top__DOT__col = 0U;
+    top__DOT__col_remainder = 0U;
     top__DOT__i = 0U;
     while (VL_GTS_III(1,32,32, 0x46U, top__DOT__i)) {
         if (((((IData)(9U) * top__DOT__i) <= (IData)(top__DOT__h_addr)) 
@@ -81,6 +78,41 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__5(Vtop___024root* vlSelf) {
                                              + ((IData)(9U) 
                                                 * top__DOT__i))))) {
             top__DOT__col = (0x7fU & top__DOT__i);
+        }
+        if ((((IData)(0x46U) * top__DOT__i) == (IData)(top__DOT__h_addr))) {
+            top__DOT__col_remainder = 0U;
+        }
+        if ((((IData)(1U) + ((IData)(0x46U) * top__DOT__i)) 
+             == (IData)(top__DOT__h_addr))) {
+            top__DOT__col_remainder = 1U;
+        }
+        if ((((IData)(2U) + ((IData)(0x46U) * top__DOT__i)) 
+             == (IData)(top__DOT__h_addr))) {
+            top__DOT__col_remainder = 2U;
+        }
+        if ((((IData)(3U) + ((IData)(0x46U) * top__DOT__i)) 
+             == (IData)(top__DOT__h_addr))) {
+            top__DOT__col_remainder = 3U;
+        }
+        if ((((IData)(4U) + ((IData)(0x46U) * top__DOT__i)) 
+             == (IData)(top__DOT__h_addr))) {
+            top__DOT__col_remainder = 4U;
+        }
+        if ((((IData)(5U) + ((IData)(0x46U) * top__DOT__i)) 
+             == (IData)(top__DOT__h_addr))) {
+            top__DOT__col_remainder = 5U;
+        }
+        if ((((IData)(6U) + ((IData)(0x46U) * top__DOT__i)) 
+             == (IData)(top__DOT__h_addr))) {
+            top__DOT__col_remainder = 6U;
+        }
+        if ((((IData)(7U) + ((IData)(0x46U) * top__DOT__i)) 
+             == (IData)(top__DOT__h_addr))) {
+            top__DOT__col_remainder = 7U;
+        }
+        if ((((IData)(8U) + ((IData)(0x46U) * top__DOT__i)) 
+             == (IData)(top__DOT__h_addr))) {
+            top__DOT__col_remainder = 8U;
         }
         top__DOT__i = ((IData)(1U) + top__DOT__i);
     }
@@ -92,10 +124,10 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__5(Vtop___024root* vlSelf) {
                                                & ((IData)(vlSelf->top__DOT__v_addr) 
                                                   >> 4U)))]
             : 0U) << 4U)];
-    top__DOT__vga_data = (((0xbU >= (IData)(vlSelf->top__DOT__col_remainder)) 
+    top__DOT__vga_data = (((0xbU >= (IData)(top__DOT__col_remainder)) 
                            & (vlSelf->top__DOT__font
                               [(0xfU & (IData)(vlSelf->top__DOT__v_addr))] 
-                              >> (IData)(vlSelf->top__DOT__col_remainder)))
+                              >> (IData)(top__DOT__col_remainder)))
                            ? 0xfffU : 0U);
     vlSelf->VGA_R = (0xffU & (top__DOT__vga_data >> 0x10U));
     vlSelf->VGA_G = (0xffU & (top__DOT__vga_data >> 8U));
@@ -107,16 +139,12 @@ void Vtop___024root___eval(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___eval\n"); );
     // Body
-    if ((((IData)(vlSelf->clk) & (~ (IData)(vlSelf->__Vclklast__TOP__clk))) 
-         | ((IData)(vlSelf->rst) & (~ (IData)(vlSelf->__Vclklast__TOP__rst))))) {
+    if (((IData)(vlSelf->clk) & (~ (IData)(vlSelf->__Vclklast__TOP__clk)))) {
         Vtop___024root___sequent__TOP__2(vlSelf);
     }
-    if (((IData)(vlSelf->clk) & (~ (IData)(vlSelf->__Vclklast__TOP__clk)))) {
-        Vtop___024root___sequent__TOP__3(vlSelf);
-    }
     if ((((IData)(vlSelf->clk) & (~ (IData)(vlSelf->__Vclklast__TOP__clk))) 
          | ((IData)(vlSelf->rst) & (~ (IData)(vlSelf->__Vclklast__TOP__rst))))) {
-        Vtop___024root___sequent__TOP__5(vlSelf);
+        Vtop___024root___sequent__TOP__3(vlSelf);
     }
     // Final
     vlSelf->__Vclklast__TOP__clk = vlSelf->clk;

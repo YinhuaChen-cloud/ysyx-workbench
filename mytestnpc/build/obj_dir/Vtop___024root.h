@@ -27,7 +27,6 @@ VL_MODULE(Vtop___024root) {
     VL_OUT8(VGA_B,7,0);
 
     // LOCAL SIGNALS
-    CData/*3:0*/ top__DOT__col_remainder;
     CData/*0:0*/ top__DOT__my_vga_ctrl__DOT__v_valid;
     SData/*9:0*/ top__DOT__v_addr;
     SData/*9:0*/ top__DOT__my_vga_ctrl__DOT__x_cnt;
@@ -39,7 +38,6 @@ VL_MODULE(Vtop___024root) {
     // LOCAL VARIABLES
     CData/*0:0*/ __Vclklast__TOP__clk;
     CData/*0:0*/ __Vclklast__TOP__rst;
-    SData/*9:0*/ __Vdly__top__DOT__my_vga_ctrl__DOT__x_cnt;
 
     // INTERNAL VARIABLES
     Vtop__Syms* vlSymsp;  // Symbol table
