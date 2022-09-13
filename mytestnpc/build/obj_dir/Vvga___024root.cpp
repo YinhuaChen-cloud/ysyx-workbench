@@ -12,24 +12,6 @@ VL_INLINE_OPT void Vvga___024root___sequent__TOP__2(Vvga___024root* vlSelf) {
     Vvga__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___sequent__TOP__2\n"); );
     // Body
-    if (vlSelf->rst) {
-        vlSelf->vga__DOT__myclk__DOT__clkcount = 0U;
-        vlSelf->vga__DOT__freqclk = 0U;
-    } else {
-        vlSelf->vga__DOT__myclk__DOT__clkcount = ((IData)(1U) 
-                                                  + vlSelf->vga__DOT__myclk__DOT__clkcount);
-        if ((0xfaU <= vlSelf->vga__DOT__myclk__DOT__clkcount)) {
-            vlSelf->vga__DOT__freqclk = (1U & (~ (IData)(vlSelf->vga__DOT__freqclk)));
-            vlSelf->vga__DOT__myclk__DOT__clkcount = 0U;
-        }
-    }
-}
-
-VL_INLINE_OPT void Vvga___024root___sequent__TOP__4(Vvga___024root* vlSelf) {
-    if (false && vlSelf) {}  // Prevent unused
-    Vvga__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___sequent__TOP__4\n"); );
-    // Body
     vlSelf->__Vdly__vga__DOT__my_vga_ctrl__DOT__x_cnt 
         = vlSelf->vga__DOT__my_vga_ctrl__DOT__x_cnt;
     vlSelf->__Vdly__vga__DOT__my_vga_ctrl__DOT__x_cnt 
@@ -39,10 +21,10 @@ VL_INLINE_OPT void Vvga___024root___sequent__TOP__4(Vvga___024root* vlSelf) {
                                                     + (IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__x_cnt)))));
 }
 
-VL_INLINE_OPT void Vvga___024root___sequent__TOP__5(Vvga___024root* vlSelf) {
+VL_INLINE_OPT void Vvga___024root___sequent__TOP__3(Vvga___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vvga__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___sequent__TOP__5\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___sequent__TOP__3\n"); );
     // Variables
     SData/*9:0*/ __Vdly__vga__DOT__my_vga_ctrl__DOT__y_cnt;
     // Body
@@ -69,10 +51,10 @@ VL_INLINE_OPT void Vvga___024root___sequent__TOP__5(Vvga___024root* vlSelf) {
                                  : 0U);
 }
 
-VL_INLINE_OPT void Vvga___024root___sequent__TOP__6(Vvga___024root* vlSelf) {
+VL_INLINE_OPT void Vvga___024root___sequent__TOP__5(Vvga___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vvga__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___sequent__TOP__6\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___sequent__TOP__5\n"); );
     // Variables
     CData/*0:0*/ vga__DOT__my_vga_ctrl__DOT__h_valid;
     SData/*9:0*/ vga__DOT__h_addr;
@@ -108,24 +90,20 @@ void Vvga___024root___eval(Vvga___024root* vlSelf) {
     Vvga__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___eval\n"); );
     // Body
-    if (((IData)(vlSelf->clk) & (~ (IData)(vlSelf->__Vclklast__TOP__clk)))) {
+    if ((((IData)(vlSelf->clk) & (~ (IData)(vlSelf->__Vclklast__TOP__clk))) 
+         | ((IData)(vlSelf->rst) & (~ (IData)(vlSelf->__Vclklast__TOP__rst))))) {
         Vvga___024root___sequent__TOP__2(vlSelf);
     }
-    if ((((IData)(vlSelf->rst) & (~ (IData)(vlSelf->__Vclklast__TOP__rst))) 
-         | ((IData)(vlSelf->vga__DOT__freqclk) & (~ (IData)(vlSelf->__Vclklast__TOP__vga__DOT__freqclk))))) {
-        Vvga___024root___sequent__TOP__4(vlSelf);
+    if (((IData)(vlSelf->clk) & (~ (IData)(vlSelf->__Vclklast__TOP__clk)))) {
+        Vvga___024root___sequent__TOP__3(vlSelf);
     }
-    if (((IData)(vlSelf->vga__DOT__freqclk) & (~ (IData)(vlSelf->__Vclklast__TOP__vga__DOT__freqclk)))) {
+    if ((((IData)(vlSelf->clk) & (~ (IData)(vlSelf->__Vclklast__TOP__clk))) 
+         | ((IData)(vlSelf->rst) & (~ (IData)(vlSelf->__Vclklast__TOP__rst))))) {
         Vvga___024root___sequent__TOP__5(vlSelf);
-    }
-    if ((((IData)(vlSelf->rst) & (~ (IData)(vlSelf->__Vclklast__TOP__rst))) 
-         | ((IData)(vlSelf->vga__DOT__freqclk) & (~ (IData)(vlSelf->__Vclklast__TOP__vga__DOT__freqclk))))) {
-        Vvga___024root___sequent__TOP__6(vlSelf);
     }
     // Final
     vlSelf->__Vclklast__TOP__clk = vlSelf->clk;
     vlSelf->__Vclklast__TOP__rst = vlSelf->rst;
-    vlSelf->__Vclklast__TOP__vga__DOT__freqclk = vlSelf->vga__DOT__freqclk;
 }
 
 QData Vvga___024root___change_request_1(Vvga___024root* vlSelf);

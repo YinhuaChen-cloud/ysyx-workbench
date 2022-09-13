@@ -27,18 +27,15 @@ VL_MODULE(Vvga___024root) {
     VL_OUT8(VGA_B,7,0);
 
     // LOCAL SIGNALS
-    CData/*0:0*/ vga__DOT__freqclk;
     CData/*0:0*/ vga__DOT__my_vga_ctrl__DOT__v_valid;
     SData/*9:0*/ vga__DOT__v_addr;
     SData/*9:0*/ vga__DOT__my_vga_ctrl__DOT__x_cnt;
     SData/*9:0*/ vga__DOT__my_vga_ctrl__DOT__y_cnt;
-    IData/*31:0*/ vga__DOT__myclk__DOT__clkcount;
     VlUnpacked<IData/*23:0*/, 307201> vga__DOT__vmem;
 
     // LOCAL VARIABLES
     CData/*0:0*/ __Vclklast__TOP__clk;
     CData/*0:0*/ __Vclklast__TOP__rst;
-    CData/*0:0*/ __Vclklast__TOP__vga__DOT__freqclk;
     SData/*9:0*/ __Vdly__vga__DOT__my_vga_ctrl__DOT__x_cnt;
 
     // INTERNAL VARIABLES

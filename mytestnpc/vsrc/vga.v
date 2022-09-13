@@ -19,14 +19,12 @@ module vga(
 	 
 	// 2. generate VGA_CLK
 	// seems no need for this yet
-	wire freqclk;	
-	vga_clk myclk(clk, rst, 1'b1, freqclk);	
 	 
 	// 3. VGA_CTRL
 	assign vga_data = vmem[v_addr*640 + h_addr];
 //	assign vga_data = vmem[{v_addr[8:0], h_addr}];
 	vga_ctrl my_vga_ctrl(
-    .pclk(freqclk),     
+    .pclk(clk),     
     .reset(rst),    
     .vga_data(vga_data), 
     .h_addr(h_addr),   
