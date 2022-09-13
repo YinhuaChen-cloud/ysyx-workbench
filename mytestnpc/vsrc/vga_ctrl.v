@@ -41,7 +41,7 @@ module vga_ctrl(
       end
 
 		always @(posedge pclk) begin //列像素计数
-			$display("haha");
+			// $display("haha");
       if (reset == 1'b1)
         y_cnt <= 1;
       else
