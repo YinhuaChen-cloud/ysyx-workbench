@@ -38,7 +38,7 @@ void Vvga___024root___initial__TOP__1(Vvga___024root* vlSelf) {
     __Vtemp1[3U] = 0x75726365U;
     __Vtemp1[4U] = 0x7265736fU;
     VL_READMEM_N(true, 24, 524288, 0, VL_CVT_PACK_STR_NW(5, __Vtemp1)
-                 ,  &(vlSelf->vga__DOT__vmem), 0U, 0x7ffffU);
+                 ,  &(vlSelf->vga__DOT__vmem), 0, ~0ULL);
 }
 
 void Vvga___024root___settle__TOP__4(Vvga___024root* vlSelf) {
