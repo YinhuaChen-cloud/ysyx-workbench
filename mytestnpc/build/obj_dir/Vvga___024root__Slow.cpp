@@ -42,10 +42,10 @@ void Vvga___024root___initial__TOP__1(Vvga___024root* vlSelf) {
                  ,  &(vlSelf->vga__DOT__vmem), 0, ~0ULL);
 }
 
-void Vvga___024root___settle__TOP__4(Vvga___024root* vlSelf) {
+void Vvga___024root___settle__TOP__3(Vvga___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vvga__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___settle__TOP__4\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___settle__TOP__3\n"); );
     // Variables
     CData/*0:0*/ vga__DOT__my_vga_ctrl__DOT__h_valid;
     SData/*9:0*/ vga__DOT__h_addr;
@@ -96,6 +96,7 @@ void Vvga___024root___eval_initial(Vvga___024root* vlSelf) {
     Vvga___024root___initial__TOP__1(vlSelf);
     vlSelf->__Vclklast__TOP__clk = vlSelf->clk;
     vlSelf->__Vclklast__TOP__rst = vlSelf->rst;
+    vlSelf->__Vclklast__TOP__vga__DOT__freqclk = vlSelf->vga__DOT__freqclk;
 }
 
 void Vvga___024root___eval_settle(Vvga___024root* vlSelf) {
@@ -103,7 +104,7 @@ void Vvga___024root___eval_settle(Vvga___024root* vlSelf) {
     Vvga__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___eval_settle\n"); );
     // Body
-    Vvga___024root___settle__TOP__4(vlSelf);
+    Vvga___024root___settle__TOP__3(vlSelf);
 }
 
 void Vvga___024root___final(Vvga___024root* vlSelf) {
@@ -129,6 +130,8 @@ void Vvga___024root___ctor_var_reset(Vvga___024root* vlSelf) {
     for (int __Vi0=0; __Vi0<307201; ++__Vi0) {
         vlSelf->vga__DOT__vmem[__Vi0] = 0;
     }
+    vlSelf->vga__DOT__freqclk = 0;
+    vlSelf->vga__DOT__myclk__DOT__clkcount = 0;
     vlSelf->vga__DOT__my_vga_ctrl__DOT__x_cnt = 0;
     vlSelf->vga__DOT__my_vga_ctrl__DOT__y_cnt = 0;
     vlSelf->vga__DOT__my_vga_ctrl__DOT__v_valid = 0;
