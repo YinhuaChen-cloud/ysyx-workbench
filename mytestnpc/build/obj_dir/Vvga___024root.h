@@ -28,9 +28,10 @@ VL_MODULE(Vvga___024root) {
 
     // LOCAL SIGNALS
     CData/*0:0*/ vga__DOT__my_vga_ctrl__DOT__v_valid;
+    SData/*9:0*/ vga__DOT__v_addr;
     SData/*9:0*/ vga__DOT__my_vga_ctrl__DOT__x_cnt;
     SData/*9:0*/ vga__DOT__my_vga_ctrl__DOT__y_cnt;
-    VlUnpacked<IData/*23:0*/, 524288> vga__DOT__vmem;
+    VlUnpacked<IData/*23:0*/, 307201> vga__DOT__vmem;
 
     // LOCAL VARIABLES
     CData/*0:0*/ __Vclklast__TOP__clk;

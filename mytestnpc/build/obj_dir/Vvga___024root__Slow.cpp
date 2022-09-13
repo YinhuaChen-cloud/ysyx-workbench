@@ -32,12 +32,12 @@ void Vvga___024root___initial__TOP__1(Vvga___024root* vlSelf) {
     // Variables
     VlWide<5>/*159:0*/ __Vtemp1;
     // Body
-    __Vtemp1[0U] = 0x2e686578U;
-    __Vtemp1[1U] = 0x74757265U;
-    __Vtemp1[2U] = 0x2f706963U;
-    __Vtemp1[3U] = 0x75726365U;
-    __Vtemp1[4U] = 0x7265736fU;
-    VL_READMEM_N(true, 24, 524288, 0, VL_CVT_PACK_STR_NW(5, __Vtemp1)
+    __Vtemp1[0U] = 0x2e747874U;
+    __Vtemp1[1U] = 0x6e707574U;
+    __Vtemp1[2U] = 0x63652f69U;
+    __Vtemp1[3U] = 0x736f7572U;
+    __Vtemp1[4U] = 0x7265U;
+    VL_READMEM_N(true, 24, 307201, 0, VL_CVT_PACK_STR_NW(5, __Vtemp1)
                  ,  &(vlSelf->vga__DOT__vmem), 0, ~0ULL);
 }
 
@@ -47,6 +47,7 @@ void Vvga___024root___settle__TOP__4(Vvga___024root* vlSelf) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___settle__TOP__4\n"); );
     // Variables
     CData/*0:0*/ vga__DOT__my_vga_ctrl__DOT__h_valid;
+    SData/*9:0*/ vga__DOT__h_addr;
     IData/*23:0*/ vga__DOT__vga_data;
     // Body
     vlSelf->VGA_HSYNC = (0x60U < (IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__x_cnt));
@@ -59,21 +60,28 @@ void Vvga___024root___settle__TOP__4(Vvga___024root* vlSelf) {
                                                     < (IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__y_cnt)) 
                                                    & (0x203U 
                                                       >= (IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__y_cnt)));
-    vlSelf->VGA_BLANK_N = ((IData)(vga__DOT__my_vga_ctrl__DOT__h_valid) 
-                           & (IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__v_valid));
-    vga__DOT__vga_data = vlSelf->vga__DOT__vmem[((((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__v_valid)
-                                                    ? 
-                                                   (0x1ffU 
-                                                    & ((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__y_cnt) 
-                                                       - (IData)(0x24U)))
-                                                    : 0U) 
-                                                  << 0xaU) 
-                                                 | ((IData)(vga__DOT__my_vga_ctrl__DOT__h_valid)
-                                                     ? 
-                                                    (0x3ffU 
-                                                     & ((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__x_cnt) 
-                                                        - (IData)(0x91U)))
-                                                     : 0U))];
+    if (vga__DOT__my_vga_ctrl__DOT__h_valid) {
+        vga__DOT__h_addr = (0x3ffU & ((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__x_cnt) 
+                                      - (IData)(0x91U)));
+        vlSelf->VGA_BLANK_N = ((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__v_valid) 
+                               & 1U);
+    } else {
+        vga__DOT__h_addr = 0U;
+        vlSelf->VGA_BLANK_N = 0U;
+    }
+    vlSelf->vga__DOT__v_addr = ((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__v_valid)
+                                 ? (0x3ffU & ((IData)(vlSelf->vga__DOT__my_vga_ctrl__DOT__y_cnt) 
+                                              - (IData)(0x24U)))
+                                 : 0U);
+    vga__DOT__vga_data = ((0x4b000U >= (0x7ffffU & 
+                                        (((IData)(0x280U) 
+                                          * (IData)(vlSelf->vga__DOT__v_addr)) 
+                                         + (IData)(vga__DOT__h_addr))))
+                           ? vlSelf->vga__DOT__vmem
+                          [(0x7ffffU & (((IData)(0x280U) 
+                                         * (IData)(vlSelf->vga__DOT__v_addr)) 
+                                        + (IData)(vga__DOT__h_addr)))]
+                           : 0U);
     vlSelf->VGA_R = (0xffU & (vga__DOT__vga_data >> 0x10U));
     vlSelf->VGA_G = (0xffU & (vga__DOT__vga_data >> 8U));
     vlSelf->VGA_B = (0xffU & vga__DOT__vga_data);
@@ -116,7 +124,8 @@ void Vvga___024root___ctor_var_reset(Vvga___024root* vlSelf) {
     vlSelf->VGA_R = 0;
     vlSelf->VGA_G = 0;
     vlSelf->VGA_B = 0;
-    for (int __Vi0=0; __Vi0<524288; ++__Vi0) {
+    vlSelf->vga__DOT__v_addr = 0;
+    for (int __Vi0=0; __Vi0<307201; ++__Vi0) {
         vlSelf->vga__DOT__vmem[__Vi0] = 0;
     }
     vlSelf->vga__DOT__my_vga_ctrl__DOT__x_cnt = 0;

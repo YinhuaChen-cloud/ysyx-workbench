@@ -12,17 +12,17 @@ module vga(
 	wire [9:0] h_addr, v_addr;
 	wire [23:0] vga_data;
 	// 1. initialization of mem to store image
-	reg [23:0] vmem [524287:0];
+	reg [23:0] vmem [307200:0];
 	initial begin
-		$readmemh("resource/picture.hex", vmem);
+		$readmemh("resource/input.txt", vmem);
 	end
 	 
 	// 2. generate VGA_CLK
 	// seems no need for this yet
 	 
 	// 3. VGA_CTRL
-//	assign vga_data = vmem[{h_addr, v_addr[8:0]}];
-	assign vga_data = vmem[{v_addr[8:0], h_addr}];
+	assign vga_data = vmem[v_addr*640 + h_addr];
+//	assign vga_data = vmem[{v_addr[8:0], h_addr}];
 	vga_ctrl my_vga_ctrl(
     .pclk(clk),     
     .reset(rst),    
