@@ -1,6 +1,6 @@
-#define CYHTOP ps2_keyboard
-#define CYHTOPHEADER <Vps2_keyboard.h>
-#define CYHTOPSTRUCT Vps2_keyboard
+#define CYHTOP vga
+#define CYHTOPHEADER <Vvga.h>
+#define CYHTOPSTRUCT Vvga
 #include <nvboard.h>
 #include CYHTOPHEADER
 

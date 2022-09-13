@@ -1,16 +1,16 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "Vps2_keyboard__Syms.h"
-#include "Vps2_keyboard.h"
-#include "Vps2_keyboard___024root.h"
+#include "Vvga__Syms.h"
+#include "Vvga.h"
+#include "Vvga___024root.h"
 
 // FUNCTIONS
-Vps2_keyboard__Syms::~Vps2_keyboard__Syms()
+Vvga__Syms::~Vvga__Syms()
 {
 }
 
-Vps2_keyboard__Syms::Vps2_keyboard__Syms(VerilatedContext* contextp, const char* namep,Vps2_keyboard* modelp)
+Vvga__Syms::Vvga__Syms(VerilatedContext* contextp, const char* namep,Vvga* modelp)
     : VerilatedSyms{contextp}
     // Setup internal state of the Syms class
     , __Vm_modelp(modelp)

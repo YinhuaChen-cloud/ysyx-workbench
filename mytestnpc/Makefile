@@ -1,4 +1,4 @@
-TOPNAME = ps2_keyboard
+TOPNAME = vga
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
 

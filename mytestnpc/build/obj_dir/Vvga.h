@@ -5,19 +5,19 @@
 // The class here is then constructed to instantiate the design.
 // See the Verilator manual for examples.
 
-#ifndef VERILATED_VPS2_KEYBOARD_H_
-#define VERILATED_VPS2_KEYBOARD_H_  // guard
+#ifndef VERILATED_VVGA_H_
+#define VERILATED_VVGA_H_  // guard
 
 #include "verilated_heavy.h"
 
-class Vps2_keyboard__Syms;
-class Vps2_keyboard___024root;
+class Vvga__Syms;
+class Vvga___024root;
 
 // This class is the main interface to the Verilated model
-class Vps2_keyboard VL_NOT_FINAL {
+class Vvga VL_NOT_FINAL {
   private:
     // Symbol table holding complete model state (owned by this class)
-    Vps2_keyboard__Syms* const vlSymsp;
+    Vvga__Syms* const vlSymsp;
 
   public:
 
@@ -26,13 +26,12 @@ class Vps2_keyboard VL_NOT_FINAL {
     // propagate new values into/out from the Verilated model.
     VL_IN8(&clk,0,0);
     VL_IN8(&rst,0,0);
-    VL_IN8(&ps2_clk,0,0);
-    VL_IN8(&ps2_data,0,0);
-    VL_OUT8(&ready,0,0);
-    VL_OUT8(&seg0,7,0);
-    VL_OUT8(&seg1,7,0);
-    VL_OUT8(&seg6,7,0);
-    VL_OUT8(&seg7,7,0);
+    VL_OUT8(&VGA_VSYNC,0,0);
+    VL_OUT8(&VGA_HSYNC,0,0);
+    VL_OUT8(&VGA_BLANK_N,0,0);
+    VL_OUT8(&VGA_R,7,0);
+    VL_OUT8(&VGA_G,7,0);
+    VL_OUT8(&VGA_B,7,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
@@ -40,19 +39,19 @@ class Vps2_keyboard VL_NOT_FINAL {
 
     // Root instance pointer to allow access to model internals,
     // including inlined /* verilator public_flat_* */ items.
-    Vps2_keyboard___024root* const rootp;
+    Vvga___024root* const rootp;
 
     // CONSTRUCTORS
     /// Construct the model; called by application code
     /// If contextp is null, then the model will use the default global context
     /// If name is "", then makes a wrapper with a
     /// single model invisible with respect to DPI scope names.
-    explicit Vps2_keyboard(VerilatedContext* contextp, const char* name = "TOP");
-    explicit Vps2_keyboard(const char* name = "TOP");
+    explicit Vvga(VerilatedContext* contextp, const char* name = "TOP");
+    explicit Vvga(const char* name = "TOP");
     /// Destroy the model; called (often implicitly) by application code
-    virtual ~Vps2_keyboard();
+    virtual ~Vvga();
   private:
-    VL_UNCOPYABLE(Vps2_keyboard);  ///< Copying not allowed
+    VL_UNCOPYABLE(Vvga);  ///< Copying not allowed
 
   public:
     // API METHODS
