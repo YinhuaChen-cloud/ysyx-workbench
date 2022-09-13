@@ -60,7 +60,7 @@ module top(
 
 	wire [11:0] font [15:0];
 	assign font[0] = dotmatrix[{asciidata, 4'h0}];
-	assign font[0] = dotmatrix[{asciidata, 4'h0}];
+	assign font[1] = dotmatrix[{asciidata, 4'h1}];
 
 	always@(*) begin
 		$display("col_remainder");

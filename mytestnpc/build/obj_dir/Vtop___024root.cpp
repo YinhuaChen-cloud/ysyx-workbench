@@ -126,8 +126,8 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__4(Vtop___024root* vlSelf) {
                             : 0U);
     vlSelf->top__DOT__font[0U] = vlSelf->top__DOT__dotmatrix
         [((IData)(top__DOT__asciidata) << 4U)];
-    vlSelf->top__DOT__font[0U] = vlSelf->top__DOT__dotmatrix
-        [((IData)(top__DOT__asciidata) << 4U)];
+    vlSelf->top__DOT__font[1U] = vlSelf->top__DOT__dotmatrix
+        [(1U | ((IData)(top__DOT__asciidata) << 4U))];
     top__DOT__vga_data = (((0xbU >= (IData)(vlSelf->top__DOT__col_remainder)) 
                            & (vlSelf->top__DOT__font
                               [(0xfU & (IData)(vlSelf->top__DOT__v_addr))] 
