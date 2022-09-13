@@ -14,7 +14,7 @@ module vga(
 	// 1. initialization of mem to store image
 	reg [23:0] vmem [307200:0];
 	initial begin
-		$readmemh("resource/input.txt", vmem);
+		$readmemh("resource/inputHex.txt", vmem);
 	end
 	 
 	// 2. generate VGA_CLK

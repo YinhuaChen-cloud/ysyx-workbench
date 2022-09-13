@@ -30,14 +30,15 @@ void Vvga___024root___initial__TOP__1(Vvga___024root* vlSelf) {
     Vvga__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vvga___024root___initial__TOP__1\n"); );
     // Variables
-    VlWide<5>/*159:0*/ __Vtemp1;
+    VlWide<6>/*191:0*/ __Vtemp1;
     // Body
     __Vtemp1[0U] = 0x2e747874U;
-    __Vtemp1[1U] = 0x6e707574U;
-    __Vtemp1[2U] = 0x63652f69U;
-    __Vtemp1[3U] = 0x736f7572U;
-    __Vtemp1[4U] = 0x7265U;
-    VL_READMEM_N(true, 24, 307201, 0, VL_CVT_PACK_STR_NW(5, __Vtemp1)
+    __Vtemp1[1U] = 0x74486578U;
+    __Vtemp1[2U] = 0x696e7075U;
+    __Vtemp1[3U] = 0x7263652fU;
+    __Vtemp1[4U] = 0x65736f75U;
+    __Vtemp1[5U] = 0x72U;
+    VL_READMEM_N(true, 24, 307201, 0, VL_CVT_PACK_STR_NW(6, __Vtemp1)
                  ,  &(vlSelf->vga__DOT__vmem), 0, ~0ULL);
 }
 
