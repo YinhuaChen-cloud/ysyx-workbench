@@ -27,6 +27,8 @@ VL_MODULE(Vtop___024root) {
     VL_OUT8(VGA_B,7,0);
 
     // LOCAL SIGNALS
+    CData/*6:0*/ top__DOT__col;
+    CData/*3:0*/ top__DOT__col_remainder;
     CData/*0:0*/ top__DOT__my_vga_ctrl__DOT__v_valid;
     SData/*9:0*/ top__DOT__v_addr;
     SData/*9:0*/ top__DOT__my_vga_ctrl__DOT__x_cnt;

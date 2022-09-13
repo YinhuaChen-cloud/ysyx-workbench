@@ -62,6 +62,7 @@ module top(
 	assign font[0] = dotmatrix[{asciidata, 4'h0}];
 
 	always@(*) begin
+		$display("col_remainder");
 		vga_data = font[v_addr[3:0]][col_remainder] ? 12'hfff : 12'h0;
 	end
 		
