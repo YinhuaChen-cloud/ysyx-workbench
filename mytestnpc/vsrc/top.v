@@ -38,7 +38,6 @@ module top(
 	integer i;
 	integer j;
 	always@(*) begin
-		$display("ooo");
 		col = 0;
 		col_remainder = 0;
 		for(i = 0; i < 70; i = i+1) begin

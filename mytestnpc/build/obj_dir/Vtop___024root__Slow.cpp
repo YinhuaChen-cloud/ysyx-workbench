@@ -34,7 +34,7 @@ void Vtop___024root___settle__TOP__1(Vtop___024root* vlSelf) {
     SData/*9:0*/ top__DOT__h_addr;
     IData/*31:0*/ top__DOT__i;
     // Body
-    VL_WRITEF("ooo\ncol_remainder\n");
+    VL_WRITEF("col_remainder\n");
     vlSelf->VGA_HSYNC = (0x60U < (IData)(vlSelf->top__DOT__my_vga_ctrl__DOT__x_cnt));
     vlSelf->VGA_VSYNC = (2U < (IData)(vlSelf->top__DOT__my_vga_ctrl__DOT__y_cnt));
     vlSelf->top__DOT__my_vga_ctrl__DOT__v_valid = (
