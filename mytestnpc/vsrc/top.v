@@ -38,6 +38,7 @@ module top(
 	integer i;
 	integer j;
 	always@(*) begin
+		$display("ooo");
 		col = 0;
 		col_remainder = 0;
 		for(i = 0; i < 70; i = i+1) begin
@@ -59,6 +60,7 @@ module top(
 	assign asciidata = vmem[{col, row}];
 
 	wire [11:0] font [15:0];
+	assign font[0] = dotmatrix[{asciidata, 4'h0}];
 	assign font[0] = dotmatrix[{asciidata, 4'h0}];
 
 	always@(*) begin

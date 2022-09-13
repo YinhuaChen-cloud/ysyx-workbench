@@ -42,6 +42,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__4(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___sequent__TOP__4\n"); );
     // Variables
+    CData/*7:0*/ top__DOT__asciidata;
     CData/*0:0*/ top__DOT__my_vga_ctrl__DOT__h_valid;
     SData/*9:0*/ top__DOT__h_addr;
     IData/*31:0*/ top__DOT__i;
@@ -114,15 +115,19 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__4(Vtop___024root* vlSelf) {
         }
         top__DOT__i = ((IData)(1U) + top__DOT__i);
     }
+    top__DOT__asciidata = ((0x8bfU >= (((IData)(vlSelf->top__DOT__col) 
+                                        << 5U) | (0x1fU 
+                                                  & ((IData)(vlSelf->top__DOT__v_addr) 
+                                                     >> 4U))))
+                            ? vlSelf->top__DOT__vmem
+                           [(((IData)(vlSelf->top__DOT__col) 
+                              << 5U) | (0x1fU & ((IData)(vlSelf->top__DOT__v_addr) 
+                                                 >> 4U)))]
+                            : 0U);
     vlSelf->top__DOT__font[0U] = vlSelf->top__DOT__dotmatrix
-        [(((0x8bfU >= (((IData)(vlSelf->top__DOT__col) 
-                        << 5U) | (0x1fU & ((IData)(vlSelf->top__DOT__v_addr) 
-                                           >> 4U))))
-            ? vlSelf->top__DOT__vmem[(((IData)(vlSelf->top__DOT__col) 
-                                       << 5U) | (0x1fU 
-                                                 & ((IData)(vlSelf->top__DOT__v_addr) 
-                                                    >> 4U)))]
-            : 0U) << 4U)];
+        [((IData)(top__DOT__asciidata) << 4U)];
+    vlSelf->top__DOT__font[0U] = vlSelf->top__DOT__dotmatrix
+        [((IData)(top__DOT__asciidata) << 4U)];
     top__DOT__vga_data = (((0xbU >= (IData)(vlSelf->top__DOT__col_remainder)) 
                            & (vlSelf->top__DOT__font
                               [(0xfU & (IData)(vlSelf->top__DOT__v_addr))] 
