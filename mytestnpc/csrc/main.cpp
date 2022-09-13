@@ -1,6 +1,6 @@
-#define CYHTOP vga
-#define CYHTOPHEADER <Vvga.h>
-#define CYHTOPSTRUCT Vvga
+#define CYHTOP top
+#define CYHTOPHEADER <Vtop.h>
+#define CYHTOPSTRUCT Vtop
 #include <nvboard.h>
 #include CYHTOPHEADER
 
