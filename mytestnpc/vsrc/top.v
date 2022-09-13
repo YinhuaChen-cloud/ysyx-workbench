@@ -78,7 +78,7 @@ module top(
 
 	always@(*) begin
 		$display("col_remainder");
-		vga_data = font[v_addr[3:0]][col_remainder] ? 12'hfff : 12'h0;
+		vga_data = font[v_addr[3:0]][col_remainder] ? 24'hffffff : 12'h0;
 	end
 		
 	wire [9:0]    h_addr;   
