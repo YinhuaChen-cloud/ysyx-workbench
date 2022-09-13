@@ -61,11 +61,12 @@ module top(
 	wire [11:0] font [15:0];
 	assign font[0] = dotmatrix[{asciidata, 4'h0}];
 
-	assign vga_data = font[v_addr[3:0]][col_remainder] ? 12'hfff : 12'h0;
+	always@(*)
+		vga_data = font[v_addr[3:0]][col_remainder] ? 12'hfff : 12'h0;
 		
 	wire [9:0]    h_addr;   
 	wire [9:0]    v_addr;
-	wire [23:0] vga_data; // the pixel info of 1 dot
+	reg [23:0] vga_data; // the pixel info of 1 dot
 	vga_ctrl my_vga_ctrl(
     .pclk(clk),     
     .reset(rst),  
