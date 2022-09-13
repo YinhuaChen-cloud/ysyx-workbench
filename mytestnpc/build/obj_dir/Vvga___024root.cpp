@@ -18,7 +18,7 @@ VL_INLINE_OPT void Vvga___024root___sequent__TOP__2(Vvga___024root* vlSelf) {
     } else {
         vlSelf->vga__DOT__myclk__DOT__clkcount = ((IData)(1U) 
                                                   + vlSelf->vga__DOT__myclk__DOT__clkcount);
-        if ((0x61a8U <= vlSelf->vga__DOT__myclk__DOT__clkcount)) {
+        if ((0xfaU <= vlSelf->vga__DOT__myclk__DOT__clkcount)) {
             vlSelf->vga__DOT__freqclk = (1U & (~ (IData)(vlSelf->vga__DOT__freqclk)));
             vlSelf->vga__DOT__myclk__DOT__clkcount = 0U;
         }

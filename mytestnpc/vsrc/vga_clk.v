@@ -4,7 +4,7 @@ module vga_clk #(TARGET_FREQ = 50000000) (
     input clken,
     output reg clkout
     );
-    parameter clk_freq=1000;
+    parameter clk_freq=100000;
     parameter countlimit=50000000/2/clk_freq; //自动计算计数次数
 
   reg[31:0] clkcount;
