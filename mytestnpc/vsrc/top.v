@@ -62,22 +62,27 @@ module top(
 	wire [11:0] font [15:0];
 	// TODO: after wake up, remember to ask problems about this
 	// ANSWER: we can use generate syntax to generate the following
-	assign font[0] = dotmatrix[{asciidata, 4'h0}];
-	assign font[1] = dotmatrix[{asciidata, 4'h1}];
-	assign font[2] = dotmatrix[{asciidata, 4'h2}];
-	assign font[3] = dotmatrix[{asciidata, 4'h3}];
-	assign font[4] = dotmatrix[{asciidata, 4'h4}];
-	assign font[5] = dotmatrix[{asciidata, 4'h5}];
-	assign font[6] = dotmatrix[{asciidata, 4'h6}];
-	assign font[7] = dotmatrix[{asciidata, 4'h7}];
-	assign font[8] = dotmatrix[{asciidata, 4'h8}];
-	assign font[9] = dotmatrix[{asciidata, 4'h9}];
-	assign font[10] = dotmatrix[{asciidata, 4'ha}];
-	assign font[11] = dotmatrix[{asciidata, 4'hb}];
-	assign font[12] = dotmatrix[{asciidata, 4'hc}];
-	assign font[13] = dotmatrix[{asciidata, 4'hd}];
-	assign font[14] = dotmatrix[{asciidata, 4'he}];
-	assign font[15] = dotmatrix[{asciidata, 4'hf}];
+	genvar k;	
+	generate  
+		for(k = 0; k < 16; k = k+1) begin
+			assign font[k] = dotmatrix[{asciidata, k[3:0]}];
+		end
+	endgenerate
+//	assign font[1] = dotmatrix[{asciidata, 4'h1}];
+//	assign font[2] = dotmatrix[{asciidata, 4'h2}];
+//	assign font[3] = dotmatrix[{asciidata, 4'h3}];
+//	assign font[4] = dotmatrix[{asciidata, 4'h4}];
+//	assign font[5] = dotmatrix[{asciidata, 4'h5}];
+//	assign font[6] = dotmatrix[{asciidata, 4'h6}];
+//	assign font[7] = dotmatrix[{asciidata, 4'h7}];
+//	assign font[8] = dotmatrix[{asciidata, 4'h8}];
+//	assign font[9] = dotmatrix[{asciidata, 4'h9}];
+//	assign font[10] = dotmatrix[{asciidata, 4'ha}];
+//	assign font[11] = dotmatrix[{asciidata, 4'hb}];
+//	assign font[12] = dotmatrix[{asciidata, 4'hc}];
+//	assign font[13] = dotmatrix[{asciidata, 4'hd}];
+//	assign font[14] = dotmatrix[{asciidata, 4'he}];
+//	assign font[15] = dotmatrix[{asciidata, 4'hf}];
 
 	always@(*) begin
 		$display("col_remainder");
