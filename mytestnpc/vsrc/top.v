@@ -61,6 +61,7 @@ module top(
 
 	wire [11:0] font [15:0];
 	// TODO: after wake up, remember to ask problems about this
+	// ANSWER: we can use generate syntax to generate the following
 	assign font[0] = dotmatrix[{asciidata, 4'h0}];
 	assign font[1] = dotmatrix[{asciidata, 4'h1}];
 	assign font[2] = dotmatrix[{asciidata, 4'h2}];
