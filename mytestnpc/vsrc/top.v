@@ -26,6 +26,7 @@ module top(
 	initial begin
 		$readmemh("resource/vga_font.txt", dotmatrix);
 		vmem[0] = 8'd66;
+		vmem[1] = 8'd65;
 	end
 
 //	The vga control:

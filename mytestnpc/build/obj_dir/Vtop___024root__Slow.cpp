@@ -124,6 +124,7 @@ void Vtop___024root___initial__TOP__2(Vtop___024root* vlSelf) {
                  ,  &(vlSelf->top__DOT__dotmatrix), 0
                  , ~0ULL);
     vlSelf->top__DOT__vmem[0U] = 0x42U;
+    vlSelf->top__DOT__vmem[1U] = 0x41U;
 }
 
 void Vtop___024root___settle__TOP__5(Vtop___024root* vlSelf) {
