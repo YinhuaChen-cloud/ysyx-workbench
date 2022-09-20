@@ -1,12 +1,15 @@
 module top(
 	input clk,
 	input rst,
+	input ps2_clk,
+	input ps2_data,
 	output VGA_VSYNC,
 	output VGA_HSYNC,
 	output VGA_BLANK_N,
 	output [7:0] VGA_R,
 	output [7:0] VGA_G,
-	output [7:0] VGA_B
+	output [7:0] VGA_B,
+	output overflow
 );
 //	1. a storage storing dot matrix of all ascii char
 //	2. a vmem 30 * 70
@@ -28,6 +31,39 @@ module top(
 		vmem[0] = 8'd66;
 		vmem[1] = 8'd65;
 	end
+
+	// part3: keyboard writing to vmem
+	reg nextdata;
+	wire ready;	
+	wire [7:0] data;
+	reg [6:0] x, y; // the coordinate of cusor
+	reg skip; // used when meets F0
+	// x: 0 - 69  y: 0-29
+	always@(posedge clk)
+		if(rst) begin
+			nextdata <= 0;
+			x <= 0;
+			y <= 0;
+		end
+		else begin
+			if(ready) begin
+				// 1. convert SCANCODE to ASCII
+				
+				// 2. writing to vmem
+				vmem[]	
+			end
+		end
+	// ps2_keyboard
+	ps2_keyboard mykbd(
+    .clk(clk),
+		.rst(rst),
+		.ps2_clk(ps2_clk),
+		.ps2_data(ps2_data),
+		.nextdata(nextdata),
+		.ready(ready),
+		.overflow(overflow),
+		.data(data)
+	);	
 
 //	The vga control:
 //	row = (v_addr/16) col = (h_addr/9)
