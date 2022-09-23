@@ -17,6 +17,9 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
+#include "watchpoint.h"
+
+uint64_t expr(char *e, bool *success);
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -32,16 +35,32 @@ static bool g_print_step = false;
 
 void device_update();
 
+void check_all_watchpoints() {
+  WP *p = get_wp_head();
+  bool success = true;
+  while(p) {
+    uint64_t val = expr(p->expr, &success);
+    assert(success);
+    if(val != p->old_val) {
+      printf("Trigger watchpoint %s\n", p->expr);
+      printf("The old val is %lu(decimal)\t0x%016lx(hex)\n", p->old_val, p->old_val);
+      printf("Now the val is %lu(decimal)\t0x%016lx(hex)\n", val, val);
+      nemu_state.state = NEMU_STOP;
+    }
+    p = p->next;
+  }
+}
+
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
-  if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
+  if (ITRACE_COND) log_write("%s\n", _this->logbuf);
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+  IFDEF(CONFIG_CC_WATCHPOINT, check_all_watchpoints());
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
-  s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
   cpu.pc = s->dnpc;

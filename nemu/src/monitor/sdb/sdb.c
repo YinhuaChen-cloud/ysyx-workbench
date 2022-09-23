@@ -18,6 +18,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+#include <memory/vaddr.h> // added by chenyinhua
+#include "watchpoint.h"
 
 static int is_batch_mode = false;
 
@@ -49,10 +51,103 @@ static int cmd_c(char *args) {
 
 
 static int cmd_q(char *args) {
+  nemu_state.state = NEMU_QUIT;
   return -1;
 }
 
 static int cmd_help(char *args);
+
+// assume args be only 1 int, we did not check args
+static int cmd_si(char *args) {
+  if(!args)
+    cpu_exec(1);
+  else
+    cpu_exec(atoi(args));
+  return 0;
+}
+
+// assume args is either r or w, we did not check args
+static int cmd_info(char *args) {
+  if(!strcmp(args, "r"))
+    isa_reg_display();
+  else {
+    print_watchpoints();
+  }
+  return 0;
+}
+
+// the argument is EXPR
+static int cmd_p(char *args) {
+  bool success = true;
+  uint64_t result = expr(args, &success);
+  if(success) {
+    printf("= %lu\n", result);
+  }
+  else {
+    printf("The EXPR cannot be recognized correctly, you can check detailed information in ./build/nemu-log.txt\n");
+  }
+  return 0;
+}
+
+// the argument is EXPR
+static int cmd_p_x (char *args) {
+  bool success = true;
+  uint64_t result = expr(args, &success);
+  if(success) {
+    printf("= 0x%016lx\n", result);
+  }
+  else {
+    printf("The EXPR cannot be recognized correctly, you can check detailed information in ./build/nemu-log.txt\n");
+  }
+  return 0;
+}
+
+// the argument is EXPR
+static int cmd_w(char *args) {
+  bool success = true;
+  WP *wp = new_wp();
+  strncpy(wp->expr, args, EXPR_LEN-1);
+  wp->expr[strlen(wp->expr)] = '\0';
+  assert(strlen(wp->expr) < EXPR_LEN);
+  wp->old_val = expr(wp->expr, &success);
+  if(success) {
+    nr_wp++;
+  }
+  else {
+    printf("The EXPR cannot be recognized correctly, you can check detailed information in ./build/nemu-log.txt\n");
+    free_wp(wp);
+  }
+  return 0;
+}
+
+// assume args is in correct format, we did not check args
+static int cmd_x(char *args) {
+  char *nstr = strtok(args, " ");
+  char *addrstr = nstr + strlen(nstr) + 1;
+  uint32_t n = atoi(nstr);
+  uint64_t addr = strtol(addrstr, NULL, 16);
+  uint32_t val;
+  uint32_t cnt = 0;
+
+  for(; n > 0; n--) {
+    if(cnt % 4 == 0) {
+      printf("\n0x%lx: ", addr);
+    }
+    val = vaddr_read(addr, 4);
+    printf("0x%08x ", val);
+    addr += 4;
+    cnt++;
+  }
+  printf("\n");
+  return 0;
+}
+
+// assume args is only a non-negative number
+static int cmd_d(char *args) {
+  int NO = atoi(args);
+  free_NO_wp(NO);
+  return 0;
+}
 
 static struct {
   const char *name;
@@ -62,7 +157,13 @@ static struct {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-
+  { "si", "Execute [N] instructions and then stop. N = 1 if omitted", cmd_si },
+  { "info", "info r to print registers, info w to print watchpoints", cmd_info },
+  { "x", "x [n] [addr] prints n 32-bit val begining at addr in hex format", cmd_x },
+  { "p", "p EXPR to get the result of an expression in decimal format", cmd_p },
+  { "p/x", "p/x EXPR to get the result of an expression in hex format", cmd_p_x },
+  { "w", "w EXPR stop program when EXPR is changed", cmd_w },
+  { "d", "d [n] delete watchpoint with NO [n]", cmd_d },
   /* TODO: Add more commands */
 
 };

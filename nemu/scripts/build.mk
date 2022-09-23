@@ -11,6 +11,7 @@ WORK_DIR  = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
 
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
+INC_PATH += /home/chenyinhua/sda3/ics2021/nemu/src/monitor/sdb
 OBJ_DIR  = $(BUILD_DIR)/obj-$(NAME)$(SO)
 BINARY   = $(BUILD_DIR)/$(NAME)$(SO)
 
@@ -25,10 +26,15 @@ INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS  := -O2 -MMD -Wall -Werror $(INCLUDES) $(CFLAGS)
 LDFLAGS := -O2 $(LDFLAGS)
 
+# added by chenyinhua
+CXXSRC += src/monitor/sdb/intStackforC.cc
+# added by chenyinhua ends
+
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 
-# Compilation patterns
+# Compilation patterns 	
 $(OBJ_DIR)/%.o: %.c
+	@echo "INC_PATH = $(INC_PATH)"
 	@echo + CC $<
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c -o $@ $<
@@ -36,6 +42,12 @@ $(OBJ_DIR)/%.o: %.c
 
 $(OBJ_DIR)/%.o: %.cc
 	@echo + CXX $<
+	@echo "added by chenyinhua start"
+	@echo "OBJS = $(OBJS)"
+	@echo "OBJ_DIR = $(OBJ_DIR)"
+	@echo "$$@ = $@"
+	@echo "CXXSRC = $(CXXSRC)"
+	@echo "added by chenyinhua ends"
 	@mkdir -p $(dir $@)
 	@$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
@@ -51,6 +63,9 @@ app: $(BINARY)
 
 $(BINARY): $(OBJS) $(ARCHIVES)
 	@echo + LD $@
+	@echo "added by chenyinhua start"
+	@echo "OBJS = $(OBJS)"
+	@echo "added by chenyinhua ends"
 	@$(LD) -o $@ $(OBJS) $(LDFLAGS) $(ARCHIVES) $(LIBS)
 
 clean:
