@@ -36,7 +36,6 @@ static bool g_print_step = false;
 void device_update();
 
 void check_all_watchpoints() {
-	printf("In check_all_watchpoints\n");
   WP *p = get_wp_head();
   bool success = true;
   while(p) {
