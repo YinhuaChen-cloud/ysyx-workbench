@@ -35,6 +35,7 @@ endif
 override ARGS += $(ELF_FILE)
 override ARGS += $(FTRACE_FILE)
 override ARGS += $(DTRACE_FILE)
+override ARGS += -b
 # added by chenyinhua ends
 
 # Command to execute NEMU
