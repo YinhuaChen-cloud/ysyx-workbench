@@ -20,6 +20,15 @@
 
 #define IO_SPACE_MAX (2 * 1024 * 1024)
 
+#ifdef CONFIG_DTRACE
+#define DTRACE_OUTPUT_LEN 160
+#define DTBUF_LEN 64
+// format: device_map operation, cpu.pc, instrction code(4 bytes), disasm
+char device_output_buf[DTRACE_OUTPUT_LEN];
+char device_trace_buf[DTBUF_LEN];
+bool isdevice;
+#endif
+
 static uint8_t *io_space = NULL;
 static uint8_t *p_space = NULL;
 
@@ -53,6 +62,10 @@ void init_map() {
 }
 
 word_t map_read(paddr_t addr, int len, IOMap *map) {
+#ifdef CONFIG_DTRACE
+	isdevice = true;
+	snprintf(device_trace_buf, DTBUF_LEN, "%s, read\n", map->name);
+#endif
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
   paddr_t offset = addr - map->low;
@@ -62,6 +75,10 @@ word_t map_read(paddr_t addr, int len, IOMap *map) {
 }
 
 void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
+#ifdef CONFIG_DTRACE
+	isdevice = true;
+	snprintf(device_trace_buf, DTBUF_LEN, "%s, write\n", map->name);
+#endif
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
   paddr_t offset = addr - map->low;

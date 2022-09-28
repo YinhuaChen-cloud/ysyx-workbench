@@ -49,6 +49,7 @@ static void *lut[128] = {
 };
 
 bool ioe_init() {
+	// deal with multiple-core situation
   panic_on(cpu_current() != 0, "call ioe_init() in other CPUs");
   panic_on(ioe_init_done, "double-initialization");
   __am_has_ioe = true;

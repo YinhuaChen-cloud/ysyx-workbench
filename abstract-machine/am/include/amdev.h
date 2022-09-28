@@ -47,6 +47,8 @@ AM_DEVREG(24, NET_RX,       WR, Area buf);
 enum {
   AM_KEY_NONE = 0,
   AM_KEYS(AM_KEY_NAMES)
+//  AM_KEY_NAMES(F1) AM_KEY_NAMES(A) 
+//  AM_KEY_F1 AM_KEY_A 
 };
 
 // GPU

@@ -24,6 +24,28 @@ static uint8_t *pmem = NULL;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 #endif
 
+#ifdef CONFIG_MTRACE
+// format: cpu.pc, instrction code(4 bytes), disasm, accessed mem  
+char mtrace_buf[MTBUF_NUM][MTBUF_LEN];
+int pmtrace;
+char *mtrace_buf_p;
+bool isldst;
+#endif
+
+void print_mtrace() {
+#ifdef CONFIG_MTRACE
+	printf("Something bad happened, the following is the MTRACE:\n");
+	pmtrace = (pmtrace + 1) % MTBUF_NUM;
+	int i = 0;
+	while(i < MTBUF_NUM){
+		printf("%s\n", mtrace_buf[pmtrace]);
+		pmtrace = (pmtrace + 1) % MTBUF_NUM;
+		i++;
+	}
+#endif
+  return;
+}
+
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
@@ -58,6 +80,17 @@ void init_mem() {
 }
 
 word_t paddr_read(paddr_t addr, int len) {
+	//printf("In paddr_read, addr = 0x%x\n", addr);
+#ifdef CONFIG_MTRACE
+	if(cpu.pc != addr && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END){
+		//printf("CONFIG_MTRACE_START = 0x%x, CONFIG_MTRACE_END = 0x%x\n", CONFIG_MTRACE_START, CONFIG_MTRACE_END);
+		pmtrace = (pmtrace + 1) % MTBUF_NUM;
+		
+		mtrace_buf_p = mtrace_buf[pmtrace];
+		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr 0x%x: pc ", addr); // 4 spaces
+		isldst = true;
+	}
+#endif
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
@@ -65,6 +98,16 @@ word_t paddr_read(paddr_t addr, int len) {
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
+#ifdef CONFIG_MTRACE
+	if(cpu.pc != addr && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END){
+		//printf("CONFIG_MTRACE_START = 0x%x, CONFIG_MTRACE_END = 0x%x\n", CONFIG_MTRACE_START, CONFIG_MTRACE_END);
+		pmtrace = (pmtrace + 1) % MTBUF_NUM;
+		
+		mtrace_buf_p = mtrace_buf[pmtrace];
+		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr 0x%x: pc ", addr); // 4 spaces
+		isldst = true;
+	}
+#endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);

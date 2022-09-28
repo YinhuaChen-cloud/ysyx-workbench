@@ -18,8 +18,10 @@
 #include <cpu/difftest.h>
 #include <locale.h>
 #include "watchpoint.h"
+#include <memory/paddr.h>
 
 uint64_t expr(char *e, bool *success);
+extern void print_mtrace();
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -34,6 +36,25 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
+
+#ifdef CONFIG_IRINGBUF
+#define RING_LEN 32
+char iringbuf[RING_LEN][128];
+int iringbuf_p;
+#endif
+
+void print_iringbuf() {
+#ifdef CONFIG_IRINGBUF
+  iringbuf[iringbuf_p][0] = '-';
+  iringbuf[iringbuf_p][1] = '-';
+  iringbuf[iringbuf_p][2] = '>';
+  printf("Something bad happened, the instructions executed recently is the following:\n");
+  for(int i = 0; i < RING_LEN; i++) {
+    printf("%s\n", iringbuf[i]);
+  }
+#endif
+  return;
+}
 
 void check_all_watchpoints() {
   WP *p = get_wp_head();
@@ -61,14 +82,25 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
+#ifdef CONFIG_MTRACE
+	extern bool isldst;
+	isldst = false;
+#endif
+
+#ifdef CONFIG_DTRACE
+	extern bool isdevice;
+	isdevice = false;
+#endif
+
 	s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
   cpu.pc = s->dnpc;
+
 #ifdef CONFIG_ITRACE
-  char *p = s->logbuf;
-  p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
-  int ilen = s->snpc - s->pc;
+  char *p = s->logbuf; // the logbuf is in Decode structure
+  p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc); // record pc
+  int ilen = s->snpc - s->pc; // instruction length, it might be 2 bytes
   int i;
   uint8_t *inst = (uint8_t *)&s->isa.inst.val;
   for (i = ilen - 1; i >= 0; i --) {
@@ -78,13 +110,49 @@ static void exec_once(Decode *s, vaddr_t pc) {
   int space_len = ilen_max - ilen;
   if (space_len < 0) space_len = 0;
   space_len = space_len * 3 + 1;
-  memset(p, ' ', space_len);
+  memset(p, ' ', space_len); // fill logbuf with space
   p += space_len;
 
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
+
+#ifdef CONFIG_IRINGBUF
+  iringbuf_p = (iringbuf_p + 1) % RING_LEN;
+  
+  p = iringbuf[iringbuf_p];
+  p += snprintf(p, sizeof(iringbuf[iringbuf_p]), "    "); // 4 spaces
+
+  strncpy(p, s->logbuf, iringbuf[iringbuf_p] + sizeof(iringbuf[iringbuf_p]) - p);
+
 #endif
+
+#endif
+
+#ifdef CONFIG_MTRACE
+	if(isldst){
+		extern char *mtrace_buf_p;
+		extern int pmtrace;
+		extern char mtrace_buf[MTBUF_NUM][MTBUF_LEN];
+		strncpy(mtrace_buf_p, s->logbuf, mtrace_buf[pmtrace] + sizeof(mtrace_buf[pmtrace]) - mtrace_buf_p);
+	}
+#endif
+
+#ifdef CONFIG_DTRACE
+#define DTRACE_OUTPUT_LEN 160
+	if(isdevice) {
+		extern char device_output_buf[DTRACE_OUTPUT_LEN];
+		extern char device_trace_buf[DTBUF_LEN];
+		extern FILE *dtrace_fp; 
+		strncpy(device_output_buf, s->logbuf, DTRACE_OUTPUT_LEN);
+		int tmplen = strlen(device_output_buf);
+		strncat(device_output_buf, "\t", DTRACE_OUTPUT_LEN - tmplen);
+		strncat(device_output_buf, device_trace_buf, DTRACE_OUTPUT_LEN - tmplen - 1);
+		assert(dtrace_fp);
+		fwrite(device_output_buf, strlen(device_output_buf), 1, dtrace_fp);
+	}
+#endif
+
 }
 
 static void execute(uint64_t n) {
@@ -110,6 +178,15 @@ static void statistic() {
 void assert_fail_msg() {
   isa_reg_display();
   statistic();
+  print_iringbuf();
+	print_mtrace();
+#ifdef CONFIG_FTRACE
+	fclose(ftrace_log);
+#endif
+#ifdef CONFIG_DTRACE
+	extern FILE *dtrace_fp;
+	fclose(dtrace_fp);
+#endif
 }
 
 /* Simulate how the CPU works. */

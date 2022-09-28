@@ -26,15 +26,35 @@ $(BINARY): compile_git
 
 override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
 override ARGS += $(ARGS_DIFF)
+# addedsimm by chenyinhua starts
+ifdef IMG
+	ELF_FILE = --elf=$(basename $(IMG)).elf
+	FTRACE_FILE = --ftrace=$(basename $(IMG))-ftrace-log.txt
+	DTRACE_FILE = --dtrace=$(basename $(IMG))-dtrace-log.txt
+endif
+override ARGS += $(ELF_FILE)
+override ARGS += $(FTRACE_FILE)
+override ARGS += $(DTRACE_FILE)
+# added by chenyinhua ends
 
 # Command to execute NEMU
 IMG ?=
 NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
 run-env: $(BINARY) $(DIFF_REF_SO)
+	@echo "We are generating cscopes and ctags"
+	cd $(NEMU_HOME)/..; ctags -R; cscope -b -R;
+	@echo "In run-env, BINARY = $(BINARY), DIFF_REF_SO = $(DIFF_REF_SO)"
 
 run: run-env
 	$(call git_commit, "run NEMU")
+	@echo "NEMU_EXEC = $(NEMU_EXEC)"
+	@echo "BINARY = $(BINARY)"
+	@echo "ARGS = $(ARGS)"
+	@echo "IMG = $(IMG)"
+	@echo "ELF_FILE = $(ELF_FILE)"
+	@echo "FTRACE_FILE = $(FTRACE_FILE)"
+	@echo "chenyinhua ends"
 	$(NEMU_EXEC)
 
 gdb: run-env

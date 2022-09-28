@@ -15,10 +15,27 @@
 
 #include <utils.h>
 
+extern void print_iringbuf();
+extern void print_mtrace();
+extern FILE *ftrace_log;
+
 NEMUState nemu_state = { .state = NEMU_STOP };
 
 int is_exit_status_bad() {
   int good = (nemu_state.state == NEMU_END && nemu_state.halt_ret == 0) ||
     (nemu_state.state == NEMU_QUIT);
+
+  if(!good) {
+    print_iringbuf();
+		print_mtrace();
+#ifdef CONFIG_FTRACE
+		fclose(ftrace_log);
+#endif
+#ifdef CONFIG_DTRACE
+		extern FILE *dtrace_fp;
+		fclose(dtrace_fp);
+#endif
+  }
+
   return !good;
 }

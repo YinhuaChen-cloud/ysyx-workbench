@@ -30,6 +30,11 @@
 #include <stdlib.h>
 #endif
 
+// cyh add it here
+volatile static int dummy = 123;
+// volatile static int dummy = 123;
+// cyh add it ends
+
 #if CONFIG_MBASE + CONFIG_MSIZE > 0x100000000ul
 #define PMEM64 1
 #endif

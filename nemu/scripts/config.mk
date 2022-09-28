@@ -46,10 +46,18 @@ menuconfig: $(MCONF) $(CONF) $(FIXDEP)
 	$(Q)$(CONF) $(silent) --syncconfig $(Kconfig)
 
 savedefconfig: $(CONF)
+	echo "added by cyh, CONF = $(CONF)"
+	echo "Kconfig = $(Kconfig)"
+	# @/home/chenyinhua/sda3/ics2021/nemu/tools/kconfig/build/conf -s --savedefconfig=configs/defconfig /home/chenyinhua/sda3/ics2021/nemu/Kconfig 
+	# Explain: --savedefconfig <file>  Save the minimal current configuration to <file>	
 	$(Q)$< $(silent) --$@=configs/defconfig $(Kconfig)
 
 %defconfig: $(CONF) $(FIXDEP)
+	echo "added by cyh for debug: the config file we use this time is $@"
+	echo "Kconfig = $(Kconfig)"
+	# change Kconfig to the specific config_file
 	$(Q)$< $(silent) --defconfig=configs/$@ $(Kconfig)
+	# generates configuration for C project according to Kconfig
 	$(Q)$< $(silent) --syncconfig $(Kconfig)
 
 .PHONY: menuconfig savedefconfig defconfig
