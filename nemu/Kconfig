@@ -163,7 +163,7 @@ config MTRACE
 
 config MTRACE_START
   depends on MTRACE
-  int "When mtrace is enabled (content: the address where tracing starts)"
+  hex "When mtrace is enabled (content: the address where tracing starts)"
   default 0
 
 config MTRACE_END
