@@ -22,7 +22,6 @@
 extern const char *regs[];
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
-	printf("in isa_difftest_checkregs\n");
 	bool theSame = true;
 	if(cpu.pc != ref_r->pc) {
 		theSame = false;
