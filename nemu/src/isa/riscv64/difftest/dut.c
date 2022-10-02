@@ -27,9 +27,9 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 		theSame = false;
 	} else {
 		for(int i = 0; i < GPR_NR; i++)	{
-			if(cpu.gpr[i]._64 != ref_r->gpr[i]._64) {
+			if(cpu.gpr[i] != ref_r->gpr[i]) {
 				theSame = false;
-				printf("-------regs (%s) differs, cpu = 0x%lx, ref = 0x%lx-------\n", regs[i], cpu.gpr[i]._64, ref_r->gpr[i]._64);
+				printf("-------regs (%s) differs, cpu = 0x%lx, ref = 0x%lx-------\n", regs[i], cpu.gpr[i], ref_r->gpr[i]);
 			}
 		}
 	}
