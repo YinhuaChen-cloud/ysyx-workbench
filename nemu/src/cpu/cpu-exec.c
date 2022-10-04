@@ -181,6 +181,7 @@ void assert_fail_msg() {
   print_iringbuf();
 	print_mtrace();
 #ifdef CONFIG_FTRACE
+	extern FILE *ftrace_log;
 	fclose(ftrace_log);
 #endif
 #ifdef CONFIG_DTRACE

@@ -90,7 +90,7 @@ static void jalr_func(Decode *s, word_t dest, word_t src1, word_t src2) {
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "0x%lx", s->pc);
 		memset(p, ' ', ftrace_indent_space); // fill logbuf with space
 		p += ftrace_indent_space;
-		Elf64_Addr func_addr = *dsrc1;
+		Elf64_Addr func_addr = src1;
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "call [%s@0x%lx]\n", addrToFunc(func_addr), func_addr);
 		fwrite(ftrace_buf, p-ftrace_buf, 1, ftrace_log);
 	} else if(isRet(rs1)){
@@ -124,7 +124,7 @@ static void jal_func(Decode *s, word_t dest, word_t src1) {
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "0x%lx", s->pc);
 		memset(p, ' ', ftrace_indent_space); // fill logbuf with space
 		p += ftrace_indent_space;
-		Elf64_Addr func_addr = s->pc + id_src1->simm;
+		Elf64_Addr func_addr = s->pc + src1;
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "call [%s@0x%lx]\n", addrToFunc(func_addr), func_addr);
 		fwrite(ftrace_buf, p-ftrace_buf, 1, ftrace_log);
 	} else {
