@@ -188,8 +188,13 @@ void init_monitor(int argc, char *argv[]) {
 	long elf_size = load_elf();
 	printf("elf size = %ld\n", elf_size);
 
-  ftrace_log = fopen(ftrace_file, "w+");
-  Assert(ftrace_log, "Can not open '%s'", ftrace_file);
+	if(ftrace_file) {
+		ftrace_log = fopen(ftrace_file, "w+");
+		Assert(ftrace_log, "Can not open '%s'", ftrace_file);
+	}
+	else {
+		printf("No FTRACE_FILE is given\n");
+	}
 #endif
   /* Initialize differential testing. */
 	printf("diff_so_file = %s\n", diff_so_file);
