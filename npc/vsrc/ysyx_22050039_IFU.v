@@ -1,4 +1,5 @@
-module ysyx_22050039_IFU (
+/* verilator lint_off WIDTH */
+module ysyx_22050039_IFU #(XLEN=64) (
 	input clk,
 	input rst,
 	output reg [XLEN-1:0] pc

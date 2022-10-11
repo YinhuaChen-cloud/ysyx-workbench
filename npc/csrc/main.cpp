@@ -1,40 +1,66 @@
-#include <nvboard.h>
-#include <Vtop.h>
+#include "Vysyx_22050039_top.h"
+#include "verilated.h"
+#include <stdio.h>
+#include <assert.h>
+#include <stdint.h>
 
-static TOP_NAME dut;
+#define MEM_SIZE 65536 // 64KB
+#define MEM_BASE 0x80000000
 
-// 调用该文件中的nvboard_bind_all_pins(dut)函数即可完成所有信号的绑定。
-void nvboard_bind_all_pins(Vtop* top);
-// actually, nvboard_bind_all_pins invokes nvboard_bind_pin to complete its fucntion. You can check my words in build/auto_bind.cpp
+VerilatedContext* contextp;
+Vysyx_22050039_top* top;
+char pmem[MEM_SIZE];
+
+static unsigned int pmem_read(unsigned long pc) {
+//	printf("pmem = 0x%p\n", pmem);
+//	printf("pc = %lu\n", pc);	
+	char *p = (char *)pmem + (pc-MEM_BASE) * 4; 
+//	printf("p = 0x%p\n", p);
+	return *(unsigned int *)(p);	
+}
+
+static void init_pmem() {
+	char *p = (char *)pmem; 
+	for(int i = 0; i < 20; i++) {
+		*(unsigned int *)(p + i*4) = i+1;
+	}
+}
 
 static void single_cycle() {
-  dut.clk = 0; dut.eval();
-  dut.clk = 1; dut.eval();
+  top->clk = 0; top->eval();
+  top->clk = 1; top->eval();
 }
 //
 static void reset(int n) {
-  dut.rst = 1;
+  top->rst = 1;
   while (n -- > 0) single_cycle();
-  dut.rst = 0;
+  top->rst = 0;
 }
 
-int main() {
+int main(int argc, char** argv, char** env) {
 
-//在进入verilator仿真的循环前，先对引脚进行绑定，然后对NVBoard进行初始化
+	contextp = new VerilatedContext;
+	contextp->commandArgs(argc, argv);
+	top = new Vysyx_22050039_top{contextp};
 
-  nvboard_bind_all_pins(&dut);
-  nvboard_init(); // initialize NVBOARD nvboard_quit(): 退出NVBoard
+	init_pmem();
+	reset(10);
 
-  reset(10);
+	int sim_time = 20;
+	while (contextp->time() < sim_time && !contextp->gotFinish()) {
+		contextp->timeInc(1);
+//		printf("before pmem_read\n");
+//		printf("top = 0x%p\n", top);
+//		printf("pc = %lu\n", top->pc);	
+		top->inst = pmem_read(top->pc);
+//		printf("after pmem_read\n");
+		printf("top->inst = 0x%x\n", top->inst);
+		single_cycle();
+	}
 
-  while(1) {
-//在verilator仿真的循环中更新NVBoard各组件的状态
-    nvboard_update(); // 更新NVBoard中各组件的状态，每当电路状态发生改变时都需要调用该函数
-//		dut.eval();
-    single_cycle();
-  }
+	delete top;
+	delete contextp;
 
-//退出verilator仿真的循环后，销毁NVBoard的相关资源
-	nvboard_quit();
+	return 0;
 }
 
