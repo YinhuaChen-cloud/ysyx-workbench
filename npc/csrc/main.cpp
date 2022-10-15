@@ -11,6 +11,14 @@
 #define MEM_SIZE 65536 // 64KB
 #define MEM_BASE 0x80000000
 
+static const uint32_t default_img [] = {
+  0x00000297,  // auipc t0,0
+  0x0002b823,  // sd  zero,16(t0)
+  0x0102b503,  // ld  a0,16(t0)
+  0x00100073,  // ebreak (used as nemu_trap)
+  0xdeadbeef,  // some data
+};
+
 static char *log_file = NULL;
 //static char *diff_so_file = NULL;
 static char *img_file = NULL;
@@ -65,7 +73,31 @@ typedef struct {
 	int32_t  simm11_0  :12;
 } inst_I_type;
 
+static long load_img() {
+  if (img_file == NULL) {
+    printf("No image is given. Use the default build-in image.");
+    return sizeof(default_img); // built-in image size
+  }
+
+  FILE *fp = fopen(img_file, "rb");
+	assert(fp);
+
+  fseek(fp, 0, SEEK_END);
+  long size = ftell(fp);
+
+  printf("The image is %s, size = %ld", img_file, size);
+
+  fseek(fp, 0, SEEK_SET);
+  int ret = fread(pmem, size, 1, fp);
+  assert(ret == 1);
+
+  fclose(fp);
+  return size;
+}
+
 static void init_pmem() {
+	// TODO: load_img not debug, we need to load img and use default img	
+	memcpy(pmem, default_img, sizeof(default_img));
 }
 
 static void single_cycle() {
