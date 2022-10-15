@@ -1,3 +1,5 @@
+/* verilator lint_off DECLFILENAME */
+/* verilator lint_off MULTITOP */
 // 选择器模板内部实现
 module ysyx_22050039_MuxKeyInternal #(NR_KEY = 2, KEY_LEN = 1, DATA_LEN = 1, HAS_DEFAULT = 0) (
   output reg [DATA_LEN-1:0] out,
