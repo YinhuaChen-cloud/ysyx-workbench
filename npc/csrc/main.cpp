@@ -52,7 +52,7 @@ static int parse_args(int argc, char *argv[]) {
 
 VerilatedContext* contextp;
 Vysyx_22050039_top* top;
-char pmem[MEM_SIZE];
+static char *pmem;
 
 void ebreak() { printf("In main.cpp ebreak\n"); exit(0); }
 
@@ -97,7 +97,7 @@ static long load_img() {
 }
 
 static void init_pmem() {
-	// TODO: load_img not debug, we need to load img and use default img	
+	pmem = (char *)malloc(MEM_SIZE);
 	load_img();
 }
 
@@ -136,6 +136,7 @@ int main(int argc, char** argv, char** env) {
 
 	delete top;
 	delete contextp;
+	free(pmem);
 
 	return 0;
 }
