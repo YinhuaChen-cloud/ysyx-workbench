@@ -39,7 +39,7 @@ sim: $(VSRCS) $(CSRCS)
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
-	$(BIN)
+	$(BIN) $(ARGS) $(IMG)
 # 	verilator -Wall --cc --exe --build --trace $(NPC_HOME)/csrc/main.cpp $(NPC_HOME)/vsrc/top.v
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	cd ${NPC_HOME}/..; cscope -b -R;

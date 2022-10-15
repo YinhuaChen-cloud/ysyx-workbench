@@ -130,6 +130,7 @@ int main(int argc, char** argv, char** env) {
 		top->inst = pmem_read(top->pc);
 //		printf("after pmem_read\n");
 		printf("In main.cpp main() top->inst = 0x%x\n", top->inst);
+		printf("");
 		single_cycle();
 	}
 
