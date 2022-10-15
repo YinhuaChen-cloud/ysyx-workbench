@@ -76,6 +76,7 @@ typedef struct {
 static long load_img() {
   if (img_file == NULL) {
     printf("No image is given. Use the default build-in image.");
+		memcpy(pmem, default_img, sizeof(default_img));
     return sizeof(default_img); // built-in image size
   }
 
@@ -97,7 +98,7 @@ static long load_img() {
 
 static void init_pmem() {
 	// TODO: load_img not debug, we need to load img and use default img	
-	memcpy(pmem, default_img, sizeof(default_img));
+	load_img();
 }
 
 static void single_cycle() {
