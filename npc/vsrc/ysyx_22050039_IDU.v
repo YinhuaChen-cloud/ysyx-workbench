@@ -21,9 +21,10 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	wire [6:0] opcode;
 
 	// generate GPRS
+	ysyx_22050039_Reg #(XLEN, 0) reg_zero (clk, rst, exec_result, regs[0], 1'b0);
 	genvar i; 
 	generate
-		for(i = 0; i < NR_REG; i = i+1) begin
+		for(i = 1; i < NR_REG; i = i+1) begin
 			ysyx_22050039_Reg #(XLEN, 0) gen_gprs (clk, rst, exec_result, regs[i], reg_wen[i]);
 		end
 	endgenerate
@@ -69,9 +70,18 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 );
 
 //	select func according to inst
-//	addi ??????? ????? ????? 000 ????? 00100 11
-	assign func = (funct3 == 0 && opcode == 7'h13);
 
+	// identify inst type 
+	wire R, I, S, B, U, J, invalid; // only 1 of these will be high
+	assign I = (funct3 == 0 && (opcode == 7'b0010011 || opcode == 7'b1100111));
+	assign U = (opcode == 7'b0010111 || opcode == 7'b0110111);
+	assign J = (opcode == 7'b1101111);
+//  INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi	 , I, R(dest) = src1 + src2);
+//  INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, jalr_func(s, dest, src1, src2));
+//  INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(dest) = src1 + s->pc);
+//  INSTPAT("??????? ????? ????? ??? ????? 01101 11", lui    , U, R(dest) = src1);
+//  INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, jal_func(s, dest, src1));
+	assign func = (funct3 == 0 && opcode == 7'h13);
 
 	always@(posedge clk) begin
 		$display("x0 = 0x%x, x1 = 0x%x, x2 = 0x%x ", regs[0], regs[1], regs[2]);
@@ -87,9 +97,6 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	assign rd = inst[11:7];
 	assign funct3 = inst[14:12];
 	assign opcode = inst[6:0];
-
-	// $zero
-	assign regs[0] = '0;
 
 endmodule
 
