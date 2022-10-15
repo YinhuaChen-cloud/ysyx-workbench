@@ -21,9 +21,10 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	wire [6:0] opcode;
 
 	// generate GPRS
+	ysyx_22050039_Reg #(XLEN, 0) reg_zero (clk, rst, exec_result, regs[0], 1'b0);
 	genvar i; 
 	generate
-		for(i = 0; i < NR_REG; i = i+1) begin
+		for(i = 1; i < NR_REG; i = i+1) begin
 			ysyx_22050039_Reg #(XLEN, 0) gen_gprs (clk, rst, exec_result, regs[i], reg_wen[i]);
 		end
 	endgenerate

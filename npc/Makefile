@@ -1,4 +1,4 @@
-TOPNAME = top
+TOPNAME = ysyx_22050039_top
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
 
@@ -24,18 +24,25 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 # project source
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
-CSRCS += $(SRC_AUTO_BIND)
+
+ifeq ($(MAKECMDGOALS), run)
+	CSRCS += $(SRC_AUTO_BIND)
+endif
 
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
-sim:
-	# @echo "debug by cyh CSRC = $(CSRC)"
-	# @echo "debug by cyh OBJS = $(OBJS)"
-	# echo "debug by cyh VSRC = $(VSRC)"
-	verilator -Wall --cc --exe --build --trace $(NPC_HOME)/csrc/main.cpp $(NPC_HOME)/vsrc/top.v
-	./obj_dir/Vtop
+sim: $(VSRCS) $(CSRCS)
+	@echo "in sim, debug by cyh CSRCS = $(CSRCS)"
+	@echo "debug by cyh $$^ = $^"
+	@rm -rf $(OBJ_DIR)
+	$(VERILATOR) $(VERILATOR_CFLAGS) \
+		--top-module $(TOPNAME) $^ \
+		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
+	$(BIN)
+# 	verilator -Wall --cc --exe --build --trace $(NPC_HOME)/csrc/main.cpp $(NPC_HOME)/vsrc/top.v
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@echo "Write this Makefile by your self."
+	cd ${NPC_HOME}/..; cscope -b -R;
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
