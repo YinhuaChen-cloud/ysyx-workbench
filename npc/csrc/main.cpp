@@ -52,7 +52,7 @@ static int parse_args(int argc, char *argv[]) {
 
 VerilatedContext* contextp;
 Vysyx_22050039_top* top;
-static char *pmem;
+static char *pmem = NULL;
 
 void ebreak() { printf("In main.cpp ebreak\n"); exit(0); }
 
