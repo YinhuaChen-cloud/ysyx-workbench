@@ -11,7 +11,7 @@ WORK_DIR  = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
 
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
-INC_PATH += /home/chenyinhua/sda3/ics2021/nemu/src/monitor/sdb
+INC_PATH += /home/chenyinhua/sda3/ysyx-workbench/nemu/src/monitor/sdb
 OBJ_DIR  = $(BUILD_DIR)/obj-$(NAME)$(SO)
 BINARY   = $(BUILD_DIR)/$(NAME)$(SO)
 
