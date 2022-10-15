@@ -104,7 +104,7 @@ static void single_cycle() {
   top->clk = 0; top->eval();
   top->clk = 1; top->eval();
 }
-//
+
 static void reset(int n) {
   top->rst = 1;
   while (n -- > 0) single_cycle();
@@ -129,7 +129,7 @@ int main(int argc, char** argv, char** env) {
 //		printf("pc = %lu\n", top->pc);	
 		top->inst = pmem_read(top->pc);
 //		printf("after pmem_read\n");
-		printf("top->inst = 0x%x\n", top->inst);
+		printf("In main.cpp main() top->inst = 0x%x\n", top->inst);
 		single_cycle();
 	}
 
