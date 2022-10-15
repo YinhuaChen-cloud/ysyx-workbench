@@ -34,42 +34,6 @@ typedef struct {
 } inst_I_type;
 
 static void init_pmem() {
-//  imm[11:0] rs1 000 rd 0010011 -- ADDI
-//	addi x1, x1, 1
-	inst_I_type inst;
-	inst.opcode1_0 = 3;
-	inst.opcode6_2 = 4;
-	inst.rd = 1;
-	inst.funct3 = 0;
-	inst.rs1 = 1;
-	inst.simm11_0 = 1;
-	char *p = (char *)pmem; 
-	for(int i = 0; i < 20; i++) {
-		memcpy(p + i*4, &inst, sizeof(inst));
-	}
-	inst.opcode1_0 = 3;
-	inst.opcode6_2 = 4;
-	inst.rd = 2;
-	inst.funct3 = 0;
-	inst.rs1 = 2;
-	inst.simm11_0 = 2;
-	for(int i = 20; i < 40; i++) {
-		memcpy(p + i*4, &inst, sizeof(inst));
-	}
-	inst.opcode1_0 = 3;
-	inst.opcode6_2 = 4;
-	inst.rd = 0;
-	inst.funct3 = 0;
-	inst.rs1 = 2;
-	inst.simm11_0 = 2;
-	for(int i = 40; i < 60; i++) {
-		memcpy(p + i*4, &inst, sizeof(inst));
-	}
-	uint32_t tmp = 0x00100073;
-	memcpy(&inst, &tmp, sizeof(tmp));
-	int i = 60;
-	memcpy(p + i*4, &inst, sizeof(inst));
-//0000000 00001 00000 000 00000 11100 11 ebreak
 }
 
 static void single_cycle() {
@@ -110,3 +74,39 @@ int main(int argc, char** argv, char** env) {
 	return 0;
 }
 
+////  imm[11:0] rs1 000 rd 0010011 -- ADDI
+////	addi x1, x1, 1
+//	inst_I_type inst;
+//	inst.opcode1_0 = 3;
+//	inst.opcode6_2 = 4;
+//	inst.rd = 1;
+//	inst.funct3 = 0;
+//	inst.rs1 = 1;
+//	inst.simm11_0 = 1;
+//	char *p = (char *)pmem; 
+//	for(int i = 0; i < 20; i++) {
+//		memcpy(p + i*4, &inst, sizeof(inst));
+//	}
+//	inst.opcode1_0 = 3;
+//	inst.opcode6_2 = 4;
+//	inst.rd = 2;
+//	inst.funct3 = 0;
+//	inst.rs1 = 2;
+//	inst.simm11_0 = 2;
+//	for(int i = 20; i < 40; i++) {
+//		memcpy(p + i*4, &inst, sizeof(inst));
+//	}
+//	inst.opcode1_0 = 3;
+//	inst.opcode6_2 = 4;
+//	inst.rd = 0;
+//	inst.funct3 = 0;
+//	inst.rs1 = 2;
+//	inst.simm11_0 = 2;
+//	for(int i = 40; i < 60; i++) {
+//		memcpy(p + i*4, &inst, sizeof(inst));
+//	}
+//	uint32_t tmp = 0x00100073;
+//	memcpy(&inst, &tmp, sizeof(tmp));
+//	int i = 60;
+//	memcpy(p + i*4, &inst, sizeof(inst));
+////0000000 00001 00000 000 00000 11100 11 ebreak
