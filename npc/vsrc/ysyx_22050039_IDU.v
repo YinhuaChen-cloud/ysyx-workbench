@@ -12,7 +12,7 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	output [XLEN-1:0] pc_wdata 
 );
 
-	// generate GPRS x0-x31
+	// submodule1 - registers_heap: generate GPRS x0-x31
 	wire [XLEN-1:0] regs [NR_REG-1:0];
 	wire [NR_REG-1:0] reg_each_wen; 
 	wire reg_total_wen;  // no drive yet TODO: not decied whether necessary yet
@@ -26,7 +26,7 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 		end
 	endgenerate
 
-	// decode inst
+	// submodule2 - instruction decoder: decode inst
 	wire [6:0] opcode;
 	wire [2:0] funct3;
 	wire [REG_SEL-1:0] rd;
