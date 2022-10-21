@@ -7,17 +7,13 @@ module ysyx_22050039_top #(XLEN = 64, INST_LEN = 32) (
 	output [XLEN-1:0] pc
 );
 
-	wire [XLEN-1:0] src1;
-	wire [XLEN-1:0] src2;
-	wire [XLEN-1:0] exec_result;
-	wire [4:0] rd;
-	wire func;
-	wire pc_wen; // IDU -> IFU
-	wire [XLEN-1:0] pc_wdata; // IDU -> IFU
-
 //	always@(posedge clk) begin
 //		$display("pc = 0x%x, src1 = 0x%x, src2 = 0x%x, rd = %d, exec_result = aaa%d", pc, src1, src2, rd, exec_result);
 //	end
+
+  // submodule1 IFU
+	wire pc_wen; // IDU -> IFU
+	wire [XLEN-1:0] pc_wdata; // IDU -> IFU
 
 	ysyx_22050039_IFU #(XLEN) ifu(
 		.clk(clk),
@@ -26,6 +22,12 @@ module ysyx_22050039_top #(XLEN = 64, INST_LEN = 32) (
 		.pc_wdata(pc_wdata),
 		.pc(pc)
 	);
+
+	// submodule2: IDU
+	wire [XLEN-1:0] src1; // IDU -> EXU
+	wire [XLEN-1:0] src2; // IDU -> EXU
+	wire func; // IDU -> EXU
+	wire [XLEN-1:0] exec_result; // EXU -> IDU
 
 	ysyx_22050039_IDU #(XLEN, INST_LEN) idu(
 		.clk(clk),

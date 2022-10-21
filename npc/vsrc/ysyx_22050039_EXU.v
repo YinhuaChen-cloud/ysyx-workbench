@@ -15,6 +15,8 @@ module ysyx_22050039_EXU #(XLEN = 64) (
 	always@(posedge clk)
 		if(~rst && ~func)
 			ebreak();
+		else
+			;
 
 	assign exec_result = addi_result;
 

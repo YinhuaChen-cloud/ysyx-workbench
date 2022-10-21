@@ -8,9 +8,9 @@ module ysyx_22050039_IFU #(XLEN=64) (
 
 	wire [XLEN-1:0] next_pc;
 
-  //TODO: the "pc + 1" here may be a problem
   ysyx_22050039_Reg #(XLEN, 32'h80000000) pc_reg (clk, rst, next_pc, pc, 1'b1);
 
+  //TODO: the "pc + 1" here may be a problem
 	assign next_pc = pc_wen ? pc_wdata : pc+1;  
 
 endmodule
