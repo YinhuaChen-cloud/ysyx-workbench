@@ -59,7 +59,7 @@ void ebreak() { printf("In main.cpp ebreak\n"); exit(0); }
 static unsigned int pmem_read(unsigned long pc) {
 //	printf("pmem = 0x%p\n", pmem);
 //	printf("pc = %lu\n", pc);	
-	char *p = (char *)pmem + (pc-MEM_BASE) * 4; 
+	char *p = (char *)pmem + (pc-MEM_BASE); 
 //	printf("p = 0x%p\n", p);
 	return *(unsigned int *)(p);	
 }
