@@ -12,13 +12,13 @@ module ysyx_22050039_top #(XLEN = 64, INST_LEN = 32) (
 
   // submodule1 IFU
 	wire pc_wen; // IDU -> IFU
-	wire [XLEN-1:0] pc_wdata; // IDU -> IFU
+	wire [XLEN-1:0] dnpc; // EXU -> IFU
 
 	ysyx_22050039_IFU #(XLEN) ifu(
 		.clk(clk),
 		.rst(rst),
 		.pc_wen(pc_wen),
-		.pc_wdata(pc_wdata),
+		.pc_wdata(dnpc),
 		.pc(pc)
 	);
 
@@ -33,15 +33,13 @@ module ysyx_22050039_top #(XLEN = 64, INST_LEN = 32) (
 		.rst(rst),
 		.inst(inst),
 		.exec_result(exec_result),
-		.dnpc(dnpc),
 		.src1(src1),
 		.src2(src2),
 		.func(func),
-		.pc_wen(pc_wen),
-		.pc_wdata(pc_wdata)
+		.pc_wen(pc_wen)
 	);
 
-	wire [XLEN-1:0] dnpc; // EXU -> IDU
+	// submodule3: EXU
 	ysyx_22050039_EXU #(XLEN) exu(
 		.clk(clk),
 		.rst(rst),
