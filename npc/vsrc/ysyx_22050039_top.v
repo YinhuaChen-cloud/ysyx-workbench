@@ -51,5 +51,9 @@ module ysyx_22050039_top #(XLEN = 64, INST_LEN = 32) (
 		.dnpc(dnpc)
 	);
 
+	always@(posedge clk) begin
+		$display("dnpc = %d", dnpc);
+	end
+
 endmodule
 
