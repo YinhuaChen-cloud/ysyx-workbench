@@ -9,9 +9,6 @@ module ysyx_22050039_EXU #(XLEN = 64) (
 	output [XLEN-1:0] dnpc
 );
 
-	wire [XLEN-1:0] addi_result;
-	assign addi_result = src1 + src2;
-
 	import "DPI-C" function void ebreak();
 
 	always@(*) begin	
@@ -28,14 +25,5 @@ module ysyx_22050039_EXU #(XLEN = 64) (
 			default: ;
 		endcase
 	end
-
-
-	always@(posedge clk)
-		if(rst)
-			exec_result = '0;
-		else
-			;
-
-	assign exec_result = addi_result;
 
 endmodule
