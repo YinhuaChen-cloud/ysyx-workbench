@@ -137,7 +137,8 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	);
 
 	always@(posedge clk) begin
-		$display("inst_type, func = %d, %d", inst_type, func);
+		$display("inst_type = %d, func = %d, src1 = %x, src2 = %x", inst_type,
+			func, src1, src2);
 	end
 
 endmodule
