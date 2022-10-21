@@ -1,4 +1,3 @@
-/* verilator lint_off UNUSED */
 module ysyx_22050039_EXU #(XLEN = 64) (
 	input clk,
 	input rst,

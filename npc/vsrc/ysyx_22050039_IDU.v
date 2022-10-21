@@ -1,9 +1,9 @@
-/* verilator lint_off UNUSED */
 module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	input clk,
 	input rst,
 	input [INST_LEN-1:0] inst,
 	input [XLEN-1:0] exec_result,
+	input [XLEN-1:0] dnpc,
 	output reg [XLEN-1:0] src1,
 	output reg [XLEN-1:0] src2,
 	output [2:0] func,

@@ -1,5 +1,4 @@
 // May be you can say top == cpu
-/* verilator lint_off UNUSED */
 module ysyx_22050039_top #(XLEN = 64, INST_LEN = 32) (
   input clk,
   input rst,
@@ -34,6 +33,7 @@ module ysyx_22050039_top #(XLEN = 64, INST_LEN = 32) (
 		.rst(rst),
 		.inst(inst),
 		.exec_result(exec_result),
+		.dnpc(dnpc),
 		.src1(src1),
 		.src2(src2),
 		.func(func),
