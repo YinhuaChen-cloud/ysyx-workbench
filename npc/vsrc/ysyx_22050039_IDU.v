@@ -7,7 +7,7 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	input [XLEN-1:0] exec_result,
 	output [XLEN-1:0] src1,
 	output [XLEN-1:0] src2,
-	output func,
+	output [2:0] func,
 	output pc_wen, 
 	output [XLEN-1:0] pc_wdata 
 );
@@ -35,23 +35,35 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	wire [6:0] funct7;
 	wire [19:0] imm;
 	wire R, I, S, B, U, J; // only 1 of these will be high
-	reg [7+3+3*REG_SEL+7+20+6-1:0] bundle;
+	reg [7+3+3*REG_SEL+7+20+6+3-1:0] bundle;
 
-	assign {opcode, funct3, rd, rs1, rs2, funct7, imm, R, I, S, B, U, J} = bundle;
+	assign {opcode, funct3, rd, rs1, rs2, funct7, imm, R, I, S, B, U, J, func} = bundle;
 
 	localparam NR_INST = 7; // (including ebreak)
 	always@(*)
 		casez(inst)
 			// I-type
-			32'b?????????????????000?????0010011: bundle = {inst[6:0], inst[14:12], inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}}, inst[31:20]}, 6'b010000}; // addi
-			32'b?????????????????000?????1100111: bundle = {inst[6:0], inst[14:12], inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}}, inst[31:20]}, 6'b010000}; // jalr
+			32'b?????????????????000?????0010011: bundle = {inst[6:0], inst[14:12],
+				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}},
+				inst[31:20]}, 6'b010000, 3'd0}; // addi
+			32'b?????????????????000?????1100111: bundle = {inst[6:0], inst[14:12],
+				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}},
+				inst[31:20]}, 6'b010000, 3'd1}; // jalr
 			// U-type
-			32'b?????????????????????????0010111: bundle = {inst[6:0], inst[14:12], inst[11:7], inst[19:15], inst[24:20], inst[31:25], inst[31:12], 6'b000010}; // auipc
-			32'b?????????????????????????0110111: bundle = {inst[6:0], inst[14:12], inst[11:7], inst[19:15], inst[24:20], inst[31:25], inst[31:12], 6'b000010}; // lui
+			32'b?????????????????????????0010111: bundle = {inst[6:0], inst[14:12],
+				inst[11:7], inst[19:15], inst[24:20], inst[31:25], inst[31:12],
+				6'b000010, 3'd2}; // auipc
+			32'b?????????????????????????0110111: bundle = {inst[6:0], inst[14:12],
+				inst[11:7], inst[19:15], inst[24:20], inst[31:25], inst[31:12],
+				6'b000010, 3'd3}; // lui
 			// S-type
-			32'b?????????????????011?????0100011: bundle = {inst[6:0], inst[14:12], inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}}, inst[31:25], inst[11:7]}, 6'b001000}; // sd
+			32'b?????????????????011?????0100011: bundle = {inst[6:0], inst[14:12],
+				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}},
+				inst[31:25], inst[11:7]}, 6'b001000, 3'd4}; // sd
 			// J-type
-			32'b?????????????????????????1101111: bundle = {inst[6:0], inst[14:12], inst[11:7], inst[19:15], inst[24:20], inst[31:25], {inst[31], inst[19:12], inst[20], inst[30:21]}, 6'b000001}; // jal
+			32'b?????????????????????????1101111: bundle = {inst[6:0], inst[14:12],
+				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {inst[31],
+				inst[19:12], inst[20], inst[30:21]}, 6'b000001, 3'd5}; // jal
 			// ebreak
 			32'b00000000000100000000000001110011: ; 
 			// invalid
@@ -99,9 +111,9 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 		})
 	);
 
-//	always@(posedge clk) begin
-//		$display("x0 = 0x%x, x1 = 0x%x, x2 = 0x%x ", regs[0], regs[1], regs[2]);
-//	end
+	always@(posedge clk) begin
+		$display("x0 = 0x%x, x1 = 0x%x, x2 = 0x%x ", regs[0], regs[1], regs[2]);
+	end
 
 endmodule
 
