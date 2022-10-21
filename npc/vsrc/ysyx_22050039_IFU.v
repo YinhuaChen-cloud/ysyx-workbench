@@ -1,4 +1,3 @@
-/* verilator lint_off WIDTH */
 module ysyx_22050039_IFU #(XLEN=64) (
 	input clk,
 	input rst,
@@ -6,6 +5,7 @@ module ysyx_22050039_IFU #(XLEN=64) (
 	input [XLEN-1:0] pc_wdata,
 	output [XLEN-1:0] pc
 );
+ // /* verilator lint_off WIDTH */
 
 	wire [XLEN-1:0] next_pc;
 

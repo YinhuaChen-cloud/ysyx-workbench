@@ -58,7 +58,8 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 			default 														: ; 
 		endcase
 
-	// reg_addressing, using reg_each_wen (actually, this is a decoder, you can say a 32-1 mux)
+	// submodule3 - reg addressing: 5-32 decoder 
+	// Only 1 bit of output can be high, and that is the reg to write
 	ysyx_22050039_MuxKey #(NR_REG, REG_SEL, NR_REG) selDestR (
 		.out(reg_each_wen),
 		.key(rd),
@@ -98,9 +99,9 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 		})
 	);
 
-	always@(posedge clk) begin
-		$display("x0 = 0x%x, x1 = 0x%x, x2 = 0x%x ", regs[0], regs[1], regs[2]);
-	end
+//	always@(posedge clk) begin
+//		$display("x0 = 0x%x, x1 = 0x%x, x2 = 0x%x ", regs[0], regs[1], regs[2]);
+//	end
 
 endmodule
 
