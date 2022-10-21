@@ -1,12 +1,11 @@
 /* verilator lint_off UNUSED */
-/* verilator lint_off UNDRIVEN */
 module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	input clk,
 	input rst,
 	input [INST_LEN-1:0] inst,
 	input [XLEN-1:0] exec_result,
-	output [XLEN-1:0] src1,
-	output [XLEN-1:0] src2,
+	output reg [XLEN-1:0] src1,
+	output reg [XLEN-1:0] src2,
 	output [2:0] func,
 	output pc_wen, 
 	output [XLEN-1:0] pc_wdata 
@@ -65,12 +64,39 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {inst[31],
 				inst[19:12], inst[20], inst[30:21]}, 6'b000001, 3'd5}; // jal
 			// ebreak
-			32'b00000000000100000000000001110011: ; 
+			32'b00000000000100000000000001110011: bundle = {inst[6:0], inst[14:12],
+				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {inst[31],
+				inst[19:12], inst[20], inst[30:21]}, 6'b000001, 3'd6}; 
 			// invalid
 			default 														: ; 
 		endcase
 
-	// submodule3 - reg addressing: 5-32 decoder 
+	// submodule3 - define src1 src2 TODO: maybe we need to determine rd here
+	// the future
+	wire [5:0] inst_type;
+	assign inst_type = {R, I, S, B, U, J};
+
+	always@(*) begin	
+		src1 = 0;
+		src2 = 0;
+		case(inst_type)
+			// R
+			6'b100000: begin src1 = regs[rs1]; src2 = regs[rs2]; end
+			// I
+			6'b010000: begin src1 = regs[rs1]; src2 = {{44{imm[19]}}, imm}; end
+			// S
+			6'b001000: ; // empty now
+			// B
+			6'b000100: ; // empty now
+			// U
+			6'b000010: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end
+			// J
+			6'b000001: begin src1 = {{43{imm[19]}}, imm, 1'b0}; end
+			default:;
+		endcase
+	end
+
+	// submodule4 - reg addressing: 5-32 decoder 
 	// Only 1 bit of output can be high, and that is the reg to write
 	ysyx_22050039_MuxKey #(NR_REG, REG_SEL, NR_REG) selDestR (
 		.out(reg_each_wen),

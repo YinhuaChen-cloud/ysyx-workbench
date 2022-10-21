@@ -41,13 +41,16 @@ module ysyx_22050039_top #(XLEN = 64, INST_LEN = 32) (
 		.pc_wdata(pc_wdata)
 	);
 
+	wire [XLEN-1:0] dnpc; // EXU -> IDU
 	ysyx_22050039_EXU #(XLEN) exu(
 		.clk(clk),
 		.rst(rst),
 		.func(func),
 		.src1(src1),
 		.src2(src2),
-		.exec_result(exec_result)
+		.pc(pc),
+		.exec_result(exec_result),
+		.dnpc(dnpc)
 	);
 
 endmodule
