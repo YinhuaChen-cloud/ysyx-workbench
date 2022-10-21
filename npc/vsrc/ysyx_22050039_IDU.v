@@ -137,7 +137,7 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	);
 
 	always@(posedge clk) begin
-		$display("x0 = 0x%x, x1 = 0x%x, x2 = 0x%x ", regs[0], regs[1], regs[2]);
+		$display("inst_type = %d", inst_type);
 	end
 
 endmodule
