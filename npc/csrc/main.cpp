@@ -248,6 +248,7 @@ int main(int argc, char** argv, char** env) {
 		single_cycle();
 	}
 
+	npc_state.halt_pc = top->pc;
 	printTrap();
 
 	delete top;
