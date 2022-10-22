@@ -101,7 +101,7 @@ void invalid_inst(uint64_t thispc) {
 
 void printTrap() {
   switch (npc_state.state) {
-    case NPC_RUNNING: npc_state.state = NPC_QUIT;
+    case NPC_RUNNING: npc_state.state = NPC_END;
       // fall through
     case NPC_END: case NPC_ABORT:
       printf("npc: %s at pc = " FMT_WORD,
@@ -112,7 +112,6 @@ void printTrap() {
 			printf("\n");
       // fall through
 //    case NPC_QUIT: statistic();
-    case NPC_QUIT:;
 	}
 } 
 
@@ -252,6 +251,7 @@ int main(int argc, char** argv, char** env) {
 	}
 
 	npc_state.halt_pc = top->pc;
+	npc_state.halt_ret = -1; 
 	printTrap();
 
 	delete top;
