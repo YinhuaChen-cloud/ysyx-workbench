@@ -7,6 +7,7 @@
 #include "svdpi.h"
 #include "Vysyx_22050039_top__Dpi.h"
 #include <getopt.h>
+#include "utils.h"
 
 #define MEM_SIZE 65536 // 64KB
 #define MEM_BASE 0x80000000
@@ -15,7 +16,7 @@ static const uint32_t default_img [] = {
   0x00000297,  // auipc t0,0
   0x0002b823,  // sd  zero,16(t0)
   0x0102b503,  // ld  a0,16(t0)
-  0x00100073,  // ebreak (used as nemu_trap)
+  0x00100073,  // ebreak (used as npc_trap)
   0xdeadbeef,  // some data
 };
 
@@ -123,6 +124,9 @@ int main(int argc, char** argv, char** env) {
 	reset(10);
 
 	int sim_time = 70;
+
+	npc_state.state = NPC_RUNNING;
+
 	while (contextp->time() < sim_time && !contextp->gotFinish()) {
 		contextp->timeInc(1);
 //		printf("before pmem_read\n");
@@ -134,46 +138,25 @@ int main(int argc, char** argv, char** env) {
 		single_cycle();
 	}
 
+  switch (npc_state.state) {
+    case NPC_RUNNING: npc_state.state = NPC_QUIT; break;
+
+    case NPC_END: case NPC_ABORT:
+      Log("npc: %s at pc = " FMT_WORD,
+          (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
+           (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
+            ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
+          npc_state.halt_pc);
+      // fall through
+//    case NPC_QUIT: statistic(); TODO: maybe we need this in the future
+    case NPC_QUIT: ;
+	}
+
 	delete top;
 	delete contextp;
 	free(pmem);
 
-	return 0;
+	// TODO: maybe need to be changed
+	return is_exit_status_bad();
 }
 
-////  imm[11:0] rs1 000 rd 0010011 -- ADDI
-////	addi x1, x1, 1
-//	inst_I_type inst;
-//	inst.opcode1_0 = 3;
-//	inst.opcode6_2 = 4;
-//	inst.rd = 1;
-//	inst.funct3 = 0;
-//	inst.rs1 = 1;
-//	inst.simm11_0 = 1;
-//	char *p = (char *)pmem; 
-//	for(int i = 0; i < 20; i++) {
-//		memcpy(p + i*4, &inst, sizeof(inst));
-//	}
-//	inst.opcode1_0 = 3;
-//	inst.opcode6_2 = 4;
-//	inst.rd = 2;
-//	inst.funct3 = 0;
-//	inst.rs1 = 2;
-//	inst.simm11_0 = 2;
-//	for(int i = 20; i < 40; i++) {
-//		memcpy(p + i*4, &inst, sizeof(inst));
-//	}
-//	inst.opcode1_0 = 3;
-//	inst.opcode6_2 = 4;
-//	inst.rd = 0;
-//	inst.funct3 = 0;
-//	inst.rs1 = 2;
-//	inst.simm11_0 = 2;
-//	for(int i = 40; i < 60; i++) {
-//		memcpy(p + i*4, &inst, sizeof(inst));
-//	}
-//	uint32_t tmp = 0x00100073;
-//	memcpy(&inst, &tmp, sizeof(tmp));
-//	int i = 60;
-//	memcpy(p + i*4, &inst, sizeof(inst));
-////0000000 00001 00000 000 00000 11100 11 ebreak
