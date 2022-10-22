@@ -31,7 +31,7 @@ endif
 
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
-sim: $(VSRCS) $(CSRCS)
+run-env: $(VSRCS) $(CSRCS)
 	@echo "in sim, debug by cyh CSRCS = $(CSRCS)"
 	@echo "debug by cyh $$^ = $^"
 	@rm -rf $(OBJ_DIR)
@@ -39,6 +39,8 @@ sim: $(VSRCS) $(CSRCS)
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
+
+sim: run-env 
 	@echo "BIN = $(BIN)"
 	@echo "ARGS = $(ARGS)"
 	@echo "IMG = $(IMG)"
@@ -46,6 +48,10 @@ sim: $(VSRCS) $(CSRCS)
 # 	verilator -Wall --cc --exe --build --trace $(NPC_HOME)/csrc/main.cpp $(NPC_HOME)/vsrc/top.v
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	cd ${NPC_HOME}/..; cscope -b -R;
+
+gdb: run-env
+	$(call git_commit, "gdb NEMU")
+	gdb -s $(BIN) --args $(BIN) $(ARGS) $(IMG)
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
@@ -74,6 +80,6 @@ run: $(BIN)
 clean:
 	rm -rf ./logs ./obj_dir $(BUILD_DIR)
 
-.PHONY: clean
+.PHONY: clean sim gdb run-env
 
 include ../Makefile

@@ -67,7 +67,9 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {inst[31],
 				inst[19:12], inst[20], inst[30:21]}, 6'b000001, 3'd6, 1'b0}; 
 			// invalid
-			default 														: ; 
+			default 														: bundle = {inst[6:0], inst[14:12],
+				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {inst[31],
+				inst[19:12], inst[20], inst[30:21]}, 6'b000000, 3'd7, 1'b0}; 
 		endcase
 
 	// submodule3 - define src1 src2 TODO: maybe we need to determine rd here
