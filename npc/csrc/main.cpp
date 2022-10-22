@@ -109,6 +109,7 @@ void printTrap() {
            (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           npc_state.halt_pc);
+			printf("\n");
       // fall through
 //    case NPC_QUIT: statistic();
     case NPC_QUIT:;
