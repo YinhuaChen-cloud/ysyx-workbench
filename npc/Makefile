@@ -1,6 +1,7 @@
 TOPNAME = ysyx_22050039_top
 NXDC_FILES = constr/top.nxdc
-INC_PATH ?=
+VERILOG_INC_PATH ?= $(NPC_HOME)/vinclude
+INC_PATH ?= 
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
@@ -32,7 +33,10 @@ endif
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 run-env: $(VSRCS) $(CSRCS)
-	@echo "in sim, debug by cyh CSRCS = $(CSRCS)"
+	@echo "in run-env, debug by cyh CSRCS = $(CSRCS)"
+	@echo "in run-env, debug by cyh VSRCS = $(VSRCS)"
+	@echo "in run-env, debug by cyh VERILATOR_CFLAGS = $(VERILATOR_CFLAGS)"
+	@echo "in run-env, debug by cyh CFLAGS = $(CFLAGS)"
 	@echo "debug by cyh $$^ = $^"
 	@rm -rf $(OBJ_DIR)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
@@ -55,6 +59,8 @@ gdb: run-env
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
+VERILOG_INCFLAGS = $(addprefix -I, $(VERILOG_INC_PATH))
+VERILATOR_CFLAGS += $(VERILOG_INCFLAGS)
 CFLAGS += $(INCFLAGS) -ggdb3 -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
