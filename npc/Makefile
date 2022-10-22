@@ -55,7 +55,7 @@ gdb: run-env
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
-CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
+CFLAGS += $(INCFLAGS) -ggdb3 -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
 # build/top: 
