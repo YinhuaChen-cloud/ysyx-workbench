@@ -41,9 +41,9 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	always@(*)
 		casez(inst)
 			// I-type
-//			32'b?????????????????000?????0010011: bundle = {inst[6:0], inst[14:12],
-//				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}},
-//				inst[31:20]}, 6'b010000, 3'd0, 1'b0}; // addi
+			32'b?????????????????000?????0010011: bundle = {inst[6:0], inst[14:12],
+				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}},
+				inst[31:20]}, 6'b010000, 3'd0, 1'b0}; // addi
 			32'b?????????????????000?????1100111: bundle = {inst[6:0], inst[14:12],
 				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}},
 				inst[31:20]}, 6'b010000, 3'd1, 1'b1}; // jalr

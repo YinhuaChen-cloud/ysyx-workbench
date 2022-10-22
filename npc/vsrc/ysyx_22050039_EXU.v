@@ -15,6 +15,7 @@ module ysyx_22050039_EXU #(XLEN = 64) (
 	always@(*) begin	
 		exec_result = 0;
 		dnpc = 0;
+		inval = 0;
 		case(func)
 			3'd0: exec_result = src1 + src2;
 			3'd1: begin exec_result = pc + 4; dnpc = src1 + src2; end
@@ -23,8 +24,15 @@ module ysyx_22050039_EXU #(XLEN = 64) (
 			3'd4: ; // sd empty now
 			3'd5: begin exec_result = pc + 4; dnpc = pc + src1; end
 			3'd6: ebreak();
-			default: invalid(); // invalid
+			default: inval = 1; // invalid
 		endcase
 	end
 
+	// invalid is only valid when rst = 0
+	reg inval;
+	always@(posedge clk)
+		if(~rst && inval)
+			invalid();
+		// else do nothing
+			
 endmodule
