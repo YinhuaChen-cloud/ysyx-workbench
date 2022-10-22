@@ -1,7 +1,7 @@
 TOPNAME = ysyx_22050039_top
 NXDC_FILES = constr/top.nxdc
-# INC_PATH ?= $(NPC_HOME)/vinclude
-INC_PATH ?= 
+INC_PATH ?= $(NPC_HOME)/vinclude
+# INC_PATH ?= 
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
@@ -59,7 +59,7 @@ gdb: run-env
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
-# VERILATOR_CFLAGS += $(INC_PATH)
+VERILATOR_CFLAGS += $(INCFLAGS)
 CFLAGS += $(INCFLAGS) -ggdb3 -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
