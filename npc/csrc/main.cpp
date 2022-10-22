@@ -101,8 +101,8 @@ void invalid_inst(uint64_t thispc) {
 
 void printTrap() {
   switch (npc_state.state) {
-    case NPC_RUNNING: npc_state.state = NPC_QUIT; break;
-
+    case NPC_RUNNING: npc_state.state = NPC_QUIT;
+      // fall through
     case NPC_END: case NPC_ABORT:
       printf("npc: %s at pc = " FMT_WORD,
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
@@ -154,13 +154,17 @@ static int parse_args(int argc, char *argv[]) {
   return 0;
 }
 
-void ebreak() { printf("In main.cpp ebreak\n"); exit(0); }
+void ebreak() {
+	printf("In main.cpp ebreak\n");  
+	printTrap();
+	exit(is_exit_status_bad());
+}
 
 void invalid() { 
 	printf("In main.cpp invalid\n");
 	invalid_inst(top->pc); 
 	printTrap();
-	exit(-1);
+	exit(is_exit_status_bad());
 }
 
 static inline uint32_t pmem_read(uint64_t pc) {

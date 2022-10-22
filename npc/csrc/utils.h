@@ -28,7 +28,7 @@ typedef struct {
   uint32_t halt_ret;
 } NPCState;
 
-NPCState npc_state = { .state = NPC_STOP };
+NPCState npc_state = { .state = NPC_STOP, .halt_ret = 0 };
 
 // ----------- timer -----------
 
