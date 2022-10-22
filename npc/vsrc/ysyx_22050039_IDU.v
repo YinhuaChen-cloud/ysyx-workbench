@@ -1,3 +1,9 @@
+`define INSTPAT_START() \
+	always@(*) begin
+	
+`define INSTPAT_END() \
+	end
+
 module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	input clk,
 	input rst,
