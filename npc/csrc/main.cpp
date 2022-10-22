@@ -157,7 +157,7 @@ static int parse_args(int argc, char *argv[]) {
 void ebreak() {
 	printf("In main.cpp ebreak\n");  
 	npc_state.halt_pc = top->pc;
-  printf("omg, top->pc = 0x%x\n", top->pc);
+//  printf("omg, top->pc = 0x%x\n", top->pc);
 	printTrap();
 	exit(is_exit_status_bad());
 }
