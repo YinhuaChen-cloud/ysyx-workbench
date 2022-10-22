@@ -1,7 +1,10 @@
-`define INSTPAT_START(instruction_wire) \
+`define INSTPAT_START(inst) \
 	always@(*) begin \
-		casez(instruction_wire)
+		casez(inst)
 
 `define INSTPAT_END() \
 		endcase \
 	end
+
+`define INSTPAT(inst, pattern, imm, type, func, pc_wen) \
+	a
