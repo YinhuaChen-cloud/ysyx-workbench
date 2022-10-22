@@ -17,7 +17,10 @@ static const char mainargs[] = MAINARGS;
 void putch(char ch) {
 }
 
-void halt(int code) {
+void halt(int code) {  
+	asm volatile(".word 0x00100073");
+
+  // should not reach here
   while (1);
 }
 
