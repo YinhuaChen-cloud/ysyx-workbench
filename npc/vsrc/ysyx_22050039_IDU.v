@@ -47,8 +47,9 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 		pc_wen} = bundle;
 
 	localparam NR_INST = 7; // (including ebreak)
-	always@(*)
-		casez(inst)
+//	always@(*)
+//		casez(inst)
+	`INSTPAT_START(inst)
 			// I-type
 			32'b?????????????????000?????0010011: bundle = {inst[6:0], inst[14:12],
 				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}},
@@ -79,7 +80,8 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 			default 														: bundle = {inst[6:0], inst[14:12],
 				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {inst[31],
 				inst[19:12], inst[20], inst[30:21]}, 6'b000000, 3'd7, 1'b0}; 
-		endcase
+	`INSTPAT_END()
+//		endcase
 
 	// submodule3 - define src1 src2 TODO: maybe we need to determine rd here
 	// the future
