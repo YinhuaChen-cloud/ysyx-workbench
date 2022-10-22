@@ -16,7 +16,7 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
-#include <common.h>
+typedef uint64_t vaddr_t;
 
 // ----------- state -----------
 
@@ -28,7 +28,7 @@ typedef struct {
   uint32_t halt_ret;
 } NPCState;
 
-extern NPCState npc_state;
+NPCState npc_state = { .state = NPC_STOP };
 
 // ----------- timer -----------
 
@@ -73,8 +73,6 @@ uint64_t get_time();
     log_write(__VA_ARGS__); \
   } while (0)
 
-
-NPCState npc_state = { .state = NPC_STOP };
 
 int is_exit_status_bad() {
   int good = (npc_state.state == NPC_END && npc_state.halt_ret == 0) ||

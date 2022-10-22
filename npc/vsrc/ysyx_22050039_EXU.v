@@ -10,6 +10,7 @@ module ysyx_22050039_EXU #(XLEN = 64) (
 );
 
 	import "DPI-C" function void ebreak();
+	import "DPI-C" function void invalid();
 
 	always@(*) begin	
 		exec_result = 0;
@@ -22,7 +23,7 @@ module ysyx_22050039_EXU #(XLEN = 64) (
 			3'd4: ; // sd empty now
 			3'd5: begin exec_result = pc + 4; dnpc = pc + src1; end
 			3'd6: ebreak();
-			default: ;
+			default: invalid(); // invalid
 		endcase
 	end
 
