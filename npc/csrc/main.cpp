@@ -79,7 +79,7 @@ void invalid_inst(uint64_t thispc) {
   uint32_t temp[2];
   vaddr_t pc = thispc;
   temp[0] = pmem_read(pc);
-  temp[1] = pmem_read(pc);
+  temp[1] = pmem_read(pc+4);
 
   uint8_t *p = (uint8_t *)temp;
   printf("invalid opcode(PC = " FMT_WORD "):\n"
