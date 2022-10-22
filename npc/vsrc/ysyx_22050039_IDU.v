@@ -1,4 +1,6 @@
-`include "ysyx_22050039_macro.v"
+`include "ysyx_22050039_instpat.v"
+`include "ysyx_22050039_all_inst.v"
+
 module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	input clk,
 	input rst,
@@ -6,7 +8,7 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	input [XLEN-1:0] exec_result,
 	output reg [XLEN-1:0] src1,
 	output reg [XLEN-1:0] src2,
-	output [2:0] func,
+	output [`ysyx_22050039_FUNC_LEN-1:0] func,
 	output pc_wen 
 );
 
@@ -39,41 +41,22 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 		pc_wen} = bundle;
 
 	localparam NR_INST = 7; // (including ebreak)
-//	always@(*)
-//		casez(inst)
-	`INSTPAT_START()
+	`ysyx_22050039_INSTPAT_START()
 			// I-type
-			32'b?????????????????000?????0010011: bundle = {inst[6:0], inst[14:12],
-				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}},
-				inst[31:20]}, 6'b010000, 3'd0, 1'b0}; // addi
-			32'b?????????????????000?????1100111: bundle = {inst[6:0], inst[14:12],
-				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}},
-				inst[31:20]}, 6'b010000, 3'd1, 1'b1}; // jalr
+			`ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC)
+			`ysyx_22050039_INSTPAT(32'b?????????????????000?????1100111, {{8{inst[31]}}, inst[31:20]}, Itype, Jalr, `ysyx_22050039_WPC)
 			// U-type
-			32'b?????????????????????????0010111: bundle = {inst[6:0], inst[14:12],
-				inst[11:7], inst[19:15], inst[24:20], inst[31:25], inst[31:12],
-				6'b000010, 3'd2, 1'b0}; // auipc
-			32'b?????????????????????????0110111: bundle = {inst[6:0], inst[14:12],
-				inst[11:7], inst[19:15], inst[24:20], inst[31:25], inst[31:12],
-				6'b000010, 3'd3, 1'b0}; // lui
+			`ysyx_22050039_INSTPAT(32'b?????????????????????????0010111, inst[31:12], Utype, Auipc, `ysyx_22050039_NO_WPC)
+			`ysyx_22050039_INSTPAT(32'b?????????????????????????0110111, inst[31:12], Utype, Lui, `ysyx_22050039_NO_WPC)
 			// S-type
-			32'b?????????????????011?????0100011: bundle = {inst[6:0], inst[14:12],
-				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {{8{inst[31]}},
-				inst[31:25], inst[11:7]}, 6'b001000, 3'd4, 1'b0}; // sd
+			`ysyx_22050039_INSTPAT(32'b?????????????????011?????0100011, {{8{inst[31]}}, inst[31:25], inst[11:7]}, Stype, Sd, `ysyx_22050039_NO_WPC)
 			// J-type
-			32'b?????????????????????????1101111: bundle = {inst[6:0], inst[14:12],
-				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {inst[31],
-				inst[19:12], inst[20], inst[30:21]}, 6'b000001, 3'd5, 1'b1}; // jal
+			`ysyx_22050039_INSTPAT(32'b?????????????????????????1101111, {inst[31], inst[19:12], inst[20], inst[30:21]}, Jtype, Jal, `ysyx_22050039_WPC)
 			// ebreak
-			32'b00000000000100000000000001110011: bundle = {inst[6:0], inst[14:12],
-				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {inst[31],
-				inst[19:12], inst[20], inst[30:21]}, 6'b000001, 3'd6, 1'b0}; 
+			`ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, 6'b0, Ebreak, `ysyx_22050039_NO_WPC)
 			// invalid
-			default 														: bundle = {inst[6:0], inst[14:12],
-				inst[11:7], inst[19:15], inst[24:20], inst[31:25], {inst[31],
-				inst[19:12], inst[20], inst[30:21]}, 6'b000000, 3'd7, 1'b0}; 
-	`INSTPAT_END()
-//		endcase
+			`ysyx_22050039_INSTINVALID()
+	`ysyx_22050039_INSTPAT_END()
 
 	// submodule3 - define src1 src2 TODO: maybe we need to determine rd here
 	// the future
@@ -85,17 +68,17 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 		src2 = 0;
 		case(inst_type)
 			// R
-			6'b100000: begin src1 = regs[rs1]; src2 = regs[rs2]; end
+			Rtype: begin src1 = regs[rs1]; src2 = regs[rs2]; end
 			// I
-			6'b010000: begin src1 = regs[rs1]; src2 = {{44{imm[19]}}, imm}; end
+			Itype: begin src1 = regs[rs1]; src2 = {{44{imm[19]}}, imm}; end
 			// S
-			6'b001000: ; // empty now
+			Stype: ; // empty now
 			// B
-			6'b000100: ; // empty now
+			Btype: ; // empty now
 			// U
-			6'b000010: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end
+			Utype: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end
 			// J
-			6'b000001: begin src1 = {{43{imm[19]}}, imm, 1'b0}; end
+			Jtype: begin src1 = {{43{imm[19]}}, imm, 1'b0}; end
 			default:;
 		endcase
 	end
