@@ -1,3 +1,4 @@
+/* verilator lint_off UNUSED */ 
 `ifndef ysyx_22050039_ALL_INST_V
 `define ysyx_22050039_ALL_INST_V
 

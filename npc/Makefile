@@ -5,7 +5,7 @@ INC_PATH ?=
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
-				-O3 --x-assign fast --x-initial fast
+				-O3 --x-assign fast --x-initial fast -Wall
 
 ifeq ($(MODE), ASSERT)
 	VERILATOR_CFLAGS += --assert
