@@ -5,6 +5,7 @@
 
 `define ysyx_22050039_INSTPAT_START() \
 	always@(*) begin \
+		bundle = '0; \
 		casez(inst)
 
 `define ysyx_22050039_INSTPAT_END() \
