@@ -17,13 +17,13 @@ module ysyx_22050039_EXU #(XLEN = 64) (
 		dnpc = 0;
 		inval = 0;
 		case(func)
-			3'd0: exec_result = src1 + src2;
-			3'd1: begin exec_result = pc + 4; dnpc = src1 + src2; end
-			3'd2: exec_result = src1 + pc;
-			3'd3: exec_result = src1;
-			3'd4: ; // sd empty now
-			3'd5: begin exec_result = pc + 4; dnpc = pc + src1; end
-			3'd6: ebreak();
+			Addi	: exec_result = src1 + src2;
+			Jalr	: begin exec_result = pc + 4; dnpc = src1 + src2; end
+			Auipc : exec_result = src1 + pc;
+			Lui		:		exec_result = src1;
+			Sd		: ; // sd empty now
+			Jal		: begin exec_result = pc + 4; dnpc = pc + src1; end
+			Ebreak: ebreak();
 			default: inval = 1; // invalid
 		endcase
 	end
