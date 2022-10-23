@@ -1,6 +1,12 @@
 
 NPCFLAGS += -l $(shell dirname $(IMAGE).elf)/npc-log.txt
 
+ifeq ($(MYDIFF), TRUE)
+	NPCFLAGS += --diff=${NEMU_HOME}/build/riscv64-nemu-interpreter-so
+endif
+
+NPCFLAGS += -l $(shell dirname $(IMAGE).elf)/npc-log.txt
+
 run: image
 	@echo "In abm/script/platform/npc.mk"
 	@echo "IMAGE = $(IMAGE)" 	

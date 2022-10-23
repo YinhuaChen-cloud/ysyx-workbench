@@ -124,28 +124,28 @@ static const uint32_t default_img [] = {
 };
 
 static char *log_file = NULL;
-//static char *diff_so_file = NULL;
+static char *diff_so_file = NULL;
 static char *img_file = NULL;
 //static int difftest_port = 1234;
 
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
     {"log"      , required_argument, NULL, 'l'},
-//    {"diff"     , required_argument, NULL, 'd'},
+    {"diff"     , required_argument, NULL, 'd'},
     {"help"     , no_argument      , NULL, 'h'},
     {0          , 0                , NULL,  0 },
   };
   int o;
-  while ( (o = getopt_long(argc, argv, "-hl:", table, NULL)) != -1) {
+  while ( (o = getopt_long(argc, argv, "-hl:d:", table, NULL)) != -1) {
     switch (o) {
 //      case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
-//      case 'd': diff_so_file = optarg; break;
+      case 'd': diff_so_file = optarg; break;
       case 1: img_file = optarg; return 0;
       default:
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
         printf("\t-l,--log=FILE           output log to FILE\n");
-//        printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
+        printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
 //        printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
         printf("\n");
         exit(0);
@@ -167,6 +167,39 @@ void invalid() {
 	invalid_inst(top->pc); 
 	printTrap();
 	exit(is_exit_status_bad());
+}
+
+void init_difftest(char *ref_so_file) {
+  assert(ref_so_file != NULL);
+	printf("ref_so_file = %s\n", ref_so_file);
+
+//  void *handle;
+//  handle = dlopen(ref_so_file, RTLD_LAZY);
+//  assert(handle);
+//
+//  ref_difftest_memcpy = dlsym(handle, "difftest_memcpy");
+//  assert(ref_difftest_memcpy);
+//
+//  ref_difftest_regcpy = dlsym(handle, "difftest_regcpy");
+//  assert(ref_difftest_regcpy);
+//
+//  ref_difftest_exec = dlsym(handle, "difftest_exec");
+//  assert(ref_difftest_exec);
+//
+//  ref_difftest_raise_intr = dlsym(handle, "difftest_raise_intr");
+//  assert(ref_difftest_raise_intr);
+//
+//  void (*ref_difftest_init)(int) = dlsym(handle, "difftest_init");
+//  assert(ref_difftest_init);
+//
+//  Log("Differential testing: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
+//  Log("The result of every instruction will be compared with %s. "
+//      "This will help you a lot for debugging, but also significantly reduce the performance. "
+//      "If it is not necessary, you can turn it off in menuconfig.", ref_so_file);
+//
+//  ref_difftest_init(port);
+//  ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
+//  ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 
 static inline uint32_t pmem_read(uint64_t pc) {
@@ -234,6 +267,10 @@ int main(int argc, char** argv, char** env) {
 	parse_args(argc, argv);
 	init_pmem();
 	reset(10);
+
+// difftest start
+	init_difftest(diff_so_file);
+// difftest end
 
 	int sim_time = 70;
 
