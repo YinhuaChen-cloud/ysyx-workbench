@@ -18,7 +18,6 @@ ifeq ($(WALL), TRUE)
 endif
 
 ifeq ($(MYDIFF), TRUE)
-	CFLAGS += -ldl
 	LDFLAGS += -ldl
 endif
 
