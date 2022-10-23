@@ -22,7 +22,7 @@ module ysyx_22050039_EXU #(XLEN = 64) (
 			Auipc : exec_result = src1 + pc;
 			Lui		:		exec_result = src1;
 			Sd		: ; // sd empty now
-			Jal		: begin assert(pc != 64'b1) else $error("omg"); exec_result = pc + 4; dnpc = pc + src1; end
+			Jal		: begin assert(pc == 64'b1) else $error("omg"); exec_result = pc + 4; dnpc = pc + src1; end
 			Ebreak: ebreak();
 			default: inval = 1; // invalid
 		endcase
