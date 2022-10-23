@@ -7,6 +7,12 @@ VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
 				-O3 --x-assign fast --x-initial fast
 
+ifeq ($(MODE), ASSERT)
+	VERILATOR_CFLAGS += --assert
+else
+	VERILATOR_CFLAGS += --noassert
+endif
+
 BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
 BIN = $(BUILD_DIR)/$(TOPNAME)
