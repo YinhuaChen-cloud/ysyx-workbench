@@ -17,12 +17,12 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	wire [NR_REG-1:0] reg_each_wen; 
 	wire reg_total_wen;  // no drive yet TODO: not decied whether necessary yet
 
-	ysyx_22050039_Reg #(XLEN, 0) reg_zero (clk, rst, exec_result, regs[0], 1'b0); // $zero is always 0
+	ysyx_22050039_Reg #(XLEN, 0) reg_zero (clk, rst, exec_result, regs[0], reg_total_wen & reg_each_wen[0]); 
 	genvar i; 
 	generate
 		for(i = 1; i < NR_REG; i = i+1) begin
 //			ysyx_22050039_Reg #(XLEN, 0) gen_gprs (clk, rst, exec_result, regs[i], reg_total_wen & reg_each_wen[i]);
-			ysyx_22050039_Reg #(XLEN, 0) gen_gprs (clk, rst, exec_result, regs[i], reg_each_wen[i]);
+			ysyx_22050039_Reg #(XLEN, 0) gen_gprs (clk, rst, exec_result, regs[i], reg_total_wen & reg_each_wen[i]);
 		end
 	endgenerate
 
@@ -35,25 +35,24 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	wire [6:0] funct7;
 	wire [19:0] imm;
 	wire R, I, S, B, U, J; // only 1 of these will be high
-	reg [7+3+3*REG_SEL+7+20+6+3+1-1:0] bundle;
+	reg [7+3+3*REG_SEL+7+20+6+3+1+1-1:0] bundle;
 
 	assign {opcode, funct3, rd, rs1, rs2, funct7, imm, R, I, S, B, U, J, func,
-		pc_wen} = bundle;
+		pc_wen, reg_total_wen} = bundle;
 
-	localparam NR_INST = 7; // (including ebreak)
 	`ysyx_22050039_INSTPAT_START()
 			// I-type
-			`ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC)
-			`ysyx_22050039_INSTPAT(32'b?????????????????000?????1100111, {{8{inst[31]}}, inst[31:20]}, Itype, Jalr, `ysyx_22050039_WPC)
+			`ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
+			`ysyx_22050039_INSTPAT(32'b?????????????????000?????1100111, {{8{inst[31]}}, inst[31:20]}, Itype, Jalr, `ysyx_22050039_WPC, `ysyx_22050039_WREG)
 			// U-type
-			`ysyx_22050039_INSTPAT(32'b?????????????????????????0010111, inst[31:12], Utype, Auipc, `ysyx_22050039_NO_WPC)
-			`ysyx_22050039_INSTPAT(32'b?????????????????????????0110111, inst[31:12], Utype, Lui, `ysyx_22050039_NO_WPC)
+			`ysyx_22050039_INSTPAT(32'b?????????????????????????0010111, inst[31:12], Utype, Auipc, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
+			`ysyx_22050039_INSTPAT(32'b?????????????????????????0110111, inst[31:12], Utype, Lui, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
 			// S-type
-			`ysyx_22050039_INSTPAT(32'b?????????????????011?????0100011, {{8{inst[31]}}, inst[31:25], inst[11:7]}, Stype, Sd, `ysyx_22050039_NO_WPC)
+			`ysyx_22050039_INSTPAT(32'b?????????????????011?????0100011, {{8{inst[31]}}, inst[31:25], inst[11:7]}, Stype, Sd, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
 			// J-type
-			`ysyx_22050039_INSTPAT(32'b?????????????????????????1101111, {inst[31], inst[19:12], inst[20], inst[30:21]}, Jtype, Jal, `ysyx_22050039_WPC)
+			`ysyx_22050039_INSTPAT(32'b?????????????????????????1101111, {inst[31], inst[19:12], inst[20], inst[30:21]}, Jtype, Jal, `ysyx_22050039_WPC, `ysyx_22050039_WREG)
 			// ebreak
-			`ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Eb_Inv, Ebreak, `ysyx_22050039_NO_WPC)
+			`ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Eb_Inv, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
 			// invalid
 			`ysyx_22050039_INSTINVALID()
 	`ysyx_22050039_INSTPAT_END()
@@ -91,7 +90,7 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 		.out(reg_each_wen),
 		.key(rd),
 		.lut({
-			5'd0, 32'h0000_0001, 
+			5'd0, 32'h0000_0000, // $zero is always 0
 			5'd1, 32'h0000_0002, 
 			5'd2, 32'h0000_0004, 
 			5'd3, 32'h0000_0008, 
