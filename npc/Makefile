@@ -17,6 +17,11 @@ ifeq ($(WALL), TRUE)
 	VERILATOR_CFLAGS += -Wall 
 endif
 
+ifeq ($(MYDIFF), TRUE)
+	CFLAGS += -ldl
+	LDFLAGS += -ldl
+endif
+
 BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
 BIN = $(BUILD_DIR)/$(TOPNAME)
@@ -47,6 +52,7 @@ run-env: $(VSRCS) $(CSRCS)
 	@echo "in run-env, debug by cyh VSRCS = $(VSRCS)"
 	@echo "in run-env, debug by cyh VERILATOR_CFLAGS = $(VERILATOR_CFLAGS)"
 	@echo "in run-env, debug by cyh CFLAGS = $(CFLAGS)"
+	@echo "in run-env, debug by cyh NPCFLAGS = $(NPCFLAGS)"
 	@echo "debug by cyh $$^ = $^"
 	@rm -rf $(OBJ_DIR)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \

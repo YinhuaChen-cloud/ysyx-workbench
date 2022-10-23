@@ -9,6 +9,10 @@
 #include <getopt.h>
 #include "utils.h"
 
+// for difftest start
+#include <dlfcn.h>
+// for difftest end
+
 #define MEM_SIZE 65536 // 64KB
 #define MEM_BASE 0x80000000
 
@@ -171,11 +175,10 @@ void invalid() {
 
 void init_difftest(char *ref_so_file) {
   assert(ref_so_file != NULL);
-	printf("ref_so_file = %s\n", ref_so_file);
 
-//  void *handle;
-//  handle = dlopen(ref_so_file, RTLD_LAZY);
-//  assert(handle);
+  void *handle;
+  handle = dlopen(ref_so_file, RTLD_LAZY);
+  assert(handle);
 //
 //  ref_difftest_memcpy = dlsym(handle, "difftest_memcpy");
 //  assert(ref_difftest_memcpy);
