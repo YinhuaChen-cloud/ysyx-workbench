@@ -53,7 +53,7 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 			// J-type
 			`ysyx_22050039_INSTPAT(32'b?????????????????????????1101111, {inst[31], inst[19:12], inst[20], inst[30:21]}, Jtype, Jal, `ysyx_22050039_WPC)
 			// ebreak
-			`ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, 6'b0, Ebreak, `ysyx_22050039_NO_WPC)
+			`ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Eb_Inv, Ebreak, `ysyx_22050039_NO_WPC)
 			// invalid
 			`ysyx_22050039_INSTINVALID()
 	`ysyx_22050039_INSTPAT_END()
@@ -68,18 +68,20 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 		src2 = 0;
 		case(inst_type)
 			// R
-			Rtype: begin src1 = regs[rs1]; src2 = regs[rs2]; end
+			Rtype		: begin src1 = regs[rs1]; src2 = regs[rs2]; end
 			// I
-			Itype: begin src1 = regs[rs1]; src2 = {{44{imm[19]}}, imm}; end
+			Itype		: begin src1 = regs[rs1]; src2 = {{44{imm[19]}}, imm}; end
 			// S
-			Stype: ; // empty now
+			Stype		: ; // empty now
 			// B
-			Btype: ; // empty now
+			Btype		: assert(0); // empty now
 			// U
-			Utype: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end
+			Utype		: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end
 			// J
-			Jtype: begin src1 = {{43{imm[19]}}, imm, 1'b0}; end
-			default:;
+			Jtype		: begin src1 = {{43{imm[19]}}, imm, 1'b0}; end
+			// ebreak and invalid
+			Eb_Inv	: ;	
+			default : assert(0); 
 		endcase
 	end
 
