@@ -246,7 +246,7 @@ int main(int argc, char** argv, char** env) {
 //		printf("pc = %lu\n", top->pc);	
 		top->inst = pmem_read(top->pc);
 //		printf("after pmem_read\n");
-		printf("In main.cpp main() top->inst = 0x%x\n", top->inst);
+		printf("In main.cpp main() top->pc = 0x%lx, top->inst = 0x%x\n", top->pc, top->inst);
 		single_cycle();
 	}
 
