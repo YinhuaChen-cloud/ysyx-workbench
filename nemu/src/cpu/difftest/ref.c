@@ -19,14 +19,17 @@
 #include <memory/paddr.h>
 
 void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
+	printf("In difftest_memcpy\n");
   assert(0);
 }
 
 void difftest_regcpy(void *dut, bool direction) {
+	printf("In difftest_regcpy\n");
   assert(0);
 }
 
 void difftest_exec(uint64_t n) {
+	printf("In difftest_exec\n");
   assert(0);
 }
 
