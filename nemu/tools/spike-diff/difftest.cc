@@ -48,6 +48,7 @@ static processor_t *p = NULL;
 static state_t *state = NULL;
 
 void sim_t::diff_init(int port) {
+//  static processor_t *p = NULL;
   p = get_core("0");
   state = p->get_state();
 }
@@ -102,10 +103,12 @@ void difftest_exec(uint64_t n) {
 }
 
 void difftest_init(int port) {
-  difftest_htif_args.push_back("");
+  difftest_htif_args.push_back(""); // difftest_htif_args is just a string_vector
+	// new a class sim_t
   s = new sim_t(DEFAULT_ISA, DEFAULT_PRIV, DEFAULT_VARCH, 1, false, false,
       0, 0, NULL, reg_t(-1), difftest_mem, difftest_plugin_devices, difftest_htif_args,
       std::move(difftest_hartids), difftest_dm_config, nullptr, false, NULL, true);
+	// invoke sim_t's method "diff_init"
   s->diff_init(port);
 }
 
