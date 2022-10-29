@@ -6,13 +6,6 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
   cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
-// 一个输出RTL中通用寄存器的值的示例
-void dump_gpr() {
-  int i;
-  for (i = 0; i < 32; i++) {
-    printf("gpr[%d] = 0x%lx\n", i, cpu_gpr[i]);
-  }
-}
 
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
@@ -21,6 +14,7 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
+// 输出RTL中通用寄存器的值
 void isa_reg_display() {
   // format:  $(reg_name)\t$(hex_val)\t$(decimal_val)
   for(int i = 0; i < sizeof(regs)/sizeof(char *); i++) {
