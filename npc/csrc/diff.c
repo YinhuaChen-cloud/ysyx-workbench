@@ -58,7 +58,7 @@ static bool isa_difftest_checkregs(riscv64_CPU_state *ref_r) {
 
 static void checkregs(riscv64_CPU_state *ref) {
   if (!isa_difftest_checkregs(ref)) {
-		printf("Oh, isa_difftest_checkregs() fails!\n");
+		printf("\nOh, isa_difftest_checkregs() fails!\n");
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = cpu.pc;
   }
