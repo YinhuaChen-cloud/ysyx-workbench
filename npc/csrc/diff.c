@@ -32,12 +32,8 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   void (*ref_difftest_init)(int) = (void (*)(int))dlsym(handle, "difftest_init");
   assert(ref_difftest_init);
 //
-	printf("cyh-ha 1\n");
   ref_difftest_init(1234);
-	printf("cyh-ha 2\n");
 	ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
-	printf("cyh-ha 3\n");
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
-	printf("cyh-ha 4\n");
 }
 
