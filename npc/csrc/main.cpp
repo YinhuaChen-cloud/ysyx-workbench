@@ -1,25 +1,20 @@
 #include "Vysyx_22050039_top.h"
 #include "verilated.h"
-#include <stdio.h>
-#include <assert.h>
-#include <stdint.h>
-#include <string.h>
 #include "svdpi.h"
 #include "Vysyx_22050039_top__Dpi.h"
 #include <getopt.h>
 #include "utils.h"
 #include "diff.h"
-
-
-#define MEM_SIZE 65536 // 64KB
-#define MEM_BASE 0x80000000
+#include "common.h"
+#include "paddr.h"
 
 #define FMT_WORD "0x%016lx"
 #define FMT_PADDR "0x%016lx"
 
 VerilatedContext* contextp;
 Vysyx_22050039_top* top;
-static char *pmem = NULL;
+riscv64_CPU_state cpu;
+
 
 /*
        _                         __  __                         _ 
@@ -68,7 +63,6 @@ unsigned char isa_logo[] = {
   0x2c, 0x5f, 0x7c, 0x5f, 0x7c, 0x0a, '\0'  /* Termination Character is indispensable! */
 };
 
-static inline uint32_t pmem_read(uint64_t pc); 
 
 void set_npc_state(int state, vaddr_t pc, int halt_ret) {
   npc_state.state = state;
@@ -171,16 +165,6 @@ void invalid() {
 	exit(is_exit_status_bad());
 }
 
-//void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
-
-static inline uint32_t pmem_read(uint64_t pc) {
-//	printf("pmem = 0x%p\n", pmem);
-//	printf("pc = %lu\n", pc);	
-	char *p = (char *)pmem + (pc-MEM_BASE); 
-//	printf("p = 0x%p\n", p);
-	return *(uint32_t *)(p);	
-}
-
 typedef struct {
 	uint32_t opcode1_0 : 2;
 	uint32_t opcode6_2 : 5;
@@ -213,10 +197,6 @@ static long load_img() {
   return size;
 }
 
-static void init_pmem() {
-	pmem = (char *)malloc(MEM_SIZE);
-	load_img();
-}
 
 static void single_cycle() {
   top->clk = 0; top->eval();
@@ -237,10 +217,11 @@ int main(int argc, char** argv, char** env) {
 
 	parse_args(argc, argv);
 	init_pmem();
+	long img_size = load_img();
 	reset(10);
 
 // difftest start
-	init_difftest(diff_so_file);
+	init_difftest(diff_so_file, img_size, 1234);
 // difftest end
 
 	int sim_time = 70;

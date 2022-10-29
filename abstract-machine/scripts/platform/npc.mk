@@ -2,7 +2,8 @@
 NPCFLAGS += -l $(shell dirname $(IMAGE).elf)/npc-log.txt
 
 ifeq ($(MYDIFF), TRUE)
-	NPCFLAGS += --diff=${NEMU_HOME}/build/riscv64-nemu-interpreter-so
+	# NPCFLAGS += --diff=${NEMU_HOME}/build/riscv64-nemu-interpreter-so
+	NPCFLAGS += --diff=/home/chenyinhua/sda3/ysyx-workbench/nemu/tools/spike-diff/build/riscv64-spike-so
 endif
 
 NPCFLAGS += -l $(shell dirname $(IMAGE).elf)/npc-log.txt

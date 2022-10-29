@@ -1,9 +1,16 @@
-// for difftest start
 #include <dlfcn.h>
 #include <stdio.h>
-// for difftest end
+#include <assert.h>
+#include <stdint.h>
+#include "common.h"
+#include "paddr.h"
+#include "diff.h"
 
-void init_difftest(char *ref_so_file) {
+void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
+void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
+void (*ref_difftest_exec)(uint64_t n) = NULL;
+
+void init_difftest(char *ref_so_file, long img_size, int port) {
   assert(ref_so_file != NULL);
 
   void *handle;
@@ -25,7 +32,12 @@ void init_difftest(char *ref_so_file) {
   void (*ref_difftest_init)(int) = (void (*)(int))dlsym(handle, "difftest_init");
   assert(ref_difftest_init);
 //
+	printf("cyh-ha 1\n");
   ref_difftest_init(1234);
+	printf("cyh-ha 2\n");
   ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
+	printf("cyh-ha 3\n");
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+	printf("cyh-ha 4\n");
 }
+
