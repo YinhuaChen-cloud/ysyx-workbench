@@ -8,10 +8,8 @@
 #include "Vysyx_22050039_top__Dpi.h"
 #include <getopt.h>
 #include "utils.h"
+#include "diff.h"
 
-// for difftest start
-#include <dlfcn.h>
-// for difftest end
 
 #define MEM_SIZE 65536 // 64KB
 #define MEM_BASE 0x80000000
@@ -173,49 +171,7 @@ void invalid() {
 	exit(is_exit_status_bad());
 }
 
-typedef uint64_t paddr_t;
-void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
-void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
-void (*ref_difftest_exec)(uint64_t n) = NULL;
 //void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
-
-void init_difftest(char *ref_so_file) {
-  assert(ref_so_file != NULL);
-
-  void *handle;
-  handle = dlopen(ref_so_file, RTLD_LAZY);
-  assert(handle);
-
-  ref_difftest_memcpy = (void (*)(paddr_t, void*, size_t, bool))dlsym(handle, "difftest_memcpy");
-  assert(ref_difftest_memcpy);
-
-  ref_difftest_regcpy = (void (*)(void*, bool))dlsym(handle, "difftest_regcpy");
-  assert(ref_difftest_regcpy);
-//
-  ref_difftest_exec = (void (*)(uint64_t))dlsym(handle, "difftest_exec");
-  assert(ref_difftest_exec);
-//
-//  ref_difftest_raise_intr = dlsym(handle, "difftest_raise_intr");
-//  assert(ref_difftest_raise_intr);
-//
-  void (*ref_difftest_init)(int) = (void (*)(int))dlsym(handle, "difftest_init");
-  assert(ref_difftest_init);
-//
-  ref_difftest_init(1234);
-  ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
-  ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
-}
-// 在DUT host memory的`buf`和REF guest memory的`dest`之间拷贝`n`字节,
-// `direction`指定拷贝的方向, `DIFFTEST_TO_DUT`表示往DUT拷贝, `DIFFTEST_TO_REF`表示往REF拷贝
-void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction);
-// `direction`为`DIFFTEST_TO_DUT`时, 获取REF的寄存器状态到`dut`;
-// `direction`为`DIFFTEST_TO_REF`时, 设置REF的寄存器状态为`dut`;
-void difftest_regcpy(void *dut, bool direction);
-// 让REF执行`n`条指令
-void difftest_exec(uint64_t n);
-// 初始化REF的DiffTest功能
-void difftest_init();
-
 
 static inline uint32_t pmem_read(uint64_t pc) {
 //	printf("pmem = 0x%p\n", pmem);
