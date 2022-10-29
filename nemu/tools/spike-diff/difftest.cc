@@ -48,7 +48,11 @@ static processor_t *p = NULL;
 static state_t *state = NULL;
 
 void sim_t::diff_init(int port) {
-  p = get_core("0");
+//  processor_t this class represents one processor in a RISC-V machine.
+//  static processor_t *p = NULL;
+  p = get_core("0"); // get NO.0 processor
+//  architectural state of a RISC-V hart,		including all regs
+//	static state_t *state = NULL;
   state = p->get_state();
 }
 
@@ -81,6 +85,12 @@ void sim_t::diff_memcpy(reg_t dest, void* src, size_t n) {
 
 extern "C" {
 
+// RESET_VECTOR: The addr where the first inst is 
+// guest_to_host: (paddr) { return pmem + paddr - CONFIG_MBASE; }
+// img_size: the bytes size of the bin read by nemu
+// DIFFTEST_TO_REF: true
+// RESET_VECTOR (CONFIG_MBASE->0x80000000 + CONFIG_PC_RESET_OFFSET->0x0)
+// ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
 void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   if (direction == DIFFTEST_TO_REF) {
     s->diff_memcpy(addr, buf, n);
@@ -102,11 +112,13 @@ void difftest_exec(uint64_t n) {
 }
 
 void difftest_init(int port) {
-  difftest_htif_args.push_back("");
+  difftest_htif_args.push_back(""); // difftest_htif_args is just a string_vector
+	// new a class sim_t
   s = new sim_t(DEFAULT_ISA, DEFAULT_PRIV, DEFAULT_VARCH, 1, false, false,
       0, 0, NULL, reg_t(-1), difftest_mem, difftest_plugin_devices, difftest_htif_args,
       std::move(difftest_hartids), difftest_dm_config, nullptr, false, NULL, true);
-  s->diff_init(port);
+	// invoke sim_t's method "diff_init"
+  s->diff_init(port); // the port seems no any function
 }
 
 void difftest_raise_intr(uint64_t NO) {

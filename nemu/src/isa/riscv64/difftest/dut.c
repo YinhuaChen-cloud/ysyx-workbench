@@ -23,16 +23,18 @@ extern const char *regs[];
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 	bool theSame = true;
-	if(cpu.pc != ref_r->pc) {
-		theSame = false;
-	} else {
-		for(int i = 0; i < GPR_NR; i++)	{
-			if(cpu.gpr[i] != ref_r->gpr[i]) {
-				theSame = false;
-				printf("-------regs (%s) differs, cpu = 0x%lx, ref = 0x%lx-------\n", regs[i], cpu.gpr[i], ref_r->gpr[i]);
-			}
+
+	for(int i = 0; i < GPR_NR; i++)	{
+		if(cpu.gpr[i] != ref_r->gpr[i]) {
+			theSame = false;
+			printf("------- regs (%s) differs, cpu = 0x%lx, ref = 0x%lx -------\n", regs[i], cpu.gpr[i], ref_r->gpr[i]);
 		}
 	}
+	if(cpu.pc != ref_r->pc) { 
+		theSame = false;
+		printf("------- pc differs, cpu = 0x%lx, ref = 0x%lx -------\n", cpu.pc, ref_r->pc);
+	} 
+	
   return theSame;
 }
 

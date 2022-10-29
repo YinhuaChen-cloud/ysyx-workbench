@@ -17,6 +17,10 @@ ifeq ($(WALL), TRUE)
 	VERILATOR_CFLAGS += -Wall 
 endif
 
+ifeq ($(MYDIFF), TRUE)
+	LDFLAGS += -ldl
+endif
+
 BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
 BIN = $(BUILD_DIR)/$(TOPNAME)
@@ -47,6 +51,7 @@ run-env: $(VSRCS) $(CSRCS)
 	@echo "in run-env, debug by cyh VSRCS = $(VSRCS)"
 	@echo "in run-env, debug by cyh VERILATOR_CFLAGS = $(VERILATOR_CFLAGS)"
 	@echo "in run-env, debug by cyh CFLAGS = $(CFLAGS)"
+	@echo "in run-env, debug by cyh NPCFLAGS = $(NPCFLAGS)"
 	@echo "debug by cyh $$^ = $^"
 	@rm -rf $(OBJ_DIR)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
@@ -71,7 +76,7 @@ gdb: run-env
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 VERILOG_INCFLAGS = $(addprefix -I, $(VERILOG_INC_PATH))
 VERILATOR_CFLAGS += $(VERILOG_INCFLAGS)
-CFLAGS += $(INCFLAGS) -ggdb3 -Wall -Werror -DTOP_NAME="\"V$(TOPNAME)\""
+CFLAGS += $(INCFLAGS) -ggdb3 -O0 -Wall -Werror -DTOP_NAME="\"V$(TOPNAME)\"" 
 LDFLAGS += -lSDL2 -lSDL2_image
 
 # build/top: 
