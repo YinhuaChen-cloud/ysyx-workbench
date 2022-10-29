@@ -145,6 +145,7 @@ int main(int argc, char** argv, char** env) {
 		cpu_gpr_to_cpu();
 
 		difftest_step();
+    if (npc_state.state != NPC_RUNNING) break;
 	}
 
 	npc_state.halt_pc = top->pc;
