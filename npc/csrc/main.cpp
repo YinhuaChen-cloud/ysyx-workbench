@@ -140,6 +140,7 @@ int main(int argc, char** argv, char** env) {
 		printf("In main.cpp main() top->pc = 0x%lx, top->inst = 0x%x\n", top->pc, top->inst);
 		single_cycle();
 		difftest_step();
+		isa_reg_display();
 	}
 
 	npc_state.halt_pc = top->pc;
