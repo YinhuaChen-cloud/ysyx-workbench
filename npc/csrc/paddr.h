@@ -4,7 +4,7 @@
 #include "common.h"
 #include <stdlib.h>
 
-static uint8_t *pmem = NULL; 
+extern uint8_t *pmem; 
 
 uint8_t* guest_to_host(paddr_t paddr); 
 
