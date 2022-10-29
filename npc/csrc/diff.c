@@ -5,6 +5,8 @@
 #include "common.h"
 #include "paddr.h"
 #include "diff.h"
+#include "reg.h"
+#include "errormessage.h"
 
 void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
@@ -35,5 +37,39 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_init(1234);
 	ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+}
+
+static bool isa_difftest_checkregs(riscv64_CPU_state *ref_r) {
+	bool theSame = true;
+
+	for(int i = 0; i < GPR_NR; i++)	{
+		if(cpu.gpr[i] != ref_r->gpr[i]) {
+			theSame = false;
+			printf("------- regs (%s) differs, cpu = 0x%lx, ref = 0x%lx -------\n", regs[i], cpu.gpr[i], ref_r->gpr[i]);
+		}
+	}
+	if(cpu.pc != ref_r->pc) { 
+		theSame = false;
+		printf("------- pc differs, cpu = 0x%lx, ref = 0x%lx -------\n", cpu.pc, ref_r->pc);
+	} 
+	
+  return theSame;
+}
+
+static void checkregs(riscv64_CPU_state *ref) {
+  if (!isa_difftest_checkregs(ref)) {
+		printf("Oh, isa_difftest_checkregs() fails!\n");
+    npc_state.state = NPC_ABORT;
+    npc_state.halt_pc = cpu.pc;
+  }
+}
+
+void difftest_step() {
+	riscv64_CPU_state ref_r;
+
+  ref_difftest_exec(1);
+  ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
+
+  checkregs(&ref_r);
 }
 
