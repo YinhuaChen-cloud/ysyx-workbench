@@ -123,6 +123,7 @@ int main(int argc, char** argv, char** env) {
 
 // difftest start
 	cpu.pc = top->pc;
+	cpu_gpr_to_cpu();
 	init_difftest(diff_so_file, img_size, difftest_port);
 // difftest end
 
@@ -141,9 +142,9 @@ int main(int argc, char** argv, char** env) {
 		single_cycle();
 
 		cpu.pc = top->pc;
+		cpu_gpr_to_cpu();
 
 		difftest_step();
-		isa_reg_display();
 	}
 
 	npc_state.halt_pc = top->pc;

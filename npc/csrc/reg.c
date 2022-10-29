@@ -1,10 +1,18 @@
 #include "reg.h"
 #include "common.h"
 
+uint64_t *cpu_gpr = NULL;
+
 riscv64_CPU_state cpu = {};
 
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-  cpu.gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+  cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
+
+void cpu_gpr_to_cpu() {
+	for(int i = 0; i < GPR_NR; i++) {
+		cpu.gpr[i] = cpu_gpr[i];
+	}
 }
 
 const char *regs[] = {
