@@ -13,7 +13,7 @@
 
 VerilatedContext* contextp;
 Vysyx_22050039_top* top;
-riscv64_CPU_state cpu;
+riscv64_CPU_state cpu = {};
 
 
 /*
