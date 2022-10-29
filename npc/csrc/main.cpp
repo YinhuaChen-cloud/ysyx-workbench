@@ -122,6 +122,7 @@ int main(int argc, char** argv, char** env) {
 	reset(10);
 
 // difftest start
+	cpu.pc = top->pc;
 	init_difftest(diff_so_file, img_size, difftest_port);
 // difftest end
 
