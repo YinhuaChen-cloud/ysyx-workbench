@@ -138,6 +138,9 @@ int main(int argc, char** argv, char** env) {
 //		printf("after pmem_read\n");
 		printf("In main.cpp main() top->pc = 0x%lx, top->inst = 0x%x\n", top->pc, top->inst);
 		single_cycle();
+
+		cpu.pc = top->pc;
+
 		difftest_step();
 		isa_reg_display();
 	}
