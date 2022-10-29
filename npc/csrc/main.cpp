@@ -141,7 +141,7 @@ int main(int argc, char** argv, char** env) {
 
 		cpu.pc = top->pc;
 
-//		difftest_step();
+		difftest_step();
 		isa_reg_display();
 	}
 
