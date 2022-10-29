@@ -11,7 +11,6 @@
 
 VerilatedContext* contextp;
 Vysyx_22050039_top* top;
-riscv64_CPU_state cpu = {};
 
 static const uint32_t default_img [] = {
   0x00000297,  // auipc t0,0
