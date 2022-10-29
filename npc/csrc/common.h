@@ -14,7 +14,7 @@ typedef uint64_t word_t;
 typedef word_t vaddr_t;
 
 typedef struct {
-  word_t *gpr;
+  word_t gpr[32];
   vaddr_t pc;
 } riscv64_CPU_state;
 
