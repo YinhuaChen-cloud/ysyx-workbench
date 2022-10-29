@@ -28,3 +28,4 @@ void isa_reg_display() {
   }
   printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, cpu.pc);
 }
+
