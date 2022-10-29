@@ -12,6 +12,9 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	output pc_wen 
 );
 
+	import "DPI-C" function void set_gpr_ptr(input logic [XLEN-1:0] a []);
+	initial set_gpr_ptr(regs);  // rf为通用寄存器的二维数组变量
+
 	// submodule1 - registers_heap: generate GPRS x0-x31
 	wire [XLEN-1:0] regs [NR_REG-1:0];
 	wire [NR_REG-1:0] reg_each_wen; 
