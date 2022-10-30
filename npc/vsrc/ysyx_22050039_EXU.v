@@ -19,11 +19,17 @@ module ysyx_22050039_EXU #(XLEN = 64) (
 		dnpc = 0;
 		inval = 0;
 		case(func)
+			// Rtype
+			// Itype
 			Addi		: exec_result = src1 + src2;
 			Jalr		: begin exec_result = pc + 4; dnpc = src1 + src2; end
+			// Stype
+			Sd			: ; // sd empty now
+			// Btype
+			// Utype
 			Auipc		: exec_result = src1 + pc;
 			Lui			:	exec_result = src1;
-			Sd			: ; // sd empty now
+			// Jtype
 			Jal			: begin exec_result = pc + 4; dnpc = pc + src1; end
 			Ebreak	: ebreak();
 			default	: inval = 1; // invalid
