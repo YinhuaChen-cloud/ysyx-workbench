@@ -5,8 +5,31 @@
 
 enum bit[`ysyx_22050039_FUNC_LEN-1:0] {
 	// Rtype
+	Addw = 0,
+	Subw,
+	Mulw,
+	Divw,
+	Divuw,
+	Sllw,
+	Srlw,
+	Sraw,
+	Remw,
+	Remuw,
+	Sub,
+	Or,
+	Add,
+	Mul,
+	Xor,
+	Sll,
+	Slt,
+	Sltu,
+	And,
+	Div,
+	Divu,
+	Rem,
+	Remu,
 	// Itype
-	Addi = 0, 
+	Addi, 
 	Jalr, 
 	// Stype
 	Sd, 
