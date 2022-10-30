@@ -124,17 +124,17 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 		src2 = 0;
 		case(inst_type)
 			// R
-			Rtype		: begin src1 = regs[rs1]; src2 = regs[rs2]; end
+			Rtype		: begin src1 = regs[rs1]; src2 = regs[rs2]; end // checked
 			// I
-			Itype		: begin src1 = regs[rs1]; src2 = {{44{imm[19]}}, imm}; end
+			Itype		: begin src1 = regs[rs1]; src2 = {{44{imm[19]}}, imm}; end // checked
 			// S
 			Stype		: ; // empty now
 			// B
 			Btype		: assert(0); // empty now
 			// U
-			Utype		: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end
+			Utype		: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end // checked
 			// J
-			Jtype		: begin src1 = {{43{imm[19]}}, imm, 1'b0}; end
+			Jtype		: begin src1 = {{43{imm[19]}}, imm, 1'b0}; end // checked
 			// ebreak and invalid
 			Special	: ;	
 			default : assert(0); 
