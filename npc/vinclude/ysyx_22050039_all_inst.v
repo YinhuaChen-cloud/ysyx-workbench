@@ -4,6 +4,7 @@
 `define ysyx_22050039_FUNC_LEN 8
 
 enum bit[`ysyx_22050039_FUNC_LEN-1:0] {
+	// Rtype
 	Addi = 0, 
 	Jalr, 
 	Auipc, 
