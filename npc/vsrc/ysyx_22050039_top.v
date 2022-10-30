@@ -25,7 +25,7 @@ module ysyx_22050039_top #(XLEN = 64, INST_LEN = 32) (
 	// submodule2: IDU
 	wire [XLEN-1:0] src1; // IDU -> EXU
 	wire [XLEN-1:0] src2; // IDU -> EXU
-	wire [2:0] func; // IDU -> EXU
+	wire [`ysyx_22050039_FUNC_LEN-1:0] func; // IDU -> EXU
 	wire [XLEN-1:0] exec_result; // EXU -> IDU
 
 	ysyx_22050039_IDU #(XLEN, INST_LEN) idu(

@@ -1,7 +1,7 @@
 `ifndef ysyx_22050039_ALL_INST_V
 `define ysyx_22050039_ALL_INST_V
 
-`define ysyx_22050039_FUNC_LEN 3
+`define ysyx_22050039_FUNC_LEN 8
 
 enum bit[`ysyx_22050039_FUNC_LEN-1:0] {Addi = 0, Jalr, Auipc, Lui, Sd, Jal, Ebreak, Invalid} allinst;
 

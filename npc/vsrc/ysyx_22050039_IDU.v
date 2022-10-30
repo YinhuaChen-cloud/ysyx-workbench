@@ -38,7 +38,7 @@ module ysyx_22050039_IDU #(XLEN = 64, INST_LEN = 32, NR_REG = 32, REG_SEL = 5) (
 	wire [6:0] funct7;
 	wire [19:0] imm;
 	wire R, I, S, B, U, J; // only 1 of these will be high
-	reg [7+3+3*REG_SEL+7+20+6+3+1+1-1:0] bundle;
+	reg [7+3+3*REG_SEL+7+20+6+`ysyx_22050039_FUNC_LEN+1+1-1:0] bundle;
 
 	assign {opcode, funct3, rd, rs1, rs2, funct7, imm, R, I, S, B, U, J, func,
 		pc_wen, reg_total_wen} = bundle;
