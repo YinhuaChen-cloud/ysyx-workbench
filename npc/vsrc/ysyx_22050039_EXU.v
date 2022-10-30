@@ -1,7 +1,9 @@
+`include "ysyx_22050039_all_inst.v"
+
 module ysyx_22050039_EXU #(XLEN = 64) (
 	input clk,
 	input rst,
-	input [2:0] func,
+	input [`ysyx_22050039_FUNC_LEN-1:0] func,
 	input [XLEN-1:0] src1,
 	input [XLEN-1:0] src2,
 	input [XLEN-1:0] pc,
