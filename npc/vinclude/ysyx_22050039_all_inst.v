@@ -51,7 +51,16 @@ enum bit[`ysyx_22050039_FUNC_LEN-1:0] {
 	Jalr, 
 	// Stype
 	Sd, 
+	Sw,
+	Sh,
+	Sb,
 	// Btype
+	Beq,
+	Bne	,
+	Bltu,
+	Bge,
+	Bgeu,
+	Blt,
 	// Utype
 	Auipc, 
 	Lui, 
