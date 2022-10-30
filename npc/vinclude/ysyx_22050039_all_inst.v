@@ -5,11 +5,16 @@
 
 enum bit[`ysyx_22050039_FUNC_LEN-1:0] {
 	// Rtype
+	// Itype
 	Addi = 0, 
 	Jalr, 
+	// Stype
+	Sd, 
+	// Btype
+	// Utype
 	Auipc, 
 	Lui, 
-	Sd, 
+	// Jtype
 	Jal, 
 	Ebreak, 
 	Invalid
