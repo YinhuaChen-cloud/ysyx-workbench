@@ -18,8 +18,10 @@ module ysyx_22050039_EXU #(XLEN = 64)
 //  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
 
   wire [XLEN-1:0] rdata;
+	wire [XLEN-1:0] raddr;
+	assign raddr = rst ? 64'h8000_0000 : src1 + src2; // TODO: The plus here might be problem
   always @(*) begin
-    pmem_read(src1 + src2, rdata); // TODO: The plus here might be problem
+    pmem_read(raddr, rdata); 
 //    pmem_write(waddr, wdata, wmask);
   end
 
