@@ -1,9 +1,13 @@
 #include "paddr.h"
+#include "assert.h"
 
 uint8_t *pmem = NULL;
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
-uint8_t* cpu_to_sim(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
+uint8_t* cpu_to_sim(paddr_t paddr) { 
+	assert(paddr >= CONFIG_MBASE && paddr < CONFIG_MBASE + CONFIG_MSIZE);
+	return pmem + paddr - CONFIG_MBASE; 
+}
 
 extern "C" void pmem_read(long long raddr, long long *rdata) {
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
