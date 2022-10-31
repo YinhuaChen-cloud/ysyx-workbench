@@ -9,6 +9,10 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
   cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
+extern "C" void set_pc(const svOpenArrayHandle r) {
+  cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
+
 void cpu_gpr_to_cpu() {
 	for(int i = 0; i < GPR_NR; i++) {
 		cpu.gpr[i] = cpu_gpr[i];

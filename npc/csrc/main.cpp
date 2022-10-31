@@ -127,18 +127,14 @@ int main(int argc, char** argv, char** env) {
 	init_difftest(diff_so_file, img_size, difftest_port);
 // difftest end
 
-	int sim_time = 70;
-
 	npc_state.state = NPC_RUNNING;
+	uint64_t pc_before_exec = top->pc;
 
-	while (contextp->time() < sim_time && !contextp->gotFinish()) {
+	while (!contextp->gotFinish()) {
 		contextp->timeInc(1);
-//		printf("before pmem_read\n");
-//		printf("top = 0x%p\n", top);
-//		printf("pc = %lu\n", top->pc);	
-		top->inst = pmem_read(top->pc);
-//		printf("after pmem_read\n");
-		printf("In main.cpp main() top->pc = 0x%lx, top->inst = 0x%x\n", top->pc, top->inst);
+//		top->inst = pmem_read(top->pc);
+//		printf("In main.cpp main() top->pc = 0x%lx, top->inst = 0x%x\n", top->pc, top->inst);
+		pc_before_exec = top->pc;
 		single_cycle();
 
 		cpu.pc = top->pc;
@@ -148,7 +144,7 @@ int main(int argc, char** argv, char** env) {
     if (npc_state.state != NPC_RUNNING) break;
 	}
 
-	npc_state.halt_pc = top->pc;
+	npc_state.halt_pc = pc_before_exec;
 	npc_state.halt_ret = -1; 
 	printTrap();
 
