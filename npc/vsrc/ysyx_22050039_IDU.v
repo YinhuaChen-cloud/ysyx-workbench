@@ -141,7 +141,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
 			Special	: ;
 			default : assert(0);
 		endcase
-//		$display("inst_type = 0x%x, src1 = 0x%x, src2 = 0x%x", inst_type, src1, src2);
+		$display("inst_type = 0x%x, src1 = 0x%x, src2 = 0x%x", inst_type, src1, src2);
   end
   
   // submodule4 - reg addressing: 5-32 decoder
