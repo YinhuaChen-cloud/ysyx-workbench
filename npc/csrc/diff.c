@@ -35,12 +35,15 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   assert(ref_difftest_init);
 //
   ref_difftest_init(1234);
-	ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
+	ref_difftest_memcpy(RESET_VECTOR, cpu_to_sim(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 
 static bool isa_difftest_checkregs(riscv64_CPU_state *ref_r) {
 	bool theSame = true;
+
+//	printf("cpu->a5 = 0x%lx\n", cpu.gpr[15]);
+//	printf("ref->a5 = 0x%lx\n", ref_r->gpr[15]);
 
 	for(int i = 0; i < GPR_NR; i++)	{
 		if(cpu.gpr[i] != ref_r->gpr[i]) {

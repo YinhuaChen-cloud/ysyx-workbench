@@ -55,6 +55,17 @@ void set_npc_state(int state, vaddr_t pc, int halt_ret) {
   npc_state.halt_ret = halt_ret;
 }
 
+#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
+#define BYTE_TO_BINARY(byte)  \
+  (byte & 0x80 ? '1' : '0'), \
+  (byte & 0x40 ? '1' : '0'), \
+  (byte & 0x20 ? '1' : '0'), \
+  (byte & 0x10 ? '1' : '0'), \
+  (byte & 0x08 ? '1' : '0'), \
+  (byte & 0x04 ? '1' : '0'), \
+  (byte & 0x02 ? '1' : '0'), \
+  (byte & 0x01 ? '1' : '0')
+
 __attribute__((noinline))
 void invalid_inst(uint64_t thispc) {
   uint32_t temp[2];
@@ -65,8 +76,11 @@ void invalid_inst(uint64_t thispc) {
   uint8_t *p = (uint8_t *)temp;
   printf("invalid opcode(PC = " FMT_WORD "):\n"
       "\t%02x %02x %02x %02x %02x %02x %02x %02x ...\n"
-      "\t%08x %08x...\n",
-      thispc, p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], temp[0], temp[1]);
+      "\t%08x %08x...\n"
+			"\t" BYTE_TO_BINARY_PATTERN BYTE_TO_BINARY_PATTERN 
+			BYTE_TO_BINARY_PATTERN BYTE_TO_BINARY_PATTERN "\n",
+      thispc, p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], temp[0], temp[1],
+			BYTE_TO_BINARY(p[3]), BYTE_TO_BINARY(p[2]), BYTE_TO_BINARY(p[1]), BYTE_TO_BINARY(p[0]));
 
   printf("There are two cases which will trigger this unexpected exception:\n"
       "1. The instruction at PC = " FMT_WORD " is not implemented.\n"

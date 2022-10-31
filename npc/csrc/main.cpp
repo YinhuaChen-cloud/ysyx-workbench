@@ -130,6 +130,7 @@ int main(int argc, char** argv, char** env) {
 	int sim_time = 70;
 
 	npc_state.state = NPC_RUNNING;
+	uint64_t pc_before_exec = top->pc;
 
 	while (contextp->time() < sim_time && !contextp->gotFinish()) {
 		contextp->timeInc(1);
@@ -139,6 +140,7 @@ int main(int argc, char** argv, char** env) {
 		top->inst = pmem_read(top->pc);
 //		printf("after pmem_read\n");
 		printf("In main.cpp main() top->pc = 0x%lx, top->inst = 0x%x\n", top->pc, top->inst);
+		pc_before_exec = top->pc;
 		single_cycle();
 
 		cpu.pc = top->pc;
@@ -148,7 +150,7 @@ int main(int argc, char** argv, char** env) {
     if (npc_state.state != NPC_RUNNING) break;
 	}
 
-	npc_state.halt_pc = top->pc;
+	npc_state.halt_pc = pc_before_exec;
 	npc_state.halt_ret = -1; 
 	printTrap();
 

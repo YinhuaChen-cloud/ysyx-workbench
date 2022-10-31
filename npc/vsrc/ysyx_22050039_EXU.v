@@ -12,6 +12,19 @@ module ysyx_22050039_EXU #(XLEN = 64)
   
   import "DPI-C" function void ebreak();
   import "DPI-C" function void invalid();
+	 
+	// for mem_rw
+  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
+//  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
+
+  wire [XLEN-1:0] rdata;
+  always @(*) begin
+    pmem_read(src1 + src2, rdata); // TODO: The plus here might be problem
+//    pmem_write(waddr, wdata, wmask);
+  end
+
+	always@(posedge clk)
+		$display("pmem_read = 0x%x", rdata);
   
   always@(*) begin
     exec_result = 0;
@@ -43,11 +56,38 @@ module ysyx_22050039_EXU #(XLEN = 64)
       Rem	:;
       Remu	:;
       // Itype
+      Xori	:;
+      Sltiu	:;
+      Slli	:;
+      Srli	:;
+      Srai	:;
+      Andi	:;
+      Ori	:;
+      Addiw	:;
+      Slliw	:;
+      Srliw	:;
+      Sraiw	:;
+      Ld	: exec_result = rdata; 
+      Lw	: exec_result = {{32{rdata[31]}}, rdata[31:0]};
+      Lwu	: exec_result = {32'b0, rdata[31:0]};
+      Lh	: exec_result = {{48{rdata[15]}}, rdata[15:0]};
+      Lhu	: exec_result = {48'b0, rdata[15:0]};
+      Lb	: exec_result = {{56{rdata[7]}}, rdata[7:0]};
+      Lbu	: exec_result = {56'b0, rdata[7:0]};
       Addi	: exec_result = src1 + src2;
 			Jalr	: begin exec_result = pc + 4; dnpc = src1 + src2; end
 			// Stype
-			Sd	: ; // sd empty now
+			Sd	:; // sd empty now
+			Sw	:;
+			Sh	:;
+			Sb	:;
 			// Btype
+			Beq	:;
+			Bne		:;
+			Bltu	:;
+			Bge	:;
+			Bgeu	:;
+			Blt	:;
 			// Utype
 			Auipc	: exec_result = src1 + pc;
 			Lui	:	exec_result   = src1;
