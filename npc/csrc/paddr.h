@@ -12,10 +12,10 @@ static inline void init_pmem() {
 	pmem = (uint8_t *)malloc(CONFIG_MSIZE);
 }
 
-static inline uint32_t pmem_read(uint64_t pc) {
-	uint8_t *p = pmem + (pc-CONFIG_MBASE); 
-	return *(uint32_t *)(p);	
-}
+//static inline uint32_t pmem_read(uint64_t pc) {
+//	uint8_t *p = pmem + (pc-CONFIG_MBASE); 
+//	return *(uint32_t *)(p);	
+//}
 
 extern "C" void pmem_read(long long raddr, long long *rdata);
 
