@@ -1,5 +1,6 @@
 `include "ysyx_22050039_instpat.v"
 `include "ysyx_22050039_all_inst.v"
+`include "ysyx_22050039_config.v"
 
 module ysyx_22050039_IDU #(XLEN = 64,
                            INST_LEN = 32,
@@ -11,6 +12,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
                            input [XLEN-1:0] exec_result,
                            output reg [XLEN-1:0] src1,
                            output reg [XLEN-1:0] src2,
+													 output reg [XLEN-1:0] destI,
                            output [`ysyx_22050039_FUNC_LEN-1:0] func,
                            output pc_wen);
   
@@ -124,6 +126,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
   always@(*) begin
     src1 = 0;
     src2 = 0;
+		destI = 0;
     case(inst_type)
 				// R
 			Rtype		: begin src1 = regs[rs1]; src2 = regs[rs2]; end // checked
@@ -132,7 +135,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
 			// S
 			Stype		: ; // empty now
 			// B
-			Btype		: assert(0); // empty now
+			Btype		: begin destI = `ysyx_22050039_SEXT(XLEN, imm, 20); src1 = regs[rs1]; src2 = regs[rs2]; end 
 			// U
 			Utype		: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end // checked
 			// J

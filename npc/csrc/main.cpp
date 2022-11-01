@@ -53,7 +53,7 @@ static int parse_args(int argc, char *argv[]) {
 
 void ebreak() {
 	printf("In main.cpp ebreak\n");  
-	npc_state.halt_pc = top->pc;
+	npc_state.halt_pc = *pc;
 //  printf("omg, top->pc = 0x%x\n", top->pc);
 	printTrap();
 	exit(is_exit_status_bad());
@@ -61,7 +61,7 @@ void ebreak() {
 
 void invalid() { 
 	printf("In main.cpp invalid\n");
-	invalid_inst(top->pc); 
+	invalid_inst(*pc); 
 	printTrap();
 	exit(is_exit_status_bad());
 }
@@ -122,29 +122,21 @@ int main(int argc, char** argv, char** env) {
 	reset(10);
 
 // difftest start
-	cpu.pc = top->pc;
-	cpu_gpr_to_cpu();
+	sv_regs_to_c();
 	init_difftest(diff_so_file, img_size, difftest_port);
 // difftest end
 
-	int sim_time = 70;
-
 	npc_state.state = NPC_RUNNING;
-	uint64_t pc_before_exec = top->pc;
+	uint64_t pc_before_exec = cpu.pc;
 
-	while (contextp->time() < sim_time && !contextp->gotFinish()) {
+	while (!contextp->gotFinish()) {
 		contextp->timeInc(1);
-//		printf("before pmem_read\n");
-//		printf("top = 0x%p\n", top);
-//		printf("pc = %lu\n", top->pc);	
-		top->inst = pmem_read(top->pc);
-//		printf("after pmem_read\n");
-		printf("In main.cpp main() top->pc = 0x%lx, top->inst = 0x%x\n", top->pc, top->inst);
-		pc_before_exec = top->pc;
+//		top->inst = pmem_read(top->pc);
+//		printf("In main.cpp main() top->pc = 0x%lx, top->inst = 0x%x\n", top->pc, top->inst);
+		pc_before_exec = cpu.pc;
 		single_cycle();
 
-		cpu.pc = top->pc;
-		cpu_gpr_to_cpu();
+		sv_regs_to_c();
 
 		difftest_step();
     if (npc_state.state != NPC_RUNNING) break;

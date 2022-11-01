@@ -2,6 +2,7 @@
 #include "common.h"
 
 uint64_t *cpu_gpr = NULL;
+uint64_t *pc = NULL;
 
 riscv64_CPU_state cpu = {};
 
@@ -9,10 +10,15 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
   cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
-void cpu_gpr_to_cpu() {
+extern "C" void set_pc(const svLogicVecVal* a) {
+  pc = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
+}
+
+void sv_regs_to_c() {
 	for(int i = 0; i < GPR_NR; i++) {
 		cpu.gpr[i] = cpu_gpr[i];
 	}
+	cpu.pc = *pc;
 }
 
 const char *regs[] = {

@@ -1,12 +1,14 @@
 `include "ysyx_22050039_all_inst.v"
 
-module ysyx_22050039_EXU #(XLEN = 64)
+module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
                           (input clk,
                            input rst,
                            input [`ysyx_22050039_FUNC_LEN-1:0] func,
                            input [XLEN-1:0] src1,
                            input [XLEN-1:0] src2,
+													 input [XLEN-1:0] destI,
                            input [XLEN-1:0] pc,
+                           output [INST_LEN-1:0] inst,
                            output reg [XLEN-1:0] exec_result,
                            output [XLEN-1:0] dnpc);
   
@@ -16,6 +18,12 @@ module ysyx_22050039_EXU #(XLEN = 64)
 	// for mem_rw
   import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
 //  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
+//
+	// ifetch
+	wire [XLEN-1:0]	inst_aux;
+	assign inst = inst_aux[INST_LEN-1:0];
+	always@(posedge clk)	
+    pmem_read(pc, inst_aux); 
 
   wire [XLEN-1:0] rdata;
 	reg [XLEN-1:0] raddr;
@@ -24,6 +32,7 @@ module ysyx_22050039_EXU #(XLEN = 64)
 //    pmem_write(waddr, wdata, wmask);
   end
 
+	// for raddr
 	always@(*)
 		case(func)
       Ld	, 
