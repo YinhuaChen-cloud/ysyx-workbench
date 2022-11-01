@@ -5,7 +5,7 @@ INC_PATH ?=
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
-				-O3 --x-assign fast --x-initial fast 
+				-Og --x-assign fast --x-initial fast 
 
 ifeq ($(MODE), ASSERT)
 	VERILATOR_CFLAGS += --assert
@@ -76,7 +76,7 @@ gdb: run-env
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 VERILOG_INCFLAGS = $(addprefix -I, $(VERILOG_INC_PATH))
 VERILATOR_CFLAGS += $(VERILOG_INCFLAGS)
-CFLAGS += $(INCFLAGS) -ggdb3 -O0 -Wall -Werror -DTOP_NAME="\"V$(TOPNAME)\"" 
+CFLAGS += $(INCFLAGS) -ggdb3 -Og -Wall -Werror -DTOP_NAME="\"V$(TOPNAME)\"" 
 LDFLAGS += -lSDL2 -lSDL2_image
 
 # build/top: 
