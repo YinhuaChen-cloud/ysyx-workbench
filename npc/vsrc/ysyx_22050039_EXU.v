@@ -23,7 +23,8 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 	wire [XLEN-1:0]	inst_aux;
 	assign inst = inst_aux[INST_LEN-1:0];
 	always@(posedge clk)	
-    pmem_read(pc, inst_aux); 
+		if(~rst)
+			pmem_read(pc, inst_aux); 
 
   wire [XLEN-1:0] rdata;
 	reg [XLEN-1:0] raddr;
@@ -31,6 +32,15 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
     pmem_read(raddr, rdata); 
 //    pmem_write(waddr, wdata, wmask);
   end
+
+	always@(posedge clk)
+		$display("pmem_read_inst_aux = 0x%x", inst_aux);
+	always@(posedge clk)
+		$display("In EXU, pmem_read_pc = 0x%x", pc);
+	always@(posedge clk)
+		$display("pmem_read_rdata = 0x%x", rdata);
+	always@(posedge clk)
+		$display("pmem_read_raddr 0x%x", raddr);
 
 	// for raddr
 	always@(*)
@@ -45,9 +55,6 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			default: raddr = 64'h8000_0000; 
 		endcase
 
-	always@(posedge clk)
-		$display("pmem_read = 0x%x", rdata);
-  
   always@(*) begin
     exec_result = 0;
     dnpc        = 0;

@@ -144,7 +144,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
 			Special	: ;
 			default : assert(0);
 		endcase
-		$display("inst_type = 0x%x, src1 = 0x%x, src2 = 0x%x, rs1 = %d, rs2 = %d", inst_type, src1, src2, rs1, rs2);
+		$display("In decoder, inst_type = 0x%x, src1 = 0x%x, src2 = 0x%x, rs1 = %d, rs2 = %d", inst_type, src1, src2, rs1, rs2);
   end
   
   // submodule4 - reg addressing: 5-32 decoder
@@ -189,7 +189,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
   );
   
   always@(posedge clk) begin
-    $display("inst_type = %d, func = %d, src1 = %x, src2 = %x", inst_type,
+    $display("In posedge clk, inst_type = %d, func = %d, src1 = %x, src2 = %x", inst_type,
     func, src1, src2);
   end
   

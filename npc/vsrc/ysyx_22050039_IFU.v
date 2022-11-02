@@ -6,8 +6,8 @@ module ysyx_22050039_IFU #(XLEN=64) (
 	output [XLEN-1:0] pc
 );
 
-  import "DPI-C" function void set_pc(input logic [XLEN-1:0] a );
-  initial set_pc(pc); // rf为通用寄存器的二维数组变量
+//  import "DPI-C" function void set_pc(input logic [XLEN-1:0] a );
+//  initial set_pc(pc); // rf为通用寄存器的二维数组变量
 
 	wire [XLEN-1:0] next_pc;
 
@@ -15,5 +15,10 @@ module ysyx_22050039_IFU #(XLEN=64) (
 
   //TODO: the "pc + 4" here may be a problem
 	assign next_pc = pc_wen ? pc_wdata : pc+4;  
+
+	always@(posedge clk)
+		$display("In IFU, pc = 0x%x", pc);
+	always@(posedge clk)
+		$display("In IFU, next_pc = 0x%x", next_pc);
 
 endmodule
