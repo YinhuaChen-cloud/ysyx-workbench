@@ -7,7 +7,7 @@ module ysyx_22050039_IFU #(XLEN=64) (
 );
 
   import "DPI-C" function void set_pc(input logic [XLEN-1:0] a );
-  initial set_pc(pc); // rf为通用寄存器的二维数组变量
+  initial set_pc(pc);  
 
 	wire [XLEN-1:0] next_pc;
 
