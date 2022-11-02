@@ -10,9 +10,9 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
   cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
-extern "C" void set_pc(const svLogicVecVal* a) {
-	pc = (uint64_t *)a;
-//	printf("In set_pc, pc = %p\n", pc);
+extern "C" void set_pc(const svOpenArrayHandle a) {
+  pc = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
+	printf("In set_pc, *pc = %lx\n", *pc);
 //	printf("In set_pc, a = %p\n", a);
 }
 
