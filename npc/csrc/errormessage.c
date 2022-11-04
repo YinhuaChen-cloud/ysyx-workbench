@@ -100,7 +100,7 @@ void printTrap() {
     case NPC_RUNNING: npc_state.state = NPC_END;
       // fall through
     case NPC_END: case NPC_ABORT:
-      printf("npc: %s at pc = " FMT_WORD,
+      printf("npc: %s at pc = " FMT_WORD "\n",
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
            (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),

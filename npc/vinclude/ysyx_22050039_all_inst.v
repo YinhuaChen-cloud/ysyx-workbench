@@ -3,7 +3,7 @@
 
 `define ysyx_22050039_FUNC_LEN 8
 
-enum bit[`ysyx_22050039_FUNC_LEN-1:0] {
+typedef enum bit[`ysyx_22050039_FUNC_LEN-1:0] {
 	// Rtype
 	Addw = 0,
 	Subw,
@@ -68,8 +68,8 @@ enum bit[`ysyx_22050039_FUNC_LEN-1:0] {
 	Jal, 
 	Ebreak, 
 	Invalid
-	} allinst;
+	} Allinst;
 
-enum bit[5:0] {Rtype = 6'b100000, Itype = 6'b010000, Stype = 6'b001000, Btype = 6'b000100, Utype = 6'b000010, Jtype = 6'b000001, Special = 6'b0} all_inst_types;
+typedef enum bit[5:0] {Rtype = 6'b100000, Itype = 6'b010000, Stype = 6'b001000, Btype = 6'b000100, Utype = 6'b000010, Jtype = 6'b000001, Special = 6'b0} All_inst_types;
 
 `endif 
