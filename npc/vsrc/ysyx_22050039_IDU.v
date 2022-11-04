@@ -13,7 +13,8 @@ module ysyx_22050039_IDU #(XLEN = 64,
                            output reg [XLEN-1:0] src1,
                            output reg [XLEN-1:0] src2,
 													 output reg [XLEN-1:0] destI,
-                           output [`ysyx_22050039_FUNC_LEN-1:0] func,
+//                           output [`ysyx_22050039_FUNC_LEN-1:0] func,
+                           output Allinst func,
                            output pc_wen);
   
   import "DPI-C" function void set_gpr_ptr(input logic [XLEN-1:0] a []);
@@ -120,7 +121,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
   
   // submodule3 - define src1 src2 TODO: maybe we need to determine rd here
   // the future
-  wire [5:0] inst_type;
+	All_inst_types inst_type;
   assign inst_type = {R, I, S, B, U, J};
   
   always@(*) begin
@@ -144,7 +145,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
 			Special	: ;
 			default : assert(0);
 		endcase
-		$display("inst_type = 0x%x, src1 = 0x%x, src2 = 0x%x, rs1 = %d, rs2 = %d", inst_type, src1, src2, rs1, rs2);
+		$display("In decoder, inst_type = %s, src1 = 0x%x, src2 = 0x%x, rs1 = %d, rs2 = %d", inst_type.name, src1, src2, rs1, rs2);
   end
   
   // submodule4 - reg addressing: 5-32 decoder
@@ -189,8 +190,8 @@ module ysyx_22050039_IDU #(XLEN = 64,
   );
   
   always@(posedge clk) begin
-    $display("inst_type = %d, func = %d, src1 = %x, src2 = %x", inst_type,
-    func, src1, src2);
+    $display("In posedge clk, inst_type = %s, func = %s, src1 = %x, src2 = %x", inst_type.name,
+    func.name, src1, src2);
   end
   
 endmodule

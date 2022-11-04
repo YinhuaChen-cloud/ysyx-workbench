@@ -1,11 +1,13 @@
 #include "paddr.h"
-#include "assert.h"
+#include "debug.h"
 
 uint8_t *pmem = NULL;
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
 uint8_t* cpu_to_sim(paddr_t paddr) { 
-	assert(paddr >= CONFIG_MBASE && paddr < CONFIG_MBASE + CONFIG_MSIZE);
+	printf("paddr = 0x%lx\n", paddr);
+	Assert(paddr >= CONFIG_MBASE && paddr < CONFIG_MBASE + CONFIG_MSIZE, \
+			"[%s:%d] In %s, out of mem bound, paddr = 0x%lx", __FILENAME__, __LINE__, __FUNCTION__, paddr);
 	return pmem + paddr - CONFIG_MBASE; 
 }
 

@@ -20,17 +20,39 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 //  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
 //
 	// ifetch
-	wire [XLEN-1:0]	inst_aux;
+	reg [XLEN-1:0]	inst_aux;
 	assign inst = inst_aux[INST_LEN-1:0];
-	always@(posedge clk)	
-    pmem_read(pc, inst_aux); 
+  always@(*) begin
+		if(~rst)
+			pmem_read(pc, inst_aux); 
+		else
+			inst_aux = '0; 
+  end
 
-  wire [XLEN-1:0] rdata;
+//	always@(posedge clk)	
+//		if(~rst)
+//			pmem_read(pc, inst_aux); 
+//		else
+//			pmem_read(raddr, inst_aux); 
+
+  reg [XLEN-1:0] rdata;
 	reg [XLEN-1:0] raddr;
   always@(*) begin
-    pmem_read(raddr, rdata); 
+		if(~rst)
+			pmem_read(raddr, rdata); 
+		else
+			rdata = '0;
 //    pmem_write(waddr, wdata, wmask);
   end
+
+	always@(posedge clk)
+		$display("pmem_read_inst_aux = 0x%x", inst_aux);
+	always@(posedge clk)
+		$display("In EXU, pmem_read_pc = 0x%x", pc);
+	always@(posedge clk)
+		$display("pmem_read_rdata = 0x%x", rdata);
+	always@(posedge clk)
+		$display("pmem_read_raddr 0x%x", raddr);
 
 	// for raddr
 	always@(*)
@@ -45,10 +67,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			default: raddr = 64'h8000_0000; 
 		endcase
 
-	always@(posedge clk)
-		$display("pmem_read = 0x%x", rdata);
-  
-  always@(*) begin
+  always@(*) begin // combinational circuit
     exec_result = 0;
     dnpc        = 0;
     inval       = 0;
@@ -96,7 +115,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Lhu	: exec_result = {48'b0, rdata[15:0]};
       Lb	: exec_result = {{56{rdata[7]}}, rdata[7:0]};
       Lbu	: exec_result = {56'b0, rdata[7:0]};
-      Addi	: exec_result = src1 + src2;
+			Addi	: begin $display("addi"); exec_result = src1 + src2; end
 			Jalr	: begin exec_result = pc + 4; dnpc = src1 + src2; end
 			// Stype
 			Sd	:; // sd empty now
@@ -111,7 +130,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			Bgeu	:;
 			Blt	:;
 			// Utype
-			Auipc	: exec_result = src1 + pc;
+			Auipc	: begin exec_result = src1 + pc; $display("auipc, exec_result = 0x%x", exec_result); end
 			Lui	:	exec_result   = src1;
 			// Jtype
 			Jal	: begin exec_result = pc + 4; dnpc = pc + src1; end

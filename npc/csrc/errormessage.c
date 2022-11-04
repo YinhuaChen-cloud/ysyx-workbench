@@ -70,8 +70,9 @@ __attribute__((noinline))
 void invalid_inst(uint64_t thispc) {
   uint32_t temp[2];
   vaddr_t pc = thispc;
-  temp[0] = pmem_read(pc);
-  temp[1] = pmem_read(pc+4);
+	pmem_read(pc, (long long int *)temp);
+//  temp[0] = pmem_read(pc);
+//  temp[1] = pmem_read(pc+4);
 
   uint8_t *p = (uint8_t *)temp;
   printf("invalid opcode(PC = " FMT_WORD "):\n"
@@ -99,7 +100,7 @@ void printTrap() {
     case NPC_RUNNING: npc_state.state = NPC_END;
       // fall through
     case NPC_END: case NPC_ABORT:
-      printf("npc: %s at pc = " FMT_WORD,
+      printf("npc: %s at pc = " FMT_WORD "\n",
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
            (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
