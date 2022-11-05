@@ -40,11 +40,13 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
   end
 
 	// for pmem data read
-  reg [XLEN-1:0] rdata;
 	reg [XLEN-1:0] raddr;
+  reg [XLEN-1:0] rdata;
   always@(*)
-		if(rst)
+		if(rst) begin
+			raddr = '0;
 			rdata = '0;
+		end
 		else begin
 			case(func)
 				Ld	, 
@@ -54,8 +56,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 				Lhu	,
 				Lb	,
 				Lbu	: begin raddr = src1 + src2; pmem_read(raddr, rdata); end // TODO: The plus here might be problem
-	//			default: raddr = 64'h8000_0000; 
-				default: rdata = '0;  
+				default: begin raddr = '0; rdata = '0; end
 			endcase
 		end
 
