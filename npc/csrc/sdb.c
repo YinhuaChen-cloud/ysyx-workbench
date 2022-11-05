@@ -69,10 +69,12 @@ static int cmd_c(char *args) {
 	npc_state.state = NPC_RUNNING;
   cpu_exec(-1);
 
-//	if(npc_state.state == NPC_RUNNING || npc_state.state == NPC_STOP)
-//		return 0;
-//	return -1;
-	return 0;
+	if(npc_state.state == NPC_RUNNING || npc_state.state == NPC_STOP)
+		return 0;
+	if(npc_state.state == NPC_ABORT)
+		return 0;
+	return -1;
+//	return 0;
 }
 //
 static int cmd_q(char *args) {
