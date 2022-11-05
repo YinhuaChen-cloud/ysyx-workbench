@@ -6,6 +6,7 @@
 #include <utils.h>
 #include <diff.h>
 #include <reg.h>
+#include <paddr.h>
 
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -131,27 +132,27 @@ static int cmd_p_x (char *args) {
 //  return 0;
 //}
 //
-//// assume args is in correct format, we did not check args
-//static int cmd_x(char *args) {
-//  char *nstr = strtok(args, " ");
-//  char *addrstr = nstr + strlen(nstr) + 1;
-//  uint32_t n = atoi(nstr);
-//  uint64_t addr = strtol(addrstr, NULL, 16);
-//  uint32_t val;
-//  uint32_t cnt = 0;
-//
-//  for(; n > 0; n--) {
-//    if(cnt % 4 == 0) {
-//      printf("\n0x%lx: ", addr);
-//    }
-//    val = vaddr_read(addr, 4);
-//    printf("0x%08x ", val);
-//    addr += 4;
-//    cnt++;
-//  }
-//  printf("\n");
-//  return 0;
-//}
+// assume args is in correct format, we did not check args
+static int cmd_x(char *args) {
+  char *nstr = strtok(args, " ");
+  char *addrstr = nstr + strlen(nstr) + 1;
+  uint32_t n = atoi(nstr);
+  uint64_t addr = strtol(addrstr, NULL, 16);
+  uint32_t val;
+  uint32_t cnt = 0;
+
+  for(; n > 0; n--) {
+    if(cnt % 4 == 0) {
+      printf("\n0x%lx: ", addr);
+    }
+    val = vaddr_read(addr, 4);
+    printf("0x%08x ", val);
+    addr += 4;
+    cnt++;
+  }
+  printf("\n");
+  return 0;
+}
 //
 //// assume args is only a non-negative number
 //static int cmd_b(char *args) {
@@ -183,7 +184,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
   { "si", "Execute [N] instructions and then stop. N = 1 if omitted", cmd_si },
   { "info", "info r to print registers, info w to print watchpoints", cmd_info },
-//  { "x", "x [n] [addr] prints n 32-bit val begining at addr in hex format", cmd_x },
+  { "x", "x [n] [addr] prints n 32-bit val begining at addr in hex format", cmd_x },
   { "p", "p EXPR to get the result of an expression in decimal format", cmd_p },
   { "p/x", "p/x EXPR to get the result of an expression in hex format", cmd_p_x },
 //  { "p/s", "p/s EXPR to get the result of an expression in string format", cmd_p_s },
