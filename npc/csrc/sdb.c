@@ -68,7 +68,7 @@ static int cmd_info(char *args) {
   if(!strcmp(args, "r"))
     isa_reg_display();
   else {
-//    print_watchpoints(); TODO: watchpoints
+    print_watchpoints();
   }
   return 0;
 }
