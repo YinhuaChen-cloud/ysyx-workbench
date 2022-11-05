@@ -5,10 +5,9 @@ uint8_t *pmem = NULL;
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
 uint8_t* cpu_to_sim(paddr_t paddr) { 
-	printf("paddr = 0x%lx\n", paddr);
 	Assert(paddr >= CONFIG_MBASE && paddr < CONFIG_MBASE + CONFIG_MSIZE, \
 			"[%s:%d] In %s, out of mem bound, paddr = 0x%lx", __FILENAME__, __LINE__, __FUNCTION__, paddr);
-	return pmem + paddr - CONFIG_MBASE; 
+	return (uint8_t *)(((uint64_t)pmem + paddr - CONFIG_MBASE) & ~0x7ull); 
 }
 
 extern "C" void pmem_read(long long raddr, long long *rdata) {
@@ -16,8 +15,19 @@ extern "C" void pmem_read(long long raddr, long long *rdata) {
 	*rdata = *(long long *)cpu_to_sim(raddr);
 }
 
-//extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
-//  // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
-//  // `wmask`中每比特表示`wdata`中1个字节的掩码,
-//  // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
-//}
+extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
+  // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
+  // `wmask`中每比特表示`wdata`中1个字节的掩码,
+  // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
+	uint64_t mymask = 1;	
+	switch(wmask) {
+		case 0x1: mymask = 0xff; break;
+		case 0x3: mymask = 0xffff; break;
+		case 0xf: mymask = 0xffffffff; break;
+		case -1: mymask = -1; break;
+		default: panic("In %s, Unsupported wmask argument", __FUNCTION__); break;
+	}
+	Assert(mymask != 1, "mymask == 1");	
+	*(uint64_t *)cpu_to_sim(waddr & ~0x7ull) = wdata & mymask;
+}
+

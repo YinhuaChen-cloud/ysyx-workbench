@@ -19,7 +19,7 @@ static inline void init_pmem() {
 
 extern "C" void pmem_read(long long raddr, long long *rdata);
 
-//extern "C" void pmem_write(long long waddr, long long wdata, char wmask);
+extern "C" void pmem_write(long long waddr, long long wdata, char wmask);
 
 #endif
 
