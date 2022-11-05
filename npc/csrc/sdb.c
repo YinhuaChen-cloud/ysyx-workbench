@@ -4,6 +4,8 @@
 #include <expr.h>
 #include <cpu-exec.h>
 #include <utils.h>
+#include <diff.h>
+#include <reg.h>
 
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -26,13 +28,16 @@ static void cpu_exec(uint32_t n) {
 	while(n--) {
 		single_cycle();
 
+		sv_regs_to_c();
+		difftest_step();
+
 		if (npc_state.state != NPC_RUNNING) break;
 	}
 }
 
 static int cmd_c(char *args) {
   cpu_exec(-1);
-  return 0;
+  return -1; // NOTE: there might be a bug
 }
 //
 //static int cmd_q(char *args) {
