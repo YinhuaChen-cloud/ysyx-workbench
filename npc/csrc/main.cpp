@@ -8,6 +8,7 @@
 #include "paddr.h"
 #include "errormessage.h"
 #include "reg.h"
+#include <sdb.h>
 
 VerilatedContext* contextp;
 Vysyx_22050039_top* top;
@@ -24,23 +25,27 @@ static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
+static int is_sdb_mode = false;
 
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
+    {"sdb"			, no_argument      , NULL, 's'},
     {"log"      , required_argument, NULL, 'l'},
     {"diff"     , required_argument, NULL, 'd'},
     {"help"     , no_argument      , NULL, 'h'},
     {0          , 0                , NULL,  0 },
   };
   int o;
-  while ( (o = getopt_long(argc, argv, "-hl:d:", table, NULL)) != -1) {
+  while ( (o = getopt_long(argc, argv, "-shl:d:", table, NULL)) != -1) {
     switch (o) {
+      case 's': printf("omg set sdb\n"); is_sdb_mode = true; break;
 //      case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
       case 1: img_file = optarg; return 0;
       default:
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
+        printf("\t-s,--sdb								run with sdb mode\n");
         printf("\t-l,--log=FILE           output log to FILE\n");
         printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
 //        printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
@@ -131,19 +136,24 @@ int main(int argc, char** argv, char** env) {
 	npc_state.state = NPC_RUNNING;
 	uint64_t pc_before_exec = cpu.pc;
 
-	while (!contextp->gotFinish()) {
-		contextp->timeInc(1);
-//		top->inst = pmem_read(top->pc);
-//		printf("In main.cpp main() top->pc = 0x%lx, top->inst = 0x%x\n", top->pc, top->inst);
-		pc_before_exec = cpu.pc;
-		printf("In while, *pc = 0x%lx\n", *pc);
-		single_cycle();
-
-		sv_regs_to_c();
-
-		difftest_step();
-    if (npc_state.state != NPC_RUNNING) break;
+	if(is_sdb_mode) {
+		init_sdb();
+//		sdb_mainloop();
 	}
+	else {
+		while (!contextp->gotFinish()) {
+			contextp->timeInc(1);
+			pc_before_exec = cpu.pc;
+			printf("In while, *pc = 0x%lx\n", *pc);
+			single_cycle();
+
+			sv_regs_to_c();
+
+			difftest_step();
+			if (npc_state.state != NPC_RUNNING) break;
+		}
+	}
+
 
 	npc_state.halt_pc = pc_before_exec;
 	npc_state.halt_ret = -1; 
