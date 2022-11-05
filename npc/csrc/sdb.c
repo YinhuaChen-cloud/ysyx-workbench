@@ -47,15 +47,15 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
-//// assume args be only 1 int, we did not check args
-//static int cmd_si(char *args) {
-//  if(!args)
-//    cpu_exec(1);
-//  else
-//    cpu_exec(atoi(args));
-//  return 0;
-//}
-//
+// assume args be only 1 int, we did not check args
+static int cmd_si(char *args) {
+  if(!args)
+    cpu_exec(1);
+  else
+    cpu_exec(atoi(args));
+  return 0;
+}
+
 //// assume args is either r or w, we did not check args
 //static int cmd_info(char *args) {
 //  if(!args) {
@@ -181,7 +181,7 @@ static struct {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-//  { "si", "Execute [N] instructions and then stop. N = 1 if omitted", cmd_si },
+  { "si", "Execute [N] instructions and then stop. N = 1 if omitted", cmd_si },
 //  { "info", "info r to print registers, info w to print watchpoints", cmd_info },
 //  { "x", "x [n] [addr] prints n 32-bit val begining at addr in hex format", cmd_x },
 //  { "p", "p EXPR to get the result of an expression in decimal format", cmd_p },
