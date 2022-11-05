@@ -21,4 +21,7 @@
 
 #define TODO() panic("please implement me")
 
+#define printred(format, ...) \
+	fprintf(stdout, ANSI_FMT(format, ANSI_FG_RED) "\n", ##  __VA_ARGS__);
+
 #endif
