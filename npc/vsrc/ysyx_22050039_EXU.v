@@ -43,12 +43,13 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 	// for pmem data read
 	reg [XLEN-1:0] raddr;
   reg [XLEN-1:0] rdata;
+  reg [XLEN-1:0] rdata_aux;
 	// TODO: the assignment of rdata here might be a problem, since rdata is
 	// also the input of exec_result of Ld, Lw, ..., Lbu. (order effect?)
   always@(*)
 		if(rst) begin
 			raddr = '0;
-			rdata = '0;
+			rdata_aux = '0;
 		end
 		else begin
 			case(func)
@@ -58,10 +59,29 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 				Lh	,
 				Lhu	,
 				Lb	,
-				Lbu	: begin raddr = src1 + src2; pmem_read(raddr, rdata); end // TODO: The plus here might be problem
-				default: begin raddr = '0; rdata = '0; end
+				Lbu	: begin raddr = src1 + src2; pmem_read(raddr, rdata_aux); end // TODO: The plus here might be problem
+				default: begin raddr = '0; rdata_aux = '0; end
 			endcase
 		end
+
+	always@(*) begin
+		rdata = '0;
+		case(raddr[2:0])
+			3'h0: rdata = rdata_aux;	
+			3'h1: rdata[XLEN-1-8:0] = rdata_aux[XLEN-1:8];	
+			3'h2: rdata[XLEN-1-16:0] = rdata_aux[XLEN-1:16];	
+			3'h3: rdata[XLEN-1-24:0] = rdata_aux[XLEN-1:24];	
+			3'h4: rdata[XLEN-1-32:0] = rdata_aux[XLEN-1:32];	
+			3'h5: rdata[XLEN-1-40:0] = rdata_aux[XLEN-1:40];	
+			3'h6: rdata[XLEN-1-48:0] = rdata_aux[XLEN-1:48];	
+			3'h7: rdata[XLEN-1-56:0] = rdata_aux[XLEN-1:56];	
+			default: assert(0);
+		endcase
+//		integer i;
+//		for(i = 3'h0; i < raddr[2:0]; i = i+1)
+//			rdata[XLEN-1-i*8:XLEN-1-i*8-7] = 8'b0;
+//		rdata[XLEN-1-i*8:0] = rdata_aux[XLEN-1:i*8];
+	end
 
 	always@(posedge clk)
 		$display("In EXU, pmem_read_inst_aux = 0x%x", inst_aux);
