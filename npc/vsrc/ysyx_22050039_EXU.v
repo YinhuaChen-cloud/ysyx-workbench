@@ -72,7 +72,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 	always@(posedge clk)
 		$display("In EXU, pmem_read_raddr 0x%x", raddr);
 
-	// insts do sth about mem
+	// insts do write mem
 	always@(posedge clk)
 		case(func)
 			// Stype
@@ -87,7 +87,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 	wire z_flag;
 	reg [XLEN-1:0] z_cal;
 	assign z_flag = (z_cal == 0);
-//	insts do nothing about mem
+//	insts do not write mem
   always@(*) begin // combinational circuit
     exec_result = 0;
     dnpc        = 0;
