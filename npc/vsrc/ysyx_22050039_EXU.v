@@ -31,6 +31,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			default: begin inst = 0; assert(0); end
 		endcase
 
+	// for pmem inst read
   always@(*) begin
 		if(~rst)
 			pmem_read(pc, inst_aux); 
@@ -38,13 +39,25 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			inst_aux = '0; 
   end
 
+	// for pmem data read
   reg [XLEN-1:0] rdata;
 	reg [XLEN-1:0] raddr;
   always@(*) begin
-		if(~rst)
-			pmem_read(raddr, rdata); 
-		else
+		if(rst)
 			rdata = '0;
+		else begin
+			case(func)
+				Ld	, 
+				Lw	,
+				Lwu	,
+				Lh	,
+				Lhu	,
+				Lb	,
+				Lbu	: begin raddr = src1 + src2; pmem_read(raddr, rdata); end // TODO: The plus here might be problem
+	//			default: raddr = 64'h8000_0000; 
+				default: rdata = '0;  
+			endcase
+		end
   end
 
 	always@(posedge clk)
@@ -55,19 +68,6 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 		$display("In EXU, pmem_read_rdata = 0x%x", rdata);
 	always@(posedge clk)
 		$display("In EXU, pmem_read_raddr 0x%x", raddr);
-
-	// for raddr
-	always@(*)
-		case(func)
-      Ld	, 
-      Lw	,
-      Lwu	,
-      Lh	,
-      Lhu	,
-      Lb	,
-      Lbu	: raddr = src1 + src2; // TODO: The plus here might be problem
-			default: raddr = 64'h8000_0000; 
-		endcase
 
   always@(*) begin // combinational circuit
     exec_result = 0;
