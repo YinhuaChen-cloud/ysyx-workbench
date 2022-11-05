@@ -7,6 +7,7 @@
 #include <diff.h>
 #include <reg.h>
 #include <paddr.h>
+#include "watchpoint.h"
 
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -114,24 +115,24 @@ static int cmd_p_x (char *args) {
 //  return 0;
 //}
 //
-//// the argument is EXPR
-//static int cmd_w(char *args) {
-//  bool success = true;
-//  WP *wp = new_wp();
-//  strncpy(wp->expr, args, EXPR_LEN-1);
-//  wp->expr[strlen(wp->expr)] = '\0';
-//  assert(strlen(wp->expr) < EXPR_LEN);
-//  wp->old_val = expr(wp->expr, &success);
-//  if(success) {
-//    nr_wp++;
-//  }
-//  else {
-//    printf("The EXPR cannot be recognized correctly, you can check detailed information in ./build/nemu-log.txt\n");
-//    free_wp(wp);
-//  }
-//  return 0;
-//}
-//
+// the argument is EXPR
+static int cmd_w(char *args) {
+  bool success = true;
+  WP *wp = new_wp();
+  strncpy(wp->expr, args, EXPR_LEN-1);
+  wp->expr[strlen(wp->expr)] = '\0';
+  assert(strlen(wp->expr) < EXPR_LEN);
+  wp->old_val = expr(wp->expr, &success);
+  if(success) {
+    nr_wp++;
+  }
+  else {
+    printf("The EXPR cannot be recognized correctly, you can check detailed information in ./build/nemu-log.txt\n");
+    free_wp(wp);
+  }
+  return 0;
+}
+
 // assume args is in correct format, we did not check args
 static int cmd_x(char *args) {
   char *nstr = strtok(args, " ");
@@ -154,7 +155,7 @@ static int cmd_x(char *args) {
   return 0;
 }
 //
-//// assume args is only a non-negative number
+// assume args is only a non-negative number
 //static int cmd_b(char *args) {
 //  int ret;
 //  int args_len = strlen(args);
@@ -188,7 +189,7 @@ static struct {
   { "p", "p EXPR to get the result of an expression in decimal format", cmd_p },
   { "p/x", "p/x EXPR to get the result of an expression in hex format", cmd_p_x },
 //  { "p/s", "p/s EXPR to get the result of an expression in string format", cmd_p_s },
-//  { "w", "w EXPR stop program when EXPR is changed", cmd_w },
+  { "w", "w EXPR stop program when EXPR is changed", cmd_w },
 //  { "b", "b EXPR to set breakpint(use watchpoint)", cmd_b },
 //  { "d", "d [n] delete watchpoint with NO [n]", cmd_d },
   /* TODO: Add more commands */
@@ -253,7 +254,7 @@ void init_sdb() {
   /* Compile the regular expressions. */
   init_regex();
 
-//  /* Initialize the watchpoint pool. */
-//  init_wp_pool();
+  /* Initialize the watchpoint pool. */
+  init_wp_pool();
 }
 
