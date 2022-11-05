@@ -174,26 +174,26 @@ static int cmd_x(char *args) {
   printf("\n");
   return 0;
 }
-//
+
 // assume args is only a non-negative number
-//static int cmd_b(char *args) {
-//  int ret;
-//  int args_len = strlen(args);
-//  char *expr = (char *)malloc(args_len + 30);
-//  strcpy(expr, "$pc == ");
-//  strcat(expr, args);
-//  ret = cmd_w(expr);
-//  free(expr);
-//  expr = NULL;
-//  return ret;
-//}
-//
-//// assume args is only a non-negative number
-//static int cmd_d(char *args) {
-//  int NO = atoi(args);
-//  free_NO_wp(NO);
-//  return 0;
-//}
+static int cmd_b(char *args) {
+  int ret;
+  int args_len = strlen(args);
+  char *expr = (char *)malloc(args_len + 30);
+  strcpy(expr, "$pc == ");
+  strcat(expr, args);
+  ret = cmd_w(expr);
+  free(expr);
+  expr = NULL;
+  return ret;
+}
+
+// assume args is only a non-negative number
+static int cmd_d(char *args) {
+  int NO = atoi(args);
+  free_NO_wp(NO);
+  return 0;
+}
 
 static struct {
   const char *name;
@@ -210,8 +210,8 @@ static struct {
   { "p/x", "p/x EXPR to get the result of an expression in hex format", cmd_p_x },
 //  { "p/s", "p/s EXPR to get the result of an expression in string format", cmd_p_s },
   { "w", "w EXPR stop program when EXPR is changed", cmd_w },
-//  { "b", "b EXPR to set breakpint(use watchpoint)", cmd_b },
-//  { "d", "d [n] delete watchpoint with NO [n]", cmd_d },
+  { "b", "b EXPR to set breakpint(use watchpoint)", cmd_b },
+  { "d", "d [n] delete watchpoint with NO [n]", cmd_d },
   /* TODO: Add more commands */
 
 };
