@@ -64,6 +64,7 @@ void sim_t::diff_get_regs(void* diff_context) {
   struct diff_context_t* ctx = (struct diff_context_t*)diff_context;
   for (int i = 0; i < NXPR; i++) {
     ctx->gpr[i] = state->XPR[i];
+		printf("In spike, i = %d, regs[i] = 0x%lx\n", i, state->XPR[i]);
   }
   ctx->pc = state->pc;
 }
@@ -109,7 +110,6 @@ void difftest_regcpy(void* dut, bool direction) {
 
 void difftest_exec(uint64_t n) {
   s->diff_step(n);
-	printf("HEllo, this is yinhua , i am in spike\n");
 }
 
 void difftest_init(int port) {
