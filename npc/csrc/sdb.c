@@ -70,19 +70,19 @@ static int cmd_info(char *args) {
   }
   return 0;
 }
-//
-//// the argument is EXPR
-//static int cmd_p(char *args) {
-//  bool success = true;
-//  uint64_t result = expr(args, &success);
-//  if(success) {
-//    printf("= %lu\n", result);
-//  }
-//  else {
-//    printf("The EXPR cannot be recognized correctly, you can check detailed information in ./build/nemu-log.txt\n");
-//  }
-//  return 0;
-//}
+
+// the argument is EXPR
+static int cmd_p(char *args) {
+  bool success = true;
+  uint64_t result = expr(args, &success);
+  if(success) {
+    printf("= %lu\n", result);
+  }
+  else {
+    printf("The EXPR cannot be recognized correctly, you can check detailed information in ./build/nemu-log.txt\n");
+  }
+  return 0;
+}
 //
 //// the argument is EXPR
 //static int cmd_p_x (char *args) {
@@ -184,7 +184,7 @@ static struct {
   { "si", "Execute [N] instructions and then stop. N = 1 if omitted", cmd_si },
   { "info", "info r to print registers, info w to print watchpoints", cmd_info },
 //  { "x", "x [n] [addr] prints n 32-bit val begining at addr in hex format", cmd_x },
-//  { "p", "p EXPR to get the result of an expression in decimal format", cmd_p },
+  { "p", "p EXPR to get the result of an expression in decimal format", cmd_p },
 //  { "p/x", "p/x EXPR to get the result of an expression in hex format", cmd_p_x },
 //  { "p/s", "p/s EXPR to get the result of an expression in string format", cmd_p_s },
 //  { "w", "w EXPR stop program when EXPR is changed", cmd_w },

@@ -31,3 +31,15 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
 	*(uint64_t *)cpu_to_sim(waddr & ~0x7ull) = wdata & mymask;
 }
 
+word_t paddr_read(paddr_t addr, int len) {
+	long long rdata;
+	pmem_read(addr, &rdata);
+  switch (len) {
+    case 1: return (uint8_t)rdata;
+    case 2: return (uint16_t)rdata;
+    case 4: return (uint32_t)rdata;
+    case 8: return (uint64_t)rdata;
+    default: Assert(0, "Unsupported len = %d", len);
+  }
+}
+

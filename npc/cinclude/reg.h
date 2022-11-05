@@ -2,6 +2,7 @@
 #define __REG_H__
 
 #include "verilated_dpi.h"
+#include <common.h>
 
 #define GPR_NR 32
 
@@ -17,5 +18,7 @@ extern "C" void set_pc(const svOpenArrayHandle a);
 void isa_reg_display();
 
 void sv_regs_to_c();
+
+word_t isa_reg_str2val(const char *s, bool *success);
 
 #endif
