@@ -45,7 +45,6 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			pmem_read(raddr, rdata); 
 		else
 			rdata = '0;
-//    pmem_write(waddr, wdata, wmask);
   end
 
 	always@(posedge clk)
