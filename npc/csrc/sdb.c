@@ -43,12 +43,20 @@ static void check_all_watchpoints() {
 }
 
 static void cpu_exec(uint32_t n) {
+
+	uint64_t prev_pc = 0;
+
 	while(n--) {
+
+		prev_pc = cpu.pc;
+
 		single_cycle();
 
 		sv_regs_to_c();
 
 		check_all_watchpoints();
+
+		printf("The pc of the instruction just executed is 0x%lx\n", prev_pc);
 
 		difftest_step();
 
