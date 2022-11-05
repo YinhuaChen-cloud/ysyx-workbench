@@ -105,15 +105,15 @@ void printTrap() {
            (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           npc_state.halt_pc);
-			printf("\n");
+			printf("\n"); 
       // fall through
-//    case NPC_QUIT: statistic();
+    case NPC_QUIT: ; // statistic();
 	}
 } 
 
 int is_exit_status_bad() {
-  int good = (npc_state.state == NPC_END && npc_state.halt_ret == 0); // ||
-//    (npc_state.state == NPC_QUIT); this is commented out
+  int good = (npc_state.state == NPC_END && npc_state.halt_ret == 0) || 
+    (npc_state.state == NPC_QUIT); 
 
   return !good;
 }

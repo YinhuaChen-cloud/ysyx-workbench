@@ -3,4 +3,6 @@
 
 void init_regex();
 
+uint64_t expr(char *e, bool *success);
+
 #endif
