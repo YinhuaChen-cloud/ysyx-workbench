@@ -100,9 +100,9 @@ static long load_img() {
 
 
 static void single_cycle() {
-	printf("In single_cycle, clk = 0, pc = 0x%lx\n", *pc);
+	printf("In single_cycle, clk = 0\n");
   top->clk = 0; top->eval();
-	printf("In single_cycle, clk = 1, pc = 0x%lx\n", *pc);
+	printf("In single_cycle, clk = 1\n");
   top->clk = 1; top->eval();
 }
 
