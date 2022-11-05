@@ -26,6 +26,22 @@ static char* rl_gets() {
   return line_read;
 }
 
+static void check_all_watchpoints() {
+  WP *p = get_wp_head();
+  bool success = true;
+  while(p) {
+    uint64_t val = expr(p->expr, &success);
+    assert(success);
+    if(val != p->old_val) {
+      printf("Trigger watchpoint %s\n", p->expr);
+      printf("The old val is %lu(decimal)\t0x%016lx(hex)\n", p->old_val, p->old_val);
+      printf("Now the val is %lu(decimal)\t0x%016lx(hex)\n", val, val);
+      npc_state.state = NPC_STOP;
+    }
+    p = p->next;
+  }
+}
+
 static void cpu_exec(uint32_t n) {
 	while(n--) {
 		single_cycle();
@@ -33,13 +49,16 @@ static void cpu_exec(uint32_t n) {
 		sv_regs_to_c();
 		difftest_step();
 
+		check_all_watchpoints();
+
 		if (npc_state.state != NPC_RUNNING) break;
 	}
 }
 
 static int cmd_c(char *args) {
+	npc_state.state = NPC_RUNNING;
   cpu_exec(-1);
-  return -1; // NOTE: there might be a bug
+  return 0; // NOTE: there might be a bug
 }
 //
 static int cmd_q(char *args) {
@@ -51,6 +70,7 @@ static int cmd_help(char *args);
 
 // assume args be only 1 int, we did not check args
 static int cmd_si(char *args) {
+	npc_state.state = NPC_RUNNING;
   if(!args)
     cpu_exec(1);
   else
