@@ -42,7 +42,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 	// for pmem data read
   reg [XLEN-1:0] rdata;
 	reg [XLEN-1:0] raddr;
-  always@(*) begin
+  always@(*)
 		if(rst)
 			rdata = '0;
 		else begin
@@ -58,7 +58,6 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 				default: rdata = '0;  
 			endcase
 		end
-  end
 
 	always@(posedge clk)
 		$display("In EXU, pmem_read_inst_aux = 0x%x", inst_aux);
