@@ -4,14 +4,9 @@
 //program clr_display();
 
 `define ysyx_22050039_COLOR(message) \
-	$display(message)
-
-/*	begin \
-		$write("%c[4;33m",27); \ // BROWN 
-		$display(message); \
-		$write("%c[0m",27); \
-	end 
-*/
+	begin \
+		$write("%c[4;33m",27); $error(message); $write("%c[0m",27); \
+	end
 
 //	initial
 //begin
@@ -37,3 +32,4 @@
 //end
 
 `endif
+

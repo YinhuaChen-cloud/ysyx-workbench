@@ -18,7 +18,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 	 
 	// for mem_rw
   import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
-//  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
+  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
 
 
 	// ifetch
@@ -121,8 +121,8 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			Addi	: begin $display("addi"); exec_result = src1 + src2; end
 			Jalr	: begin exec_result = pc + 4; dnpc = src1 + src2; end
 			// Stype
-			Sd	: assert(0) else `ysyx_22050039_COLOR("omg"); // sd empty now
-			Sw	:;
+			Sd	: pmem_write(destI + src1, src2, 8'hff);
+			Sw	: ;
 			Sh	:;
 			Sb	:;
 			// Btype

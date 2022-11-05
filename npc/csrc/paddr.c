@@ -19,5 +19,15 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
   // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
+	uint64_t mymask = 1;	
+	switch(wmask) {
+		case 0x1: mymask = 0xff; break;
+		case 0x3: mymask = 0xffff; break;
+		case 0xf: mymask = 0xffffffff; break;
+		case -1: mymask = -1; break;
+		default: panic("In %s, Unsupported wmask argument", __FUNCTION__); break;
+	}
+	Assert(mymask != 1, "mymask == 1");	
+	*(uint64_t *)cpu_to_sim(waddr & ~0x7ull) = wdata & mymask;
 }
 
