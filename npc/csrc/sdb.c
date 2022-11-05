@@ -56,20 +56,20 @@ static int cmd_si(char *args) {
   return 0;
 }
 
-//// assume args is either r or w, we did not check args
-//static int cmd_info(char *args) {
-//  if(!args) {
-//    printf("Please give your arguments\n");
-//    return 0;
-//  }
-//
-//  if(!strcmp(args, "r"))
-//    isa_reg_display();
-//  else {
-//    print_watchpoints();
-//  }
-//  return 0;
-//}
+// assume args is either r or w, we did not check args
+static int cmd_info(char *args) {
+  if(!args) {
+    printf("Please give your arguments\n");
+    return 0;
+  }
+
+  if(!strcmp(args, "r"))
+    isa_reg_display();
+  else {
+//    print_watchpoints(); TODO: watchpoints
+  }
+  return 0;
+}
 //
 //// the argument is EXPR
 //static int cmd_p(char *args) {
@@ -182,7 +182,7 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   { "si", "Execute [N] instructions and then stop. N = 1 if omitted", cmd_si },
-//  { "info", "info r to print registers, info w to print watchpoints", cmd_info },
+  { "info", "info r to print registers, info w to print watchpoints", cmd_info },
 //  { "x", "x [n] [addr] prints n 32-bit val begining at addr in hex format", cmd_x },
 //  { "p", "p EXPR to get the result of an expression in decimal format", cmd_p },
 //  { "p/x", "p/x EXPR to get the result of an expression in hex format", cmd_p_x },
