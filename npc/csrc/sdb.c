@@ -47,9 +47,10 @@ static void cpu_exec(uint32_t n) {
 		single_cycle();
 
 		sv_regs_to_c();
-		difftest_step();
 
 		check_all_watchpoints();
+
+		difftest_step();
 
 		if (npc_state.state != NPC_RUNNING) break;
 	}
@@ -58,7 +59,10 @@ static void cpu_exec(uint32_t n) {
 static int cmd_c(char *args) {
 	npc_state.state = NPC_RUNNING;
   cpu_exec(-1);
-  return 0; // NOTE: there might be a bug
+
+	if(npc_state.state == NPC_RUNNING || npc_state.state == NPC_STOP)
+		return 0;
+	return -1;
 }
 //
 static int cmd_q(char *args) {
@@ -75,7 +79,11 @@ static int cmd_si(char *args) {
     cpu_exec(1);
   else
     cpu_exec(atoi(args));
-  return 0;
+
+//	if(npc_state.state == NPC_RUNNING || npc_state.state == NPC_STOP)
+//		return 0;
+//	return -1;
+	return 0;
 }
 
 // assume args is either r or w, we did not check args
