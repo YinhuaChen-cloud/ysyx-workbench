@@ -83,6 +83,8 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			default:; 
 		endcase
 
+	localparam shift_mask = 6'h3f;
+	localparam w_shift_mask = 5'h1f;
 	reg [31:0] tmp;
 	wire z_flag;
 	reg [XLEN-1:0] z_cal;
@@ -122,11 +124,11 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Sltiu	:;
       Slli	:;
       Srli	:;
-      Srai	:;
+      Srai	: exec_result = $signed(src1) >> (src2 & shift_mask);
       Andi	:;
       Ori	:;
       Addiw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] + src2[31:0], 32);
-			Slliw	: begin tmp = src1 << (src2 & 5'h1f); exec_result = `ysyx_22050039_SEXT(XLEN, tmp, 32); end
+			Slliw	: begin tmp = src1 << (src2 & w_shift_mask); exec_result = `ysyx_22050039_SEXT(XLEN, tmp, 32); end
       Srliw	:;
       Sraiw	:;
       Ld	: exec_result = rdata; 
