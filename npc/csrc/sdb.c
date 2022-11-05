@@ -40,10 +40,10 @@ static int cmd_c(char *args) {
   return -1; // NOTE: there might be a bug
 }
 //
-//static int cmd_q(char *args) {
-//  nemu_state.state = NEMU_QUIT;
-//  return -1;
-//}
+static int cmd_q(char *args) {
+  npc_state.state = NPC_QUIT;
+  return -1;
+}
 
 static int cmd_help(char *args);
 
@@ -180,7 +180,7 @@ static struct {
 } cmd_table [] = {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
-//  { "q", "Exit NEMU", cmd_q },
+  { "q", "Exit NEMU", cmd_q },
 //  { "si", "Execute [N] instructions and then stop. N = 1 if omitted", cmd_si },
 //  { "info", "info r to print registers, info w to print watchpoints", cmd_info },
 //  { "x", "x [n] [addr] prints n 32-bit val begining at addr in hex format", cmd_x },

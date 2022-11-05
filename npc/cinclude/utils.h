@@ -20,7 +20,7 @@ typedef uint64_t vaddr_t;
 
 // ----------- state -----------
 
-enum { NPC_RUNNING, NPC_STOP, NPC_END, NPC_ABORT }; // , NPC_QUIT is commented out
+enum { NPC_RUNNING, NPC_QUIT, NPC_STOP, NPC_END, NPC_ABORT }; // , NPC_QUIT is commented out
 
 typedef struct {
   int state;
