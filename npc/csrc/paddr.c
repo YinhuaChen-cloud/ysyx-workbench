@@ -7,12 +7,12 @@ uint8_t *pmem = NULL;
 uint8_t* cpu_to_sim(paddr_t paddr) { 
 	Assert(paddr >= CONFIG_MBASE && paddr < CONFIG_MBASE + CONFIG_MSIZE, \
 			"[%s:%d] In %s, out of mem bound, paddr = 0x%lx", __FILENAME__, __LINE__, __FUNCTION__, paddr);
-	return (uint8_t *)(((uint64_t)pmem + paddr - CONFIG_MBASE) & ~0x7ull); 
+	return (uint8_t *)((uint64_t)pmem + paddr - CONFIG_MBASE); 
 }
 
 extern "C" void pmem_read(long long raddr, long long *rdata) {
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
-	*rdata = *(long long *)cpu_to_sim(raddr);
+	*rdata = *(long long *)cpu_to_sim(raddr & ~0x7ull);
 }
 
 extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
