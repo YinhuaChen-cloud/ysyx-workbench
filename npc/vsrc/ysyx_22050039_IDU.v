@@ -145,7 +145,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
 			Special	: ;
 			default : assert(0);
 		endcase
-		$display("In combinational, inst_type = %s, func = %s, src1 = 0x%x, src2 = 0x%x, rs1 = %d, rs2 = %d", inst_type.name, func.name, src1, src2, rs1, rs2);
+		$display("In combinational, inst_type = %s, func = %s, destI = 0x%x, src1 = 0x%x, src2 = 0x%x, rs1 = %d, rs2 = %d", inst_type.name, func.name, destI, src1, src2, rs1, rs2);
   end
   
   // submodule4 - reg addressing: 5-32 decoder

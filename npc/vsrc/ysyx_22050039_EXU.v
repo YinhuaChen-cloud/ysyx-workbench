@@ -72,10 +72,22 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 	always@(posedge clk)
 		$display("In EXU, pmem_read_raddr 0x%x", raddr);
 
+	// insts do sth about mem
+	always@(posedge clk)
+		case(func)
+			// Stype
+			Sd	: pmem_write(destI + src1, src2, 8'hff);
+			Sw	: pmem_write(destI + src1, src2, 8'hf);
+			Sh	: pmem_write(destI + src1, src2, 8'h3);
+			Sb	: pmem_write(destI + src1, src2, 8'h1);
+			default:; 
+		endcase
+
 	reg [31:0] tmp;
 	wire z_flag;
 	reg [XLEN-1:0] z_cal;
 	assign z_flag = (z_cal == 0);
+//	insts do nothing about mem
   always@(*) begin // combinational circuit
     exec_result = 0;
     dnpc        = 0;
@@ -127,10 +139,10 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			Addi	: exec_result = src1 + src2; 
 			Jalr	: begin exec_result = pc + 4; dnpc = src1 + src2; end
 			// Stype
-			Sd	: pmem_write(destI + src1, src2, 8'hff);
-			Sw	: pmem_write(destI + src1, src2, 8'hf);
-			Sh	: pmem_write(destI + src1, src2, 8'h3);
-			Sb	: pmem_write(destI + src1, src2, 8'h1);
+			Sd	: ;
+			Sw	: ;
+			Sh	: ;
+			Sb	: ;
 			// Btype
 			Beq	:;
 			Bne		:;
