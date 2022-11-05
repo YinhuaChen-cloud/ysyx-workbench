@@ -1,7 +1,7 @@
 TOPNAME = ysyx_22050039_top
 NXDC_FILES = constr/top.nxdc
 VERILOG_INC_PATH ?= $(NPC_HOME)/vinclude
-INC_PATH ?= 
+INC_PATH ?= $(NPC_HOME)/cinclude
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
@@ -44,6 +44,10 @@ ifeq ($(MAKECMDGOALS), run)
 	CSRCS += $(SRC_AUTO_BIND)
 endif
 
+ifeq ($(MAKECMDGOALS), sdb)
+	override ARGS += --sdb
+endif
+
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 run-env: $(VSRCS) $(CSRCS)
@@ -71,6 +75,8 @@ sim: run-env
 gdb: run-env
 	$(call git_commit, "gdb NEMU")
 	gdb -s $(BIN) --args $(BIN) $(ARGS) $(IMG)
+
+sdb: sim
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
@@ -101,6 +107,6 @@ run: $(BIN)
 clean:
 	rm -rf ./logs ./obj_dir $(BUILD_DIR)
 
-.PHONY: clean sim gdb run-env
+.PHONY: clean sim gdb run-env sdb
 
 include ../Makefile

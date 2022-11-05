@@ -20,5 +20,7 @@ module ysyx_22050039_IFU #(XLEN=64) (
 		$display("In IFU, pc = 0x%x", pc);
 	always@(posedge clk)
 		$display("In IFU, next_pc = 0x%x", next_pc);
+	always@(posedge clk)
+		$display("In IFU, pc_wen = %d", pc_wen);
 
 endmodule
