@@ -8,6 +8,7 @@
 #include "paddr.h"
 #include "errormessage.h"
 #include "reg.h"
+#include <sdb.h>
 
 VerilatedContext* contextp;
 Vysyx_22050039_top* top;
@@ -136,8 +137,7 @@ int main(int argc, char** argv, char** env) {
 	uint64_t pc_before_exec = cpu.pc;
 
 	if(is_sdb_mode) {
-		printf("I am in sdb mode\n");
-		exit(0);
+		sdb_mainloop();
 	}
 	else {
 		while (!contextp->gotFinish()) {
