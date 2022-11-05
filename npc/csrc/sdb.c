@@ -8,6 +8,7 @@
 #include <reg.h>
 #include <paddr.h>
 #include "watchpoint.h"
+#include <debug.h>
 
 static char* rl_gets() {
   static char *line_read = NULL;
