@@ -19,6 +19,10 @@ extern "C" void set_pc(const svOpenArrayHandle a) {
 void sv_regs_to_c() {
 	for(int i = 0; i < GPR_NR; i++) {
 		cpu.gpr[i] = cpu_gpr[i];
+		if(i == 11 || i == 14) {
+			printf("%s\t0x%lx\t%ld\n", regs[i], cpu.gpr[i], cpu.gpr[i]);
+			printf("%s\t0x%lx\t%ld\n", regs[i], cpu_gpr[i], cpu_gpr[i]);
+		}
 	}
 	cpu.pc = *pc;
 }

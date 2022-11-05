@@ -1,5 +1,6 @@
 `include "ysyx_22050039_all_inst.v"
 `include "ysyx_22050039_colordebug.v"
+`include "ysyx_22050039_config.v"
 
 module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
                           (input clk,
@@ -31,6 +32,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			default: begin inst = 0; assert(0); end
 		endcase
 
+	// for pmem inst read
   always@(*) begin
 		if(~rst)
 			pmem_read(pc, inst_aux); 
@@ -38,15 +40,28 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			inst_aux = '0; 
   end
 
-  reg [XLEN-1:0] rdata;
+	// for pmem data read
 	reg [XLEN-1:0] raddr;
-  always@(*) begin
-		if(~rst)
-			pmem_read(raddr, rdata); 
-		else
+  reg [XLEN-1:0] rdata;
+	// TODO: the assignment of rdata here might be a problem, since rdata is
+	// also the input of exec_result of Ld, Lw, ..., Lbu. (order effect?)
+  always@(*)
+		if(rst) begin
+			raddr = '0;
 			rdata = '0;
-//    pmem_write(waddr, wdata, wmask);
-  end
+		end
+		else begin
+			case(func)
+				Ld	, 
+				Lw	,
+				Lwu	,
+				Lh	,
+				Lhu	,
+				Lb	,
+				Lbu	: begin raddr = src1 + src2; pmem_read(raddr, rdata); end // TODO: The plus here might be problem
+				default: begin raddr = '0; rdata = '0; end
+			endcase
+		end
 
 	always@(posedge clk)
 		$display("In EXU, pmem_read_inst_aux = 0x%x", inst_aux);
@@ -57,19 +72,10 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 	always@(posedge clk)
 		$display("In EXU, pmem_read_raddr 0x%x", raddr);
 
-	// for raddr
-	always@(*)
-		case(func)
-      Ld	, 
-      Lw	,
-      Lwu	,
-      Lh	,
-      Lhu	,
-      Lb	,
-      Lbu	: raddr = src1 + src2; // TODO: The plus here might be problem
-			default: raddr = 64'h8000_0000; 
-		endcase
-
+	reg [31:0] tmp;
+	wire z_flag;
+	reg [XLEN-1:0] z_cal;
+	assign z_flag = (z_cal == 0);
   always@(*) begin // combinational circuit
     exec_result = 0;
     dnpc        = 0;
@@ -79,7 +85,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Addw	: exec_result = src1 + src2;
       Subw	:;
       Mulw	:;
-      Divw	:;
+      Divw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0])/$signed(src2[31:0]), 32);
       Divuw	:;
       Sllw	:;
       Srlw	:;
@@ -107,8 +113,8 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Srai	:;
       Andi	:;
       Ori	:;
-      Addiw	:;
-      Slliw	:;
+      Addiw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] + src2[31:0], 32);
+			Slliw	: begin tmp = src1 << (src2 & 5'h1f); exec_result = `ysyx_22050039_SEXT(XLEN, tmp, 32); end
       Srliw	:;
       Sraiw	:;
       Ld	: exec_result = rdata; 
@@ -118,18 +124,18 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Lhu	: exec_result = {48'b0, rdata[15:0]};
       Lb	: exec_result = {{56{rdata[7]}}, rdata[7:0]};
       Lbu	: exec_result = {56'b0, rdata[7:0]};
-			Addi	: begin $display("addi"); exec_result = src1 + src2; end
+			Addi	: exec_result = src1 + src2; 
 			Jalr	: begin exec_result = pc + 4; dnpc = src1 + src2; end
 			// Stype
 			Sd	: pmem_write(destI + src1, src2, 8'hff);
-			Sw	: ;
-			Sh	:;
-			Sb	:;
+			Sw	: pmem_write(destI + src1, src2, 8'hf);
+			Sh	: pmem_write(destI + src1, src2, 8'h3);
+			Sb	: pmem_write(destI + src1, src2, 8'h1);
 			// Btype
 			Beq	:;
 			Bne		:;
 			Bltu	:;
-			Bge	:;
+			Bge	: begin $display("===cyh===bge===, pc = 0x%x, destI = 0x%x", pc, destI); dnpc = ($signed(src1) >= $signed(src2)) ? pc + destI : pc + 4; end // <- TODO: we are here
 			Bgeu	:;
 			Blt	:;
 			// Utype

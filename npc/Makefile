@@ -1,7 +1,7 @@
 TOPNAME = ysyx_22050039_top
 NXDC_FILES = constr/top.nxdc
 VERILOG_INC_PATH ?= $(NPC_HOME)/vinclude
-INC_PATH ?= 
+INC_PATH ?= $(NPC_HOME)/cinclude
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
