@@ -9,9 +9,7 @@
 #include "errormessage.h"
 #include "reg.h"
 #include <sdb.h>
-
-VerilatedContext* contextp;
-Vysyx_22050039_top* top;
+#include <cpu-exec.h>
 
 static const uint32_t default_img [] = {
   0x00000297,  // auipc t0,0
@@ -103,14 +101,6 @@ static long load_img() {
   return size;
 }
 
-
-static void single_cycle() {
-	printf("In single_cycle, clk = 0\n");
-  top->clk = 0; top->eval();
-	printf("In single_cycle, clk = 1\n");
-  top->clk = 1; top->eval();
-}
-
 static void reset(int n) {
   top->rst = 1;
   while (n -- > 0) single_cycle();
@@ -137,13 +127,12 @@ int main(int argc, char** argv, char** env) {
 	uint64_t pc_before_exec = cpu.pc;
 
 	if(is_sdb_mode) {
+		init_sdb();
 		sdb_mainloop();
 	}
 	else {
 		while (!contextp->gotFinish()) {
 			contextp->timeInc(1);
-	//		top->inst = pmem_read(top->pc);
-	//		printf("In main.cpp main() top->pc = 0x%lx, top->inst = 0x%x\n", top->pc, top->inst);
 			pc_before_exec = cpu.pc;
 			printf("In while, *pc = 0x%lx\n", *pc);
 			single_cycle();
@@ -154,7 +143,6 @@ int main(int argc, char** argv, char** env) {
 			if (npc_state.state != NPC_RUNNING) break;
 		}
 	}
-
 
 	npc_state.halt_pc = pc_before_exec;
 	npc_state.halt_ret = -1; 
