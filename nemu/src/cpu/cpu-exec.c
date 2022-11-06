@@ -67,6 +67,7 @@ void check_all_watchpoints() {
       printf("The old val is %lu(decimal)\t0x%016lx(hex)\n", p->old_val, p->old_val);
       printf("Now the val is %lu(decimal)\t0x%016lx(hex)\n", val, val);
       nemu_state.state = NEMU_STOP;
+			p->old_val = val;
     }
     p = p->next;
   }

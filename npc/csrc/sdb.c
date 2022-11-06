@@ -8,6 +8,7 @@
 #include <reg.h>
 #include <paddr.h>
 #include "watchpoint.h"
+#include <debug.h>
 
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -37,19 +38,29 @@ static void check_all_watchpoints() {
       printf("The old val is %lu(decimal)\t0x%016lx(hex)\n", p->old_val, p->old_val);
       printf("Now the val is %lu(decimal)\t0x%016lx(hex)\n", val, val);
       npc_state.state = NPC_STOP;
+			p->old_val = val;
     }
     p = p->next;
   }
 }
 
 static void cpu_exec(uint32_t n) {
+
+	uint64_t prev_pc = 0;
+
 	while(n--) {
+
+		prev_pc = cpu.pc;
+
 		single_cycle();
 
 		sv_regs_to_c();
-		difftest_step();
 
 		check_all_watchpoints();
+
+		difftest_step();
+
+		printred("The pc of the instruction just executed is 0x%lx\n", prev_pc);
 
 		if (npc_state.state != NPC_RUNNING) break;
 	}
@@ -58,7 +69,13 @@ static void cpu_exec(uint32_t n) {
 static int cmd_c(char *args) {
 	npc_state.state = NPC_RUNNING;
   cpu_exec(-1);
-  return 0; // NOTE: there might be a bug
+
+	if(npc_state.state == NPC_RUNNING || npc_state.state == NPC_STOP)
+		return 0;
+	if(npc_state.state == NPC_ABORT)
+		return 0;
+	return -1;
+//	return 0;
 }
 //
 static int cmd_q(char *args) {
@@ -75,7 +92,11 @@ static int cmd_si(char *args) {
     cpu_exec(1);
   else
     cpu_exec(atoi(args));
-  return 0;
+
+//	if(npc_state.state == NPC_RUNNING || npc_state.state == NPC_STOP)
+//		return 0;
+//	return -1;
+	return 0;
 }
 
 // assume args is either r or w, we did not check args

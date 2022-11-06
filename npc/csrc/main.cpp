@@ -24,27 +24,31 @@ static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
 static int is_sdb_mode = false;
+extern char *mtrace_file;
 
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
     {"sdb"			, no_argument      , NULL, 's'},
     {"log"      , required_argument, NULL, 'l'},
+    {"mtrace"   , required_argument, NULL, 'm'},
     {"diff"     , required_argument, NULL, 'd'},
     {"help"     , no_argument      , NULL, 'h'},
     {0          , 0                , NULL,  0 },
   };
   int o;
-  while ( (o = getopt_long(argc, argv, "-shl:d:", table, NULL)) != -1) {
+  while ( (o = getopt_long(argc, argv, "-shl:m:d:", table, NULL)) != -1) {
     switch (o) {
-      case 's': printf("omg set sdb\n"); is_sdb_mode = true; break;
+      case 's': is_sdb_mode = true; break;
 //      case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
+      case 'm': mtrace_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
       case 1: img_file = optarg; return 0;
       default:
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
         printf("\t-s,--sdb								run with sdb mode\n");
         printf("\t-l,--log=FILE           output log to FILE\n");
+        printf("\t-m,--mtrace=FILE				output mtrace log to FILE\n");
         printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
 //        printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
         printf("\n");
@@ -59,6 +63,9 @@ void ebreak() {
 	npc_state.halt_pc = *pc;
 //  printf("omg, top->pc = 0x%x\n", top->pc);
 	printTrap();
+
+	close_mtrace();
+	
 	exit(is_exit_status_bad());
 }
 
@@ -66,6 +73,9 @@ void invalid() {
 	printf("In main.cpp invalid\n");
 	invalid_inst(*pc); 
 	printTrap();
+
+	close_mtrace();
+	
 	exit(is_exit_status_bad());
 }
 
@@ -126,6 +136,8 @@ int main(int argc, char** argv, char** env) {
 	npc_state.state = NPC_RUNNING;
 	uint64_t pc_before_exec = cpu.pc;
 
+	init_mtrace();
+
 	if(is_sdb_mode) {
 		init_sdb();
 		sdb_mainloop();
@@ -135,6 +147,7 @@ int main(int argc, char** argv, char** env) {
 			contextp->timeInc(1);
 			pc_before_exec = cpu.pc;
 			printf("In while, *pc = 0x%lx\n", *pc);
+
 			single_cycle();
 
 			sv_regs_to_c();
@@ -151,6 +164,8 @@ int main(int argc, char** argv, char** env) {
 	delete top;
 	delete contextp;
 	free(pmem);
+
+	close_mtrace();
 
 	// TODO: maybe need to be changed
 	return is_exit_status_bad();

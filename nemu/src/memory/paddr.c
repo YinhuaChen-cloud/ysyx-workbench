@@ -30,6 +30,10 @@ char mtrace_buf[MTBUF_NUM][MTBUF_LEN];
 int pmtrace;
 char *mtrace_buf_p;
 bool isldst;
+// added by yinhua for temporary debug -- start
+static const char mtrace_file[] = "/home/chenyinhua/sda3/ysyx-workbench/am-kernels/tests/cpu-tests/build/recursion-riscv64-nemu-mtrace.txt";
+static FILE *mtrace_fp = NULL;
+// added by yinhua for temporary debug -- end
 #endif
 
 void print_mtrace() {
@@ -82,12 +86,24 @@ void init_mem() {
 word_t paddr_read(paddr_t addr, int len) {
 	//printf("In paddr_read, addr = 0x%x\n", addr);
 #ifdef CONFIG_MTRACE
+	word_t rdata = pmem_read(addr, len);
 	if(cpu.pc != addr && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END){
 		//printf("CONFIG_MTRACE_START = 0x%x, CONFIG_MTRACE_END = 0x%x\n", CONFIG_MTRACE_START, CONFIG_MTRACE_END);
 		pmtrace = (pmtrace + 1) % MTBUF_NUM;
 		
 		mtrace_buf_p = mtrace_buf[pmtrace];
-		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr 0x%x: pc ", addr); // 4 spaces
+		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr:0x%x len:%d data:0x%8lx pc:0x%8lx ", addr, len, rdata, cpu.pc); // 4 spaces
+		// added by yinhua for temporary debug -- start
+		#define TEXT_SIZE 0x274	
+		if(addr < CONFIG_MBASE + TEXT_SIZE)
+			return rdata;
+		*mtrace_buf_p = '\n';	
+		*(mtrace_buf_p+1) = '\0';	
+		if(!mtrace_fp)		 
+			mtrace_fp = fopen(mtrace_file, "w");
+		fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace]+1, 1, mtrace_fp);
+		fflush(mtrace_fp);
+		// added by yinhua for temporary debug -- end
 		isldst = true;
 	}
 #endif
@@ -104,7 +120,15 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 		pmtrace = (pmtrace + 1) % MTBUF_NUM;
 		
 		mtrace_buf_p = mtrace_buf[pmtrace];
-		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr 0x%x: pc ", addr); // 4 spaces
+		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr:0x%x len:%d data:0x%8lx pc:0x%8lx ", addr, len, data, cpu.pc); // 4 spaces
+		// added by yinhua for temporary debug -- start
+		*mtrace_buf_p = '\n';	
+		*(mtrace_buf_p+1) = '\0';	
+		if(!mtrace_fp)		 
+			mtrace_fp = fopen(mtrace_file, "w");
+		fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace]+1, 1, mtrace_fp);
+		fflush(mtrace_fp);
+		// added by yinhua for temporary debug -- end
 		isldst = true;
 	}
 #endif

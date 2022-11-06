@@ -6,6 +6,8 @@ endif
 
 NPCFLAGS += -l $(shell dirname $(IMAGE).elf)/npc-log.txt
 
+NPCFLAGS += --mtrace=$(IMAGE)-mtrace.txt
+
 run: image
 	@echo "In abm/script/platform/npc.mk"
 	@echo "IMAGE = $(IMAGE)" 	
@@ -18,6 +20,7 @@ gdb: image
 	
 sdb: image
 	@echo "In npc.mk, I am sdb=========="
+	@echo "In npc.mk, NPCFLAGS = $(NPCFLAGS), IMAGE = $(IMAGE)"
 	$(MAKE) -C $(NPC_HOME) sdb ARGS="$(NPCFLAGS)" IMG=$(IMAGE).bin MODE=$(MODE) WALL=$(WALL) \
 		MYDIFF=$(MYDIFF)
 	
