@@ -30,6 +30,10 @@ char mtrace_buf[MTBUF_NUM][MTBUF_LEN];
 int pmtrace;
 char *mtrace_buf_p;
 bool isldst;
+// added by yinhua for temporary debug -- start
+static const char mtrace_file[] = "/home/chenyinhua/sda3/ysyx-workbench/am-kernels/tests/cpu-tests/build/recursion-riscv64-nemu-mtrace.txt";
+static FILE *mtrace_fp = NULL;
+// added by yinhua for temporary debug -- end
 #endif
 
 void print_mtrace() {
@@ -89,6 +93,12 @@ word_t paddr_read(paddr_t addr, int len) {
 		
 		mtrace_buf_p = mtrace_buf[pmtrace];
 		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr:0x%x len:%d data:0x%lx pc ", addr, len, rdata); // 4 spaces
+		// added by yinhua for temporary debug -- start
+		if(!mtrace_fp)		 
+			mtrace_fp = fopen(mtrace_file, "w");
+		fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace], 1, mtrace_fp);
+		fflush(mtrace_fp);
+		// added by yinhua for temporary debug -- end
 		isldst = true;
 	}
 #endif
