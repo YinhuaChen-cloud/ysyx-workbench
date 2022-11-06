@@ -121,6 +121,14 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 		
 		mtrace_buf_p = mtrace_buf[pmtrace];
 		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr:0x%x len:%d data:0x%lx pc ", addr, len, data); // 4 spaces
+		// added by yinhua for temporary debug -- start
+		*mtrace_buf_p = '\n';	
+		*(mtrace_buf_p+1) = '\0';	
+		if(!mtrace_fp)		 
+			mtrace_fp = fopen(mtrace_file, "w");
+		fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace]+1, 1, mtrace_fp);
+		fflush(mtrace_fp);
+		// added by yinhua for temporary debug -- end
 		isldst = true;
 	}
 #endif
