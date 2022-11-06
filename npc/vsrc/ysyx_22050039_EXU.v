@@ -122,8 +122,8 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Divw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) / $signed(src2[31:0]), 32);
       Divuw	:;
       Sllw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] << (src2 & w_shift_mask), 32); 
-      Srlw	:;
-      Sraw	:;
+      Srlw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] >> (src2 & w_shift_mask), 32); 
+      Sraw	: begin exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) >>> (src2 & w_shift_mask), 32); end
       Remw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) % $signed(src2[31:0]), 32);
       Remuw	:;
       Sub	: exec_result = src1 - src2;
@@ -149,7 +149,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Ori	:;
       Addiw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] + src2[31:0], 32);
 			Slliw	: begin tmp = src1[31:0] << (src2 & w_shift_mask); exec_result = `ysyx_22050039_SEXT(XLEN, tmp, 32); end
-      Srliw	:;
+      Srliw	: begin exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] >> (src2 & w_shift_mask), 32); end
 			Sraiw	: begin exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) >>> (src2 & w_shift_mask), 32); end
       Ld	: exec_result = rdata; 
       Lw	: exec_result = {{32{rdata[31]}}, rdata[31:0]};
