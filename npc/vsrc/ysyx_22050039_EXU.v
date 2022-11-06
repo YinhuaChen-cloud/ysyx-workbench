@@ -132,7 +132,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Mul	: exec_result = src1 * src2;
       Xor	:;
       Sll	:;
-      Slt	:;
+      Slt	: exec_result = ($signed(src1) < $signed(src2));
       Sltu	:;
       And	:;
       Div	:;
@@ -171,7 +171,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			Bltu	: begin dnpc = (src1 < src2) ? pc + destI : pc + 4; end 
 			Bge	: begin dnpc = ($signed(src1) >= $signed(src2)) ? pc + destI : pc + 4; end 
 			Bgeu	:;
-			Blt	:;
+			Blt	: begin dnpc = ($signed(src1) < $signed(src2)) ? pc + destI : pc + 4; end 
 			// Utype
 			Auipc	: begin exec_result = src1 + pc; $display("auipc, exec_result = 0x%x", exec_result); end
 			Lui	:	exec_result   = src1;
