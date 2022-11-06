@@ -94,6 +94,9 @@ word_t paddr_read(paddr_t addr, int len) {
 		mtrace_buf_p = mtrace_buf[pmtrace];
 		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr:0x%x len:%d data:0x%lx pc ", addr, len, rdata); // 4 spaces
 		// added by yinhua for temporary debug -- start
+		#define TEXT_SIZE 0x26c	
+		if(addr < CONFIG_MBASE + TEXT_SIZE)
+			return rdata;
 		*mtrace_buf_p = '\n';	
 		*(mtrace_buf_p+1) = '\0';	
 		if(!mtrace_fp)		 
