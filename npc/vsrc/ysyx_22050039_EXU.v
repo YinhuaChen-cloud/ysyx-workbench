@@ -118,7 +118,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       // Rtype
       Addw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] + src2[31:0], 32);
       Subw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] - src2[31:0], 32);
-      Mulw	:;
+      Mulw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] * src2[31:0], 32);
       Divw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) / $signed(src2[31:0]), 32);
       Divuw	:;
       Sllw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] << (src2 & w_shift_mask), 32); 
