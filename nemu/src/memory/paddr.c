@@ -88,7 +88,7 @@ word_t paddr_read(paddr_t addr, int len) {
 		pmtrace = (pmtrace + 1) % MTBUF_NUM;
 		
 		mtrace_buf_p = mtrace_buf[pmtrace];
-		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr:0x%x len:%d data:0x%x pc ", addr, len, rdata); // 4 spaces
+		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr:0x%x len:%d data:0x%lx pc ", addr, len, rdata); // 4 spaces
 		isldst = true;
 	}
 #endif
@@ -105,7 +105,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 		pmtrace = (pmtrace + 1) % MTBUF_NUM;
 		
 		mtrace_buf_p = mtrace_buf[pmtrace];
-		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr:0x%x len:%d data:0x%x pc ", addr, len, data); // 4 spaces
+		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr:0x%x len:%d data:0x%lx pc ", addr, len, data); // 4 spaces
 		isldst = true;
 	}
 #endif
