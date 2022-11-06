@@ -4,8 +4,10 @@
 
 uint8_t *pmem = NULL;
 
+#define MTRACE_BUF_LEN 128
 char *mtrace_file = NULL;
 static FILE *mtrace_fp = NULL;
+static char mtrace_buf[MTRACE_BUF_LEN];
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
 uint8_t* cpu_to_sim(paddr_t paddr) { 
@@ -29,6 +31,7 @@ void close_mtrace() {
 extern "C" void pmem_read(long long raddr, long long *rdata) {
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
 	*rdata = *(long long *)cpu_to_sim(raddr & ~0x7ull);
+	// mtrace -> NOTE: we need to judge whether raddr is a inst or a data
 }
 
 extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
@@ -46,6 +49,9 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
 	}
 	Assert(mymask != 1, "mymask == 1");	
 	*(uint64_t *)(cpu_to_sim(waddr & ~0x7ull) + offest) = wdata & mymask;
+	// mtrace
+	snprintf(mtrace_buf, MTRACE_BUF_LEN, "0x%8lx: \n", cpu.pc); 
+	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
 }
 
 word_t paddr_read(paddr_t addr, int len) {
