@@ -82,12 +82,13 @@ void init_mem() {
 word_t paddr_read(paddr_t addr, int len) {
 	//printf("In paddr_read, addr = 0x%x\n", addr);
 #ifdef CONFIG_MTRACE
+	word_t rdata = pmem_read(addr, len);
 	if(cpu.pc != addr && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END){
 		//printf("CONFIG_MTRACE_START = 0x%x, CONFIG_MTRACE_END = 0x%x\n", CONFIG_MTRACE_START, CONFIG_MTRACE_END);
 		pmtrace = (pmtrace + 1) % MTBUF_NUM;
 		
 		mtrace_buf_p = mtrace_buf[pmtrace];
-		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr 0x%x: pc ", addr); // 4 spaces
+		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr:0x%x len:%d data:0x%x pc ", addr, len, rdata); // 4 spaces
 		isldst = true;
 	}
 #endif
@@ -104,7 +105,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 		pmtrace = (pmtrace + 1) % MTBUF_NUM;
 		
 		mtrace_buf_p = mtrace_buf[pmtrace];
-		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr 0x%x: pc ", addr); // 4 spaces
+		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr:0x%x len:%d data:0x%x pc ", addr, len, data); // 4 spaces
 		isldst = true;
 	}
 #endif
