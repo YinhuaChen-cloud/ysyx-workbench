@@ -119,12 +119,12 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Addw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] + src2[31:0], 32);
       Subw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] - src2[31:0], 32);
       Mulw	:;
-      Divw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0])/$signed(src2[31:0]), 32);
+      Divw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) / $signed(src2[31:0]), 32);
       Divuw	:;
       Sllw	:;
       Srlw	:;
       Sraw	:;
-      Remw	:;
+      Remw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) % $signed(src2[31:0]), 32);
       Remuw	:;
       Sub	: exec_result = src1 - src2;
       Or	:;
