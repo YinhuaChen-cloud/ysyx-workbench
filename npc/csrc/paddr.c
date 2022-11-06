@@ -52,6 +52,7 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
 	// mtrace
 	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx mymask:0x%8lx\n", cpu.pc, "Write", waddr, wdata, mymask); 
 	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
+	fflush(mtrace_fp);
 }
 
 word_t paddr_read(paddr_t addr, int len) {
