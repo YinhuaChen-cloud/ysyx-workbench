@@ -1,13 +1,29 @@
 #include "paddr.h"
 #include "debug.h"
+#include <common.h>
 
 uint8_t *pmem = NULL;
+
+char *mtrace_file = NULL;
+static FILE *mtrace_fp = NULL;
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
 uint8_t* cpu_to_sim(paddr_t paddr) { 
 	Assert(paddr >= CONFIG_MBASE && paddr < CONFIG_MBASE + CONFIG_MSIZE, \
 			"[%s:%d] In %s, out of mem bound, paddr = 0x%lx", __FILENAME__, __LINE__, __FUNCTION__, paddr);
 	return (uint8_t *)((uint64_t)pmem + paddr - CONFIG_MBASE); 
+}
+
+void init_mtrace() {
+	assert(mtrace_file);
+  mtrace_fp = fopen(mtrace_file, "w");
+	assert(mtrace_fp);
+}
+
+void close_mtrace() {
+	assert(mtrace_fp);
+	fclose(mtrace_fp);
+	mtrace_fp = NULL;
 }
 
 extern "C" void pmem_read(long long raddr, long long *rdata) {
