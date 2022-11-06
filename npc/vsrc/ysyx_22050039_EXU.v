@@ -116,7 +116,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
     inval       = 0;
     case(func)
       // Rtype
-      Addw	: exec_result = src1 + src2;
+      Addw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] + src2[31:0], 32);
       Subw	:;
       Mulw	:;
       Divw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0])/$signed(src2[31:0]), 32);
@@ -126,7 +126,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Sraw	:;
       Remw	:;
       Remuw	:;
-      Sub	:;
+      Sub	: exec_result = src1 - src2;
       Or	:;
       Add	:;
       Mul	:;
@@ -141,7 +141,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Remu	:;
       // Itype
       Xori	:;
-      Sltiu	:;
+      Sltiu	: exec_result = (src1 < src2);
       Slli	:;
       Srli	:;
       Srai	: exec_result = $signed(src1) >> (src2 & shift_mask);
@@ -166,10 +166,10 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			Sh	: ;
 			Sb	: ;
 			// Btype
-			Beq	:;
+			Beq	: begin dnpc = (src1 == src2) ? pc + destI : pc + 4; end 
 			Bne		:;
 			Bltu	:;
-			Bge	: begin $display("===cyh===bge===, pc = 0x%x, destI = 0x%x", pc, destI); dnpc = ($signed(src1) >= $signed(src2)) ? pc + destI : pc + 4; end // <- TODO: we are here
+			Bge	: begin dnpc = ($signed(src1) >= $signed(src2)) ? pc + destI : pc + 4; end 
 			Bgeu	:;
 			Blt	:;
 			// Utype
@@ -181,6 +181,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			default: inval = 1; // invalid
     endcase
   end
+//$display("===cyh===bge===, pc = 0x%x, destI = 0x%x", pc, destI);
   
   // invalid is only valid when rst = 0
   reg inval;
