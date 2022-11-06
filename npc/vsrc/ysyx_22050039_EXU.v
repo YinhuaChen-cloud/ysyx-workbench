@@ -121,13 +121,13 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Mulw	:;
       Divw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) / $signed(src2[31:0]), 32);
       Divuw	:;
-      Sllw	:;
+      Sllw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] << (src2 & w_shift_mask), 32); 
       Srlw	:;
       Sraw	:;
       Remw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) % $signed(src2[31:0]), 32);
       Remuw	:;
       Sub	: exec_result = src1 - src2;
-      Or	:;
+      Or	: exec_result = src1 | src2;
       Add	: exec_result = src1 + src2;
       Mul	: exec_result = src1 * src2;
       Xor	:;
@@ -140,7 +140,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Rem	:;
       Remu	:;
       // Itype
-      Xori	:;
+      Xori	: exec_result = src1 ^ src2;
       Sltiu	: exec_result = (src1 < src2);
       Slli	: exec_result = src1 << (src2 & shift_mask);
       Srli	: exec_result = src1 >> (src2 & shift_mask);
