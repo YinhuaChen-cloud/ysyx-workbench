@@ -34,7 +34,7 @@ extern "C" void pmem_read(long long raddr, long long *rdata) {
 	// mtrace -> NOTE: we need to judge whether raddr is a inst or a data -> human assistance
 	// filterout inst reading -> human assistance	
 	#define TEXT_SIZE 0x26c	
-	if(raddr < TEXT_SIZE)
+	if(raddr < CONFIG_MBASE + TEXT_SIZE)
 		return;
 	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx\n", cpu.pc, "Read", raddr, *rdata); 
 	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
