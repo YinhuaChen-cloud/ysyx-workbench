@@ -40,7 +40,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			inst_aux = '0; 
   end
 
-	// for pmem data read
+	// for pmem data read 1
 	reg [XLEN-1:0] raddr;
   reg [XLEN-1:0] rdata;
   reg [XLEN-1:0] rdata_aux;
@@ -63,7 +63,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 				default: begin raddr = '0; rdata_aux = '0; end
 			endcase
 		end
-
+	// for pmem data read 2
 	always@(*) begin
 		rdata = '0;
 		case(raddr[2:0])
@@ -145,7 +145,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Slli	: exec_result = src1 << (src2 & shift_mask);
       Srli	: exec_result = src1 >> (src2 & shift_mask);
       Srai	: exec_result = $signed(src1) >> (src2 & shift_mask);
-      Andi	:;
+      Andi	: exec_result = src1 & src2;
       Ori	:;
       Addiw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] + src2[31:0], 32);
 			Slliw	: begin tmp = src1[31:0] << (src2 & w_shift_mask); exec_result = `ysyx_22050039_SEXT(XLEN, tmp, 32); end
@@ -168,7 +168,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			// Btype
 			Beq		: begin dnpc = (src1 == src2) ? pc + destI : pc + 4; end 
 			Bne		: begin dnpc = (src1 != src2) ? pc + destI : pc + 4; end 
-			Bltu	:;
+			Bltu	: begin dnpc = (src1 < src2) ? pc + destI : pc + 4; end 
 			Bge	: begin dnpc = ($signed(src1) >= $signed(src2)) ? pc + destI : pc + 4; end 
 			Bgeu	:;
 			Blt	:;
