@@ -98,7 +98,7 @@ word_t paddr_read(paddr_t addr, int len) {
 		*(mtrace_buf_p+1) = '\0';	
 		if(!mtrace_fp)		 
 			mtrace_fp = fopen(mtrace_file, "w");
-		fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace]+2, 1, mtrace_fp);
+		fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace]+1, 1, mtrace_fp);
 		fflush(mtrace_fp);
 		// added by yinhua for temporary debug -- end
 		isldst = true;
