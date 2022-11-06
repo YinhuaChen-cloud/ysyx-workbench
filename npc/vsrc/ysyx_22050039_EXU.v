@@ -133,8 +133,8 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Xor	:;
       Sll	:;
       Slt	: exec_result = ($signed(src1) < $signed(src2));
-      Sltu	:;
-      And	:;
+      Sltu	: exec_result = (src1 < src2);
+      And	: exec_result = src1 & src2;
       Div	:;
       Divu	:;
       Rem	:;
