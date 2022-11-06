@@ -50,7 +50,7 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
 	Assert(mymask != 1, "mymask == 1");	
 	*(uint64_t *)(cpu_to_sim(waddr & ~0x7ull) + offest) = wdata & mymask;
 	// mtrace
-	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc 0x%8lx: %5s addr:0x%8llx \n", cpu.pc, "Write", waddr); 
+	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx wmask:0x%x\n", cpu.pc, "Write", waddr, wdata, wmask); 
 	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
 }
 
