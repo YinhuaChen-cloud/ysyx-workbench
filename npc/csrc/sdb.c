@@ -58,9 +58,9 @@ static void cpu_exec(uint32_t n) {
 
 		check_all_watchpoints();
 
-		printred("The pc of the instruction just executed is 0x%lx\n", prev_pc);
-
 		difftest_step();
+
+		printred("The pc of the instruction just executed is 0x%lx\n", prev_pc);
 
 		if (npc_state.state != NPC_RUNNING) break;
 	}
