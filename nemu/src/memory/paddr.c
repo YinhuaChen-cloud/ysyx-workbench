@@ -92,7 +92,7 @@ word_t paddr_read(paddr_t addr, int len) {
 		pmtrace = (pmtrace + 1) % MTBUF_NUM;
 		
 		mtrace_buf_p = mtrace_buf[pmtrace];
-		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr:0x%x len:%d data:0x%lx pc ", addr, len, rdata); // 4 spaces
+		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr:0x%x len:%d data:0x%8lx pc:0x%8lx ", addr, len, rdata, cpu.pc); // 4 spaces
 		// added by yinhua for temporary debug -- start
 		#define TEXT_SIZE 0x26c	
 		if(addr < CONFIG_MBASE + TEXT_SIZE)
@@ -120,7 +120,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 		pmtrace = (pmtrace + 1) % MTBUF_NUM;
 		
 		mtrace_buf_p = mtrace_buf[pmtrace];
-		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr:0x%x len:%d data:0x%lx pc ", addr, len, data); // 4 spaces
+		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr:0x%x len:%d data:0x%8lx pc:0x%8lx ", addr, len, data, cpu.pc); // 4 spaces
 		// added by yinhua for temporary debug -- start
 		*mtrace_buf_p = '\n';	
 		*(mtrace_buf_p+1) = '\0';	
