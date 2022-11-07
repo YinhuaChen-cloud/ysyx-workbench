@@ -146,7 +146,7 @@ int main(int argc, char** argv, char** env) {
 		while (!contextp->gotFinish()) {
 			contextp->timeInc(1);
 			pc_before_exec = cpu.pc;
-			printf("In while, *pc = 0x%lx\n", *pc);
+//			printf("In while, *pc = 0x%lx\n", *pc);
 
 			single_cycle();
 
