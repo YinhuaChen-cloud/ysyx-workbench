@@ -1,6 +1,7 @@
 #include "paddr.h"
 #include "debug.h"
 #include <common.h>
+#include <diff.h>
 
 uint8_t *pmem = NULL;
 
@@ -42,6 +43,12 @@ extern "C" void pmem_read(long long raddr, long long *rdata) {
 }
 
 extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
+	// peripheral
+	if(waddr == CONFIG_SERIAL_PORT) {
+		printf("%c", (char)(wdata & 0xff));
+		difftest_skip_ref();
+		return;
+	}
   // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
