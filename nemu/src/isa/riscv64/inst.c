@@ -18,6 +18,12 @@
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 
+enum {
+	EVENT_NULL = 0,
+	EVENT_YIELD, EVENT_SYSCALL, EVENT_PAGEFAULT, EVENT_ERROR, 
+	EVENT_IRQ_TIMER, EVENT_IRQ_IODEV,
+} event; // define events and its values
+
 #define R(i) gpr(i)
 #define CSR(i) csr((i - CSR_BASE))
 #define Mr vaddr_read
@@ -81,6 +87,8 @@ static int decode_exec(Decode *s) {
 	// NOTE: no sra, srl
   INSTPAT_START();
 	// Control status inst
+	// 000000000000 00000 000 00000 1110011
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, isa_raise_intr(EVENT_YIELD, s->pc)); 
 	// csr rs1 001 rd 1110011
   INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , CR, R(dest) = CSR(csrid); CSR(csrid) = src1;); 
 	// B
