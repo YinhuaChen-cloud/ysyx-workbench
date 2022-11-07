@@ -29,6 +29,7 @@ int main() {
 
   Log("Finish initialization");
 
+  Log("added by cyh");
 #ifdef HAS_CTE
   yield();
 #endif
