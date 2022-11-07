@@ -81,7 +81,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 					} else {
 						// this assert here will cause some unexpected error in NEMU-NEMU model
 						// comment it out if u want to run NEMU-NEMU model
-						assert(0);
+//						assert(0);
 					}
       }
       pfmt++;
