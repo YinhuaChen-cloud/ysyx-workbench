@@ -30,16 +30,20 @@ void close_mtrace() {
 }
 
 extern "C" void pmem_read(long long raddr, long long *rdata) {
+	if(raddr == CONFIG_RTC_ADDR) {
+		*rdata = 1;
+		return;
+	}
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
 	*rdata = *(long long *)cpu_to_sim(raddr & ~0x7ull);
 	// mtrace -> NOTE: we need to judge whether raddr is a inst or a data -> human assistance
 	// filterout inst reading -> human assistance	
-	#define TEXT_SIZE 0x26c	
-	if(raddr < CONFIG_MBASE + TEXT_SIZE)
-		return;
-	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx\n", cpu.pc, "Read", raddr, *rdata); 
-	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
-	fflush(mtrace_fp);
+//	#define TEXT_SIZE 0x26c	
+//	if(raddr < CONFIG_MBASE + TEXT_SIZE)
+//		return;
+//	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx\n", cpu.pc, "Read", raddr, *rdata); 
+//	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
+//	fflush(mtrace_fp);
 }
 
 extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
@@ -65,9 +69,9 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
 	*(uint64_t *)(cpu_to_sim(waddr & ~0x7ull) + offest) &= ~mymask;
 	*(uint64_t *)(cpu_to_sim(waddr & ~0x7ull) + offest) |= wdata & mymask;
 	// mtrace
-	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx mymask:0x%8lx\n", cpu.pc, "Write", waddr, wdata, mymask); 
-	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
-	fflush(mtrace_fp);
+//	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx mymask:0x%8lx\n", cpu.pc, "Write", waddr, wdata, mymask); 
+//	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
+//	fflush(mtrace_fp);
 }
 
 word_t paddr_read(paddr_t addr, int len) {
