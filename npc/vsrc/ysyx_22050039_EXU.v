@@ -83,14 +83,14 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 //		rdata[XLEN-1-i*8:0] = rdata_aux[XLEN-1:i*8];
 	end
 
-	always@(posedge clk)
-		$display("In EXU, pmem_read_inst_aux = 0x%x", inst_aux);
-	always@(posedge clk)
-		$display("In EXU, pmem_read_pc = 0x%x", pc);
-	always@(posedge clk)
-		$display("In EXU, pmem_read_rdata = 0x%x", rdata);
-	always@(posedge clk)
-		$display("In EXU, pmem_read_raddr 0x%x", raddr);
+//	always@(posedge clk)
+//		$display("In EXU, pmem_read_inst_aux = 0x%x", inst_aux);
+//	always@(posedge clk)
+//		$display("In EXU, pmem_read_pc = 0x%x", pc);
+//	always@(posedge clk)
+//		$display("In EXU, pmem_read_rdata = 0x%x", rdata);
+//	always@(posedge clk)
+//		$display("In EXU, pmem_read_raddr 0x%x", raddr);
 
 	// insts do write mem
 	always@(posedge clk)
@@ -136,7 +136,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Sltu	: exec_result = (src1 < src2);
       And	: exec_result = src1 & src2;
       Div	:;
-      Divu	:;
+      Divu: exec_result = src1 / src2;
       Rem	:;
       Remu	:;
       // Itype
@@ -173,7 +173,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			Bgeu	:;
 			Blt	: begin dnpc = ($signed(src1) < $signed(src2)) ? pc + destI : pc + 4; end 
 			// Utype
-			Auipc	: begin exec_result = src1 + pc; $display("auipc, exec_result = 0x%x", exec_result); end
+			Auipc	: begin exec_result = src1 + pc; end
 			Lui	:	exec_result   = src1;
 			// Jtype
 			Jal	: begin exec_result = pc + 4; dnpc = pc + src1; end

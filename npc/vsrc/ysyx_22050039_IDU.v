@@ -72,7 +72,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
 		`ysyx_22050039_INSTPAT(32'b0000000??????????011?????0110011, 20'b0, Rtype, Sltu, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
 		`ysyx_22050039_INSTPAT(32'b0000000??????????111?????0110011, 20'b0, Rtype, And, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
 //		`ysyx_22050039_INSTPAT(32'b0000001??????????100?????0110011, 20'b0, Rtype, Div, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
-//		`ysyx_22050039_INSTPAT(32'b0000001??????????101?????0110011, 20'b0, Rtype, Divu, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
+		`ysyx_22050039_INSTPAT(32'b0000001??????????101?????0110011, 20'b0, Rtype, Divu, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
 //		`ysyx_22050039_INSTPAT(32'b0000001??????????110?????0110011, 20'b0, Rtype, Rem, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
 //		`ysyx_22050039_INSTPAT(32'b0000001??????????111?????0110011, 20'b0, Rtype, Remu, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
 		// I-type
@@ -145,7 +145,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
 			Special	: ;
 			default : assert(0);
 		endcase
-		$display("In combinational, inst_type = %s, func = %s, destI = 0x%x, src1 = 0x%x, src2 = 0x%x, rs1 = %d, rs2 = %d", inst_type.name, func.name, destI, src1, src2, rs1, rs2);
+//		$display("In combinational, inst_type = %s, func = %s, destI = 0x%x, src1 = 0x%x, src2 = 0x%x, rs1 = %d, rs2 = %d", inst_type.name, func.name, destI, src1, src2, rs1, rs2);
   end
   
   // submodule4 - reg addressing: 5-32 decoder
@@ -190,8 +190,8 @@ module ysyx_22050039_IDU #(XLEN = 64,
   );
   
   always@(posedge clk) begin
-    $display("In posedge clk, inst_type = %s, func = %s, src1 = %x, src2 = %x", inst_type.name,
-    func.name, src1, src2);
+//    $display("In posedge clk, inst_type = %s, func = %s, src1 = %x, src2 = %x", inst_type.name,
+//    func.name, src1, src2);
   end
   
 endmodule

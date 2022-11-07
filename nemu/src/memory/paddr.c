@@ -86,25 +86,27 @@ void init_mem() {
 word_t paddr_read(paddr_t addr, int len) {
 	//printf("In paddr_read, addr = 0x%x\n", addr);
 #ifdef CONFIG_MTRACE
-	word_t rdata = pmem_read(addr, len);
-	if(cpu.pc != addr && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END){
-		//printf("CONFIG_MTRACE_START = 0x%x, CONFIG_MTRACE_END = 0x%x\n", CONFIG_MTRACE_START, CONFIG_MTRACE_END);
-		pmtrace = (pmtrace + 1) % MTBUF_NUM;
-		
-		mtrace_buf_p = mtrace_buf[pmtrace];
-		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr:0x%x len:%d data:0x%8lx pc:0x%8lx ", addr, len, rdata, cpu.pc); // 4 spaces
-		// added by yinhua for temporary debug -- start
-		#define TEXT_SIZE 0x274	
-		if(addr < CONFIG_MBASE + TEXT_SIZE)
-			return rdata;
-		*mtrace_buf_p = '\n';	
-		*(mtrace_buf_p+1) = '\0';	
-		if(!mtrace_fp)		 
-			mtrace_fp = fopen(mtrace_file, "w");
-		fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace]+1, 1, mtrace_fp);
-		fflush(mtrace_fp);
-		// added by yinhua for temporary debug -- end
-		isldst = true;
+	if(in_pmem(addr)) {
+		word_t rdata = pmem_read(addr, len);
+		if(cpu.pc != addr && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END){
+			//printf("CONFIG_MTRACE_START = 0x%x, CONFIG_MTRACE_END = 0x%x\n", CONFIG_MTRACE_START, CONFIG_MTRACE_END);
+			pmtrace = (pmtrace + 1) % MTBUF_NUM;
+			
+			mtrace_buf_p = mtrace_buf[pmtrace];
+			mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr:0x%x len:%d data:0x%8lx pc:0x%8lx ", addr, len, rdata, cpu.pc); // 4 spaces
+			// added by yinhua for temporary debug -- start
+			#define TEXT_SIZE 0x274	
+			if(addr < CONFIG_MBASE + TEXT_SIZE)
+				return rdata;
+			*mtrace_buf_p = '\n';	
+			*(mtrace_buf_p+1) = '\0';	
+			if(!mtrace_fp)		 
+				mtrace_fp = fopen(mtrace_file, "w");
+			fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace]+1, 1, mtrace_fp);
+			fflush(mtrace_fp);
+			// added by yinhua for temporary debug -- end
+			isldst = true;
+		}
 	}
 #endif
   if (likely(in_pmem(addr))) return pmem_read(addr, len);

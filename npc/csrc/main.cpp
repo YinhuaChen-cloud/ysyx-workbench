@@ -11,6 +11,11 @@
 #include <sdb.h>
 #include <cpu-exec.h>
 
+#define _BSD_SOURCE
+#include <sys/time.h>
+
+struct timeval boot_time = {};
+
 static const uint32_t default_img [] = {
   0x00000297,  // auipc t0,0
   0x0002b823,  // sd  zero,16(t0)
@@ -59,7 +64,7 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 void ebreak() {
-	printf("In main.cpp ebreak\n");  
+//	printf("In main.cpp ebreak\n");  
 	npc_state.halt_pc = *pc;
 //  printf("omg, top->pc = 0x%x\n", top->pc);
 	printTrap();
@@ -70,7 +75,7 @@ void ebreak() {
 }
 
 void invalid() { 
-	printf("In main.cpp invalid\n");
+//	printf("In main.cpp invalid\n");
 	invalid_inst(*pc); 
 	printTrap();
 
@@ -126,6 +131,11 @@ int main(int argc, char** argv, char** env) {
 	parse_args(argc, argv);
 	init_pmem();
 	long img_size = load_img();
+
+	printf("============ just before rest(10) =============\n");
+
+  gettimeofday(&boot_time, NULL);
+
 	reset(10);
 
 // difftest start
@@ -146,7 +156,7 @@ int main(int argc, char** argv, char** env) {
 		while (!contextp->gotFinish()) {
 			contextp->timeInc(1);
 			pc_before_exec = cpu.pc;
-			printf("In while, *pc = 0x%lx\n", *pc);
+//			printf("In while, *pc = 0x%lx\n", *pc);
 
 			single_cycle();
 

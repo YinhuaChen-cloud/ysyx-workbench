@@ -102,9 +102,6 @@ static void checkregs(CPU_state *ref, vaddr_t pc) {
 		printf("Oh, isa_difftest_checkregs() fails!\n");
     nemu_state.state = NEMU_ABORT;
     nemu_state.halt_pc = pc;
-    isa_reg_display();
-		extern void ref_isa_reg_display(CPU_state *ref);
-		ref_isa_reg_display(ref);
   }
 }
 
