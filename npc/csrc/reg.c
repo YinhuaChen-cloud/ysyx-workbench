@@ -12,8 +12,7 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
 
 extern "C" void set_pc(const svOpenArrayHandle a) {
   pc = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
-	printf("In set_pc, *pc = %lx\n", *pc);
-//	printf("In set_pc, a = %p\n", a);
+//	printf("In set_pc, *pc = %lx\n", *pc);
 }
 
 void sv_regs_to_c() {
@@ -21,7 +20,7 @@ void sv_regs_to_c() {
 		cpu.gpr[i] = cpu_gpr[i];
 	}
 	cpu.pc = *pc;
-	printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, cpu.pc);
+//	printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, cpu.pc);
 }
 
 const char *regs[] = {
