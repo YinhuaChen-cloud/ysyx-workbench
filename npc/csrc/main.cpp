@@ -59,7 +59,7 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 void ebreak() {
-	printf("In main.cpp ebreak\n");  
+//	printf("In main.cpp ebreak\n");  
 	npc_state.halt_pc = *pc;
 //  printf("omg, top->pc = 0x%x\n", top->pc);
 	printTrap();
@@ -70,7 +70,7 @@ void ebreak() {
 }
 
 void invalid() { 
-	printf("In main.cpp invalid\n");
+//	printf("In main.cpp invalid\n");
 	invalid_inst(*pc); 
 	printTrap();
 
