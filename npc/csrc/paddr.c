@@ -3,6 +3,11 @@
 #include <common.h>
 #include <diff.h>
 
+#define _BSD_SOURCE
+#include <sys/time.h>
+
+extern struct timeval boot_time;
+
 uint8_t *pmem = NULL;
 
 #define MTRACE_BUF_LEN 128
@@ -30,8 +35,20 @@ void close_mtrace() {
 }
 
 extern "C" void pmem_read(long long raddr, long long *rdata) {
-	if(raddr == CONFIG_RTC_ADDR) {
-		*rdata = 1;
+	if(raddr >= CONFIG_RTC_ADDR && raddr < CONFIG_RTC_ADDR + 8) {
+		difftest_skip_ref();
+
+		struct timeval now;
+		gettimeofday(&now, NULL);
+		long seconds = now.tv_sec - boot_time.tv_sec;
+		*rdata = seconds * 1000000;	
+
+		if(raddr == CONFIG_RTC_ADDR) {
+			*rdata &= 0xffffffff;
+		}
+		else if(raddr == CONFIG_RTC_ADDR + 4) {
+			*rdata >>= 32;
+		}
 		return;
 	}
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`

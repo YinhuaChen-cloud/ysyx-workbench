@@ -11,6 +11,11 @@
 #include <sdb.h>
 #include <cpu-exec.h>
 
+#define _BSD_SOURCE
+#include <sys/time.h>
+
+struct timeval boot_time = {};
+
 static const uint32_t default_img [] = {
   0x00000297,  // auipc t0,0
   0x0002b823,  // sd  zero,16(t0)
@@ -128,6 +133,8 @@ int main(int argc, char** argv, char** env) {
 	long img_size = load_img();
 
 	printf("============ just before rest(10) =============\n");
+
+  gettimeofday(&boot_time, NULL);
 
 	reset(10);
 
