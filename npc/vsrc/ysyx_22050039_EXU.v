@@ -120,25 +120,25 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Subw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] - src2[31:0], 32);
       Mulw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] * src2[31:0], 32);
       Divw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) / $signed(src2[31:0]), 32);
-      Divuw	:;
+      Divuw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] / src2[31:0], 32);
       Sllw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] << (src2 & w_shift_mask), 32); 
       Srlw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] >> (src2 & w_shift_mask), 32); 
       Sraw	: begin exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) >>> (src2 & w_shift_mask), 32); end
       Remw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) % $signed(src2[31:0]), 32);
-      Remuw	:;
+      Remuw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] % src2[31:0], 32);
       Sub	: exec_result = src1 - src2;
       Or	: exec_result = src1 | src2;
       Add	: exec_result = src1 + src2;
       Mul	: exec_result = src1 * src2;
-      Xor	:;
-      Sll	:;
+      Xor	: exec_result = src1 ^ src2;
+      Sll	: exec_result = src1 << (src2 & shift_mask);
       Slt	: exec_result = ($signed(src1) < $signed(src2));
       Sltu	: exec_result = (src1 < src2);
       And	: exec_result = src1 & src2;
-      Div	:;
+      Div	: exec_result = $signed(src1) / $signed(src2);
       Divu: exec_result = src1 / src2;
-      Rem	:;
-      Remu	:;
+      Rem	: exec_result = $signed(src1) % $signed(src2);
+      Remu: exec_result = src1 % src2;
       // Itype
       Xori	: exec_result = src1 ^ src2;
       Sltiu	: exec_result = (src1 < src2);
@@ -146,7 +146,7 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
       Srli	: exec_result = src1 >> (src2 & shift_mask);
       Srai	: exec_result = $signed(src1) >>> (src2 & shift_mask);
       Andi	: exec_result = src1 & src2;
-      Ori	:;
+      Ori		: exec_result = src1 | src2;
       Addiw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] + src2[31:0], 32);
 			Slliw	: begin tmp = src1[31:0] << (src2 & w_shift_mask); exec_result = `ysyx_22050039_SEXT(XLEN, tmp, 32); end
       Srliw	: begin exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] >> (src2 & w_shift_mask), 32); end
@@ -169,8 +169,8 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
 			Beq		: begin dnpc = (src1 == src2) ? pc + destI : pc + 4; end 
 			Bne		: begin dnpc = (src1 != src2) ? pc + destI : pc + 4; end 
 			Bltu	: begin dnpc = (src1 < src2) ? pc + destI : pc + 4; end 
-			Bge	: begin dnpc = ($signed(src1) >= $signed(src2)) ? pc + destI : pc + 4; end 
-			Bgeu	:;
+			Bge		: begin dnpc = ($signed(src1) >= $signed(src2)) ? pc + destI : pc + 4; end 
+			Bgeu	: begin dnpc = (src1 >= src2) ? pc + destI : pc + 4; end 
 			Blt	: begin dnpc = ($signed(src1) < $signed(src2)) ? pc + destI : pc + 4; end 
 			// Utype
 			Auipc	: begin exec_result = src1 + pc; end
