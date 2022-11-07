@@ -24,13 +24,18 @@ static inline int check_reg_idx(int idx) {
   return idx;
 }
 
-static inline int check_csr_idx(int idx) {
-  assert(idx >= 0 && idx < MNONE);
-  return idx;
-}
-
 #define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
-#define csr(idx) (cpu.csr[check_csr_idx(idx)])
+#define csr(idx) \
+{ \
+	uint64_t *theR = NULL; \
+	switch(idx) { \
+		case MTVEC:		theR = &(cpu.mtvec); break; \
+		case MEPC:		theR = &(cpu.mepc); break; \
+		case MCAUSE:  theR = &(cpu.mcause); break; \
+		default: assert(0); \
+	} \
+	theR; \
+}
 
 static inline const char* reg_name(int idx, int width) {
   extern const char* regs[];
