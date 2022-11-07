@@ -18,9 +18,23 @@
 
 #include <common.h>
 
+#define CSR_BASE 0x300
+enum {
+	MSTATUS = 0,
+	MISA,
+	MEDELEG,
+	MIDELEG,
+	MIE,
+	MTVEC,
+	MCOUNTEREN,
+	MNONE
+//	MSTATUSH error: 0x310
+}; // define events and its values
+
 typedef struct {
   word_t gpr[32];
   vaddr_t pc;
+	uint64_t csr[MNONE];
 } riscv64_CPU_state;
 
 // decode
