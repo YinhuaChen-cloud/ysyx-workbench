@@ -29,6 +29,7 @@ static inline int check_reg_idx(int idx) {
 { \
 	uint64_t *theR = NULL; \
 	switch(idx) { \
+		case MSTATUS:	theR = &(cpu.mstatus); break; \
 		case MTVEC:		theR = &(cpu.mtvec); break; \
 		case MEPC:		theR = &(cpu.mepc); break; \
 		case MCAUSE:  theR = &(cpu.mcause); break; \
