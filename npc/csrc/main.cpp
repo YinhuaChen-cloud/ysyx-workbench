@@ -126,6 +126,9 @@ int main(int argc, char** argv, char** env) {
 	parse_args(argc, argv);
 	init_pmem();
 	long img_size = load_img();
+
+	printf("============ just before rest(10) =============\n");
+
 	reset(10);
 
 // difftest start
