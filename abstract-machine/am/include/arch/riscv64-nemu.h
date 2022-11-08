@@ -19,8 +19,8 @@
 
 struct Context {
   // TODO: fix the order of these members to match trap.S
-	// the reason of 31: $0 no need to store
-	uintptr_t gpr[31]; // NOTE: no order need among gprs, restoring process will do it self
+	// the reason of 30: $0 no need to store, sp is not stored
+	uintptr_t gpr[30]; // NOTE: no order need among gprs, restoring process will do it self
   uintptr_t mcause, mstatus, mepc;
   void *pdir;
 };
