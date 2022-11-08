@@ -90,7 +90,7 @@ static int decode_exec(Decode *s) {
 	// 000000000000 00000 000 00000 1110011
   INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(EVENT_YIELD, s->snpc)); 
 	// csr rs1 010 rd 1110011 
-  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , CR, R(dest) = CSR(csrid); CSR(csrid) |= src1; printf("csr = 0x%lx\n", CSR(csrid));); 
+  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , CR, R(dest) = CSR(csrid); CSR(csrid) |= src1; printf("idx = 0x%lx, csr = 0x%lx\n", csrid, CSR(csrid));); 
 	// csr rs1 001 rd 1110011
   INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , CR, R(dest) = CSR(csrid); CSR(csrid) = src1;); 
 	// B
