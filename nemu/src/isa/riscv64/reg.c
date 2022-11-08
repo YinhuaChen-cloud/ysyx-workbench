@@ -39,6 +39,7 @@ void isa_reg_display() {
   for(int i = 0; i < sizeof(regs)/sizeof(char *); i++) {
     printf("%s\t0x%lx\t%ld\n", regs[i], cpu.gpr[i], cpu.gpr[i]);
   }
+	printf("%s\t0x%lx\t%ld\n", "mstatus", cpu.mstatus, cpu.status);
 	printf("%s\t0x%lx\t%ld\n", "mtvec", cpu.mtvec, cpu.mtvec);
   printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, cpu.pc);
 }
