@@ -14,9 +14,14 @@
 ***************************************************************************************/
 
 #include <isa.h>
-#include <am.h>
 
 #define ECALL_FROM_M 0xb
+
+enum {
+	EVENT_NULL = 0,
+	EVENT_YIELD, EVENT_SYSCALL, EVENT_PAGEFAULT, EVENT_ERROR, 
+	EVENT_IRQ_TIMER, EVENT_IRQ_IODEV,
+} event; // define events and its values
 
 //SR[mepc] <- PC
 //SR[mcause] <- 一个描述失败原因的号码
