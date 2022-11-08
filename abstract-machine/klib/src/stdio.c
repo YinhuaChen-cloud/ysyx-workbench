@@ -25,6 +25,7 @@ int u64tox(char *pout, uint64_t val);
 int u64toa(char *pout, uint64_t val);
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
+//	assert(0);
   char *pout = out;
   const char *pfmt = fmt;
   bool flag = false;
