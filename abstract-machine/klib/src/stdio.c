@@ -22,6 +22,7 @@ int printf(const char *fmt, ...) {
 int itoa(char *pout, int val);
 int itox(char *pout, int val);
 int u64tox(char *pout, uint64_t val);
+int u64toa(char *pout, uint64_t val);
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
   char *pout = out;
@@ -49,14 +50,18 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       switch (*pfmt) {
         case 'd':
 					if(longflag) {
-//						assert(0);
-						longflag = false;	
+						longflag = false;
+						longval = va_arg(ap, uint64_t);
+						tmp = u64toa(pout, longval);
+						pout += tmp;
 					}
-          // print number
-          ival = va_arg(ap, int);
-          tmp = itoa(pout, ival);
-          pout += tmp;
-					flag = false;
+					else {
+						// print number
+						ival = va_arg(ap, int);
+						tmp = itoa(pout, ival);
+						pout += tmp;
+						flag = false;
+					}
           break;
         case 's':
 					if(longflag)
@@ -83,11 +88,13 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 						tmp = u64tox(pout, longval);
 						pout += tmp;
 					}
-          // print hex number
-          ival = va_arg(ap, int);
-          tmp = itox(pout, ival);
-          pout += tmp;
-					flag = false;
+					else {
+						// print hex number
+						ival = va_arg(ap, int);
+						tmp = itox(pout, ival);
+						pout += tmp;
+						flag = false;
+					}
           break;
 				case 'l':
 					longflag = true;
@@ -172,6 +179,10 @@ int itox(char *pout, int val) {
   }
 #undef HEX_CHAR_NR 
   return p - pout;
+}
+
+int u64toa(char *pout, uint64_t val) {
+	return 0;
 }
 
 // convert val to string in pout, return the number of char printed
