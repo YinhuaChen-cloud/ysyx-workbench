@@ -15,6 +15,8 @@
 
 #include <isa.h>
 
+#define ECALL_FROM_M 0xb
+
 //SR[mepc] <- PC
 //SR[mcause] <- 一个描述失败原因的号码
 //PC <- SR[mtvec]
@@ -23,7 +25,11 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
    * Then return the address of the interrupt/exception vector.
    */
 	cpu.mepc = epc;	
-	cpu.mcause = NO;
+	switch(NO) {
+		case EVENT_YIELD: cpu.mcause = ECALL_FROM_M; // TODO: in the future we should add privilege distinguish
+		default: assert(0);
+	}
+	
 //	printf("NO = %ld, epc = 0x%lx\n", NO, epc);
   return cpu.mtvec;
 }
