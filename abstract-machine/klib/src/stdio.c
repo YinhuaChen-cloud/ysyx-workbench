@@ -50,6 +50,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         case 'd':
 					if(longflag) {
 //						assert(0);
+						longflag = false;	
 					}
           // print number
           ival = va_arg(ap, int);
