@@ -26,6 +26,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   char *pout = out;
   const char *pfmt = fmt;
   bool flag = false;
+	bool longflag = false;
 
   char *sval;
   int ival;
@@ -45,6 +46,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     else if(flag) {
       switch (*pfmt) {
         case 'd':
+					if(longflag)
+						assert(0);
           // print number
           ival = va_arg(ap, int);
           tmp = itoa(pout, ival);
@@ -52,6 +55,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 					flag = false;
           break;
         case 's':
+					if(longflag)
+						assert(0);
           // print string
           sval = va_arg(ap, char *);
 					assert(sval);
@@ -60,18 +65,32 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 					flag = false;
           break;
         case '%':
+					if(longflag)
+						assert(0);
           // print %
           *pout =  '%';
           pout++;
 					flag = false;
           break;
 				case 'x': 
+					if(longflag) {
+						longflag = false;
+						ival = va_arg(ap, int);
+						tmp = itox(pout, ival);
+						pout += tmp;
+						ival = va_arg(ap, int);
+						tmp = itox(pout, ival);
+						pout += tmp;
+					}
           // print hex number
           ival = va_arg(ap, int);
           tmp = itox(pout, ival);
           pout += tmp;
 					flag = false;
           break;
+				case 'l':
+					longflag = true;
+					break;;
         default:
 					if(*pfmt >= '0' && *pfmt <= '9') {
 						// 1. this is width: 1.1 not zero  1.2. zero, but only this one number
