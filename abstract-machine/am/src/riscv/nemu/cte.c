@@ -52,6 +52,7 @@ Context* __am_irq_handle(Context *c) {
 	printf("in __am_irq_handle start\n");
 	printf("size of uintptr_t = %ld\n", sizeof(uintptr_t));
   for(int i = 0; i < sizeof(regs)/sizeof(char *); i++) {
+    printf("i = %d\n", i);
     printf("%s\t0x%lx\t%ld\n", regs[i], c->gpr[i], c->gpr[i]);
   }
 	printf("%s\t0x%lx\t%ld\n", "mcause", c->mcause, c->mcause);
