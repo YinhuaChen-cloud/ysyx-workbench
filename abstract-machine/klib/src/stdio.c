@@ -21,6 +21,7 @@ int printf(const char *fmt, ...) {
 
 int itoa(char *pout, int val);
 int itox(char *pout, int val);
+int u64tox(char *pout, uint64_t val);
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
   char *pout = out;
@@ -30,6 +31,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 
   char *sval;
   int ival;
+	uint64_t longval;
 
   int tmp;
 
@@ -46,8 +48,9 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     else if(flag) {
       switch (*pfmt) {
         case 'd':
-					if(longflag)
-						assert(0);
+					if(longflag) {
+//						assert(0);
+					}
           // print number
           ival = va_arg(ap, int);
           tmp = itoa(pout, ival);
@@ -75,11 +78,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 				case 'x': 
 					if(longflag) {
 						longflag = false;
-						ival = va_arg(ap, int);
-						tmp = itox(pout, ival);
-						pout += tmp;
-						ival = va_arg(ap, int);
-						tmp = itox(pout, ival);
+						longval = va_arg(ap, uint64_t);
+						tmp = u64tox(pout, longval);
 						pout += tmp;
 					}
           // print hex number
@@ -88,9 +88,9 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
           pout += tmp;
 					flag = false;
           break;
-//				case 'l':
-//					longflag = true;
-//					break;;
+				case 'l':
+					longflag = true;
+					break;
         default:
 					if(*pfmt >= '0' && *pfmt <= '9') {
 						// 1. this is width: 1.1 not zero  1.2. zero, but only this one number
@@ -128,6 +128,16 @@ int snprintf(char *out, size_t n, const char *fmt, ...) {
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
   panic("Not implemented");
+}
+
+int u64tox(char *pout, uint64_t val) {
+	int front, end;
+	front = (int)(val >> 32); 
+	int tmp = itox(pout, front);
+	pout += tmp;
+	end = (int)(val & 0xffffffff); 
+	tmp += itox(pout, end);
+	return tmp;
 }
 
 // convert val to hex string in pout, return the number of char printed

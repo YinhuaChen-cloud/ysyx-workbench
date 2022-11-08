@@ -50,14 +50,14 @@ const char *regs[] = {
 
 Context* __am_irq_handle(Context *c) {
 	printf("in __am_irq_handle start\n");
-	printf("size of uintptr_t = %d\n", sizeof(uintptr_t));
+	printf("size of uintptr_t = %ld\n", sizeof(uintptr_t));
   for(int i = 0; i < sizeof(regs)/sizeof(char *); i++) {
     printf("i = %d\n", i);
-    printf("%s\t0x%lx\t%d\n", regs[i], c->gpr[i], c->gpr[i]);
+    printf("%s\t0x%lx\t%ld\n", regs[i], c->gpr[i], c->gpr[i]);
   }
-	printf("%s\t0x%lx\t%d\n", "mcause", c->mcause, c->mcause);
-	printf("%s\t0x%lx\t%d\n", "mcause", c->mstatus, c->mstatus);
-	printf("%s\t0x%lx\t%d\n", "mepc", c->mepc, c->mepc);
+	printf("%s\t0x%lx\t%ld\n", "mcause", c->mcause, c->mcause);
+	printf("%s\t0x%lx\t%ld\n", "mcause", c->mstatus, c->mstatus);
+	printf("%s\t0x%lx\t%ld\n", "mepc", c->mepc, c->mepc);
 	printf("in __am_irq_handle end\n");
   if (user_handler) {
     Event ev = {0};
