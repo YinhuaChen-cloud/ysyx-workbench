@@ -88,9 +88,9 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
           pout += tmp;
 					flag = false;
           break;
-				case 'l':
-					longflag = true;
-					break;;
+//				case 'l':
+//					longflag = true;
+//					break;;
         default:
 					if(*pfmt >= '0' && *pfmt <= '9') {
 						// 1. this is width: 1.1 not zero  1.2. zero, but only this one number
