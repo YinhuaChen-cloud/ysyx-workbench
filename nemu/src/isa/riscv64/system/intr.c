@@ -33,7 +33,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 	cpu.mepc = epc;	
 	switch(NO) {
 		case EVENT_YIELD: cpu.mcause = ECALL_FROM_M; break; // TODO: in the future we should add privilege distinguish
-		default: Assert(0, "Unsupported event: 0x%lx\n", NO);
+		default: Assert(0, "Unsupported event: 0x%lx", NO);
 	}
 	
 //	printf("NO = %ld, epc = 0x%lx\n", NO, epc);

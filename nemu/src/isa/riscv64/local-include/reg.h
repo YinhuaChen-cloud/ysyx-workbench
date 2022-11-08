@@ -33,7 +33,7 @@ static inline int check_reg_idx(int idx) {
 		case MTVEC:		theR = &(cpu.mtvec); break; \
 		case MEPC:		theR = &(cpu.mepc); break; \
 		case MCAUSE:  theR = &(cpu.mcause); break; \
-		default: assert(0); \
+		default: Assert(0, "Unsupported CSR 0x%lx", idx); \
 	} \
 	theR; \
 }
