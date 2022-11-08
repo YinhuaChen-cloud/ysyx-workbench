@@ -10,9 +10,18 @@
 //多数情况下, 操作系统并不需要单独访问Context结构中的成员. CTE也提供了一些的接口, 来让
 //操作系统在必要的时候访问它们, 从而保证操作系统的相关代码与架构无关.
 
+//const char *regs[] = {
+//  "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
+//  "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
+//  "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
+//  "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
+//};
+
 struct Context {
   // TODO: fix the order of these members to match trap.S
-  uintptr_t mepc, mcause, gpr[32], mstatus;
+	// the reason of 31: $0 no need to store
+	uintptr_t gpr[31]; // NOTE: no order need among gprs, restoring process will do it self
+  uintptr_t mcause, mstatus, mepc;
   void *pdir;
 };
 
