@@ -50,10 +50,11 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       switch (*pfmt) {
         case 'd':
 					if(longflag) {
-						longflag = false;
-						longval = va_arg(ap, uint64_t);
-						tmp = u64toa(pout, longval);
-						pout += tmp;
+//						longflag = false;
+//						longval = va_arg(ap, uint64_t);
+//						tmp = u64toa(pout, longval);
+//						pout += tmp;
+						assert(0);
 					}
 					else {
 						// print number
