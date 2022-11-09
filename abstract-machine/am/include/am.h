@@ -20,16 +20,23 @@ typedef struct {
 // Arch-dependent processor context
 typedef struct Context Context;
 
+//typedef struct Event {
+//  enum { ... } event;
+//  uintptr_t cause, ref;
+//  const char *msg;
+//} Event;
 // An event of type @event, caused by @cause of pointer @ref
 typedef struct {
   enum {
     EVENT_NULL = 0,
-    EVENT_YIELD, EVENT_SYSCALL, EVENT_PAGEFAULT, EVENT_ERROR,
+    EVENT_YIELD, EVENT_SYSCALL, EVENT_PAGEFAULT, EVENT_ERROR, 
     EVENT_IRQ_TIMER, EVENT_IRQ_IODEV,
-  } event;
-  uintptr_t cause, ref;
+  } event; // define events and its values
+//typedef unsigned long int	uintptr_t;
+  uintptr_t cause, ref; 
   const char *msg;
 } Event;
+//其中event表示事件编号, cause和ref是一些描述事件的补充信息, msg是事件信息字符串, 我们在PA中只会用到event. 然后, 我们只要定义一些统一的事件编号(上述枚举常量), 让每个架构在实现各自的CTE API时, 都统一通过上述结构体来描述执行流切换的原因, 就可以实现切换原因的抽象了.
 
 // A protected address space with user memory @area
 // and arch-dependent @ptr

@@ -18,9 +18,18 @@
 
 #include <common.h>
 
+#define MSTATUS	0x300
+#define MTVEC		0x305
+#define MEPC		0x341
+#define MCAUSE	0x342
+
 typedef struct {
   word_t gpr[32];
   vaddr_t pc;
+	uint64_t mstatus;
+	uint64_t mtvec;
+	uint64_t mepc;
+	uint64_t mcause;
 } riscv64_CPU_state;
 
 // decode

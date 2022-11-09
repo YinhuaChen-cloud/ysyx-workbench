@@ -17,6 +17,7 @@
 #define __RISCV64_REG_H__
 
 #include <common.h>
+#include <isa-def.h>
 
 static inline int check_reg_idx(int idx) {
   IFDEF(CONFIG_RT_CHECK, assert(idx >= 0 && idx < 32));
@@ -24,6 +25,18 @@ static inline int check_reg_idx(int idx) {
 }
 
 #define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
+#define csr(idx) \
+{ \
+	uint64_t *theR = NULL; \
+	switch(idx) { \
+		case MSTATUS:	theR = &(cpu.mstatus); break; \
+		case MTVEC:		theR = &(cpu.mtvec); break; \
+		case MEPC:		theR = &(cpu.mepc); break; \
+		case MCAUSE:  theR = &(cpu.mcause); break; \
+		default: Assert(0, "Unsupported CSR 0x%lx", idx); \
+	} \
+	theR; \
+}
 
 static inline const char* reg_name(int idx, int width) {
   extern const char* regs[];

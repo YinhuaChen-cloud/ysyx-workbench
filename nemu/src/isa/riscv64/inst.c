@@ -18,14 +18,21 @@
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 
+enum {
+	EVENT_NULL = 0,
+	EVENT_YIELD, EVENT_SYSCALL, EVENT_PAGEFAULT, EVENT_ERROR, 
+	EVENT_IRQ_TIMER, EVENT_IRQ_IODEV,
+} event; // define events and its values
+
 #define R(i) gpr(i)
+#define CSR(i) (*(csr(i)))
 #define Mr vaddr_read
 #define Mw vaddr_write
 #define shift_mask MUXDEF(CONFIG_ISA64, 0x3f, 0x1f)
 #define sext32to64(a) ((int64_t)(int32_t)(a))
 
 enum {
-  TYPE_I, TYPE_U, TYPE_S, TYPE_R, TYPE_B, TYPE_J,
+  TYPE_I, TYPE_U, TYPE_S, TYPE_R, TYPE_B, TYPE_J, TYPE_CR,
   TYPE_N, // none
 };
 
@@ -48,11 +55,12 @@ static word_t immJ(uint32_t i) { return (SEXT(BITS(i, 31, 31), 1) << 20) | \
 	(BITS(i, 20, 20) << 11) | \
 	(BITS(i, 30, 21) << 1) ; }
 
-static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, int type) {
+static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, word_t *csrid, int type) {
   uint32_t i = s->isa.inst.val;
   int rd  = BITS(i, 11, 7);
   int rs1 = BITS(i, 19, 15);
   int rs2 = BITS(i, 24, 20);
+	*csrid = BITS(i, 31, 20);
   switch (type) {
 		// NOTE: I add "destR(rd) in TYPE_I, and sth else at other original cases
     case TYPE_I: destR(rd); src1R(rs1); src2I(immI(i)); break;
@@ -61,22 +69,30 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
 		case TYPE_R: destR(rd); src1R(rs1); src2R(rs2); break; 
 		case TYPE_B: destI(immB(i)); src1R(rs1); src2R(rs2); break; 
 		case TYPE_J: destR(rd); src1I(immJ(i)); break; 
+		case TYPE_CR: destR(rd); src1R(rs1); break;
   }
 }
 
 #include "ftrace.h"
 
 static int decode_exec(Decode *s) {
-  word_t dest = 0, src1 = 0, src2 = 0;
+  word_t dest = 0, src1 = 0, src2 = 0, csrid = 0;
   s->dnpc = s->snpc;
 
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 #define INSTPAT_MATCH(s, name, type, ... /* body */ ) { \
-  decode_operand(s, &dest, &src1, &src2, concat(TYPE_, type)); \
+  decode_operand(s, &dest, &src1, &src2, &csrid, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
 }
 	// NOTE: no sra, srl
   INSTPAT_START();
+	// Control status inst
+	// 000000000000 00000 000 00000 1110011
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(EVENT_YIELD, s->pc)); 
+	// csr rs1 010 rd 1110011 
+  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , CR, R(dest) = CSR(csrid); CSR(csrid) |= src1;); 
+	// csr rs1 001 rd 1110011
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , CR, R(dest) = CSR(csrid); CSR(csrid) = src1;); 
 	// B
   INSTPAT("??????? ????? ????? 000 ????? 11000 11", beq    , B, s->dnpc = src1 == src2 ? s->pc + dest : s->snpc);
   INSTPAT("??????? ????? ????? 001 ????? 11000 11", bne	   , B, s->dnpc = src1 != src2 ? s->pc + dest : s->snpc); 

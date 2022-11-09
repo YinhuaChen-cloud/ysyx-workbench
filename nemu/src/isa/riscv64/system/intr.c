@@ -15,12 +15,29 @@
 
 #include <isa.h>
 
+#define ECALL_FROM_M 0xb
+
+enum {
+	EVENT_NULL = 0,
+	EVENT_YIELD, EVENT_SYSCALL, EVENT_PAGEFAULT, EVENT_ERROR, 
+	EVENT_IRQ_TIMER, EVENT_IRQ_IODEV,
+} event; // define events and its values
+
+//SR[mepc] <- PC
+//SR[mcause] <- 一个描述失败原因的号码
+//PC <- SR[mtvec]
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* TODO: Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
    */
-
-  return 0;
+	cpu.mepc = epc;	
+	switch(NO) {
+		case EVENT_YIELD: cpu.mcause = ECALL_FROM_M; break; // TODO: in the future we should add privilege distinguish
+		default: Assert(0, "Unsupported event: 0x%lx", NO);
+	}
+	
+//	printf("NO = %ld, epc = 0x%lx\n", NO, epc);
+  return cpu.mtvec;
 }
 
 word_t isa_query_intr() {
