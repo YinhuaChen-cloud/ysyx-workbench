@@ -10,6 +10,7 @@
 char printf_buf[PRINT_BUF_LEN];
 
 int printf(const char *fmt, ...) {
+	putstr("my own printf\n");
 	int num_p = -1;
 	va_list args;
 	va_start(args, fmt);
