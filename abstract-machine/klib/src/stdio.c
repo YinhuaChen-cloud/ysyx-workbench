@@ -10,7 +10,6 @@
 char printf_buf[PRINT_BUF_LEN];
 
 int printf(const char *fmt, ...) {
-	putstr("my own printf\n");
 	int num_p = -1;
 	va_list args;
 	va_start(args, fmt);
@@ -26,6 +25,7 @@ int u64tox(char *pout, uint64_t val);
 int u64toa(char *pout, uint64_t val);
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
+	putstr("my own vsprintf\n");
 //	assert(0);
   char *pout = out;
   const char *pfmt = fmt;
