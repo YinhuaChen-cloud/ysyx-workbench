@@ -32,7 +32,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 
   char *sval;
   int ival;
-	volatile uint64_t longval;
+	uint64_t longval;
 
   int tmp;
 
