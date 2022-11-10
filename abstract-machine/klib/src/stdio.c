@@ -183,7 +183,7 @@ int itox(char *pout, uint32_t val, bool extend) {
 		}
   }
 
-  int tmp = val; 
+  uint32_t tmp = val; 
   while(tmp) {
     digit++; 
     tmp /= HEX_CHAR_NR;
