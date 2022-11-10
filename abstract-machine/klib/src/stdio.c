@@ -20,7 +20,7 @@ int printf(const char *fmt, ...) {
 }
 
 int itoa(char *pout, int val);
-int itox(char *pout, int val, bool extend);
+int itox(char *pout, uint32_t val, bool extend);
 int u64tox(char *pout, uint64_t val);
 int i64toa(char *pout, int64_t val);
 
@@ -32,6 +32,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 
   char *sval;
   int ival;
+  uint32_t uval;
 	volatile uint64_t longval;
 
   int tmp;
@@ -90,8 +91,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 					}
 					else {
 						// print hex number
-						ival = va_arg(ap, int);
-						tmp = itox(pout, ival, false);
+						uval = va_arg(ap, int);
+						tmp = itox(pout, uval, false);
 						pout += tmp;
 					}
 					percentflag = false;
@@ -139,13 +140,13 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
 }
 
 int u64tox(char *pout, uint64_t val) {
-	int front, end, tmp;
-	front = (int)(val >> 32); 
+	uint32_t front, end, tmp;
+	front = (uint32_t)(val >> 32); 
 	tmp = 0;
 	if(front)
 		tmp += itox(pout, front, false);
 	pout += tmp;
-	end = (int)(val & 0xffffffff); 
+	end = (uint32_t)(val & 0xffffffff); 
 	// 1. front and end are 0		print 0
 	// 2. front = 0, end !=0		only print end             1 and 2 are the same, just print end
 	// 3. front != 0, end =0		print front and 8 0x0					3 and 4 are the same, just 0-extend end
@@ -159,7 +160,7 @@ int u64tox(char *pout, uint64_t val) {
 
 // extend: bool, determine whether zero-extended
 // convert val to hex string in pout, return the number of char printed
-int itox(char *pout, int val, bool extend) {
+int itox(char *pout, uint32_t val, bool extend) {
 #define HEX_CHAR_NR 16
 	const char dec_to_hex[HEX_CHAR_NR] = {'0', '1', '2', '3', '4', '5', '6', \
 		'7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
