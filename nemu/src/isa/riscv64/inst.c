@@ -87,6 +87,8 @@ static int decode_exec(Decode *s) {
 	// NOTE: no sra, srl
   INSTPAT_START();
 	// Control status inst
+	// 0011000 00010 00000 000 00000 1110011
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret	 , N, s->dnpc = cpu.mepc + 4); 
 	// 000000000000 00000 000 00000 1110011
   INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(EVENT_YIELD, s->pc)); 
 	// csr rs1 010 rd 1110011 

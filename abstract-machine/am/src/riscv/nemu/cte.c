@@ -34,6 +34,8 @@ Context* __am_irq_handle(Context *c) {
     assert(c != NULL);
   }
 
+//	Values are returned from functions in integer registers a0 and a1 and floating-point registers fa0 and fa1. 
+//		Floating-point values are returned in floating-point registers only if they are primitives or members of a struct consisting of only one or two floating-point values.
   return c;
 }
 
