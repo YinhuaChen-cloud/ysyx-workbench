@@ -2,6 +2,8 @@
 #include <riscv/riscv.h>
 #include <klib.h>
 
+#define ECALL_FROM_M 0xb
+
 static Context* (*user_handler)(Event, Context*) = NULL;
 
 //const char *regs[] = {
@@ -24,6 +26,7 @@ Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
     switch (c->mcause) {
+			case ECALL_FROM_M: ev.event = EVENT_YIELD; break;
       default: ev.event = EVENT_ERROR; break;
     }
 
