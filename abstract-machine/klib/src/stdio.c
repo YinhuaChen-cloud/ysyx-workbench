@@ -33,7 +33,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   char *sval;
   int ival;
   uint32_t uval;
-	volatile uint64_t longval;
+	uint64_t longval;
 
   int tmp;
 
@@ -140,7 +140,8 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
 }
 
 int u64tox(char *pout, uint64_t val) {
-	uint32_t front, end, tmp;
+	uint32_t front, end;
+	int tmp;
 	front = (uint32_t)(val >> 32); 
 	tmp = 0;
 	if(front)

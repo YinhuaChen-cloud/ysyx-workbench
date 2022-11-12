@@ -69,8 +69,8 @@ void *memmove(void *dst, const void *src, size_t n) {
 
 // We do not care about memory overlap now 
 void *memcpy(void *out, const void *in, size_t n) {
-	const char *pin = (const char *)in;
-	char *pout = (char *)out;
+	const uint8_t *pin = (const uint8_t *)in;
+	uint8_t *pout = (uint8_t *)out;
   while(n) {
 		*pout = *pin;
 		pout++;

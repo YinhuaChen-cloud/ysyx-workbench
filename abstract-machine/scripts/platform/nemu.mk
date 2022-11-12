@@ -38,7 +38,7 @@ image: $(IMAGE).elf # image: recursion-riscv64-nemu.elf
 	@echo "IMAGE_REL = $(IMAGE_REL)" 
 	@echo "NAME = $(NAME)"
 	@echo "ARCH = $(ARCH)"
-	@$(OBJDUMP) -d $(IMAGE).elf > $(IMAGE).txt # objdump -d is used for disassemble
+	@$(OBJDUMP) -d -M no-aliases $(IMAGE).elf > $(IMAGE).txt # objdump -d is used for disassemble
 	@echo + OBJCOPY "->" $(IMAGE_REL).bin
 	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
 	# objcopy flags:
