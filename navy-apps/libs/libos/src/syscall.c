@@ -40,6 +40,7 @@
 #error _syscall_ is not implemented
 #endif
 
+//  return _syscall_(SYS_yield, 0, 0, 0); 1,0,0,0
 intptr_t _syscall_(intptr_t type, intptr_t a0, intptr_t a1, intptr_t a2) {
   register intptr_t _gpr1 asm (GPR1) = type;
   register intptr_t _gpr2 asm (GPR2) = a0;
