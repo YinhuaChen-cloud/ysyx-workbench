@@ -46,6 +46,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	printf("ramdisk_start = 0x%x\n", ramdisk_start);
 	Elf_Ehdr *elfheader = (Elf_Ehdr *)(&ramdisk_start); 
 	printf("elfheader->e_ident = 0x%x\n", elfheader->e_ident[0]);
+	assert(elfheader->e_machine == EM_RISCV);	
 	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
 	Elf_Phdr *program_headers = (Elf_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
 
