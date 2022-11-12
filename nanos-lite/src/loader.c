@@ -9,14 +9,13 @@
 # define Elf_Phdr Elf32_Phdr
 #endif
 
-//#if defined(__ISA_AM_NATIVE__)
-//# define EXPECT_TYPE EM_X86_64
-//#elif defined(__ISA_RISCV64__)
-//# define EXPECT_TYPE ...  // see /usr/include/elf.h to get the right type
-//...
-//#else
-//# error Unsupported ISA
-//#endif
+#if defined(__ISA_AM_NATIVE__)
+# define EXPECT_TYPE EM_X86_64
+#elif defined(__ISA_RISCV64__)
+# define EXPECT_TYPE EM_RISCV  // see /usr/include/elf.h to get the right type
+#else
+# error Unsupported ISA
+#endif
 
 // yinhua add this -- start
 //#define RAM_READ_BUF_LEN 0x8000000
