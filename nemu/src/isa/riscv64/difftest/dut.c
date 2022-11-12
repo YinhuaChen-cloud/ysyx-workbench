@@ -40,7 +40,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 	} 
 //	if(cpu.gpr[15] % 2 == 1) {
 //		printf("------- value in $a5 is odd: pc = 0x%lx, $a5 = 0x%lx -------\n", cpu.pc, cpu.gpr[15]);
-	}
+//	}
 	
   return theSame;
 }
