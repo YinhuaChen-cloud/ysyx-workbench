@@ -165,7 +165,7 @@ static int cmd_x(char *args) {
   uint32_t val;
   uint32_t cnt = 0;
   bool success = true;
-  uint64_t result = expr(addrstr, &success);
+  uint64_t addr = expr(addrstr, &success);
 
   if(!success) {
     printf("The EXPR cannot be recognized correctly, you can check detailed information in ./build/nemu-log.txt\n");
