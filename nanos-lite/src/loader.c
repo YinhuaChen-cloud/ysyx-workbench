@@ -45,6 +45,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 //	extern uint8_t ramdisk_end;
 
 	Elf64_Ehdr *elfheader = (Elf64_Ehdr *)(&ramdisk_start); 
+	printf("machine = %d\n", elfheader->e_machine);
 	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
 	Elf64_Phdr *program_headers = (Elf64_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
 
@@ -55,7 +56,6 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 		memset(osmem + p->p_vaddr + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
 	}
 
-	printf("machine = %d\n", elfheader->e_machine);
 //	// loader -- start
 //	// loader -- end
 
