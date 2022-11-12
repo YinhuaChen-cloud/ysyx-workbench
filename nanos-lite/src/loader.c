@@ -50,11 +50,8 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
 	Elf_Phdr *program_headers = (Elf_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
 
-	printf("a\n");
 	for(Elf_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
-		printf("b\n");
 		if(p->p_type != PT_LOAD) {
-			printf("c\n");
 			continue;
 		}
 		printf("osamdoamd\n");
