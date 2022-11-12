@@ -42,14 +42,14 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
 	extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
 	printf("b\n");
-	extern uint8_t ramdisk_start;
+//	extern uint8_t ramdisk_start;
 //	extern uint8_t ramdisk_end;
 
 	printf("a\n");
-	Elf64_Ehdr *elfheader = (Elf64_Ehdr *)(&ramdisk_start); 
+//	Elf64_Ehdr *elfheader = (Elf64_Ehdr *)(&ramdisk_start); 
 	printf("c\n");
 //	printf("machine = %d\n", elfheader->e_machine);
-	printf("machine = %d\n", elfheader->e_machine);
+	printf("machine\n");
 //	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
 //	Elf64_Phdr *program_headers = (Elf64_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
 //
