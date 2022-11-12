@@ -51,7 +51,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	for(Elf64_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
 		if(p->p_type != PT_LOAD) 
 			continue;
-		ramdisk_read((uint8_t *)(p->p_vaddr), p->p_offset, p->p_filesz); 
+		ramdisk_read((void *)(p->p_vaddr), p->p_offset, p->p_filesz); 
 //		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
 	}
 
