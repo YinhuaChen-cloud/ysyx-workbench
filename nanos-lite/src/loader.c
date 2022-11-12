@@ -48,7 +48,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	printf("a\n");
 	Elf64_Ehdr *elfheader = (Elf64_Ehdr *)(&ramdisk_start); 
 	printf("c\n");
-	printf("machine = %x\n", elfheader);
+	printf("machine = 0x%x\n", elfheader);
 	printf("machine\n");
 //	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
 //	Elf64_Phdr *program_headers = (Elf64_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
