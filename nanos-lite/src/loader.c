@@ -35,12 +35,12 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	ramdisk_read(osmem, 0, 0x4c38); // 1
 	for(uint32_t *x = (uint32_t *)osmem; (uint8_t *)x < osmem + 0x4c38; x++, osmem_pointer++) {
 		outl((uintptr_t)osmem_pointer, *x);
-		printf("0x%x\t0x%x\n", osmem_pointer, *x);
+//		printf("0x%x\t0x%x\n", osmem_pointer, *x);
 	}
 	ramdisk_read(osmem, 0x4c38, 0xfe8); // 2
 	for(uint32_t *x = (uint32_t *)osmem; (uint8_t *)x < osmem + 0xfe8; x++, osmem_pointer++) {
 		outl((uintptr_t)osmem_pointer, *x);
-		printf("0x%x\t0x%x\n", osmem_pointer, *x);
+//		printf("0x%x\t0x%x\n", osmem_pointer, *x);
 	}
 	printf("in loader, after reading ramdisk\n");
 //	ramdisk_read(osmem, 0x1000, 0x24d8);
