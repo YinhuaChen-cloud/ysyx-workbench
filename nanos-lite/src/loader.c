@@ -50,7 +50,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 void naive_uload(PCB *pcb, const char *filename) {
 //	pcb == NULL		filename == NULL
   uintptr_t entry = loader(pcb, filename);
-  Log("Jump to entry = aaa %p", entry);
+  Log("Jump to entry = aaa %lx", entry);
   ((void(*)())entry) (); // execute from location entry
 }
 
