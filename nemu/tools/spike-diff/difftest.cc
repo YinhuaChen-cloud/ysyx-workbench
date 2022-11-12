@@ -71,6 +71,10 @@ void sim_t::diff_get_regs(void* diff_context) {
 //		printf("In spike, i = %d, regs[i] = 0x%lx\n", i, state->XPR[i]);
   }
   ctx->pc = state->pc;
+	ctx->mstatus = state->mstatus;
+	ctx->mtvec = state->mtvec;
+	ctx->mepc = state->mepc;
+	ctx->mcause = state->mcause;
 }
 
 void sim_t::diff_set_regs(void* diff_context) {
