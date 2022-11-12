@@ -52,6 +52,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
 	printf("a\n");
 	for(Elf_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
+		printf("b\n");
 		if(p->p_type != PT_LOAD) 
 			continue;
 		printf("osamdoamd\n");
