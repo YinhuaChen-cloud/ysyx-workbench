@@ -16,6 +16,8 @@
 #include <isa.h>
 
 #define ECALL_FROM_M 0xb
+#define MSTATUS_MPIE (1 << 7) 
+#define MSTATUS_MPP (3 << 11)
 
 enum {
 	EVENT_NULL = 0,
@@ -38,6 +40,12 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 	
 //	printf("NO = %ld, epc = 0x%lx\n", NO, epc);
   return cpu.mtvec;
+}
+
+word_t isa_quit_exp() {
+	cpu.mstatus |= MSTATUS_MPIE;
+	cpu.mstatus &= ~MSTATUS_MPP;
+	return cpu.mepc;
 }
 
 word_t isa_query_intr() {

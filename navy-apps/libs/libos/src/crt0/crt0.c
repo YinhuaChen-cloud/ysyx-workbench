@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-int main(int argc, char *argv[], char *envp[]);
+int main(int argc, char *argv[], char *envp[]); // TODO: how do main correlate to user program?
 extern char **environ;
 void call_main(uintptr_t *args) {
   char *empty[] =  {NULL };

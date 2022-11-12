@@ -149,9 +149,15 @@ static int cmd_x(char *args) {
   char *nstr = strtok(args, " ");
   char *addrstr = nstr + strlen(nstr) + 1;
   uint32_t n = atoi(nstr);
-  uint64_t addr = strtol(addrstr, NULL, 16);
   uint32_t val;
   uint32_t cnt = 0;
+  bool success = true;
+  uint64_t addr = expr(addrstr, &success);
+
+  if(!success) {
+    printf("The EXPR cannot be recognized correctly, you can check detailed information in ./build/nemu-log.txt\n");
+		return 0;
+  }
 
   for(; n > 0; n--) {
     if(cnt % 4 == 0) {
