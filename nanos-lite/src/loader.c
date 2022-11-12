@@ -46,14 +46,14 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	Elf64_Ehdr *elfheader = (Elf64_Ehdr *)(&ramdisk_start); 
 //	printf("machine = 0x%lx\n", *(uint64_t *)elfheader);
 	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
-//	Elf64_Phdr *program_headers = (Elf64_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
+	Elf64_Phdr *program_headers = (Elf64_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
 //
-//	for(Elf64_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
-//		if(p->p_type != PT_LOAD) 
-//			continue;
-//		ramdisk_read(osmem + p->p_vaddr, p->p_offset, p->p_filesz); 
-//		memset(osmem + p->p_vaddr + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
-//	}
+	for(Elf64_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
+		if(p->p_type != PT_LOAD) 
+			continue;
+		ramdisk_read((uint8_t *)(p->p_vaddr), p->p_offset, p->p_filesz); 
+		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
+	}
 
 //	// loader -- start
 //	// loader -- end
@@ -79,7 +79,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 //	printf("in loader, after reading ramdisk\n");
 //	// loader -- end
 	printf("in loader, after reading ramdisk\n");
-  return 0x83000430; // return entry of the program
+  return elfheader->e_entry; // return entry of the program
 //  return (uintptr_t)(osmem + elfheader->e_entry); // return entry of the program
 
 }
