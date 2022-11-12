@@ -47,14 +47,13 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 //	printf("machine = 0x%lx\n", *(uint64_t *)elfheader);
 	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
 	Elf64_Phdr *program_headers = (Elf64_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
-	assert(program_headers);
-//
-//	for(Elf64_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
-//		if(p->p_type != PT_LOAD) 
-//			continue;
-//		ramdisk_read((uint8_t *)(p->p_vaddr), p->p_offset, p->p_filesz); 
-//		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
-//	}
+
+	for(Elf64_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
+		if(p->p_type != PT_LOAD) 
+			continue;
+		ramdisk_read((uint8_t *)(p->p_vaddr), p->p_offset, p->p_filesz); 
+		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
+	}
 
 //	// loader -- start
 //	// loader -- end
