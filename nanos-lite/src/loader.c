@@ -21,7 +21,15 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 //	2. load program into mem -- the same as above
 //	3. execute the program -- return the entry
 	extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
-	ramdisk_read(osmem, 0x1000, 0x24d8);
+	extern uint8_t ramdisk_start;
+	extern uint8_t ramdisk_end;
+	for(uint64_t *x = (uint64_t *)(&ramdisk_start); (uint8_t *)x < (&ramdisk_end); x++) {
+		for(int i = 0; i < 2; i++) {
+			printf("0x%lx\t");
+		}
+		printf("\n");
+	}
+//	ramdisk_read(osmem, 0x1000, 0x24d8);
   return (uintptr_t)osmem; // return entry of the program
 }
 
