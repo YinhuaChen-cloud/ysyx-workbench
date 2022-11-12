@@ -24,11 +24,11 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	extern uint8_t ramdisk_start;
 	extern uint8_t ramdisk_end;
 	printf("in loader, before reading ramdisk\n");
-	for(uint64_t *x = (uint64_t *)(&ramdisk_start); (uint8_t *)x < (&ramdisk_end); x++) {
-		for(int i = 0; i < 6; i++) {
-			printf("0x%lx\t");
+	for(uint8_t *x = &ramdisk_start; x < &ramdisk_end; x++) {
+		for(int i = 0; i < 2; i++) {
+			printf("%x", *x);
 		}
-		printf("\n");
+		printf(" ");
 	}
 	printf("in loader, after reading ramdisk\n");
 //	ramdisk_read(osmem, 0x1000, 0x24d8);
