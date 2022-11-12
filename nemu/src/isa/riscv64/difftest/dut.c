@@ -32,7 +32,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 	}
 	if(cpu.mstatus != ref_r->mstatus) { 
 		theSame = false;
-		printf("------- regs (%s) differs, cpu.%s = 0x%lx, ref.%s = 0x%lx -------\n", "mstatus", regs[i], cpu.mstatus, "mstatus", ref_r->mstatus);
+		printf("------- regs (%s) differs, cpu.%s = 0x%lx, ref.%s = 0x%lx -------\n", "mstatus", "mstatus", cpu.mstatus, "mstatus", ref_r->mstatus);
 	} 
 	if(cpu.pc != ref_r->pc) { 
 		theSame = false;
