@@ -52,7 +52,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 		if(p->p_type != PT_LOAD) 
 			continue;
 		printf("p->p_vaddr\n");
-		ramdisk_read((void *)(p->p_vaddr), p->p_offset, p->p_filesz); 
+//		ramdisk_read((void *)(p->p_vaddr), p->p_offset, p->p_filesz); 
 //		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
 	}
 
