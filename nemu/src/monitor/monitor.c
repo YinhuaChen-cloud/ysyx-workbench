@@ -68,8 +68,7 @@ static long load_img() {
 
   fseek(fp, 0, SEEK_SET);
   int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
-	printf("ret = %d\n", ret);
-  assert(ret == 1);
+  Assert(ret == 1, "The mem may be not large enough to read the bin file");
 
   fclose(fp);
   return size;

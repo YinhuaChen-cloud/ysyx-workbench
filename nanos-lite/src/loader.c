@@ -19,8 +19,8 @@
 //#endif
 
 // yinhua add this -- start
-#define RAM_READ_BUF_LEN 0x8000000
-static uint8_t osmem[RAM_READ_BUF_LEN];
+//#define RAM_READ_BUF_LEN 0x8000000
+//static uint8_t osmem[RAM_READ_BUF_LEN];
 
 //static inline uint8_t  inb(uintptr_t addr) { return *(volatile uint8_t  *)addr; }
 //static inline uint16_t inw(uintptr_t addr) { return *(volatile uint16_t *)addr; }
@@ -29,9 +29,9 @@ static uint8_t osmem[RAM_READ_BUF_LEN];
 //static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
 //static inline void outw(uintptr_t addr, uint16_t data) { *(volatile uint16_t *)addr = data; }
 //static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)addr = data; }
-static inline void outb(uintptr_t addr, uint8_t  data) { osmem[addr] = data; }
-static inline void outw(uintptr_t addr, uint16_t data) { osmem[addr] = data; }
-static inline void outl(uintptr_t addr, uint32_t data) { osmem[addr] = data; }
+//static inline void outb(uintptr_t addr, uint8_t  data) { osmem[addr] = data; }
+//static inline void outw(uintptr_t addr, uint16_t data) { osmem[addr] = data; }
+//static inline void outl(uintptr_t addr, uint32_t data) { osmem[addr] = data; }
 // yinhua add this -- end
 
 static uintptr_t loader(PCB *pcb, const char *filename) {
@@ -46,15 +46,15 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
 	Elf64_Ehdr *elfheader = (Elf64_Ehdr *)(&ramdisk_start); 
 	printf("machine = %d\n", elfheader->e_machine);
-	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
-	Elf64_Phdr *program_headers = (Elf64_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
-
-	for(Elf64_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
-		if(p->p_type != PT_LOAD) 
-			continue;
-		ramdisk_read(osmem + p->p_vaddr, p->p_offset, p->p_filesz); 
-		memset(osmem + p->p_vaddr + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
-	}
+//	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
+//	Elf64_Phdr *program_headers = (Elf64_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
+//
+//	for(Elf64_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
+//		if(p->p_type != PT_LOAD) 
+//			continue;
+//		ramdisk_read(osmem + p->p_vaddr, p->p_offset, p->p_filesz); 
+//		memset(osmem + p->p_vaddr + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
+//	}
 
 //	// loader -- start
 //	// loader -- end
@@ -80,8 +80,9 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 //	printf("in loader, after reading ramdisk\n");
 //	// loader -- end
 	printf("in loader, after reading ramdisk\n");
-//  return 0x83000430; // return entry of the program
-  return (uintptr_t)(osmem + elfheader->e_entry); // return entry of the program
+  return 0x83000430; // return entry of the program
+//  return (uintptr_t)(osmem + elfheader->e_entry); // return entry of the program
+
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
