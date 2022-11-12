@@ -41,9 +41,11 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	printf("in loader, before reading ramdisk\n");
 
 	extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
+	printf("b\n");
 	extern uint8_t ramdisk_start;
 //	extern uint8_t ramdisk_end;
 
+	printf("a\n");
 	Elf64_Ehdr *elfheader = (Elf64_Ehdr *)(&ramdisk_start); 
 	printf("machine = %d\n", elfheader->e_machine);
 //	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
