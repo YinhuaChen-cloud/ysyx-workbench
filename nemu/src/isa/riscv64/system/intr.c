@@ -17,6 +17,7 @@
 
 #define ECALL_FROM_M 0xb
 #define LOAD_ADDRESS_MISSALIGN 0x4
+#define MSTATUS_MIE (1 << 3) 
 #define MSTATUS_MPIE (1 << 7) 
 #define MSTATUS_MPP (3 << 11)
 
@@ -33,7 +34,14 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* TODO: Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
    */
+
+	if(cpu.mstatus & MSTATUS_MIE) {
+		cpu.mstatus |= MSTATUS_MPIE;
+		cpu.mstatus &= ~MSTATUS_MIE;
+	}
+
 	cpu.mepc = epc;	
+
 	switch(NO) {
 		case EVENT_YIELD: cpu.mcause = ECALL_FROM_M; break; // TODO: in the future we should add privilege distinguish
 		case EVENT_UNALIGN_MEM_ACCESS: cpu.mcause = LOAD_ADDRESS_MISSALIGN; break; // TODO: in the future we should add privilege distinguish
