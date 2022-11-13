@@ -2,6 +2,7 @@
 
 static Context* do_event(Event e, Context* c) {
 	putstr("omg\n");
+	printf("event_unalign = %d\n", EVENT_UNALIGN_MEM_ACCESS);
 	putstr("abc\n");
   switch (e.event) {
 		case EVENT_YIELD: printf("event yield handled!\n"); break;
