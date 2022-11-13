@@ -20,17 +20,13 @@ static Context* do_event(Event e, Context* c) {
 				vaddr_t src = immediate + c->gpr[rs1];
 				switch(func3)	{
 					case 3: // imm[11:0] rs1 011 rd 0000011 LD
-						assert(0);
-						break;
-					case 2: // imm[11:0] rs1 010 rd 0000011 LW
-					case 6: // imm[11:0] rs1 110 rd 0000011 LWU
 						{
 							int offset = src & 0x7ull;
 							src &= ~0x7ull;
-							uint32_t twohalf[2];
-							twohalf[0] = *(uint32_t *)src;		// little-endian, low pos high bit
-							twohalf[1] = *(uint32_t *)(src + 4);		
-							uint32_t result = 0;
+							uint64_t twohalf[2];
+							twohalf[0] = *(uint64_t *)src;		// little-endian, low pos high bit
+							twohalf[1] = *(uint64_t *)(src + 8);		
+							uint64_t result = 0;
 							uint8_t *pos;
 							for(pos = (uint8_t *)twohalf + offset + 7; pos > (uint8_t *)twohalf + offset; pos--) {
 								result |= *pos;		
@@ -38,8 +34,26 @@ static Context* do_event(Event e, Context* c) {
 							}
 							result |= *pos;		
 							c->gpr[rd] = result;
-							break;
 						}
+						break;
+					case 2: // imm[11:0] rs1 010 rd 0000011 LW
+					case 6: // imm[11:0] rs1 110 rd 0000011 LWU
+						{
+							int offset = src & 0x3ull;
+							src &= ~0x3ull;
+							uint32_t twohalf[2];
+							twohalf[0] = *(uint32_t *)src;		// little-endian, low pos high bit
+							twohalf[1] = *(uint32_t *)(src + 4);		
+							uint32_t result = 0;
+							uint8_t *pos;
+							for(pos = (uint8_t *)twohalf + offset + 3; pos > (uint8_t *)twohalf + offset; pos--) {
+								result |= *pos;		
+								result <<= 8;
+							}
+							result |= *pos;		
+							c->gpr[rd] = result;
+						}
+						break;
 					default:
 						assert(0);
 	//			imm[11:0] rs1 000 rd 0000011 LB
