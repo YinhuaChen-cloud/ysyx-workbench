@@ -43,17 +43,21 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	extern uint8_t ramdisk_start;
 //	extern uint8_t ramdisk_end;
 
-	Elf64_Ehdr *elfheader = (Elf64_Ehdr *)(&ramdisk_start); 
-//	printf("machine = 0x%lx\n", *(uint64_t *)elfheader);
-	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
-	Elf64_Phdr *program_headers = (Elf64_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
+	printf("ramdisk_start = 0x%x\n", ramdisk_start);
+	Elf_Ehdr *elfheader = (Elf_Ehdr *)(&ramdisk_start); 
+	printf("elfheader->e_ident = 0x%x\n", elfheader->e_ident[0]);
 
-	for(Elf64_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
-		if(p->p_type != PT_LOAD) 
+	assert(elfheader->e_machine == EM_RISCV);	
+	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
+
+	Elf_Phdr *program_headers = (Elf_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
+
+	for(Elf_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
+		if(p->p_type != PT_LOAD) {
 			continue;
-		printf("osamdoamd\n");
-//		ramdisk_read((void *)(p->p_vaddr), p->p_offset, p->p_filesz); 
-//		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
+		}
+		ramdisk_read((void *)(p->p_vaddr), p->p_offset, p->p_filesz); 
+		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
 	}
 
 //	// loader -- start

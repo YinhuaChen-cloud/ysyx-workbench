@@ -22,7 +22,6 @@
 
 #ifdef CONFIG_MTRACE
 #define MTBUF_LEN 160
-#define MTBUF_NUM 32
 #endif
 
 #ifdef CONFIG_DTRACE

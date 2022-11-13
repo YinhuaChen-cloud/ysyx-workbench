@@ -157,7 +157,6 @@ config IRINGBUF
   default y
 
 config MTRACE
-	depends on ITRACE
   bool "Enable mtrace"
   default y
 
