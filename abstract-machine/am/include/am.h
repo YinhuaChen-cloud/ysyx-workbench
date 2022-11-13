@@ -30,7 +30,7 @@ typedef struct {
   enum {
     EVENT_NULL = 0,
     EVENT_YIELD, EVENT_SYSCALL, EVENT_PAGEFAULT, EVENT_ERROR, 
-    EVENT_IRQ_TIMER, EVENT_IRQ_IODEV, EVENT_UNALIGN_MEM_ACCESS,
+    EVENT_IRQ_TIMER, EVENT_IRQ_IODEV,
   } event; // define events and its values
 //typedef unsigned long int	uintptr_t;
   uintptr_t cause, ref; 

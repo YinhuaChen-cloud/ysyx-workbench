@@ -74,19 +74,6 @@ bool isRet(word_t src1_reg){
 
 #endif
 
-#ifdef CONFIG_FTRACE
-static void drawline(char *start, int ftrace_indent_space) {
-	for(int i = 0; i < ftrace_indent_space; i++) {
-		if(i % 2 == 0) {
-			*(start + i) = '|';
-		}
-		else {
-			*(start + i) = ' ';
-		}
-	}
-}
-#endif
-
 static void jalr_func(Decode *s, word_t dest, word_t src1, word_t src2) {
 	R(dest) = s->snpc; 
 	s->dnpc = (src1 + src2)&(~1);
@@ -101,7 +88,7 @@ static void jalr_func(Decode *s, word_t dest, word_t src1, word_t src2) {
 		ftrace_indent_space += 2;
 		// write into ftrace_log: pc_val [indent] call [func_name@func_addr]
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "0x%lx", s->pc);
-	  drawline(p, ftrace_indent_space);
+		memset(p, ' ', ftrace_indent_space); // fill logbuf with space
 		p += ftrace_indent_space;
 		Elf64_Addr func_addr = src1;
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "call [%s@0x%lx]\n", addrToFunc(func_addr), func_addr);
@@ -109,7 +96,7 @@ static void jalr_func(Decode *s, word_t dest, word_t src1, word_t src2) {
 	} else if(isRet(rs1)){
 		// write into ftrace_log: pc_val [indent] ret [func_name]
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "0x%lx", s->pc);
-	  drawline(p, ftrace_indent_space);
+		memset(p, ' ', ftrace_indent_space); // fill logbuf with space
 		p += ftrace_indent_space;
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "ret [%s]\n", addrToFunc(s->pc)); // we are here
 		fwrite(ftrace_buf, p-ftrace_buf, 1, ftrace_log);
@@ -135,7 +122,7 @@ static void jal_func(Decode *s, word_t dest, word_t src1) {
 		ftrace_indent_space += 2;
 		// write into ftrace_log: pc_val [indent] call [func_name@func_addr]
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "0x%lx", s->pc);
-	  drawline(p, ftrace_indent_space);
+		memset(p, ' ', ftrace_indent_space); // fill logbuf with space
 		p += ftrace_indent_space;
 		Elf64_Addr func_addr = s->pc + src1;
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "call [%s@0x%lx]\n", addrToFunc(func_addr), func_addr);
