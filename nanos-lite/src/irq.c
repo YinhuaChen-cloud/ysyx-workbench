@@ -14,33 +14,16 @@ static Context* do_event(Event e, Context* c) {
 			printf("event unalign_mem_access handled start!\n"); 
 			printf("c->mepc = 0x%lx\n", c->mepc);
 			uint32_t tmp_inst = *(uint32_t *)c->mepc;
-			printf("tmp_inst = 0x%lx\n", tmp_inst);
+//			printf("tmp_inst = 0x%lx\n", tmp_inst);
 			int rd  = BITS(tmp_inst, 11, 7);
 			int rs1 = BITS(tmp_inst, 19, 15);
 			word_t immediate = immI(tmp_inst);
 			int func3 = BITS(tmp_inst, 14,12);
 			vaddr_t src = immediate + c->gpr[rs1];
-			printf("the mem I want to access is 0x%lx\n", src);
+//			printf("the mem I want to access is 0x%lx\n", src);
 			switch(func3)	{
 				case 3: // imm[11:0] rs1 011 rd 0000011 LD
 					{
-						int offset = src & 0x7ull;
-						src &= ~0x7ull;
-						uint64_t twohalf[2];
-						twohalf[0] = *(uint64_t *)src;		// little-endian, low pos high bit
-						twohalf[1] = *(uint64_t *)(src + 8);		
-						uint64_t result = *(uint64_t *)((uint8_t *)twohalf + offset);
-//						for(int i = 0; i < 8-offset; i++) {
-//							result |=
-//						}
-//						for(int i = 0; i < offset; i++) {
-//
-//						}
-//						printf(" = %lx\n", hihalf);
-//						printf("lohalf = %lx\n", lohalf);
-						printf("result = %lx\n", result);
-						c->gpr[rd] = result;
-						break;
 					}
 				case 2: // imm[11:0] rs1 010 rd 0000011 LW
 				case 6: // imm[11:0] rs1 110 rd 0000011 LWU
@@ -58,15 +41,6 @@ static Context* do_event(Event e, Context* c) {
 						printf("result = %lx\n", result);
 						c->gpr[rd] = result;
 						break;
-
-//						src &= ~0x3ull;
-//						uint32_t lohalf = *(uint32_t *)src;		
-//						uint32_t hihalf = *(uint32_t *)(src + 8);		
-//						uint32_t result = 0;
-//						printf("lohalf = %lx\n", lohalf);
-//						printf("hihalf = %lx\n", hihalf);
-//						c->gpr[rd] = result;
-//						break;
 					}
 				default:
 					assert(0);
