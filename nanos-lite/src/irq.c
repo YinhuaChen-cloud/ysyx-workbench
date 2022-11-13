@@ -52,7 +52,8 @@ static Context* do_event(Event e, Context* c) {
 						twohalf[1] = *(uint64_t *)(src + 8);		
 						uint64_t result = 0;
 						for(uint8_t *pos = (uint8_t *)twohalf + offset; pos < (uint8_t *)twohalf + offset + 8; pos++) {
-
+							result |= *pos;		
+							result <<= 8;
 						}
 						printf("result = %lx\n", result);
 						c->gpr[rd] = result;
