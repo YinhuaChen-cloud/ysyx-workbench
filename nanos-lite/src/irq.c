@@ -1,12 +1,9 @@
 #include <common.h>
 
 static Context* do_event(Event e, Context* c) {
-	putstr("omg\n");
-	printf("event_unalign = %d\n", EVENT_UNALIGN_MEM_ACCESS);
-	putstr("abc\n");
   switch (e.event) {
 		case EVENT_YIELD: printf("event yield handled!\n"); break;
-		case EVENT_UNALIGN_MEM_ACCESS: putstr("event unalign_mem_access handled!\n"); break;
+		case EVENT_UNALIGN_MEM_ACCESS: printf("event unalign_mem_access handled!\n"); break;
     default: panic("Unhandled event ID = %d", e.event);
   }
 
