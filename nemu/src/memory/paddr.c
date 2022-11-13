@@ -84,24 +84,14 @@ word_t paddr_read(paddr_t addr, int len) {
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
-//#ifdef CONFIG_MTRACE
-//	if(cpu.pc != addr && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END){
-//		//printf("CONFIG_MTRACE_START = 0x%x, CONFIG_MTRACE_END = 0x%x\n", CONFIG_MTRACE_START, CONFIG_MTRACE_END);
-//		pmtrace = (pmtrace + 1) % MTBUF_NUM;
-//		
-//		mtrace_buf_p = mtrace_buf[pmtrace];
-//		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr:0x%x len:%d data:0x%8lx pc:0x%8lx ", addr, len, data, cpu.pc); // 4 spaces
-//		// added by yinhua for temporary debug -- start
-//		*mtrace_buf_p = '\n';	
-//		*(mtrace_buf_p+1) = '\0';	
-//		if(!mtrace_fp)		 
-//			mtrace_fp = fopen(mtrace_file, "w");
-//		fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace]+1, 1, mtrace_fp);
-//		fflush(mtrace_fp);
-//		// added by yinhua for temporary debug -- end
-//		isldst = true;
-//	}
-//#endif
+#ifdef CONFIG_MTRACE
+	if(in_pmem(addr) && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END && addr >= CONFIG_MBASE + TEXT_SIZE) {
+//		$pc: R/W addr (len) data	
+		int retval = sprintf(mtrace_buf, "pc: 0x%lx\t%5s\taddr: 0x%x\tlen: %d\tdata: 0x%lx\n", cpu.pc, "Write", addr, len, data);
+		fwrite(mtrace_buf, retval, 1, mtrace_fp);
+		fflush(mtrace_fp);
+	}
+#endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);
