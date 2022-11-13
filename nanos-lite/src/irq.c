@@ -11,7 +11,7 @@ static Context* do_event(Event e, Context* c) {
   switch (e.event) {
 		case EVENT_YIELD: printf("event yield handled!\n"); c->mepc += 4; break;
 		case EVENT_UNALIGN_MEM_ACCESS:
-//			printf("event unalign_mem_access handled start!\n"); 
+			printf("event unalign_mem_access handled start!\n"); 
 //			printf("c->mepc = 0x%lx\n", c->mepc);
 //			uint32_t tmp_inst = *(uint32_t *)c->mepc;
 //			printf("tmp_inst = 0x%lx\n", tmp_inst);
@@ -29,8 +29,8 @@ static Context* do_event(Event e, Context* c) {
 //					break;
 //				default:
 //					assert(0);
-////			imm[11:0] rs1 000 rd 0000011 LB
-////			imm[11:0] rs1 100 rd 0000011 LBU
+//			imm[11:0] rs1 000 rd 0000011 LB
+//			imm[11:0] rs1 100 rd 0000011 LBU
 //			}
 
 //			imm[11:0] rs1 001 rd 0000011 LH
@@ -41,7 +41,7 @@ static Context* do_event(Event e, Context* c) {
 //			printf("rd = %d\n", rd);
 //			printf("rs1 = %d\n", rs1);
 //			printf("immediate = 0x%x\n", immediate);
-//			printf("event unalign_mem_access handled end!\n"); 
+			printf("event unalign_mem_access handled end!\n"); 
 			c->mepc += 4; 
 			break;
     default: panic("Unhandled event ID = %d", e.event);
