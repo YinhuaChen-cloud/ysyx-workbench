@@ -71,8 +71,8 @@ word_t paddr_read(paddr_t addr, int len) {
 #ifdef CONFIG_MTRACE
 	if(in_pmem(addr) && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END) {
 //		$pc: R/W addr (len) data	
-		int len = sprintf(mtrace_buf, "pc: 0x%lx\t%5s\taddr: 0x%x\tlen: %d\n", cpu.pc, "Read", addr, len);
-		fwrite(mtrace_buf, len, 1, mtrace_fp);
+		int retval = sprintf(mtrace_buf, "pc: 0x%lx\t%5s\taddr: 0x%x\tlen: %d\n", cpu.pc, "Read", addr, len);
+		fwrite(mtrace_buf, retval, 1, mtrace_fp);
 		fflush(mtrace_fp);
 	}
 #endif
