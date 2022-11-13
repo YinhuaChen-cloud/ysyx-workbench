@@ -12,6 +12,7 @@ static Context* do_event(Event e, Context* c) {
 		case EVENT_YIELD: printf("event yield handled!\n"); c->mepc += 4; break;
 		case EVENT_UNALIGN_MEM_ACCESS:
 			{
+				printf("omg\n");
 				uint32_t tmp_inst = *(uint32_t *)c->mepc;
 				int rd  = BITS(tmp_inst, 11, 7);
 				int rs1 = BITS(tmp_inst, 19, 15);
