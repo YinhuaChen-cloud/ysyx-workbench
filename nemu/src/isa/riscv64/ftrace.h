@@ -74,6 +74,17 @@ bool isRet(word_t src1_reg){
 
 #endif
 
+static void drawline(char *start, int ftrace_indent_space) {
+	for(int i = 0; i < ftrace_indent_space; i++) {
+		if(i % 2 == 0) {
+			*(start + i) = '|';
+		}
+		else {
+			*(start + i) = ' ';
+		}
+	}
+}
+
 static void jalr_func(Decode *s, word_t dest, word_t src1, word_t src2) {
 	R(dest) = s->snpc; 
 	s->dnpc = (src1 + src2)&(~1);
