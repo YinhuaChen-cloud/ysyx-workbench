@@ -34,6 +34,18 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 		theSame = false;
 		printf("------- regs (%s) differs, cpu.%s = 0x%lx, ref.%s = 0x%lx -------\n", "mstatus", "mstatus", cpu.mstatus, "mstatus", ref_r->mstatus);
 	} 
+	if(cpu.mtvec != ref_r->mtvec) { 
+		theSame = false;
+		printf("------- regs (%s) differs, cpu.%s = 0x%lx, ref.%s = 0x%lx -------\n", "mtvec", "mtvec", cpu.mtvec, "mtvec", ref_r->mtvec);
+	} 
+	if(cpu.mepc != ref_r->mepc) { 
+		theSame = false;
+		printf("------- regs (%s) differs, cpu.%s = 0x%lx, ref.%s = 0x%lx -------\n", "mepc", "mepc", cpu.mepc, "mepc", ref_r->mepc);
+	} 
+	if(cpu.mcause != ref_r->mcause) { 
+		theSame = false;
+		printf("------- regs (%s) differs, cpu.%s = 0x%lx, ref.%s = 0x%lx -------\n", "mcause", "mcause", cpu.mcause, "mcause", ref_r->mcause);
+	} 
 	if(cpu.pc != ref_r->pc) { 
 		theSame = false;
 		printf("------- pc differs, cpu.pc = 0x%lx, ref.pc = 0x%lx -------\n", cpu.pc, ref_r->pc);
