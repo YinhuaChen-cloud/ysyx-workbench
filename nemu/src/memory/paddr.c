@@ -26,29 +26,11 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
 #ifdef CONFIG_MTRACE
 // format: cpu.pc, instrction code(4 bytes), disasm, accessed mem  
-char mtrace_buf[MTBUF_NUM][MTBUF_LEN];
+char mtrace_buf[MTBUF_LEN];
 int pmtrace;
 char *mtrace_buf_p;
-bool isldst;
-// added by yinhua for temporary debug -- start
-static const char mtrace_file[] = "/home/chenyinhua/sda3/ysyx-workbench/am-kernels/tests/cpu-tests/build/recursion-riscv64-nemu-mtrace.txt";
-static FILE *mtrace_fp = NULL;
-// added by yinhua for temporary debug -- end
+extern FILE *mtrace_fp;
 #endif
-
-void print_mtrace() {
-#ifdef CONFIG_MTRACE
-	printf("Something bad happened, the following is the MTRACE:\n");
-	pmtrace = (pmtrace + 1) % MTBUF_NUM;
-	int i = 0;
-	while(i < MTBUF_NUM){
-		printf("%s\n", mtrace_buf[pmtrace]);
-		pmtrace = (pmtrace + 1) % MTBUF_NUM;
-		i++;
-	}
-#endif
-  return;
-}
 
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
@@ -86,27 +68,11 @@ void init_mem() {
 word_t paddr_read(paddr_t addr, int len) {
 	//printf("In paddr_read, addr = 0x%x\n", addr);
 #ifdef CONFIG_MTRACE
-	if(in_pmem(addr)) {
-		word_t rdata = pmem_read(addr, len);
-		if(cpu.pc != addr && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END){
-			//printf("CONFIG_MTRACE_START = 0x%x, CONFIG_MTRACE_END = 0x%x\n", CONFIG_MTRACE_START, CONFIG_MTRACE_END);
-			pmtrace = (pmtrace + 1) % MTBUF_NUM;
-			
-			mtrace_buf_p = mtrace_buf[pmtrace];
-			mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "R addr:0x%x len:%d data:0x%8lx pc:0x%8lx ", addr, len, rdata, cpu.pc); // 4 spaces
-			// added by yinhua for temporary debug -- start
-			#define TEXT_SIZE 0x274	
-			if(addr < CONFIG_MBASE + TEXT_SIZE)
-				return rdata;
-			*mtrace_buf_p = '\n';	
-			*(mtrace_buf_p+1) = '\0';	
-			if(!mtrace_fp)		 
-				mtrace_fp = fopen(mtrace_file, "w");
-			fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace]+1, 1, mtrace_fp);
-			fflush(mtrace_fp);
-			// added by yinhua for temporary debug -- end
-			isldst = true;
-		}
+	if(in_pmem(addr) && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END) {
+//		$pc: R/W addr (len) data	
+		int len = sprintf(mtrace_buf, "pc: 0x%lx\t%5s\taddr: 0x%x\tlen: %d\n", cpu.pc, "Read", addr, len);
+		fwrite(mtrace_buf, len, 1, mtrace_fp);
+		fflush(mtrace_fp);
 	}
 #endif
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
@@ -116,24 +82,24 @@ word_t paddr_read(paddr_t addr, int len) {
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
-#ifdef CONFIG_MTRACE
-	if(cpu.pc != addr && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END){
-		//printf("CONFIG_MTRACE_START = 0x%x, CONFIG_MTRACE_END = 0x%x\n", CONFIG_MTRACE_START, CONFIG_MTRACE_END);
-		pmtrace = (pmtrace + 1) % MTBUF_NUM;
-		
-		mtrace_buf_p = mtrace_buf[pmtrace];
-		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr:0x%x len:%d data:0x%8lx pc:0x%8lx ", addr, len, data, cpu.pc); // 4 spaces
-		// added by yinhua for temporary debug -- start
-		*mtrace_buf_p = '\n';	
-		*(mtrace_buf_p+1) = '\0';	
-		if(!mtrace_fp)		 
-			mtrace_fp = fopen(mtrace_file, "w");
-		fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace]+1, 1, mtrace_fp);
-		fflush(mtrace_fp);
-		// added by yinhua for temporary debug -- end
-		isldst = true;
-	}
-#endif
+//#ifdef CONFIG_MTRACE
+//	if(cpu.pc != addr && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END){
+//		//printf("CONFIG_MTRACE_START = 0x%x, CONFIG_MTRACE_END = 0x%x\n", CONFIG_MTRACE_START, CONFIG_MTRACE_END);
+//		pmtrace = (pmtrace + 1) % MTBUF_NUM;
+//		
+//		mtrace_buf_p = mtrace_buf[pmtrace];
+//		mtrace_buf_p += snprintf(mtrace_buf_p, sizeof(mtrace_buf[pmtrace]), "W addr:0x%x len:%d data:0x%8lx pc:0x%8lx ", addr, len, data, cpu.pc); // 4 spaces
+//		// added by yinhua for temporary debug -- start
+//		*mtrace_buf_p = '\n';	
+//		*(mtrace_buf_p+1) = '\0';	
+//		if(!mtrace_fp)		 
+//			mtrace_fp = fopen(mtrace_file, "w");
+//		fwrite(mtrace_buf[pmtrace], mtrace_buf_p-mtrace_buf[pmtrace]+1, 1, mtrace_fp);
+//		fflush(mtrace_fp);
+//		// added by yinhua for temporary debug -- end
+//		isldst = true;
+//	}
+//#endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);

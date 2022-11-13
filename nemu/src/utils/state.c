@@ -18,6 +18,7 @@
 extern void print_iringbuf();
 extern void print_mtrace();
 extern FILE *ftrace_log;
+extern FILE *mtrace_fp;
 
 NEMUState nemu_state = { .state = NEMU_STOP };
 
@@ -28,6 +29,9 @@ int is_exit_status_bad() {
   if(!good) {
     print_iringbuf();
 		print_mtrace();
+#ifdef CONFIG_FTRACE
+		fclose(mtrace_fp);
+#endif
 #ifdef CONFIG_FTRACE
 		fclose(ftrace_log);
 #endif

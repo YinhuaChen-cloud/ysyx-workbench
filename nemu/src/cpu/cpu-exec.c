@@ -83,10 +83,6 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
-#ifdef CONFIG_MTRACE
-	extern bool isldst;
-	isldst = false;
-#endif
 
 #ifdef CONFIG_DTRACE
 	extern bool isdevice;
@@ -128,15 +124,6 @@ static void exec_once(Decode *s, vaddr_t pc) {
 
 #endif
 
-#endif
-
-#ifdef CONFIG_MTRACE
-	if(isldst){
-		extern char *mtrace_buf_p;
-		extern int pmtrace;
-		extern char mtrace_buf[MTBUF_NUM][MTBUF_LEN];
-		strncpy(mtrace_buf_p, s->logbuf, mtrace_buf[pmtrace] + sizeof(mtrace_buf[pmtrace]) - mtrace_buf_p);
-	}
 #endif
 
 #ifdef CONFIG_DTRACE
