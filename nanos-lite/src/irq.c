@@ -42,7 +42,7 @@ static Context* do_event(Event e, Context* c) {
 //			printf("rs1 = %d\n", rs1);
 //			printf("immediate = 0x%x\n", immediate);
 //			printf("event unalign_mem_access handled end!\n"); 
-//			c->mepc += 4; 
+			c->mepc += 4; 
 			break;
     default: panic("Unhandled event ID = %d", e.event);
   }
