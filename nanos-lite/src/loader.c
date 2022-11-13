@@ -52,7 +52,8 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
 	Elf_Phdr *program_headers = (Elf_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
 
-	for(Elf_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
+	Elf_Phdr *p = program_headers;
+	for(int i = 0; i < elfheader->e_phnum; i++,p++){
 		if(p->p_type != PT_LOAD) {
 			continue;
 		}
