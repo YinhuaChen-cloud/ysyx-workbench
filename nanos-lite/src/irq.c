@@ -1,6 +1,7 @@
 #include <common.h>
 
 static Context* do_event(Event e, Context* c) {
+	putstr("omg\n");
   switch (e.event) {
 		case EVENT_YIELD: printf("event yield handled!\n"); break;
 		case EVENT_UNALIGN_MEM_ACCESS: putstr("event unalign_mem_access handled!\n"); break;
