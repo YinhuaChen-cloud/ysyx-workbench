@@ -49,8 +49,8 @@ static Context* do_event(Event e, Context* c) {
 	//			imm[11:0] rs1 001 rd 0000011 LH
 	//			imm[11:0] rs1 101 rd 0000011 LHU
 				c->mepc += 4; 
-				break;
 			}
+			break;
     default: panic("Unhandled event ID = %d", e.event);
   }
 
