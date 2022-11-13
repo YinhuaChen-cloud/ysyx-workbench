@@ -40,6 +40,8 @@ static Context* do_event(Event e, Context* c) {
 							result <<= 8;
 						}
 						result |= *pos;		
+						printf("twohalf[0] = 0x%lx\n", twohalf[0]);
+						printf("twohalf[1] = 0x%lx\n", twohalf[1]);
 						printf("result = %lx\n", result);
 						c->gpr[rd] = result;
 						break;
