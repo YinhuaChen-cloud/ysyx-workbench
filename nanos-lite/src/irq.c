@@ -6,6 +6,8 @@ static Context* do_event(Event e, Context* c) {
 		case EVENT_UNALIGN_MEM_ACCESS:
 			printf("event unalign_mem_access handled start!\n"); 
 			printf("c->mepc = 0x%lx\n", c->mepc);
+			uint32_t tmp_inst = *(uint32_t *)c->mepc;
+			printf("tmp_inst = 0x%lx\n", tmp_inst);
 			printf("event unalign_mem_access handled end!\n"); 
 			c->mepc += 4; 
 			break;
