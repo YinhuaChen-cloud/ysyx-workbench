@@ -20,6 +20,7 @@ static Context* do_event(Event e, Context* c) {
 				vaddr_t src = immediate + c->gpr[rs1];
 				switch(func3)	{
 					case 3: // imm[11:0] rs1 011 rd 0000011 LD
+						assert(0);
 						break;
 					case 2: // imm[11:0] rs1 010 rd 0000011 LW
 					case 6: // imm[11:0] rs1 110 rd 0000011 LWU
