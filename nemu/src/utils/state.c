@@ -16,7 +16,6 @@
 #include <utils.h>
 
 extern void print_iringbuf();
-extern void print_mtrace();
 extern FILE *ftrace_log;
 extern FILE *mtrace_fp;
 
@@ -28,7 +27,6 @@ int is_exit_status_bad() {
 
   if(!good) {
     print_iringbuf();
-		print_mtrace();
 #ifdef CONFIG_FTRACE
 		fclose(mtrace_fp);
 #endif
