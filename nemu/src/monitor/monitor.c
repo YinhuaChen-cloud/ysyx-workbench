@@ -66,12 +66,15 @@ static void init_mtrace() {
 
 	printf("debug by cyh, mtrace_filename = %s\n", mtrace_filename);
 
+  mtrace_fp = fopen(mtrace_filename, "w+");
+  Assert(mtrace_fp, "Can not open '%s'", mtrace_filename);
+
 	// read from mtrace-file.elf to get text size
+//	char Vj	
+//	char *tmp = strstr(mtrace_filename, "-mtrace.txt");
 	printf("debug by cyh, text_size = %u\n", text_size);
 
 
-  mtrace_fp = fopen(mtrace_filename, "w+");
-  Assert(mtrace_fp, "Can not open '%s'", mtrace_filename);
 #endif
 } 
 
