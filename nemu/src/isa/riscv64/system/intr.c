@@ -16,6 +16,7 @@
 #include <isa.h>
 
 #define ECALL_FROM_M 0xb
+#define LOAD_ADDRESS_MISSALIGN 0x4
 #define MSTATUS_MPIE (1 << 7) 
 #define MSTATUS_MPP (3 << 11)
 
