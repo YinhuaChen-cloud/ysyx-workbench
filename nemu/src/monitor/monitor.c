@@ -70,11 +70,15 @@ static void init_mtrace() {
   Assert(mtrace_fp, "Can not open '%s'", mtrace_filename);
 
 	// read from mtrace-file.elf to get text size
-//	char Vj	
-//	char *tmp = strstr(mtrace_filename, "-mtrace.txt");
+	char *tmp_elf_name = (char *)malloc(strlen(mtrace_filename));	
+	char *tmppos = strstr(tmp_elf_name, "-mtrace.txt");
+	strcpy(tmppos, ".elf");
+	printf("tmp_elf_name = %s\n", tmp_elf_name);
 	printf("debug by cyh, text_size = %u\n", text_size);
 
 
+	free(tmp_elf_name);
+	tmp_elf_name = NULL;
 #endif
 } 
 
