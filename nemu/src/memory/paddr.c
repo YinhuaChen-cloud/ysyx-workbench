@@ -30,6 +30,7 @@ char mtrace_buf[MTBUF_LEN];
 int pmtrace;
 char *mtrace_buf_p;
 extern FILE *mtrace_fp;
+extern uint32_t text_size;
 #endif
 
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
@@ -66,7 +67,6 @@ void init_mem() {
 }
 
 word_t paddr_read(paddr_t addr, int len) {
-	printf("len = %d\n", len);
 	//printf("In paddr_read, addr = 0x%x\n", addr);
 #ifdef CONFIG_MTRACE
 	if(in_pmem(addr) && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END) {

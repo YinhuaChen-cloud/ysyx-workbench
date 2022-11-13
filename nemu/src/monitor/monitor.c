@@ -49,10 +49,13 @@ static char *elf_file = NULL;
 char *elf_content = NULL;
 static char *mtrace_filename = NULL;
 FILE *mtrace_fp = NULL;
+uint32_t text_size;
 static char *ftrace_file = NULL;
 FILE *ftrace_log = NULL;
 static char *dtrace_filename = NULL;
 FILE *dtrace_fp = NULL;
+
+#include <elf.h>
 
 static void init_mtrace() {
 #ifdef CONFIG_MTRACE
@@ -62,6 +65,10 @@ static void init_mtrace() {
   }
 
 	printf("debug by cyh, mtrace_filename = %s\n", mtrace_filename);
+
+	// read from mtrace-file.elf to get text size
+	printf("debug by cyh, text_size = %u\n", text_size);
+
 
   mtrace_fp = fopen(mtrace_filename, "w+");
   Assert(mtrace_fp, "Can not open '%s'", mtrace_filename);
