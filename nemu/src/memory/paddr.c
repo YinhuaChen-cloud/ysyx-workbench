@@ -66,7 +66,7 @@ void init_mem() {
       (paddr_t)CONFIG_MBASE, (paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1);
 }
 
-#define TEXT_SIZE 0x20c
+#define TEXT_SIZE 0x10b4
 
 word_t paddr_read(paddr_t addr, int len) {
 #ifdef CONFIG_MTRACE
