@@ -74,12 +74,16 @@ static void init_mtrace() {
 	strcpy(tmp_elf_name, mtrace_filename);
 	char *tmppos = strstr(tmp_elf_name, "-mtrace.txt");
 	strcpy(tmppos, ".elf");
+	FILE *tmp_elf_fp = fopen(tmp_elf_name, "r");
 	printf("tmp_elf_name = %s\n", tmp_elf_name);
 	printf("debug by cyh, text_size = %u\n", text_size);
+	printf("debug by cyh, elfsize = %ld\n", sizeof(Elf64_Ehdr));
 
 
 	free(tmp_elf_name);
+	fclose(tmp_elf_fp);
 	tmp_elf_name = NULL;
+	tmp_elf_fp = NULL;
 #endif
 } 
 
