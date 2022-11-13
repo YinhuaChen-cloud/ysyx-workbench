@@ -141,6 +141,7 @@ static int parse_args(int argc, char *argv[]) {
     {"diff"     , required_argument, NULL, 'd'},
     {"port"     , required_argument, NULL, 'p'},
     {"elf"      , required_argument, NULL, 'e'},
+    {"mtrace"   , required_argument, NULL, 'm'},
     {"dtrace"   , required_argument, NULL, 'D'},
     {"ftrace"   , required_argument, NULL, 'f'},
     {"help"     , no_argument      , NULL, 'h'},
