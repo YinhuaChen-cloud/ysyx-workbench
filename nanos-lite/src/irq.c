@@ -22,13 +22,24 @@ static Context* do_event(Event e, Context* c) {
 			vaddr_t src = immediate + c->gpr[rs1];
 			printf("the mem I want to access is 0x%lx\n", src);
 			switch(func3)	{
-				case 3:
-//			imm[11:0] rs1 011 rd 0000011 LD
+				case 3: // imm[11:0] rs1 011 rd 0000011 LD
 //					int offset = src & 0x7ull;
+					{
 					src &= ~0x7ull;
 					uint64_t lohalf = *(uint64_t *)src;		
 					uint64_t hihalf = *(uint64_t *)(src + 8);		
 					uint64_t result = 0;
+					printf("lohalf = %lx\n", lohalf);
+					printf("hihalf = %lx\n", hihalf);
+					c->gpr[rd] = result;
+					break;
+					}
+				case 2: // imm[11:0] rs1 010 rd 0000011 LW
+				case 6: // imm[11:0] rs1 110 rd 0000011 LWU
+					src &= ~0x3ull;
+					uint32_t lohalf = *(uint32_t *)src;		
+					uint32_t hihalf = *(uint32_t *)(src + 8);		
+					uint32_t result = 0;
 					printf("lohalf = %lx\n", lohalf);
 					printf("hihalf = %lx\n", hihalf);
 					c->gpr[rd] = result;
@@ -41,8 +52,8 @@ static Context* do_event(Event e, Context* c) {
 
 //			imm[11:0] rs1 001 rd 0000011 LH
 //			imm[11:0] rs1 101 rd 0000011 LHU
-//			imm[11:0] rs1 010 rd 0000011 LW
-//			imm[11:0] rs1 110 rd 0000011 LWU
+//			
+//			
 
 			printf("rd = %d\n", rd);
 			printf("rs1 = %d\n", rs1);
