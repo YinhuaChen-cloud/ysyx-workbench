@@ -66,10 +66,11 @@ void init_mem() {
       (paddr_t)CONFIG_MBASE, (paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1);
 }
 
+#define TEXT_SIZE 0x20c
+
 word_t paddr_read(paddr_t addr, int len) {
-	//printf("In paddr_read, addr = 0x%x\n", addr);
 #ifdef CONFIG_MTRACE
-	if(in_pmem(addr) && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END) {
+	if(in_pmem(addr) && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END && addr < CONFIG_MBASE + TEXT_SIZE) {
 //		$pc: R/W addr (len) data	
 		int retval = sprintf(mtrace_buf, "pc: 0x%lx\t%5s\taddr: 0x%x\tlen: %d\n", cpu.pc, "Read", addr, len);
 		fwrite(mtrace_buf, retval, 1, mtrace_fp);
