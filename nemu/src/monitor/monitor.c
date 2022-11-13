@@ -71,6 +71,7 @@ static void init_mtrace() {
 
 	// read from mtrace-file.elf to get text size
 	char *tmp_elf_name = (char *)malloc(strlen(mtrace_filename));	
+	strcpy(tmp_elf_name, mtrace_filename);
 	char *tmppos = strstr(tmp_elf_name, "-mtrace.txt");
 	strcpy(tmppos, ".elf");
 	printf("tmp_elf_name = %s\n", tmp_elf_name);
