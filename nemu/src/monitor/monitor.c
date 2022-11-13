@@ -69,21 +69,22 @@ static void init_mtrace() {
   mtrace_fp = fopen(mtrace_filename, "w+");
   Assert(mtrace_fp, "Can not open '%s'", mtrace_filename);
 
-	// read from mtrace-file.elf to get text size
-	char *tmp_elf_name = (char *)malloc(strlen(mtrace_filename));	
-	strcpy(tmp_elf_name, mtrace_filename);
-	char *tmppos = strstr(tmp_elf_name, "-mtrace.txt");
-	strcpy(tmppos, ".elf");
-	FILE *tmp_elf_fp = fopen(tmp_elf_name, "r");
-	printf("tmp_elf_name = %s\n", tmp_elf_name);
-	printf("debug by cyh, text_size = %u\n", text_size);
-	printf("debug by cyh, elfsize = %ld\n", sizeof(Elf64_Ehdr));
-
-
-	free(tmp_elf_name);
-	fclose(tmp_elf_fp);
-	tmp_elf_name = NULL;
-	tmp_elf_fp = NULL;
+//	// read from mtrace-file.elf to get text size
+//	char *tmp_elf_name = (char *)malloc(strlen(mtrace_filename));	
+//	strcpy(tmp_elf_name, mtrace_filename);
+//	char *tmppos = strstr(tmp_elf_name, "-mtrace.txt");
+//	strcpy(tmppos, ".elf");
+//	FILE *tmp_elf_fp = fopen(tmp_elf_name, "r");
+//	printf("tmp_elf_name = %s\n", tmp_elf_name);
+//	printf("debug by cyh, text_size = %u\n", text_size);
+//	uint8_t *tmp_elf_content = (uint8_t *)malloc(sizeof(Elf64_Ehdr));
+//
+//
+//	free(tmp_elf_name);
+//	free(tmp_elf_content);
+//	fclose(tmp_elf_fp);
+//	tmp_elf_name = NULL;
+//	tmp_elf_fp = NULL;
 #endif
 } 
 
