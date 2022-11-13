@@ -54,9 +54,9 @@ static Context* do_event(Event e, Context* c) {
 //			
 //			
 
-			printf("rd = %d\n", rd);
-			printf("rs1 = %d\n", rs1);
-			printf("immediate = 0x%x\n", immediate);
+//			printf("rd = %d\n", rd);
+//			printf("rs1 = %d\n", rs1);
+//			printf("immediate = 0x%x\n", immediate);
 			printf("event unalign_mem_access handled end!\n"); 
 			c->mepc += 4; 
 			break;
