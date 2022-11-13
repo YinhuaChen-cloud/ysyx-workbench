@@ -47,46 +47,10 @@ static char *img_file = NULL;
 static int difftest_port = 1234;
 static char *elf_file = NULL;
 char *elf_content = NULL;
-static char *mtrace_filename = NULL;
-FILE *mtrace_fp = NULL;
-uint32_t text_size;
 static char *ftrace_file = NULL;
 FILE *ftrace_log = NULL;
 static char *dtrace_filename = NULL;
 FILE *dtrace_fp = NULL;
-
-#include <elf.h>
-
-static void init_mtrace() {
-#ifdef CONFIG_MTRACE
-  if (mtrace_filename == NULL) {
-    Log("No mtrace_filename is given.");
-		return;
-  }
-
-	printf("debug by cyh, mtrace_filename = %s\n", mtrace_filename);
-
-  mtrace_fp = fopen(mtrace_filename, "w+");
-  Assert(mtrace_fp, "Can not open '%s'", mtrace_filename);
-
-//	// read from mtrace-file.elf to get text size
-//	char *tmp_elf_name = (char *)malloc(strlen(mtrace_filename));	
-//	strcpy(tmp_elf_name, mtrace_filename);
-//	char *tmppos = strstr(tmp_elf_name, "-mtrace.txt");
-//	strcpy(tmppos, ".elf");
-//	FILE *tmp_elf_fp = fopen(tmp_elf_name, "r");
-//	printf("tmp_elf_name = %s\n", tmp_elf_name);
-//	printf("debug by cyh, text_size = %u\n", text_size);
-//	uint8_t *tmp_elf_content = (uint8_t *)malloc(sizeof(Elf64_Ehdr));
-//
-//
-//	free(tmp_elf_name);
-//	free(tmp_elf_content);
-//	fclose(tmp_elf_fp);
-//	tmp_elf_name = NULL;
-//	tmp_elf_fp = NULL;
-#endif
-} 
 
 static long load_img() {
   if (img_file == NULL) {
@@ -161,21 +125,19 @@ static int parse_args(int argc, char *argv[]) {
     {"diff"     , required_argument, NULL, 'd'},
     {"port"     , required_argument, NULL, 'p'},
     {"elf"      , required_argument, NULL, 'e'},
-    {"mtrace"   , required_argument, NULL, 'm'},
     {"dtrace"   , required_argument, NULL, 'D'},
     {"ftrace"   , required_argument, NULL, 'f'},
     {"help"     , no_argument      , NULL, 'h'},
     {0          , 0                , NULL,  0 },
   };
   int o;
-  while ( (o = getopt_long(argc, argv, "-bhl:d:p:e:m:f:D:", table, NULL)) != -1) {
+  while ( (o = getopt_long(argc, argv, "-bhl:d:p:e:f:D:", table, NULL)) != -1) {
     switch (o) {
       case 'b': sdb_set_batch_mode(); break;
       case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
       case 'e': elf_file = optarg; break;
       case 'D': dtrace_filename = optarg; break;
-      case 'm': mtrace_filename = optarg; break;
       case 'f': ftrace_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
       case 1: img_file = optarg; return 0;
@@ -186,7 +148,6 @@ static int parse_args(int argc, char *argv[]) {
         printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
         printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
         printf("\t-e,--elf=ELF_FILE       Enable ftrace with ELF_FILE\n");
-        printf("\t-m,--mtrace=MTRACE_FILE  Store mtrace records in MTRACE_FILE\n");
         printf("\t-f,--ftrace=FTRACE_FILE  Store ftrace records in FTRACE_FILE\n");
         printf("\t-D,--dtrace=DTRACE_FILE  Store dtrace records in DTRACE_FILE\n");
         printf("\n");
@@ -220,12 +181,8 @@ void init_monitor(int argc, char *argv[]) {
   /* Load the image to memory. This will overwrite the built-in image. */
   long img_size = load_img();
 
-	// open mtrace_file if exists
-	init_mtrace();
-
 	// open dtrace_file if exists
 	init_dtrace(dtrace_filename);
-
 
 #ifdef CONFIG_FTRACE
 	long elf_size = load_elf();
