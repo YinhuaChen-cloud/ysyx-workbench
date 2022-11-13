@@ -3,6 +3,7 @@
 #include <klib.h>
 
 #define ECALL_FROM_M 0xb
+#define LOAD_ADDRESS_MISSALIGN 0x4
 
 static Context* (*user_handler)(Event, Context*) = NULL;
 
@@ -27,6 +28,7 @@ Context* __am_irq_handle(Context *c) {
     Event ev = {0};
     switch (c->mcause) {
 			case ECALL_FROM_M: ev.event = EVENT_YIELD; c->mepc += 4; break;
+			case LOAD_ADDRESS_MISSALIGN: ev.event = EVENT_UNALIGN_MEM_ACCESS; c->mepc += 4; break;
       default: ev.event = EVENT_ERROR; break;
     }
 
