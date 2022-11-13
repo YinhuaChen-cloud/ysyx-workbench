@@ -66,6 +66,7 @@ void init_mem() {
 }
 
 word_t paddr_read(paddr_t addr, int len) {
+	printf("len = %d\n", len);
 	//printf("In paddr_read, addr = 0x%x\n", addr);
 #ifdef CONFIG_MTRACE
 	if(in_pmem(addr) && addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END) {
