@@ -50,7 +50,10 @@ static Context* do_event(Event e, Context* c) {
 						uint64_t twohalf[2];
 						twohalf[0] = *(uint64_t *)src;		// little-endian, low pos high bit
 						twohalf[1] = *(uint64_t *)(src + 8);		
-						uint64_t result = *(uint64_t *)((uint8_t *)twohalf + offset);
+						uint64_t result = 0;
+						for(uint8_t *pos = (uint8_t *)twohalf + offset; pos < (uint8_t *)twohalf + offset + 8; pos++) {
+
+						}
 						printf("result = %lx\n", result);
 						c->gpr[rd] = result;
 						break;
