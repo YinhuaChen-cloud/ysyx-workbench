@@ -8,6 +8,7 @@ typedef word_t vaddr_t;
 static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 
 static Context* do_event(Event e, Context* c) {
+	printf("e.event = %d\n", e.event);
   switch (e.event) {
 		case EVENT_YIELD: printf("event yield handled!\n"); c->mepc += 4; break;
 		case EVENT_UNALIGN_MEM_ACCESS:

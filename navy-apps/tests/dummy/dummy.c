@@ -7,6 +7,7 @@
 #define SYS_yield 1
 extern int _syscall_(int, uintptr_t, uintptr_t, uintptr_t);
 
+// 你需要让Nanos-lite识别出系统调用事件EVENT_SYSCALL.
 int main() {
   return _syscall_(SYS_yield, 0, 0, 0);
 }
