@@ -46,16 +46,15 @@ void get_symtab_strtab(){
 		Elf64_Shdr *section_headers = (Elf64_Shdr *)(ramdisk_elf + elfheader->e_shoff);
 		Elf64_Shdr *strtab_sh = section_headers + elfheader->e_shstrndx - 1;
 		ramdisk_strtab = ramdisk_elf + strtab_sh->sh_addr + strtab_sh->sh_offset;
+		printf("ramdisk, ramdisk_strtab = %s\n", ramdisk_strtab);
+		while(1);
 		// get symtab	and symtab_size
 		Elf64_Shdr *p = section_headers;
 		for(int i = 0; i < elfheader->e_shnum; i++){
-			printf("ramdisk, p->sh_type = %d\n", p->sh_type);
 			if(p->sh_type == SHT_SYMTAB)
 				break;
 			p++;	
 		}
-
-		while(1);
 
 		ramdisk_symtab_size = p->sh_size;
 		ramdisk_symtab = (Elf64_Sym *)(ramdisk_elf + p->sh_addr + p->sh_offset);
