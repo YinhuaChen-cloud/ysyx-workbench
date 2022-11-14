@@ -154,6 +154,7 @@ static void jalr_func(Decode *s, word_t dest, word_t src1, word_t src2) {
 		Elf64_Addr func_addr = src1;
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "call [%s@0x%lx]\n", addrToFunc(func_addr), func_addr);
 		fwrite(ftrace_buf, p-ftrace_buf, 1, ftrace_log);
+		fflush(ftrace_log);
 	} else if(isRet(rs1)){
 		// write into ftrace_log: pc_val [indent] ret [func_name]
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "0x%lx", s->pc);
@@ -161,6 +162,7 @@ static void jalr_func(Decode *s, word_t dest, word_t src1, word_t src2) {
 		p += ftrace_indent_space;
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "ret [%s]\n", addrToFunc(s->pc)); // we are here
 		fwrite(ftrace_buf, p-ftrace_buf, 1, ftrace_log);
+		fflush(ftrace_log);
 		ftrace_indent_space -= 2;
 	} else {
 		// skip, do nothing
@@ -188,6 +190,7 @@ static void jal_func(Decode *s, word_t dest, word_t src1) {
 		Elf64_Addr func_addr = s->pc + src1;
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "call [%s@0x%lx]\n", addrToFunc(func_addr), func_addr);
 		fwrite(ftrace_buf, p-ftrace_buf, 1, ftrace_log);
+		fflush(ftrace_log);
 	} else {
 		// skip, do nothing
 //		printf("s->pc = 0x%lx\n", s->pc);
