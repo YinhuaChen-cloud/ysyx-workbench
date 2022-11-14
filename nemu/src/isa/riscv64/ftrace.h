@@ -17,13 +17,13 @@ int ftrace_indent_space;
 // symtab
 // symtab_size
 // strtab
-Elf64_Sym *symtab;
-Elf64_Xword symtab_size;
-char *strtab;
+Elf64_Sym *symtab = NULL;
+Elf64_Xword symtab_size = NULL;
+char *strtab = NULL;
 char *ramdisk_elf = NULL;
-Elf64_Sym *ramdisk_symtab;
-Elf64_Xword ramdisk_symtab_size;
-char *ramdisk_strtab;
+Elf64_Sym *ramdisk_symtab = NULL;
+Elf64_Xword ramdisk_symtab_size = NULL;
+char *ramdisk_strtab = NULL;
 
 void get_symtab_strtab(){
 	// get ramdisk.img elf
@@ -102,7 +102,10 @@ char *addrToFunc(Elf64_Addr addr){
 	Assert(p != ramdisk_symtab, "p is just ramdisk_symtab");
 	Assert(((char *)p < (char *)symtab + symtab_size || ((char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
 	Assert(ELF64_ST_TYPE(p->st_info) == STT_FUNC, "the entry we found is not FUNC");
-	return strtab + p->st_name;
+	if((char *)p < (char *)symtab + symtab_size)
+		return strtab + p->st_name;
+	else
+		return ramdisk_strtab + p->st_name;
 }
 
 // We assume, if and only if ddest is x1(ra), then it is call
