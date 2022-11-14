@@ -49,7 +49,7 @@ void get_symtab_strtab(){
 		// get symtab	and symtab_size
 		Elf64_Shdr *p = section_headers;
 		for(int i = 0; i < elfheader->e_shnum; i++){
-			printf("ramdisk, p->sh_type = %d\n", SHT_SYMTAB);
+			printf("ramdisk, p->sh_type = %d\n", p->sh_type);
 			if(p->sh_type == SHT_SYMTAB)
 				break;
 			p++;	
