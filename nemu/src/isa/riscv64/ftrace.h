@@ -28,6 +28,7 @@ char *ramdisk_strtab = NULL;
 void get_symtab_strtab(){
 	// get ramdisk.img elf
   FILE *fp = fopen("/home/chenyinhua/sda3/ysyx-workbench/nanos-lite/build/ramdisk.img", "rb");
+	Assert(fp, "ramdisk.img does not exits");
 	if(fp) {
 		fseek(fp, 0, SEEK_END);
 		long size = ftell(fp);
