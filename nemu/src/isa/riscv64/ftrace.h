@@ -20,8 +20,45 @@ int ftrace_indent_space;
 Elf64_Sym *symtab;
 Elf64_Xword symtab_size;
 char *strtab;
+char *ramdisk_elf = NULL;
+Elf64_Sym *ramdisk_symtab;
+Elf64_Xword ramdisk_symtab_size;
+char *ramdisk_strtab;
 
 void get_symtab_strtab(){
+	// get ramdisk.img elf
+  FILE *fp = fopen("/home/chenyinhua/sda3/ysyx-workbench/nanos-lite/build/ramdisk.img", "rb");
+	if(fp) {
+		fseek(fp, 0, SEEK_END);
+		long size = ftell(fp);
+
+		fseek(fp, 0, SEEK_SET);
+		// TODO: we need to free ramdisk_content after used it, not implemented yet
+		ramdisk_elf = (char *)malloc(size);
+		int ret = fread(ramdisk_elf, size, 1, fp);
+		assert(ret == 1);
+
+		fclose(fp);
+
+		// get strtab
+		Elf64_Ehdr *elfheader = (Elf64_Ehdr *)ramdisk_elf; 
+		//printf("elfheader->e_shoff = %ld\n", elfheader->e_shoff);
+		Elf64_Shdr *section_headers = (Elf64_Shdr *)(ramdisk_elf + elfheader->e_shoff);
+		Elf64_Shdr *strtab_sh = section_headers + elfheader->e_shstrndx - 1;
+		ramdisk_strtab = ramdisk_elf + strtab_sh->sh_addr + strtab_sh->sh_offset;
+		// get symtab	and symtab_size
+		Elf64_Shdr *p = section_headers;
+		for(int i = 0; i < elfheader->e_shnum; i++){
+			if(p->sh_type == SHT_SYMTAB)
+				break;
+			p++;	
+		}
+
+		ramdisk_symtab_size = p->sh_size;
+		ramdisk_symtab = (Elf64_Sym *)(ramdisk_elf + p->sh_addr + p->sh_offset);
+
+	}
+	
 	// get strtab
 	Elf64_Ehdr *elfheader = (Elf64_Ehdr *)elf_content; 
 	//printf("elfheader->e_shoff = %ld\n", elfheader->e_shoff);
