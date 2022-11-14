@@ -46,8 +46,8 @@ void get_symtab_strtab(){
 		Elf64_Shdr *section_headers = (Elf64_Shdr *)(ramdisk_elf + elfheader->e_shoff);
 		Elf64_Shdr *strtab_sh = section_headers + elfheader->e_shstrndx - 1;
 		ramdisk_strtab = ramdisk_elf + strtab_sh->sh_addr + strtab_sh->sh_offset;
-		printf("ramdisk, ramdisk_strtab = %s\n", ramdisk_strtab+1);
-		while(1);
+//		printf("ramdisk, ramdisk_strtab = %s\n", ramdisk_strtab+1); -- checked
+//		while(1);
 		// get symtab	and symtab_size
 		Elf64_Shdr *p = section_headers;
 		for(int i = 0; i < elfheader->e_shnum; i++){
@@ -100,7 +100,7 @@ char *addrToFunc(Elf64_Addr addr){
 	}
 	Assert(p != symtab, "p is just symtab");
 	Assert(p != ramdisk_symtab, "p is just ramdisk_symtab");
-	Assert(((char *)p < (char *)symtab + symtab_size || ((char *)p >= (char *)symtab + symtab_size)), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
+	Assert(((char *)p < (char *)symtab + symtab_size || ((char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
 	Assert(ELF64_ST_TYPE(p->st_info) == STT_FUNC, "the entry we found is not FUNC");
 	return strtab + p->st_name;
 }
