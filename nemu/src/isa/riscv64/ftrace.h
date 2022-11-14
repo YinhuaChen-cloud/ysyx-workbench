@@ -79,11 +79,7 @@ void get_symtab_strtab(){
 
 // assume the addr must be a FUNC-type symbol in symtab
 char *addrToFunc(Elf64_Addr addr){
-	// 1. compare addr with all entries in symtab
-	//printf("In addrToFunc, addr = 0x%lx\n", addr);
-	//printf("In addrToFunc, symtab = 0x%lx\n", (char *)symtab - elf_content);
-	//printf("In addrToFunc, symtab_size = %lx\n", symtab_size);
-	 	
+	// search addr in nanos-lite elf 	
 	Elf64_Sym *p = symtab;
 	for(; (char *)p < (char *)symtab + symtab_size; p++){
 		//printf("p->st_value = 0x%lx, p->st_size = %ld\n", p->st_value, p->st_size);
@@ -91,8 +87,18 @@ char *addrToFunc(Elf64_Addr addr){
 			break;
 		}
 	}
+	// search addr in user program elf
+	if((char *)p >= (char *)symtab + symtab_size) {
+		for(p = ramdisk_symtab; (char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size; p++){
+			//printf("p->st_value = 0x%lx, p->st_size = %ld\n", p->st_value, p->st_size);
+			if(addr >= p->st_value && addr < p->st_value + p->st_size){
+				break;
+			}
+		}
+	}
 	Assert(p != symtab, "p is just symtab");
-	Assert((char *)p < (char *)symtab + symtab_size, "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
+	Assert(p != ramdisk_symtab, "p is just ramdisk_symtab");
+	Assert(((char *)p < (char *)symtab + symtab_size || ((char *)p >= (char *)symtab + symtab_size)), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
 	Assert(ELF64_ST_TYPE(p->st_info) == STT_FUNC, "the entry we found is not FUNC");
 	return strtab + p->st_name;
 }
