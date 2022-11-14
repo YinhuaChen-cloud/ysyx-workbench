@@ -18,11 +18,11 @@ int ftrace_indent_space;
 // symtab_size
 // strtab
 Elf64_Sym *symtab = NULL;
-Elf64_Xword symtab_size = NULL;
+Elf64_Xword symtab_size;
 char *strtab = NULL;
 char *ramdisk_elf = NULL;
 Elf64_Sym *ramdisk_symtab = NULL;
-Elf64_Xword ramdisk_symtab_size = NULL;
+Elf64_Xword ramdisk_symtab_size;
 char *ramdisk_strtab = NULL;
 
 void get_symtab_strtab(){
