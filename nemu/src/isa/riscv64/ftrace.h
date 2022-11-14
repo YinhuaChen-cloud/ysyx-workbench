@@ -157,7 +157,7 @@ static void jalr_func(Decode *s, word_t dest, word_t src1, word_t src2) {
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "0x%lx", s->pc);
 	  drawline(p, ftrace_indent_space);
 		p += ftrace_indent_space;
-		Elf64_Addr func_addr = src1;
+		Elf64_Addr func_addr = (src1 + src2)&(~1);
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "call [%s@0x%lx]\n", addrToFunc(func_addr), func_addr);
 		fwrite(ftrace_buf, p-ftrace_buf, 1, ftrace_log);
 		fflush(ftrace_log);
