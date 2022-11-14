@@ -90,6 +90,8 @@ char *addrToFunc(Elf64_Addr addr){
 			break;
 		}
 	}
+
+	Assert((char *)p < (char *)symtab + symtab_size, "catch you");
 	// search addr in user program elf
 	if((char *)p >= (char *)symtab + symtab_size) {
 		for(p = ramdisk_symtab; (char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size; p++){
