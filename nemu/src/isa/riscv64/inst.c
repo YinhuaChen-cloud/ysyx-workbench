@@ -20,7 +20,7 @@
 
 enum {
 	EVENT_NULL = 0,
-	EVENT_YIELD, EVENT_SYSCALL, EVENT_PAGEFAULT, EVENT_ERROR, 
+	EVENT_SYSCALL, EVENT_PAGEFAULT, EVENT_ERROR, 
 	EVENT_IRQ_TIMER, EVENT_IRQ_IODEV, EVENT_UNALIGN_MEM_ACCESS,
 } event; // define events and its values
 
@@ -90,7 +90,7 @@ static int decode_exec(Decode *s) {
 	// 0011000 00010 00000 000 00000 1110011
   INSTPAT("0011000 00010 00000 000 00000 11100 11", mret	 , N, s->dnpc = isa_quit_exp(); ); 
 	// 000000000000 00000 000 00000 1110011
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(EVENT_YIELD, s->pc)); 
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(EVENT_SYSCALL, s->pc)); 
 	// csr rs1 010 rd 1110011 
   INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , CR, R(dest) = CSR(csrid); CSR(csrid) |= src1;); 
 	// csr rs1 001 rd 1110011

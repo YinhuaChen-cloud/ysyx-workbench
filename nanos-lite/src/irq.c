@@ -11,7 +11,7 @@ static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static Context* do_event(Event e, Context* c) {
 	printf("e.event = %d\n", e.event);
   switch (e.event) {
-		case EVENT_YIELD: // do with syscall
+		case EVENT_SYSCALL: // do with syscall
 			{
 				printf("In do_event, event yield catched!\n"); 
 				do_syscall(c);

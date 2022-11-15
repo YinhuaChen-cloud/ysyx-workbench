@@ -27,7 +27,7 @@ Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
     switch (c->mcause) {
-			case ECALL_FROM_M: ev.event = EVENT_YIELD; break;
+			case ECALL_FROM_M: ev.event = EVENT_SYSCALL; break;
 			case LOAD_ADDRESS_MISSALIGN: ev.event = EVENT_UNALIGN_MEM_ACCESS; break;
       default: ev.event = EVENT_ERROR; break;
     }
