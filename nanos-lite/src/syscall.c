@@ -23,6 +23,9 @@ void do_syscall(Context *c) {
 			printf("a0 = 0x%lx\n", c->GPR2); 
 			halt(c->GPR2);
 			break;
+		case SYS_write:
+			printf("syscall write handled\n");
+			break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
