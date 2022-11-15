@@ -1,4 +1,6 @@
 #include <common.h>
+#include <syscall.h>
+extern void do_syscall(Context *c);
 
 typedef uint64_t word_t;
 typedef word_t vaddr_t;
@@ -10,7 +12,13 @@ static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static Context* do_event(Event e, Context* c) {
 	printf("e.event = %d\n", e.event);
   switch (e.event) {
-		case EVENT_YIELD: printf("event yield handled!\n"); c->mepc += 4; break;
+		case EVENT_YIELD: // do with syscall
+			{
+				printf("In do_event, event yield catched!\n"); 
+				do_syscall(c);
+				c->mepc += 4; 
+				break;
+			}
 		case EVENT_UNALIGN_MEM_ACCESS:
 			{
 				uint32_t tmp_inst = *(uint32_t *)c->mepc;
