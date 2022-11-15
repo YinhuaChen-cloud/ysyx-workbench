@@ -97,11 +97,7 @@ char *addrToFunc(Elf64_Addr addr){
 	if((char *)p >= (char *)symtab + symtab_size) {
 //		assert(0);
 		for(p = ramdisk_symtab; (char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size; p++){
-			if(addr == 0x83004e9c)
-				printf("in ramdisk_symtab, symbol = %s\n", ramdisk_strtab + p->st_name);
 			if(addr >= p->st_value && addr < p->st_value + p->st_size){
-				if(addr == 0x83004e9c)
-					printf("catch you aahahahah\n");
 				break;
 			}
 		}
