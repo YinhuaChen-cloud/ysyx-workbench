@@ -24,7 +24,6 @@ void do_syscall(Context *c) {
 			halt(c->GPR2);
 			break;
 		case SYS_write:
-			printf("syscall write handled\n");
 			assert(a[1] == 1 || a[1] == 2);
 			int count;
 			char *p = (char *)a[2];
