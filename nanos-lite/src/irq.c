@@ -13,7 +13,6 @@ static Context* do_event(Event e, Context* c) {
   switch (e.event) {
 		case EVENT_SYSCALL: // do with syscall
 			{
-				printf("In do_event, event yield catched!\n"); 
 				do_syscall(c);
 				c->mepc += 4; 
 				break;
