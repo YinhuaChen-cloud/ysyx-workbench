@@ -2,7 +2,14 @@
 RAMDISK_FILE = build/ramdisk.img
 
 NAME = nanos-lite
-SRCS = $(shell find -L ./src/ -name "*.c" -o -name "*.cpp" -o -name "*.S")
+RAW_SRCS = $(shell find -L ./src/ -name "*.c" -o -name "*.cpp" -o -name "*.S")
+NOIRQ = $(filter-out %irq.c, $(RAW_SRCS))
+SRCS = $(NOIRQ)
+SRCS += ./src/$(ARCH)-irq.c
+
+cyhtest:
+	@echo "SRCS = $(SRCS)"
+
 include $(AM_HOME)/Makefile
 
 ifeq ($(ARCH),native)
@@ -29,6 +36,7 @@ update:
 	@ln -sf $(NAVY_HOME)/build/ramdisk.img $(RAMDISK_FILE)
 	@ln -sf $(NAVY_HOME)/build/ramdisk.h src/files.h
 	@ln -sf $(NAVY_HOME)/libs/libos/src/syscall.h src/syscall.h
+
 
 .PHONY: update
 endif
