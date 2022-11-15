@@ -25,6 +25,8 @@ void do_syscall(Context *c) {
 			break;
 		case SYS_write:
 			printf("syscall write handled\n");
+			assert(a[1] == 1 || a[1] == 2);
+
 			break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
