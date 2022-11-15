@@ -1,6 +1,5 @@
 #include <common.h>
-#include <syscall.h>
-extern void do_syscall(Context *c);
+#include "syscall.h"
 
 typedef uint64_t word_t;
 typedef word_t vaddr_t;
