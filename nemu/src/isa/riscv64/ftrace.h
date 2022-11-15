@@ -100,6 +100,8 @@ char *addrToFunc(Elf64_Addr addr){
 			if(addr == 0x83004e9c)
 				printf("in ramdisk_symtab, symbol = %s\n", ramdisk_strtab + p->st_name);
 			if(addr >= p->st_value && addr < p->st_value + p->st_size){
+				if(addr == 0x83004e9c)
+					printf("catch you aahahahah\n");
 				break;
 			}
 		}
