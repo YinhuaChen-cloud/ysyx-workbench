@@ -25,6 +25,7 @@ void do_syscall(Context *c) {
 			break;
 		case SYS_write:
 			assert(a[1] == 1 || a[1] == 2);
+			printf("a[3] = %d\n", a[3]);
 			int count;
 			char *p = (char *)a[2];
 			for(count = 0; count < a[3] && *p != '\0'; count++) {
