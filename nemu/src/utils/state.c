@@ -27,7 +27,7 @@ int is_exit_status_bad() {
 
   if(!good) {
     print_iringbuf();
-#ifdef CONFIG_FTRACE
+#ifdef CONFIG_MTRACE
 		fclose(mtrace_fp);
 #endif
 #ifdef CONFIG_FTRACE

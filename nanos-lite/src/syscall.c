@@ -23,6 +23,17 @@ void do_syscall(Context *c) {
 			printf("a0 = 0x%lx\n", c->GPR2); 
 			halt(c->GPR2);
 			break;
+		case SYS_write:
+			assert(a[1] == 1 || a[1] == 2);
+			printf("a[3] = %d\n", a[3]);
+			int count;
+			char *p = (char *)a[2];
+			for(count = 0; count < a[3] && *p != '\0'; count++) {
+				putch(*p);
+				p++;
+			}
+			c->GPR2 = p - (char *)a[2];
+			break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }

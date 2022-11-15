@@ -47,7 +47,7 @@ void get_symtab_strtab(){
 		Elf64_Shdr *section_headers = (Elf64_Shdr *)(ramdisk_elf + elfheader->e_shoff);
 		Elf64_Shdr *strtab_sh = section_headers + elfheader->e_shstrndx - 1;
 		ramdisk_strtab = ramdisk_elf + strtab_sh->sh_addr + strtab_sh->sh_offset;
-//		printf("ramdisk, ramdisk_strtab = %s\n", ramdisk_strtab+1); -- checked
+//		printf("ramdisk, ramdisk_strtab = %s\n", ramdisk_strtab+1); // -- checked
 //		while(1);
 		// get symtab	and symtab_size
 		Elf64_Shdr *p = section_headers;
@@ -97,7 +97,6 @@ char *addrToFunc(Elf64_Addr addr){
 	if((char *)p >= (char *)symtab + symtab_size) {
 //		assert(0);
 		for(p = ramdisk_symtab; (char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size; p++){
-			//printf("p->st_value = 0x%lx, p->st_size = %ld\n", p->st_value, p->st_size);
 			if(addr >= p->st_value && addr < p->st_value + p->st_size){
 				break;
 			}
@@ -107,10 +106,12 @@ char *addrToFunc(Elf64_Addr addr){
 	Assert(p != ramdisk_symtab, "p is just ramdisk_symtab");
 	Assert(((char *)p < (char *)symtab + symtab_size || ((char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
 	Assert(ELF64_ST_TYPE(p->st_info) == STT_FUNC, "the entry we found is not FUNC");
-	if((char *)p < (char *)symtab + symtab_size)
+	if(p >= symtab && (char *)p < (char *)symtab + symtab_size)
 		return strtab + p->st_name;
-	else
+	else if(p >= ramdisk_symtab && (char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)
 		return ramdisk_strtab + p->st_name;
+	else
+		Assert(0, "In addrToFunc, unexpected p");
 }
 
 // We assume, if and only if ddest is x1(ra), then it is call
