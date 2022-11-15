@@ -94,7 +94,7 @@ static void sig_handler(int sig, siginfo_t *info, void *ucontext) {
   thiscpu->ev.event = EVENT_ERROR;
   switch (sig) {
     case SIGUSR1: thiscpu->ev.event = EVENT_IRQ_IODEV; break;
-    case SIGUSR2: thiscpu->ev.event = EVENT_YIELD; break;
+    case SIGUSR2: thiscpu->ev.event = EVENT_SYSCALL; break;
     case SIGVTALRM: thiscpu->ev.event = EVENT_IRQ_TIMER; break;
     case SIGSEGV:
       if (info->si_code == SEGV_ACCERR) {
