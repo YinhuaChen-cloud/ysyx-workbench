@@ -15,6 +15,7 @@ void do_syscall(Context *c) {
   a[3] = c->GPR4;
 
   switch (a[0]) {
+		case SYS_yield: printf("sysyield my god\n");
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
