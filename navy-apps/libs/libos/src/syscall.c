@@ -60,7 +60,6 @@ intptr_t _syscall_(intptr_t type, intptr_t a0, intptr_t a1, intptr_t a2) {
 }
 
 void _exit(int status) {
-	printf("in _exit, status = %d\n", status);
   _syscall_(SYS_exit, status, 0, 0);
   while (1);
 }
