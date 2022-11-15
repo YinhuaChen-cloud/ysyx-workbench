@@ -193,7 +193,6 @@ static void jal_func(Decode *s, word_t dest, word_t src1) {
 	  drawline(p, ftrace_indent_space);
 		p += ftrace_indent_space;
 		Elf64_Addr func_addr = s->pc + src1;
-		printf("0x%lx, %s\n", func_addr, addrToFunc(func_addr));
 		p += snprintf(p, ftrace_buf + sizeof(ftrace_buf) - p, "call [%s@0x%lx]\n", addrToFunc(func_addr), func_addr);
 		fwrite(ftrace_buf, p-ftrace_buf, 1, ftrace_log);
 		fflush(ftrace_log);
