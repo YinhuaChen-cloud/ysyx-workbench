@@ -43,6 +43,9 @@ void do_syscall(Context *c) {
 			}
 			c->GPR2 = p - (char *)a[2];
 			break;
+		case SYS_brk:
+			c->GPR2 = 0;
+			break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 
@@ -56,6 +59,9 @@ void do_syscall(Context *c) {
 			break;
 		case SYS_write:
 			STRACE_Log("SYS_write args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
+			break;
+		case SYS_brk:
+			STRACE_Log("SYS_brk args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
 			break;
     default: panic("Unhandled syscall ID = %d", a[0]);
 	}
