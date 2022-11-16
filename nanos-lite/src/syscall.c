@@ -31,6 +31,7 @@ void do_syscall(Context *c) {
 		case SYS_exit: 
 			break;
 		case SYS_write:
+			STRACE_Log("SYS_write");
 			break;
     default: panic("Unhandled syscall ID = %d", a[0]);
 	}
