@@ -11,7 +11,7 @@
 //包括名字, 参数和返回值. 这也是为什么我们选择在Nanos-lite中实现strace: 系统调用是携带高层的
 //程序语义的, 但NEMU中只能看到底层的状态机.
 
-#define STRACE
+//#define STRACE
 #define STRACE_Log(format, ...) \
   printf("\33[0;33mstrace: " format "\33[0m\n", \
       ## __VA_ARGS__)
