@@ -13,7 +13,7 @@
 
 //#define STRACE
 #define STRACE_Log(format, ...) \
-  printf("\33[1;35mstrace: " format "\33[0m\n", \
+  printf("\33[1;31mstrace: " format "\33[0m\n", \
       ## __VA_ARGS__)
 
 void do_syscall(Context *c) {
