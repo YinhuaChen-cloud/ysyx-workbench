@@ -26,7 +26,6 @@ void do_syscall(Context *c) {
 #ifdef STRACE
   switch (a[0]) {
 		case SYS_yield: 
-			STRACE_Log("SYS_yield args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
 			break;
 		case SYS_exit: 
 			break;
@@ -44,6 +43,7 @@ void do_syscall(Context *c) {
 			halt(c->GPR2);
 			break;
 		case SYS_write:
+			STRACE_Log("SYS_yield args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
 			assert(a[1] == 1 || a[1] == 2);
 			int count;
 			char *p = (char *)a[2];
