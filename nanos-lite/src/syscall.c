@@ -12,6 +12,9 @@
 //程序语义的, 但NEMU中只能看到底层的状态机.
 
 #define STRACE
+#define STRACE_Log(format, ...) \
+  printf("\33[1;35mstrace: " format "\33[0m\n", \
+      ## __VA_ARGS__)
 
 void do_syscall(Context *c) {
   uintptr_t a[4];
@@ -21,15 +24,16 @@ void do_syscall(Context *c) {
   a[3] = c->GPR4;
 
 #ifdef STRACE
-//  switch (a[0]) {
-//		case SYS_yield: 
-//			break;
-//		case SYS_exit: 
-//			break;
-//		case SYS_write:
-//			break;
-//    default: panic("Unhandled syscall ID = %d", a[0]);
-//	}
+  switch (a[0]) {
+		case SYS_yield: 
+			STRACE_Log("SYS_yield");
+			break;
+		case SYS_exit: 
+			break;
+		case SYS_write:
+			break;
+    default: panic("Unhandled syscall ID = %d", a[0]);
+	}
 #endif
 
   switch (a[0]) {
