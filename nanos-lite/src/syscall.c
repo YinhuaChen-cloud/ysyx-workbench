@@ -26,12 +26,12 @@ void do_syscall(Context *c) {
 #ifdef STRACE
   switch (a[0]) {
 		case SYS_yield: 
-			STRACE_Log("SYS_yield");
+			STRACE_Log("SYS_yield args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
 			break;
 		case SYS_exit: 
 			break;
 		case SYS_write:
-			STRACE_Log("SYS_write");
+			STRACE_Log("SYS_write args:");
 			break;
     default: panic("Unhandled syscall ID = %d", a[0]);
 	}
