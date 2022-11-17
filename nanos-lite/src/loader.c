@@ -58,29 +58,6 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
 	}
 
-//	// loader -- start
-//	// loader -- end
-
-//	// loader -- start
-//	printf("in loader, before reading ramdisk\n");
-//	uint32_t *osmem_pointer = (uint32_t *)0x83000000;
-//	ramdisk_read(osmem, 0, 0x4c38); // 1
-//	for(uint32_t *x = (uint32_t *)osmem; (uint8_t *)x < osmem + 0x4c38; x++, osmem_pointer++) {
-//		outl((uintptr_t)osmem_pointer, *x);
-////		printf("0x%x\t0x%x\n", osmem_pointer, *x);
-//	}
-//	ramdisk_read(osmem, 0x4c38, 0xfe8); // 2
-//	uint32_t *x = (uint32_t *)osmem;
-//	for(; (uint8_t *)x < osmem + 0xfe8; x++, osmem_pointer++) {
-//		outl((uintptr_t)osmem_pointer, *x);
-////		printf("0x%x\t0x%x\n", osmem_pointer, *x);
-//	}
-//	for(; (uint8_t *)x < osmem + 0x1038; x++, osmem_pointer++) {
-//		outl((uintptr_t)osmem_pointer, 0);
-////		printf("0x%x\t0x%x\n", osmem_pointer, *x);
-//	}
-//	printf("in loader, after reading ramdisk\n");
-//	// loader -- end
 	printf("in loader, after reading ramdisk\n");
   return elfheader->e_entry; // return entry of the program
 //  return (uintptr_t)(osmem + elfheader->e_entry); // return entry of the program
