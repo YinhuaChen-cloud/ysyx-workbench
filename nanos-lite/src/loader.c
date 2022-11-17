@@ -1,5 +1,6 @@
 #include <proc.h>
 #include <elf.h>
+#include <fs.h>
 
 #ifdef __LP64__
 # define Elf_Ehdr Elf64_Ehdr
@@ -42,6 +43,10 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
 	extern uint8_t ramdisk_start;
 //	extern uint8_t ramdisk_end;
+
+//	uint8_t tmpmem[0x2000000];
+//	int fp = fs_open(filename, 0, 0);
+//	fs_read(fp, tmpmem, );
 
 	Elf_Ehdr *elfheader = (Elf_Ehdr *)(&ramdisk_start); 
 
