@@ -34,3 +34,17 @@ static Finfo file_table[] __attribute__((used)) = {
 void init_fs() {
   // TODO: initialize the size of /dev/fb
 }
+
+int fs_open(const char *pathname, int flags, int mode) {
+//	2. 为了简化实现, 我们允许所有用户程序都可以对所有已存在的文件进行读写, 这样以后, 我们在实现fs_open()的时候就可以忽略flags和mode了.
+	int i = 0;
+	for(; i < sizeof(file_table)/sizeof(file_table[0]); i++) {
+
+	}
+}
+
+size_t fs_read(int fd, void *buf, size_t len);
+size_t fs_write(int fd, const void *buf, size_t len);
+size_t fs_lseek(int fd, size_t offset, int whence);
+int fs_close(int fd);
+
