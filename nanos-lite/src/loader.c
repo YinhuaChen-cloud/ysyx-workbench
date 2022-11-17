@@ -37,7 +37,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 //	1. read program from ramdisk -- invoke ramdisk_read()
 //	2. load program into mem -- the same as above
 //	3. execute the program -- return the entry
-	printf("in loader, before reading ramdisk\n");
+	printf("in loader, before reading ramdisk, filename = %s\n", filename);
 
 	extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
 	extern uint8_t ramdisk_start;
@@ -58,7 +58,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
 	}
 
-	printf("in loader, after reading ramdisk\n");
+	printf("in loader, after reading ramdisk, filename = %s\n", filename);
   return elfheader->e_entry; // return entry of the program
 //  return (uintptr_t)(osmem + elfheader->e_entry); // return entry of the program
 
