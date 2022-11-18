@@ -58,6 +58,12 @@ ifneq ($(findstring $(ISA), x86|mips32|riscv32),)
 LIBS += compiler-rt
 endif
 
+# added by chenyinhua to include libndl -- start
+ifneq ($(findstring $(ISA), riscv64),)
+LIBS += libndl  
+endif
+# added by chenyinhua to include libndl -- end
+
 ### All libraries to add to the include path
 LIBS_INC := $(sort $(LIBS) $(LIB_DEP))
 

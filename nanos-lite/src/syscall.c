@@ -99,6 +99,7 @@ void do_syscall(Context *c) {
 			STRACE_Log("SYS_brk args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
 			break;
 		case SYS_gettimeofday:
+			STRACE_Log("SYS_gettimeofday args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
 			break;
     default: panic("Unhandled syscall ID = %d", a[0]);
 	}
