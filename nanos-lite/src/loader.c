@@ -19,8 +19,8 @@
 #endif
 
 // yinhua add this -- start
-//#define RAM_READ_BUF_LEN 0x2000000
-//static uint8_t osmem[RAM_READ_BUF_LEN];
+#define RAM_READ_BUF_LEN 0x2000000
+static uint8_t osmem[RAM_READ_BUF_LEN];
 
 //static inline uint8_t  inb(uintptr_t addr) { return *(volatile uint8_t  *)addr; }
 //static inline uint16_t inw(uintptr_t addr) { return *(volatile uint16_t *)addr; }
@@ -48,10 +48,10 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	printf("fd = %d\n", fd);
 //	fs_read(fp, tmpmem, );
 
-	Elf_Ehdr file_elfheader;
-	Elf_Ehdr *elfheader = &file_elfheader; 
+//	Elf_Ehdr file_elfheader;
 
-	fs_read(fd, &file_elfheader, sizeof(Elf_Ehdr));
+	fs_read(fd, osmem, -1);
+	Elf_Ehdr *elfheader = (Elf_Ehdr *)osmem; 
 //	Elf_Ehdr *elfheader = (Elf_Ehdr *)(&ramdisk_start + file_table[fp].disk_offset); 
 
 	assert(elfheader->e_machine == EXPECT_TYPE);	
