@@ -25,6 +25,19 @@ Elf64_Sym *ramdisk_symtab = NULL;
 Elf64_Xword ramdisk_symtab_size;
 char *ramdisk_strtab = NULL;
 
+typedef struct {
+  char *name;
+  size_t size;
+  size_t disk_offset;
+} Finfo;
+
+static Finfo file_table[] __attribute__((used)) = {
+  [FD_STDIN]  = {"stdin", 0, 0},
+  [FD_STDOUT] = {"stdout", 0, 0},
+  [FD_STDERR] = {"stderr", 0, 0},
+#include "files.h"
+};
+
 void get_symtab_strtab(){
 	// get ramdisk.img elf
   FILE *fp = fopen("/home/chenyinhua/sda3/ysyx-workbench/nanos-lite/build/ramdisk.img", "rb");
@@ -62,6 +75,8 @@ void get_symtab_strtab(){
 
 	}
 	
+//	======================= split line =============
+
 	// get strtab
 	Elf64_Ehdr *elfheader = (Elf64_Ehdr *)elf_content; 
 	//printf("elfheader->e_shoff = %ld\n", elfheader->e_shoff);
