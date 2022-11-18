@@ -62,6 +62,7 @@ void do_syscall(Context *c) {
 			// up there
 			break;
 		case SYS_open:
+			STRACE_Log("SYS_open args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
 			break;
 		case SYS_write:
 			STRACE_Log("SYS_write args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
