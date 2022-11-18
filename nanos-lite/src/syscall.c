@@ -41,14 +41,18 @@ void do_syscall(Context *c) {
 			c->GPR2 = fs_read(a[1], (void *)a[2], a[3]);
 			break;
 		case SYS_write:
-			assert(a[1] == 1 || a[1] == 2);
-			int count;
-			char *p = (char *)a[2];
-			for(count = 0; count < a[3] && *p != '\0'; count++) {
-				putch(*p);
-				p++;
+			if(a[1] == 1 || a[1] == 2) {
+				int count;
+				char *p = (char *)a[2];
+				for(count = 0; count < a[3] && *p != '\0'; count++) {
+					putch(*p);
+					p++;
+				}
+				c->GPR2 = p - (char *)a[2];
 			}
-			c->GPR2 = p - (char *)a[2];
+			else {
+				c->GPR2 = fs_write(a[1], (void *)a[2], a[3]);	
+			}
 			break;
 		case SYS_close:
 			c->GPR2 = fs_close(a[1]);
