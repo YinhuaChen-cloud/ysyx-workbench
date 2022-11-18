@@ -56,12 +56,16 @@ size_t fs_read(int fd, void *buf, size_t len) {
 //5. 除了写入stdout和stderr之外(用putch()输出到串口), 其余对于stdin, stdout和stderr这三个特殊文件的操作可以直接忽略.
 	if(fd <= 2)
 		return 0;
+//4. 由于文件的大小是固定的, 在实现fs_read(), fs_write()和fs_lseek()的时候, 注意偏移量不要越过文件的边界.
+	if(len > file_table[fd].size - file_table[fd].open_offset) {
+		len = file_table[fd].size - file_table[fd].open_offset;
+	}
 //3. 使用ramdisk_read()和ramdisk_write()来进行文件的真正读写.
 	extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
-	size_t retval = ramdisk_read(buf, file_table[fd].disk_offset, len);
+	size_t retval = ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
+
 	file_table[fd].open_offset += retval;
 	
-//4. 由于文件的大小是固定的, 在实现fs_read(), fs_write()和fs_lseek()的时候, 注意偏移量不要越过文件的边界.
 	assert(file_table[fd].open_offset <= file_table[fd].size);	
 	return retval;
 }

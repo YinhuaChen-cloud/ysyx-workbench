@@ -19,7 +19,7 @@
 #endif
 
 // yinhua add this -- start
-//#define RAM_READ_BUF_LEN 0x8000000
+//#define RAM_READ_BUF_LEN 0x2000000
 //static uint8_t osmem[RAM_READ_BUF_LEN];
 
 //static inline uint8_t  inb(uintptr_t addr) { return *(volatile uint8_t  *)addr; }
@@ -40,20 +40,24 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 //	3. execute the program -- return the entry
 	printf("in loader, before reading ramdisk, filename = %s\n", filename);
 
-	extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
-	extern uint8_t ramdisk_start;
+//	extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
+//	extern uint8_t ramdisk_start;
 //	extern uint8_t ramdisk_end;
 
-//	uint8_t tmpmem[0x2000000];
 	int fd = fs_open(filename, 0, 0);
 	printf("fd = %d\n", fd);
 //	fs_read(fp, tmpmem, );
 
-	Elf_Ehdr *elfheader = (Elf_Ehdr *)(&ramdisk_start); 
+	Elf_Ehdr file_elfheader;
+	Elf_Ehdr *elfheader = &file_elfheader; 
+
+	fs_read(fd, &file_elfheader, sizeof(Elf_Ehdr));
 //	Elf_Ehdr *elfheader = (Elf_Ehdr *)(&ramdisk_start + file_table[fp].disk_offset); 
 
 	assert(elfheader->e_machine == EXPECT_TYPE);	
 	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
+
+	while(1);
 
 	Elf_Phdr *program_headers = (Elf_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
 
@@ -61,8 +65,8 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 		if(p->p_type != PT_LOAD) {
 			continue;
 		}
-//		fs_read(int fd, (void *)(p->p_vaddr), size_t len);
-		ramdisk_read((void *)(p->p_vaddr), p->p_offset, p->p_filesz); 
+		fs_read(fd, (void *)(p->p_vaddr), p->p_filesz);
+//		ramdisk_read((void *)(p->p_vaddr), p->p_offset, p->p_filesz); 
 		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
 	}
 
