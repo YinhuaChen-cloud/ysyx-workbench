@@ -105,7 +105,7 @@ char *addrToFunc(Elf64_Addr addr){
 	Assert(p != symtab, "p is just symtab");
 	Assert(p != ramdisk_symtab, "p is just ramdisk_symtab");
 	Assert(((char *)p < (char *)symtab + symtab_size || ((char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
-	Assert(ELF64_ST_TYPE(p->st_info) == STT_FUNC, "the entry we found is not FUNC");
+	Assert(ELF64_ST_TYPE(p->st_info) == STT_FUNC, "[%s:%d] The entry we found is not FUNC", __FILE__, __LINE__);
 	if(p >= symtab && (char *)p < (char *)symtab + symtab_size)
 		return strtab + p->st_name;
 	else if(p >= ramdisk_symtab && (char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)
