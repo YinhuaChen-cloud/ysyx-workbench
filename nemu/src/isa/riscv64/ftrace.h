@@ -31,6 +31,8 @@ typedef struct {
   size_t disk_offset;
 } Finfo;
 
+enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB};
+
 static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN]  = {"stdin", 0, 0},
   [FD_STDOUT] = {"stdout", 0, 0},
