@@ -17,6 +17,15 @@
   printf("\33[0;33mstrace: " format "\33[0m\n", \
       ## __VA_ARGS__)
 
+#define	_TIME_T_ long
+typedef	_TIME_T_	time_t;
+typedef	long		__suseconds_t;	/* microseconds (signed) */
+typedef	__suseconds_t	suseconds_t;
+struct timeval {
+	time_t		tv_sec;		/* seconds */
+	suseconds_t	tv_usec;	/* and microseconds */
+};
+
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
@@ -52,8 +61,13 @@ void do_syscall(Context *c) {
 		case SYS_brk:
 			c->GPR2 = 0;
 			break;
-		case SYS_gettimeofday:
-			c->GPR2 = // we are here
+		case SYS_gettimeofday: 
+			{
+				uint64_t us = io_read(AM_TIMER_UPTIME).us;
+				((struct timeval *)a[1])->tv_sec = us / 1000000;
+				((struct timeval *)a[1])->tv_usec = us % 1000000; 
+				c->GPR2 = 0;
+			}
 			break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }

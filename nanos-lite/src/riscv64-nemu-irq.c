@@ -12,6 +12,7 @@ static Context* do_event(Event e, Context* c) {
   switch (e.event) {
 		case EVENT_SYSCALL: // do with syscall
 			{
+				extern void do_syscall(Context *c);
 				do_syscall(c);
 				c->mepc += 4; 
 				break;
