@@ -45,7 +45,6 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 //	extern uint8_t ramdisk_end;
 
 	int fd = fs_open(filename, 0, 0);
-	printf("fd = %d\n", fd);
 //	fs_read(fp, tmpmem, );
 
 //	Elf_Ehdr file_elfheader;
@@ -63,7 +62,6 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 		if(p->p_type != PT_LOAD) {
 			continue;
 		}
-		printf("In loader, p->p_offset = 0x%x\n", p->p_offset);
 		fs_lseek(fd, p->p_offset, SEEK_SET);
 		fs_read(fd, (void *)(p->p_vaddr), p->p_filesz);
 //		ramdisk_read((void *)(p->p_vaddr), p->p_offset, p->p_filesz); 
