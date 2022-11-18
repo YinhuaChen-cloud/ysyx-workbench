@@ -93,6 +93,7 @@ size_t fs_lseek(int fd, size_t offset, int whence) {
 //4. 由于文件的大小是固定的, 在实现fs_read(), fs_write()和fs_lseek()的时候, 注意偏移量不要越过文件的边界.
 	assert(base + offset >= 0 && base + offset <= file_table[fd].size);
 	file_table[fd].open_offset = base + offset;
+	printf("file_table[%d].open_offset = %d\n", fd, file_table[fd].open_offset);
 	return 0;
 }
 
