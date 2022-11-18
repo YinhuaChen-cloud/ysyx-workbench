@@ -57,14 +57,14 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	assert(elfheader->e_machine == EXPECT_TYPE);	
 	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
 
-	while(1);
-
 	Elf_Phdr *program_headers = (Elf_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
 
 	for(Elf_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
 		if(p->p_type != PT_LOAD) {
 			continue;
 		}
+
+		fs_lseek(fd, p->p_offset, SEEK_SET);
 		fs_read(fd, (void *)(p->p_vaddr), p->p_filesz);
 //		ramdisk_read((void *)(p->p_vaddr), p->p_offset, p->p_filesz); 
 		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero

@@ -76,7 +76,25 @@ size_t fs_write(int fd, const void *buf, size_t len) {
 		return 0;
 	return 0;
 }
-size_t fs_lseek(int fd, size_t offset, int whence);
+
+size_t fs_lseek(int fd, size_t offset, int whence) {
+	int base;
+	
+	assert(whence == SEEK_SET || whence == SEEK_CUR || whence == SEEK_END);
+	if(SEEK_SET == whence) {
+		base = 0;
+	}
+	else if(SEEK_CUR == whence) {
+		base = file_table[fd].open_offset;
+	}
+	else {
+		base = file_table[fd].size;
+	}
+//4. 由于文件的大小是固定的, 在实现fs_read(), fs_write()和fs_lseek()的时候, 注意偏移量不要越过文件的边界.
+	assert(base + offset >= 0 && base + offset <= file_table[fd].size);
+	file_table[fd].open_offset = base + offset;
+	return 0;
+}
 
 // 6. 由于sfs没有维护文件打开的状态, fs_close()可以直接返回0, 表示总是关闭成功.
 int fs_close(int fd) {
