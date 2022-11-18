@@ -1,5 +1,6 @@
 #include <common.h>
 #include "syscall.h"
+#include <fs.h>
 
 //#define GPR1 gpr[17] // a7
 //#define GPR2 gpr[0]
@@ -33,6 +34,9 @@ void do_syscall(Context *c) {
 #endif
 			halt(c->GPR2);
 			break;
+		case SYS_open:
+			c->GPR2 = fs_open((const char *)a[1], a[2], a[3]);
+			break;
 		case SYS_write:
 			assert(a[1] == 1 || a[1] == 2);
 			int count;
@@ -56,6 +60,8 @@ void do_syscall(Context *c) {
 			break;
 		case SYS_exit: 
 			// up there
+			break;
+		case SYS_open:
 			break;
 		case SYS_write:
 			STRACE_Log("SYS_write args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
