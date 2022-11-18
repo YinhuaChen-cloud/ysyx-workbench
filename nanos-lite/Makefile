@@ -36,6 +36,7 @@ update:
 	@ln -sf $(NAVY_HOME)/build/ramdisk.img $(RAMDISK_FILE)
 	@ln -sf $(NAVY_HOME)/build/ramdisk.h src/files.h
 	@ln -sf $(NAVY_HOME)/libs/libos/src/syscall.h src/syscall.h
+	@cp src/files.h /home/chenyinhua/sda3/ysyx-workbench/nemu/src/isa/riscv64/files.h
 
 
 .PHONY: update

@@ -25,15 +25,29 @@ Elf64_Sym *ramdisk_symtab = NULL;
 Elf64_Xword ramdisk_symtab_size;
 char *ramdisk_strtab = NULL;
 
+typedef struct {
+  char *name;
+  size_t size;
+  size_t disk_offset;
+} Finfo;
+
+enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB};
+
+static Finfo file_table[] __attribute__((used)) = {
+  [FD_STDIN]  = {"stdin", 0, 0},
+  [FD_STDOUT] = {"stdout", 0, 0},
+  [FD_STDERR] = {"stderr", 0, 0},
+#include "files.h"
+};
+
 void get_symtab_strtab(){
 	// get ramdisk.img elf
   FILE *fp = fopen("/home/chenyinhua/sda3/ysyx-workbench/nanos-lite/build/ramdisk.img", "rb");
 	Assert(fp, "ramdisk.img does not exits");
 	if(fp) {
-		fseek(fp, 0, SEEK_END);
-		long size = ftell(fp);
+		fseek(fp, 65944, SEEK_SET);
+		long size = 49256;
 
-		fseek(fp, 0, SEEK_SET);
 		// TODO: we need to free ramdisk_content after used it, not implemented yet
 		ramdisk_elf = (char *)malloc(size);
 		int ret = fread(ramdisk_elf, size, 1, fp);
@@ -62,6 +76,8 @@ void get_symtab_strtab(){
 
 	}
 	
+//	======================= split line =============
+
 	// get strtab
 	Elf64_Ehdr *elfheader = (Elf64_Ehdr *)elf_content; 
 	//printf("elfheader->e_shoff = %ld\n", elfheader->e_shoff);
@@ -105,7 +121,7 @@ char *addrToFunc(Elf64_Addr addr){
 	Assert(p != symtab, "p is just symtab");
 	Assert(p != ramdisk_symtab, "p is just ramdisk_symtab");
 	Assert(((char *)p < (char *)symtab + symtab_size || ((char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
-	Assert(ELF64_ST_TYPE(p->st_info) == STT_FUNC, "the entry we found is not FUNC");
+	Assert(ELF64_ST_TYPE(p->st_info) == STT_FUNC, "[%s:%d] The entry we found is not FUNC", __FILE__, __LINE__);
 	if(p >= symtab && (char *)p < (char *)symtab + symtab_size)
 		return strtab + p->st_name;
 	else if(p >= ramdisk_symtab && (char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)
