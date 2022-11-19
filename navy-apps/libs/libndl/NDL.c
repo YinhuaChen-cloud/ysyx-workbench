@@ -61,7 +61,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
 	int fd = open("/dev/fb", "w");
 	for(int r = y; r < y + h; r++) {
 		lseek(fd, (screen_width * r + x) * sizeof(uint32_t), SEEK_SET);
-		write(fd, (const void *)(pixels + w*(r-y)), sizeof(uint32_t) * w);
+		write(fd, pixels + w*(r-y), sizeof(uint32_t) * w);
 	}
 	close(fd);
 }
