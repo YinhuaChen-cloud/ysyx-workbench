@@ -57,8 +57,11 @@ int fs_open(const char *pathname, int flags, int mode) { // -- checked
 
 size_t fs_read(int fd, void *buf, size_t len) {
 //5. 除了写入stdout和stderr之外(用putch()输出到串口), 其余对于stdin, stdout和stderr这三个特殊文件的操作可以直接忽略.
-	if(fd <= 2)
-		return 0;
+	if(file_table[fd].read) {
+		size_t retval = file_table[fd].read(buf, file_table[fd].open_offset, len);
+		file_table[fd].open_offset += len;
+		return retval;
+	}
 //4. 由于文件的大小是固定的, 在实现fs_read(), fs_write()和fs_lseek()的时候, 注意偏移量不要越过文件的边界.
 	if(len > file_table[fd].size - file_table[fd].open_offset) {
 		len = file_table[fd].size - file_table[fd].open_offset;
@@ -76,7 +79,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
 size_t fs_write(int fd, const void *buf, size_t len) {
 //5. 除了写入stdout和stderr之外(用putch()输出到串口), 其余对于stdin, stdout和stderr这三个特殊文件的操作可以直接忽略.
 	if(file_table[fd].write) {
-		int retval = file_table[fd].write(buf, file_table[fd].open_offset, len);
+		size_t retval = file_table[fd].write(buf, file_table[fd].open_offset, len);
 		file_table[fd].open_offset += len;
 		return retval;
 	}
