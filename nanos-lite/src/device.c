@@ -55,7 +55,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
 	for(int i = 0; i < len; i++) {
 		int x = (offset + i) % screen_width;
 		int y = (offset + i) / screen_width;
-		io_write(AM_GPU_FBDRAW, x, y, (uint8_t *)buf + i, 1, 1, false);
+		io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf + i, 1, 1, false);
 	}
   io_write(AM_GPU_FBDRAW, 0, 0, NULL, 0, 0, true);
 	return len;

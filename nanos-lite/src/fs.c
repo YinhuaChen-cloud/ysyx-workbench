@@ -48,7 +48,7 @@ void init_fs() {
   // TODO: initialize the size of /dev/fb
 	screen_width = io_read(AM_GPU_CONFIG).width;
 	screen_height = io_read(AM_GPU_CONFIG).height;
-	file_table[FD_FB].size = screen_width * screen_height * 4; 	 // unit is byte
+	file_table[FD_FB].size = screen_width * screen_height * sizeof(uint32_t); 	 // unit is byte
 }
 
 int fs_open(const char *pathname, int flags, int mode) { // -- checked
