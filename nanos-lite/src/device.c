@@ -39,7 +39,15 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
-  return 0;
+//	一个合法的 `/proc/dispinfo`文件例子如下: 
+//	WIDTH : 640
+//	HEIGHT:480
+	int width = -1;	
+	int height = -1;
+	width = io_read(AM_GPU_CONFIG).width;
+	height = io_read(AM_GPU_CONFIG).height;
+	size_t retval = snprintf(buf, len, "WIDTH\t: %d\nHEIGHT\t: %d\n", width, height);
+  return retval;
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
