@@ -39,7 +39,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 //	if(0xa00001800 == cpu.mstatus && NO == EVENT_UNALIGN_MEM_ACCESS)
 //		cpu.mstatus = 0xa00021800;
 //	else
-	cpu.mstatus = 0xa00021800;
+	cpu.mstatus = 0xa00001800;
 	// add this to pass difftest -- end
 
 	cpu.mepc = epc;	
