@@ -12,10 +12,19 @@
 //包括名字, 参数和返回值. 这也是为什么我们选择在Nanos-lite中实现strace: 系统调用是携带高层的
 //程序语义的, 但NEMU中只能看到底层的状态机.
 
-#define STRACE
+//#define STRACE
 #define STRACE_Log(format, ...) \
   printf("\33[0;33mstrace: " format "\33[0m\n", \
       ## __VA_ARGS__)
+
+#define	_TIME_T_ long
+typedef	_TIME_T_	time_t;
+typedef	long		__suseconds_t;	/* microseconds (signed) */
+typedef	__suseconds_t	suseconds_t;
+struct timeval {
+	time_t		tv_sec;		/* seconds */
+	suseconds_t	tv_usec;	/* and microseconds */
+};
 
 void do_syscall(Context *c) {
   uintptr_t a[4];
@@ -41,18 +50,7 @@ void do_syscall(Context *c) {
 			c->GPR2 = fs_read(a[1], (void *)a[2], a[3]);
 			break;
 		case SYS_write:
-			if(a[1] == 1 || a[1] == 2) {
-				int count;
-				char *p = (char *)a[2];
-				for(count = 0; count < a[3] && *p != '\0'; count++) {
-					putch(*p);
-					p++;
-				}
-				c->GPR2 = p - (char *)a[2];
-			}
-			else {
-				c->GPR2 = fs_write(a[1], (void *)a[2], a[3]);	
-			}
+			c->GPR2 = fs_write(a[1], (void *)a[2], a[3]);	
 			break;
 		case SYS_close:
 			c->GPR2 = fs_close(a[1]);
@@ -62,6 +60,14 @@ void do_syscall(Context *c) {
 			break;
 		case SYS_brk:
 			c->GPR2 = 0;
+			break;
+		case SYS_gettimeofday: 
+			{
+				uint64_t us = io_read(AM_TIMER_UPTIME).us;
+				((struct timeval *)a[1])->tv_sec = us / 1000000;
+				((struct timeval *)a[1])->tv_usec = us % 1000000; 
+				c->GPR2 = 0;
+			}
 			break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
@@ -91,6 +97,9 @@ void do_syscall(Context *c) {
 			break;
 		case SYS_brk:
 			STRACE_Log("SYS_brk args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
+			break;
+		case SYS_gettimeofday:
+			STRACE_Log("SYS_gettimeofday args[a0:0x%lx, a1:0x%lx, a2:0x%lx] ret[a0:0x%lx]", a[1], a[2], a[3], c->GPR2);
 			break;
     default: panic("Unhandled syscall ID = %d", a[0]);
 	}
