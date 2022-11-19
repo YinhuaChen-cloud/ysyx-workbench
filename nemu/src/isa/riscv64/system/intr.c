@@ -36,7 +36,10 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
    */
 
 	// add this to pass difftest -- start
-	cpu.mstatus = 0xa00001800;
+	if(0xa00001800 == cpu.mstatus)
+		cpu.mstatus = 0xa00021800;
+	else
+		cpu.mstatus = 0xa00001800;
 	// add this to pass difftest -- end
 
 	cpu.mepc = epc;	
