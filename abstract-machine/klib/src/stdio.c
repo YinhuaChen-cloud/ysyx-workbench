@@ -38,7 +38,12 @@ int sprintf(char *out, const char *fmt, ...) {
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
-  panic("Not implemented");
+	int num_p = -1;
+	va_list args;
+	va_start(args, fmt);
+	num_p = vsnprintf(out, n, fmt, args);
+	va_end(args);
+	return num_p;
 }
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
