@@ -7,6 +7,7 @@ int main() {
 	uint32_t curtime = NDL_GetTicks();
 	uint32_t prevtime = curtime;
 	while(1) {
+		// = has a lower priority than &&
 		while((curtime = NDL_GetTicks()) && (curtime - prevtime < 500));
 		printf("millisecond: %u\n", curtime);
 		prevtime = curtime;
