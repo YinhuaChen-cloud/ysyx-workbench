@@ -13,9 +13,9 @@ static int screen_w = 0, screen_h = 0;
 uint32_t NDL_GetTicks() {
 	struct timeval current_time;
 	gettimeofday(&current_time, NULL);
-	printf("tv_sec = %ld, us = %ld\n", current_time.tv_sec, current_time.tv_usec);
+//	printf("tv_sec = %ld, us = %ld\n", current_time.tv_sec, current_time.tv_usec);
 	uint32_t ms = (uint32_t)(current_time.tv_sec * 1000 + current_time.tv_usec/1000);
-	printf("ms = %u\n", ms);
+//	printf("ms = %u\n", ms);
   return ms;
 }
 
