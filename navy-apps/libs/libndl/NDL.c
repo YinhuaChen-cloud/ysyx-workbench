@@ -10,6 +10,9 @@ static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
 static int event_fd = -1;
 
+static int screen_width = -1;
+static int screen_height = -1;	
+
 // 以毫秒为单位返回系统时间
 uint32_t NDL_GetTicks() {
 	struct timeval current_time;
@@ -28,8 +31,6 @@ int NDL_PollEvent(char *buf, int len) {
 
 void NDL_OpenCanvas(int *w, int *h) {
 	// get the size of screen -- start
-	int screen_width = -1;
-	int screen_height = -1;	
 	char buf[128];
 	int dispinfo_fd = open("/proc/dispinfo", "r");
 	read(dispinfo_fd, buf, -1);
@@ -57,6 +58,12 @@ void NDL_OpenCanvas(int *w, int *h) {
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+	int fd = open("/dev/fb", "w");
+	for(int r = y; r < y + h; r++) {
+		lseek(fd, screen_width * r + x, SEEK_SET);
+		write(fd, (const void *)(pixels + w*(r-y)), sizeof(uint32_t) * w);
+	}
+	close(fd);
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {

@@ -31,17 +31,24 @@ size_t invalid_write(const void *buf, size_t offset, size_t len) {
 extern size_t serial_write(const void *buf, size_t offset, size_t len);
 extern size_t events_read(void *buf, size_t offset, size_t len);
 extern size_t dispinfo_read(void *buf, size_t offset, size_t len);
+extern size_t fb_write(const void *buf, size_t offset, size_t len);
 static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN]  = {"stdin", 0, 0, invalid_read, invalid_write},
   [FD_STDOUT] = {"/dev/serial", 0, 0, invalid_read, serial_write},
   [FD_STDERR] = {"/dev/serial", 0, 0, invalid_read, serial_write},
   [FD_EVENTS]	= {"/dev/events", 0, 0, events_read, invalid_write},
   [FD_DISPINFO]	= {"/proc/dispinfo", 0, 0, dispinfo_read, invalid_write},
+  [FD_FB]			= {"/dev/fb", 0, 0, invalid_read, fb_write},
 #include "files.h"
 };
 
+int screen_width = -1;
+int screen_height = -1;
 void init_fs() {
   // TODO: initialize the size of /dev/fb
+	screen_width = io_read(AM_GPU_CONFIG).width;
+	screen_height = io_read(AM_GPU_CONFIG).height;
+	file_table[FD_FB].size = screen_width * screen_height * 4; 	 // unit is byte
 }
 
 int fs_open(const char *pathname, int flags, int mode) { // -- checked
