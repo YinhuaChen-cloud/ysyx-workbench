@@ -8,7 +8,7 @@
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
-static FILE *event_fp = NULL;
+static int event_fd = -1;
 
 // 以毫秒为单位返回系统时间
 uint32_t NDL_GetTicks() {
@@ -21,8 +21,8 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
-	int retval = fread(buf, len, 1, event_fp);
-	fseek(event_fp, 0, SEEK_SET);
+	int retval = read(event_fd, buf, len);
+//	fseek(event_fp, 0, SEEK_SET);
 	return retval;
 }
 
@@ -67,10 +67,10 @@ int NDL_Init(uint32_t flags) {
   if (getenv("NWM_APP")) {
     evtdev = 3;
   }
-	event_fp = fopen("/dev/events", "r");
+	event_fd = open("/dev/events", "r");
   return 0;
 }
 
 void NDL_Quit() {
-	fclose(event_fp);
+	close(event_fd);
 }
