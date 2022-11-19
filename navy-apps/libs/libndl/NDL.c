@@ -28,7 +28,7 @@ int NDL_PollEvent(char *buf, int len) {
 
 void NDL_OpenCanvas(int *w, int *h) {
 	char buf[128];
-	int dispinfo_fd = open("proc/dispinfo", "r");
+	int dispinfo_fd = open("/proc/dispinfo", "r");
 	read(dispinfo_fd, buf, -1);
 	printf("by yinhua, dispinfo = %s", buf);
 	close(dispinfo_fd);
