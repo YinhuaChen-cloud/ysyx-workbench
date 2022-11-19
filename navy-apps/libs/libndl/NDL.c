@@ -21,7 +21,9 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
-	return fread(buf, len, 1, event_fp);
+	int retval = fread(buf, len, 1, event_fp);
+	fseek(event_fp, 0, SEEK_SET);
+	return retval;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
