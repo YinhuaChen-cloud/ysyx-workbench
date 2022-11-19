@@ -25,6 +25,23 @@ int u64tox(char *pout, uint64_t val);
 int i64toa(char *pout, int64_t val);
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
+	return vsnprintf(out, -1, fmt, ap);
+}
+
+int sprintf(char *out, const char *fmt, ...) {
+	int num_p = -1;
+	va_list args;
+	va_start(args, fmt);
+	num_p = vsprintf(out, fmt, args);
+	va_end(args);
+	return num_p;
+}
+
+int snprintf(char *out, size_t n, const char *fmt, ...) {
+  panic("Not implemented");
+}
+
+int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
   char *pout = out;
   const char *pfmt = fmt;
   bool percentflag = false;
@@ -37,7 +54,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 
   int tmp;
 
-  while(*pfmt != '\0') {
+  while(*pfmt != '\0' && pfmt - fmt < n) {
     if(*pfmt != '%' && !percentflag) {
       *pout = *pfmt;
       pout++;
@@ -120,23 +137,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   }
   *pout = '\0';
   return pout - out;
-}
-
-int sprintf(char *out, const char *fmt, ...) {
-	int num_p = -1;
-	va_list args;
-	va_start(args, fmt);
-	num_p = vsprintf(out, fmt, args);
-	va_end(args);
-	return num_p;
-}
-
-int snprintf(char *out, size_t n, const char *fmt, ...) {
-  panic("Not implemented");
-}
-
-int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
-  panic("Not implemented");
 }
 
 int u64tox(char *pout, uint64_t val) {
