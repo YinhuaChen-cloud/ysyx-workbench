@@ -38,12 +38,27 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 	return retval;
 }
 
+extern int screen_width;
+extern int screen_height;
+
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
-  return 0;
+//	一个合法的 `/proc/dispinfo`文件例子如下: 
+//	WIDTH : 640
+//	HEIGHT:480
+	size_t retval = snprintf(buf, len, "WIDTH\t: %d\nHEIGHT\t: %d\n", screen_width, screen_height);
+  return retval;
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-  return 0;
+	assert(offset + len <= screen_width * screen_height * sizeof(uint32_t));
+	// TODO: 我们可以一次画一行，而不是一个一个点去画，等有了评测函数性能的方法再改进 
+	for(int i = 0; i < len; i += sizeof(uint32_t)) {
+		int x = ((offset + i)/sizeof(uint32_t)) % screen_width;
+		int y = ((offset + i)/sizeof(uint32_t)) / screen_width;
+		io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf + i/sizeof(uint32_t), 1, 1, false);
+	}
+  io_write(AM_GPU_FBDRAW, 0, 0, NULL, 0, 0, true);
+	return len;
 }
 
 void init_device() {
