@@ -30,7 +30,7 @@ void NDL_OpenCanvas(int *w, int *h) {
 	char buf[128];
 	int dispinfo_fd = open("/proc/dispinfo", "r");
 	read(dispinfo_fd, buf, -1);
-	printf("by yinhua, dispinfo = %s", buf);
+	printf("by yinhua, dispinfo =\n%s", buf);
 	close(dispinfo_fd);
   if (getenv("NWM_APP")) {
     int fbctl = 4;
