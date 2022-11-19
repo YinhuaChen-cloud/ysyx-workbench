@@ -46,7 +46,7 @@ void get_symtab_strtab(){
 	Assert(fp, "ramdisk.img does not exits");
 	if(fp) {
 		fseek(fp, 34816, SEEK_SET);
-		long size = 44736;
+		long size = 48104;
 
 		// TODO: we need to free ramdisk_content after used it, not implemented yet
 		ramdisk_elf = (char *)malloc(size);
