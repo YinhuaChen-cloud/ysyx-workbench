@@ -45,8 +45,8 @@ void get_symtab_strtab(){
   FILE *fp = fopen("/home/chenyinhua/sda3/ysyx-workbench/nanos-lite/build/ramdisk.img", "rb");
 	Assert(fp, "ramdisk.img does not exits");
 	if(fp) {
-		fseek(fp, 65944, SEEK_SET);
-		long size = 44768;
+		fseek(fp, 34816, SEEK_SET);
+		long size = 45200;
 
 		// TODO: we need to free ramdisk_content after used it, not implemented yet
 		ramdisk_elf = (char *)malloc(size);
