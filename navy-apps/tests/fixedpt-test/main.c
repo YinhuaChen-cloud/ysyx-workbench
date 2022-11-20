@@ -38,6 +38,10 @@ int main() {
 	printf("sub result = 0x%x\n", fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6)));
 	printf("abs = 0x%x\n", fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))));
 	printf("0.1 = 0x%x\n", fixedpt_rconst(0.1));
+	if(fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))) < fixedpt_rconst(0.1))
+		printf("yes less\n");
+	else
+		printf("no greater\n");
 	assert(fixedpt_abs(fixedpt_divi(A, 2) - fixedpt_rconst(0.6)) < fixedpt_rconst(0.1));
 //static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
 	assert(fixedpt_mul(A, B) == fixedpt_rconst(3.12));
