@@ -11,12 +11,6 @@ int main() {
 	fixedpt A = fixedpt_rconst(1.2);
 	fixedpt B = fixedpt_rconst(2.6);
 
-//
-//
-//static inline fixedpt fixedpt_ceil(fixedpt A) {
-//	return (A + 0xff) & ~0xff;
-//}
-
 //static inline fixedpt fixedpt_muli(fixedpt A, int B) {
 	assert(fixedpt_muli(A, 2) == fixedpt_rconst(2.4));
   printf("fixedpt_muli pass\n");
@@ -43,6 +37,13 @@ int main() {
 	assert(fixedpt_floor(fixedpt_rconst(-5.5)) == fixedpt_fromint(-6));
 	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(-5.5))) == -6);
   printf("fixedpt_floor pass\n");
+
+//static inline fixedpt fixedpt_ceil(fixedpt A) {
+	assert(fixedpt_ceil(fixedpt_rconst(5.5)) == fixedpt_fromint(6));
+	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(5.5))) == 6);
+	assert(fixedpt_ceil(fixedpt_rconst(-5.5)) == fixedpt_fromint(-5));
+	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(-5.5))) == -5);
+  printf("fixedpt_ceil pass\n");
 
   printf("All tests pass!!!\n");
 
