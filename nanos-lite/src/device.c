@@ -32,6 +32,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 	if (ev.keycode == AM_KEY_NONE) return 0;
 
 	size_t retval = snprintf(buf, len, "%s %s\n", ev.keydown ? "kd" : "ku", keyname[ev.keycode]);
+	printf("In events_read, buf = %s", buf);
 
 //	printf("retval = %d\n", retval);
 
@@ -52,11 +53,12 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 size_t fb_write(const void *buf, size_t offset, size_t len) {
 	assert(offset + len <= screen_width * screen_height * sizeof(uint32_t));
 	// TODO: 我们可以一次画一行，而不是一个一个点去画，等有了评测函数性能的方法再改进 
-	for(int i = 0; i < len; i += sizeof(uint32_t)) {
-		int x = ((offset + i)/sizeof(uint32_t)) % screen_width;
-		int y = ((offset + i)/sizeof(uint32_t)) / screen_width;
-		io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf + i/sizeof(uint32_t), 1, 1, false);
-	}
+//	printf("width = %d, offset = %d, len = %d\n", screen_width, offset, len); 
+	assert((offset/sizeof(uint32_t)) / screen_width == (offset/sizeof(uint32_t) + len/sizeof(uint32_t) - 1) / screen_width);	
+
+	int y = (offset/sizeof(uint32_t)) / screen_width;
+	int x = (offset/sizeof(uint32_t)) % screen_width;
+	io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf, len/sizeof(uint32_t), 1, false);
   io_write(AM_GPU_FBDRAW, 0, 0, NULL, 0, 0, true);
 	return len;
 }

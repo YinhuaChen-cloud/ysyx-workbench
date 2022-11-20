@@ -4,11 +4,13 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <assert.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
 static int event_fd = -1;
+static int memfb_fd = -1;
 
 static int screen_width = -1;
 static int screen_height = -1;	
@@ -33,7 +35,7 @@ void NDL_OpenCanvas(int *w, int *h) {
 	// get the size of screen -- start
 	char buf[128];
 	int dispinfo_fd = open("/proc/dispinfo", "r");
-	read(dispinfo_fd, buf, -1);
+	read(dispinfo_fd, buf, 128);
 	sscanf(buf, "WIDTH\t: %d\nHEIGHT\t: %d\n", &screen_width, &screen_height);
 	printf("by yinhua, screen_width = %d, screen_height = %d\n", screen_width, screen_height);
 	close(dispinfo_fd);
@@ -58,25 +60,27 @@ void NDL_OpenCanvas(int *w, int *h) {
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
-	int fd = open("/dev/fb", "w");
 	for(int r = y; r < y + h; r++) {
-		lseek(fd, (screen_width * r + x) * sizeof(uint32_t), SEEK_SET);
-		write(fd, pixels + w*(r-y), sizeof(uint32_t) * w);
+		lseek(memfb_fd, (screen_width * r + x) * sizeof(uint32_t), SEEK_SET);
+		write(memfb_fd, pixels + w*(r-y), sizeof(uint32_t) * w);
 	}
-	close(fd);
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
+	assert(0);
 }
 
 void NDL_CloseAudio() {
+	assert(0);
 }
 
 int NDL_PlayAudio(void *buf, int len) {
+	assert(0);
   return 0;
 }
 
 int NDL_QueryAudio() {
+	assert(0);
   return 0;
 }
 
@@ -85,9 +89,11 @@ int NDL_Init(uint32_t flags) {
     evtdev = 3;
   }
 	event_fd = open("/dev/events", "r");
+	memfb_fd = open("/dev/fb", "w");
   return 0;
 }
 
 void NDL_Quit() {
 	close(event_fd);
+	close(memfb_fd);
 }
