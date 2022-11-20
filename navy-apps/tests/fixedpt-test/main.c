@@ -52,7 +52,7 @@ int main() {
 	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(-0))) == -0);
 
 	assert(fixedpt_floor(0x7fffffff) == fixedpt_fromint(0x7fffff));
-//	assert(fixedpt_toint(fixedpt_floor(t(-0))) == -0);
+	assert(fixedpt_toint(fixedpt_floor(0x7fffffff)) == 0x7fffff);
 
 	// TODO: cannot pass NAN and INFINITY from <math.h>, do not know effect yet
 
