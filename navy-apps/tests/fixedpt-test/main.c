@@ -33,19 +33,22 @@ int main() {
 
 //static inline fixedpt fixedpt_muli(fixedpt A, int B) {
 	assert(fixedpt_muli(A, 2) == fixedpt_rconst(2.4));
+
+//	printf("left = 0x%x, right = 0x%x\n", fixedpt_divi(A, 2), fixedpt_rconst(0.6));
+//	printf("sub result = 0x%x\n", fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6)));
+//	printf("abs = 0x%x\n", fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))));
+//	printf("0.1 = 0x%x\n", fixedpt_rconst(0.1));
+//	if(fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))) < fixedpt_rconst(0.1))
+//		printf("yes less\n");
+//	else
+//		printf("no greater\n");
+
 //static inline fixedpt fixedpt_divi(fixedpt A, int B) {
-	printf("left = 0x%x, right = 0x%x\n", fixedpt_divi(A, 2), fixedpt_rconst(0.6));
-	printf("sub result = 0x%x\n", fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6)));
-	printf("abs = 0x%x\n", fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))));
-	printf("0.1 = 0x%x\n", fixedpt_rconst(0.1));
-	if(fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))) < fixedpt_rconst(0.1))
-		printf("yes less\n");
-	else
-		printf("no greater\n");
 	assert(fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))) < fixedpt_rconst(0.1));
-	assert(fixedpt_abs(fixedpt_divi(A, 2) - fixedpt_rconst(0.6)) < fixedpt_rconst(0.1));
+
 //static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
-	assert(fixedpt_mul(A, B) == fixedpt_rconst(3.12));
+	assert(fixedpt_abs(fixedpt_sub(fixedpt_mul(A, B), fixedpt_rconst(3.12))) < fixedpt_rconst(0.1));
+//	assert(fixedpt_mul(A, B) == fixedpt_rconst(3.12));
 
 
   printf("PASS!!!\n");
