@@ -1,5 +1,7 @@
 # Makefile for Navy Applications and Libraries
 
+# make ISA=native run
+
 ### *Get a more readable version of this Makefile* by `make html` (requires python-markdown)
 html:
 	cat Makefile | sed 's/^\([^#]\)/    \1/g' | markdown_py > Makefile.html
@@ -41,6 +43,7 @@ DST_DIR   = $(WORK_DIR)/build/$(ISA)
 $(shell mkdir -p $(DST_DIR))
 
 ### Compilation targets (application or archive)
+# /home/chenyinhua/sda3/ysyx-workbench/navy-apps/tests/bmp-test/build/bmp-test-native
 APP     ?= $(WORK_DIR)/build/$(NAME)-$(ISA)
 ARCHIVE  = $(WORK_DIR)/build/$(NAME)-$(ISA).a
 
@@ -90,7 +93,7 @@ INCFLAGS += $(addprefix -I, $(INC_PATH))
 
 CFLAGS   += -O2 -MMD $(INCFLAGS) -static -D__NAVY__ \
             -D__ISA__=\"$(ISA)\" -D__ISA_$(shell echo $(ISA) | tr a-z A-Z)__ \
-            -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector
+            -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector -ggdb3
 CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  +=  $(CFLAGS)
 
@@ -123,16 +126,25 @@ $(DST_DIR)/%.o: %.S
 
 ### Rule (recursive make): build dependent libraries (libc, libos, ...)
 libs:
-	@for t in $(LIBS); do $(MAKE) -s -C $(NAVY_HOME)/libs/$$t archive; done
+	@echo "In libs target ================== hot pot"
+	@echo "In libs, LIBS = $(LIBS) ================== hot pot"
+	@echo "In libs, pwd=$(shell pwd) =========================== hot pot"
+	@echo "In libs, LIB_DEP=$(LIB_DEP) =========================== hot pot"
+	@for t in $(LIBS); do $(MAKE) -C $(NAVY_HOME)/libs/$$t archive; done
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `$(APP)`, the final ELF binary to be packed into application (ld)
 $(APP): $(OBJS) libs
+	@echo "LIBS = $(LIBS)"
+	@echo "OBJS = $(OBJS)"
 	@echo + LDcyh "->" $(shell realpath $@ --relative-to .)
 	@echo "LINKAGE = $(LINKAGE)"
 	@$(LD) $(LDFLAGS) -o $@ $(WL)--start-group $(LINKAGE) $(WL)--end-group
 
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
 $(ARCHIVE): $(OBJS) libs
+	@echo "In ARCHIVE, ISA=$(ISA) ========================== hot pot "
+	@echo "In ARCHIVE, LIBS=$(LIBS) =========================== hot pot"
+	@echo "In ARCHIVE, pwd=$(shell pwd) =========================== hot pot"
 	@echo + AR "->" $(shell realpath $@ --relative-to .)
 	@ar rcsT $@ $(LINKAGE)
 
@@ -173,7 +185,7 @@ $(CLEAN_ALL):
 .PHONY: clean-all $(CLEAN_ALL)
 
 ### Build fsimg and ramdisk for Nanos-lite
-APPS =
+APPS = nslider
 TESTS = dummy hello file-test timer-test event-test bmp-test fixedpt-test
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
