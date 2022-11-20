@@ -11,10 +11,6 @@ int main() {
 	fixedpt A = fixedpt_rconst(1.2);
 	fixedpt B = fixedpt_rconst(2.6);
 
-//static inline fixedpt fixedpt_abs(fixedpt A) {
-////	A = a * 2^8
-//	return A >= 0 ? A : -A;
-//}
 //
 //static inline fixedpt fixedpt_floor(fixedpt A) {
 //	return A & ~0xff; // TODO: there might be a bug
@@ -39,6 +35,10 @@ int main() {
 //static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
 	assert(fixedpt_abs(fixedpt_sub(fixedpt_div(A, B), fixedpt_rconst(0.461538461538))) < fixedpt_rconst(0.1));
   printf("fixedpt_div pass\n");
+
+//static inline fixedpt fixedpt_abs(fixedpt A) {
+	assert(fixedpt_abs(fixedpt_rconst(-5.5)) == fixedpt_rconst(5.5));
+  printf("fixedpt_abs pass\n");
 
   printf("All tests pass!!!\n");
 
