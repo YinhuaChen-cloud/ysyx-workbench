@@ -36,6 +36,7 @@ int main() {
 //static inline fixedpt fixedpt_divi(fixedpt A, int B) {
 	printf("left = 0x%x, right = 0x%x\n", fixedpt_divi(A, 2), fixedpt_rconst(0.6));
 	printf("sub result = 0x%x\n", fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6)));
+	printf("abs = 0x%x\n", fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))));
 	printf("0.1 = 0x%x\n", fixedpt_rconst(0.1));
 	assert(fixedpt_abs(fixedpt_divi(A, 2) - fixedpt_rconst(0.6)) < fixedpt_rconst(0.1));
 //static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
