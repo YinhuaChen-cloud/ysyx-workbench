@@ -48,6 +48,7 @@ int SDL_PollEvent(SDL_Event *ev) {
 	char kname[32];
 	if(NDL_PollEvent(buf, sizeof(buf))) {
 		sscanf(buf, "%s %s", kstate, kname);
+		printf("In SDL_PollEvent, buf = %s", buf);
 		if(strcmp(kstate, "kd") == 0) {
 			ev->type == SDL_KEYDOWN;
 		}
