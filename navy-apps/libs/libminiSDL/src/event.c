@@ -53,10 +53,10 @@ int SDL_PollEvent(SDL_Event *ev) {
 		printf("kstate = %s, kname = %s\n", kstate, kname);
 		printf("strcmp(kstate, \"kd\") = %d\n", strcmp(kstate, "kd"));
 		if(strcmp(kstate, "kd") == 0) {
-			ev->type == SDL_KEYDOWN;
+			ev->type = SDL_KEYDOWN;
 		}
 		else {
-			ev->type == SDL_KEYUP;
+			ev->type = SDL_KEYUP;
 		}
 		int keyid;
 		for(keyid = 0; keyid < sizeof(keyname)/sizeof(kname[0]); keyid++) {
