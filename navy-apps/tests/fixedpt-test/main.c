@@ -35,7 +35,7 @@ int main() {
 	assert(fixedpt_muli(A, 2) == fixedpt_rconst(2.4));
 //static inline fixedpt fixedpt_divi(fixedpt A, int B) {
 	printf("left = 0x%x, right = 0x%x\n", fixedpt_divi(A, 2), fixedpt_rconst(0.6));
-	assert(fixedpt_divi(A, 2) == fixedpt_rconst(0.6));
+	assert(fixedpt_abs(fixedpt_divi(A, 2) - fixedpt_rconst(0.6)) < fixedpt_rconst(0.1));
 //static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
 	assert(fixedpt_mul(A, B) == fixedpt_rconst(3.12));
 
