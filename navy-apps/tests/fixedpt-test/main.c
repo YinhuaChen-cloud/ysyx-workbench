@@ -34,15 +34,31 @@ int main() {
 //static inline fixedpt fixedpt_floor(fixedpt A) {
 	assert(fixedpt_floor(fixedpt_rconst(5.5)) == fixedpt_fromint(5));
 	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(5.5))) == 5);
+
 	assert(fixedpt_floor(fixedpt_rconst(-5.5)) == fixedpt_fromint(-6));
 	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(-5.5))) == -6);
+
+	assert(fixedpt_floor(fixedpt_rconst(3)) == fixedpt_fromint(3));
+	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(3))) == 3);
+
+	assert(fixedpt_floor(fixedpt_rconst(-3)) == fixedpt_fromint(-3));
+	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(-3))) == -3);
+
+	assert(fixedpt_floor(fixedpt_rconst(0)) == fixedpt_fromint(0));
+	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(0))) == 0);
+
+	assert(fixedpt_floor(fixedpt_rconst(-0)) == fixedpt_fromint(-0));
+	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(-0))) == -0);
+
   printf("fixedpt_floor pass\n");
 
 //static inline fixedpt fixedpt_ceil(fixedpt A) {
 	assert(fixedpt_ceil(fixedpt_rconst(5.5)) == fixedpt_fromint(6));
 	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(5.5))) == 6);
+
 	assert(fixedpt_ceil(fixedpt_rconst(-5.5)) == fixedpt_fromint(-5));
 	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(-5.5))) == -5);
+
   printf("fixedpt_ceil pass\n");
 
   printf("All tests pass!!!\n");
