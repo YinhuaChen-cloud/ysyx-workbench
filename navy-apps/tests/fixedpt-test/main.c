@@ -54,8 +54,9 @@ int main() {
 	assert(fixedpt_floor(0x7fffffff) == fixedpt_fromint(0x7fffff));
 	assert(fixedpt_toint(fixedpt_floor(0x7fffffff)) == 0x7fffff);
 
-	assert(fixedpt_floor(0x80000001) == (fixedpt)fixedpt_fromint(0xff800000));
-	assert(fixedpt_toint(fixedpt_floor(0x80000001)) == (int32_t)0xff800000);
+//	overflow, UB, do not test
+//	assert(fixedpt_floor(0x80000001) == (fixedpt)fixedpt_fromint(0xff800000));
+//	assert(fixedpt_toint(fixedpt_floor(0x80000001)) == (int32_t)0xff800000);
 
 	// TODO: cannot pass NAN and INFINITY from <math.h>, do not know effect yet
 
@@ -80,6 +81,7 @@ int main() {
 	assert(fixedpt_ceil(fixedpt_rconst(-0)) == fixedpt_fromint(-0));
 	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(-0))) == -0);
 
+//	overflow, UB, do not test
 //	assert(fixedpt_ceil(0x7fffffff) == fixedpt_fromint(0x800000));
 //	assert(fixedpt_toint(fixedpt_ceil(0x7fffffff)) == 0);
 
