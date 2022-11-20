@@ -33,11 +33,11 @@ int main() {
   printf("fixedpt_abs pass\n");
 
 //static inline fixedpt fixedpt_floor(fixedpt A) {
-	assert(fixedpt_floor(fixedpt_rconst(5.5)) == fixedpt_fromint(5));
-	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(5.5))) == 5);
+	assert(fixedpt_floor(fixedpt_rconst(5.2)) == fixedpt_fromint(5));
+	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(5.2))) == 5);
 
-	assert(fixedpt_floor(fixedpt_rconst(-5.5)) == fixedpt_fromint(-6));
-	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(-5.5))) == -6);
+	assert(fixedpt_floor(fixedpt_rconst(-5.2)) == fixedpt_fromint(-6));
+	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(-5.2))) == -6);
 
 	assert(fixedpt_floor(fixedpt_rconst(3)) == fixedpt_fromint(3));
 	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(3))) == 3);
