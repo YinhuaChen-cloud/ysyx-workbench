@@ -32,6 +32,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 	if (ev.keycode == AM_KEY_NONE) return 0;
 
 	size_t retval = snprintf(buf, len, "%s %s\n", ev.keydown ? "kd" : "ku", keyname[ev.keycode]);
+	printf("In events_read, buf = %s", buf);
 
 //	printf("retval = %d\n", retval);
 
