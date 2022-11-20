@@ -61,6 +61,7 @@ int SDL_PollEvent(SDL_Event *ev) {
 				break;
 		}
 		ev->key.keysym.sym = keyid;
+		printf("kstate = %s, kname = %s, strcmp(kstate, "kd") = %d\n", kstate, kname, strcmp(kstate, "kd"));
 		return 1;
 	}
 	else {
