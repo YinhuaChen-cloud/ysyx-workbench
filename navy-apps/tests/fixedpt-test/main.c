@@ -11,13 +11,6 @@ int main() {
 	fixedpt A = fixedpt_rconst(1.2);
 	fixedpt B = fixedpt_rconst(2.6);
 
-
-///* Divides two fixedpt numbers, returns the result. */
-//static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
-////	A = a * 2^8		B = b * 2^8       R = (a / b) * 2^8  = (A/B) * 2^8
-//	return (A / B) * FIXEDPT_ONE;
-//}
-//
 //static inline fixedpt fixedpt_abs(fixedpt A) {
 ////	A = a * 2^8
 //	return A >= 0 ? A : -A;
@@ -35,15 +28,6 @@ int main() {
 	assert(fixedpt_muli(A, 2) == fixedpt_rconst(2.4));
   printf("fixedpt_muli pass\n");
 
-//	printf("left = 0x%x, right = 0x%x\n", fixedpt_divi(A, 2), fixedpt_rconst(0.6));
-//	printf("sub result = 0x%x\n", fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6)));
-//	printf("abs = 0x%x\n", fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))));
-//	printf("0.1 = 0x%x\n", fixedpt_rconst(0.1));
-//	if(fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))) < fixedpt_rconst(0.1))
-//		printf("yes less\n");
-//	else
-//		printf("no greater\n");
-
 //static inline fixedpt fixedpt_divi(fixedpt A, int B) {
 	assert(fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))) < fixedpt_rconst(0.1));
   printf("fixedpt_divi pass\n");
@@ -52,9 +36,20 @@ int main() {
 	assert(fixedpt_abs(fixedpt_sub(fixedpt_mul(A, B), fixedpt_rconst(3.12))) < fixedpt_rconst(0.1));
   printf("fixedpt_mul pass\n");
 
+//static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
+	assert(fixedpt_abs(fixedpt_sub(fixedpt_div(A, B), fixedpt_rconst(0.461538461538))) < fixedpt_rconst(0.1));
+  printf("fixedpt_div pass\n");
 
   printf("All tests pass!!!\n");
 
   return 0;
 }
 
+//	printf("left = 0x%x, right = 0x%x\n", fixedpt_divi(A, 2), fixedpt_rconst(0.6));
+//	printf("sub result = 0x%x\n", fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6)));
+//	printf("abs = 0x%x\n", fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))));
+//	printf("0.1 = 0x%x\n", fixedpt_rconst(0.1));
+//	if(fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))) < fixedpt_rconst(0.1))
+//		printf("yes less\n");
+//	else
+//		printf("no greater\n");
