@@ -62,11 +62,31 @@ int main() {
   printf("fixedpt_floor pass\n");
 
 //static inline fixedpt fixedpt_ceil(fixedpt A) {
-	assert(fixedpt_ceil(fixedpt_rconst(5.5)) == fixedpt_fromint(6));
-	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(5.5))) == 6);
+	assert(fixedpt_ceil(fixedpt_rconst(5.2)) == fixedpt_fromint(6));
+	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(5.2))) == 6);
 
-	assert(fixedpt_ceil(fixedpt_rconst(-5.5)) == fixedpt_fromint(-5));
-	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(-5.5))) == -5);
+	assert(fixedpt_ceil(fixedpt_rconst(-5.2)) == fixedpt_fromint(-5));
+	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(-5.2))) == -5);
+
+	assert(fixedpt_ceil(fixedpt_rconst(3)) == fixedpt_fromint(3));
+	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(3))) == 3);
+
+	assert(fixedpt_ceil(fixedpt_rconst(-1)) == fixedpt_fromint(-1));
+	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(-1))) == -1);
+
+	assert(fixedpt_ceil(fixedpt_rconst(0)) == fixedpt_fromint(0));
+	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(0))) == 0);
+
+	assert(fixedpt_ceil(fixedpt_rconst(-0)) == fixedpt_fromint(-0));
+	assert(fixedpt_toint(fixedpt_ceil(fixedpt_rconst(-0))) == -0);
+
+	assert(fixedpt_ceil(0x7fffffff) == fixedpt_fromint(0x800000));
+	assert(fixedpt_toint(fixedpt_ceil(0x7fffffff)) == 0);
+
+	assert(fixedpt_ceil(0x80000001) == (fixedpt)fixedpt_fromint(0xff800000));
+	assert(fixedpt_toint(fixedpt_ceil(0x80000001)) == (int32_t)0xff800000);
+
+	// TODO: cannot pass NAN and INFINITY from <math.h>, do not know effect yet
 
   printf("fixedpt_ceil pass\n");
 
