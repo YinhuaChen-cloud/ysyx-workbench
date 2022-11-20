@@ -106,6 +106,13 @@ typedef	__uint128_t fixedptud;
 #define FIXEDPT_FMASK	(((fixedpt)1 << FIXEDPT_FBITS) - 1)
 
 #define fixedpt_rconst(R) ((fixedpt)((R) * FIXEDPT_ONE + ((R) >= 0 ? 0.5 : -0.5)))
+//#define fixedpt_rconst(1.2) (fixedpt)((1.2) * FIXEDPT_ONE + ((1.2) >= 0 ? 0.5 : -0.5))
+//#define fixedpt_rconst(1.2) (fixedpt)((1.2) * (fixedpt)((fixedpt)1 << FIXEDPT_FBITS) + ((1.2) >= 0 ? 0.5 : -0.5))
+//#define fixedpt_rconst(1.2) (fixedpt)((1.2) * (fixedpt)((fixedpt)1 << (FIXEDPT_BITS - FIXEDPT_WBITS)) + ((1.2) >= 0 ? 0.5 : -0.5))
+//#define fixedpt_rconst(1.2) (fixedpt)((1.2) * (fixedpt)((fixedpt)1 << (32 - 24)) + ((1.2) >= 0 ? 0.5 : -0.5))
+//#define fixedpt_rconst(1.2) (fixedpt)((1.2) * (fixedpt)((fixedpt)1 << 8) + ((1.2) >= 0 ? 0.5 : -0.5))
+//#define fixedpt_rconst(1.2) (fixedpt)((1.2) * (int32_t)((int32_t)1 << 8) + 0.5)
+//#define fixedpt_rconst(1.2) (int32_t)((1.2) * 256 + 0.5)
 #define fixedpt_fromint(I) ((fixedptd)(I) << FIXEDPT_FBITS)
 #define fixedpt_toint(F) ((F) >> FIXEDPT_FBITS)
 #define fixedpt_add(A,B) ((A) + (B))
@@ -127,35 +134,39 @@ typedef	__uint128_t fixedptud;
 
 /* Multiplies a fixedpt number with an integer, returns the result. */
 static inline fixedpt fixedpt_muli(fixedpt A, int B) {
-	return 0;
+//	A = a * 2^8		B = b       R = a * b * 2^8  = A * B
+	return A * B;
 }
 
 /* Divides a fixedpt number with an integer, returns the result. */
 static inline fixedpt fixedpt_divi(fixedpt A, int B) {
-	return 0;
+//	A = a * 2^8		B = b       R = a * 2^8 / b = a/b * 2^8 = A/B
+	return A / B;
 }
 
 /* Multiplies two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
-	return 0;
+//	A = a * 2^8		B = b * 2^8       R = a * b * 2^8  = A*B/2^8
+	return (A * B) / FIXEDPT_ONE;
 }
-
 
 /* Divides two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
-	return 0;
+//	A = a * 2^8		B = b * 2^8       R = (a / b) * 2^8  = (A/B) * 2^8
+	return (A / B) * FIXEDPT_ONE;
 }
 
 static inline fixedpt fixedpt_abs(fixedpt A) {
-	return 0;
+//	A = a * 2^8
+	return A >= 0 ? A : -A;
 }
 
 static inline fixedpt fixedpt_floor(fixedpt A) {
-	return 0;
+	return A & ~0xff; // TODO: there might be a bug
 }
 
 static inline fixedpt fixedpt_ceil(fixedpt A) {
-	return 0;
+	return (A + 0xff) & ~0xff;
 }
 
 /*
