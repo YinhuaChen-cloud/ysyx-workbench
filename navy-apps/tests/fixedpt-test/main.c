@@ -37,7 +37,15 @@ int main() {
   printf("fixedpt_mul pass\n");
 
 //static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
-	printf("left = 0x%x, right = 0x%x\n", fixedpt_div(A, B), fixedpt_rconst(0.461538461538));
+	assert(fixedpt_abs(fixedpt_sub(fixedpt_div(A, B), fixedpt_rconst(0.461538461538))) < fixedpt_rconst(0.1));
+  printf("fixedpt_div pass\n");
+
+  printf("All tests pass!!!\n");
+
+  return 0;
+}
+
+//	printf("left = 0x%x, right = 0x%x\n", fixedpt_div(A, B), fixedpt_rconst(0.461538461538));
 //	printf("sub result = 0x%x\n", fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6)));
 //	printf("abs = 0x%x\n", fixedpt_abs(fixedpt_sub(fixedpt_divi(A, 2), fixedpt_rconst(0.6))));
 //	printf("0.1 = 0x%x\n", fixedpt_rconst(0.1));
@@ -45,11 +53,4 @@ int main() {
 //		printf("yes less\n");
 //	else
 //		printf("no greater\n");
-	assert(fixedpt_abs(fixedpt_sub(fixedpt_div(A, B), fixedpt_rconst(0.461538461538))) < fixedpt_rconst(0.2));
-  printf("fixedpt_div pass\n");
-
-  printf("All tests pass!!!\n");
-
-  return 0;
-}
 
