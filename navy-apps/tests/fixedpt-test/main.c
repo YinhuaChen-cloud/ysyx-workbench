@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <fixedptc.h>
 #include <assert.h>
+#include <math.h>
 
 //#define fixedpt_tofloat(T) ((float) ((T)*((float)(1)/(float)(1L << FIXEDPT_FBITS))))
 //#define fixedpt_toint(F) ((F) >> FIXEDPT_FBITS)
@@ -49,6 +50,9 @@ int main() {
 
 	assert(fixedpt_floor(fixedpt_rconst(-0)) == fixedpt_fromint(-0));
 	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(-0))) == -0);
+
+	assert(fixedpt_floor(fixedpt_rconst(INFINITY)) == fixedpt_fromint(INFINITY));
+	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(INFINITY))) == INFINITY);
 
   printf("fixedpt_floor pass\n");
 
