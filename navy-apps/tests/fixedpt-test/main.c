@@ -51,6 +51,9 @@ int main() {
 	assert(fixedpt_floor(fixedpt_rconst(-0)) == fixedpt_fromint(-0));
 	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(-0))) == -0);
 
+	assert(fixedpt_floor(0x7fffffff) == fixedpt_fromint(0x7fffff));
+//	assert(fixedpt_toint(fixedpt_floor(t(-0))) == -0);
+
 	// TODO: cannot pass NAN and INFINITY from <math.h>, do not know effect yet
 
   printf("fixedpt_floor pass\n");
