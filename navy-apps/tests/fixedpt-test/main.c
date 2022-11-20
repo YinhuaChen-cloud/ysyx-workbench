@@ -84,7 +84,7 @@ int main() {
 //	assert(fixedpt_toint(fixedpt_ceil(0x7fffffff)) == 0);
 
 	assert(fixedpt_ceil(0x80000001) == (fixedpt)fixedpt_fromint(0xff800001));
-	assert(fixedpt_toint(fixedpt_ceil(0x80000001)) == (int32_t)0xff800000);
+	assert(fixedpt_toint(fixedpt_ceil(0x80000001)) == (int32_t)0xff800001);
 
 	// TODO: cannot pass NAN and INFINITY from <math.h>, do not know effect yet
 
