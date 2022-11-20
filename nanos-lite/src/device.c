@@ -53,8 +53,8 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 size_t fb_write(const void *buf, size_t offset, size_t len) {
 	assert(offset + len <= screen_width * screen_height * sizeof(uint32_t));
 	// TODO: 我们可以一次画一行，而不是一个一个点去画，等有了评测函数性能的方法再改进 
-	printf("width = %d, offset = %d, len = %d\n", screen_width, offset, len); 
-	assert(offset / screen_width == (offset + len) / screen_width);	
+//	printf("width = %d, offset = %d, len = %d\n", screen_width, offset, len); 
+	assert(offset / screen_width == (offset + len/sizeof(uint32_t) - 1) / screen_width);	
 	for(int i = 0; i < len; i += sizeof(uint32_t)) {
 		int x = ((offset + i)/sizeof(uint32_t)) % screen_width;
 		int y = ((offset + i)/sizeof(uint32_t)) / screen_width;
