@@ -37,7 +37,7 @@ int main() {
   printf("fixedpt_mul pass\n");
 
 //static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
-	assert(fixedpt_abs(fixedpt_sub(fixedpt_div(A, B), fixedpt_rconst(0.461538461538))) < fixedpt_rconst(0.1));
+	assert(fixedpt_abs(fixedpt_sub(fixedpt_div(A, B), fixedpt_rconst(0.461538461538))) < fixedpt_rconst(0.2));
   printf("fixedpt_div pass\n");
 
   printf("All tests pass!!!\n");
