@@ -54,9 +54,8 @@ int main() {
 	assert(fixedpt_floor(0x7fffffff) == fixedpt_fromint(0x7fffff));
 	assert(fixedpt_toint(fixedpt_floor(0x7fffffff)) == 0x7fffff);
 
-	printf("left = 0x%x, right = 0x%lx\n", fixedpt_floor(0x80000001), fixedpt_fromint(0xff800000));
 	assert(fixedpt_floor(0x80000001) == (fixedpt)fixedpt_fromint(0xff800000));
-//	assert(fixedpt_toint(fixedpt_floor(0x80000001)) == 0xff800000);
+	assert(fixedpt_toint(fixedpt_floor(0x80000001)) == (int32_t)0xff800000);
 
 	// TODO: cannot pass NAN and INFINITY from <math.h>, do not know effect yet
 
