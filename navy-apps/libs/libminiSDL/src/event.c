@@ -48,7 +48,7 @@ int SDL_PollEvent(SDL_Event *ev) {
 	char kname[32];
 	if(NDL_PollEvent(buf, sizeof(buf))) {
 		sscanf(buf, "%s %s", kstate, kname);
-		printf("In SDL_PollEvent, buf = %s", buf);
+		printf("In SDL_PollEvent new, buf = %s", buf);
 		printf("kstate = %s, kname = %s\n", kstate, kname);
 		printf("strcmp(kstate, "kd") = %d\n", strcmp(kstate, "kd"));
 		if(strcmp(kstate, "kd") == 0) {
