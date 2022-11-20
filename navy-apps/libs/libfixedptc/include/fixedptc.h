@@ -151,9 +151,9 @@ static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
 }
 
 /* Divides two fixedpt numbers, returns the result. */
-static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
+static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) { // TODO: if A < B, result = 0
 //	A = a * 2^8		B = b * 2^8       R = (a / b) * 2^8  = (A/B) * 2^8
-	return (A / B) * FIXEDPT_ONE;
+	return (A * FIXEDPT_ONE / B);
 }
 
 static inline fixedpt fixedpt_abs(fixedpt A) {
