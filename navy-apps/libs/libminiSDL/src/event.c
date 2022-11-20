@@ -1,6 +1,7 @@
 #include <NDL.h>
 #include <SDL.h>
 #include <assert.h>
+#include <string.h>
 
 #define keyname(k) #k,
 
@@ -50,7 +51,7 @@ int SDL_PollEvent(SDL_Event *ev) {
 		sscanf(buf, "%s %s", kstate, kname);
 		printf("In SDL_PollEvent new, buf = %s", buf);
 		printf("kstate = %s, kname = %s\n", kstate, kname);
-		printf("strcmp(kstate, "kd") = %d\n", strcmp(kstate, "kd"));
+		printf("strcmp(kstate, \"kd\") = %d\n", strcmp(kstate, "kd"));
 		if(strcmp(kstate, "kd") == 0) {
 			ev->type == SDL_KEYDOWN;
 		}
@@ -63,7 +64,7 @@ int SDL_PollEvent(SDL_Event *ev) {
 				break;
 		}
 		ev->key.keysym.sym = keyid;
-		printf("kstate = %s, kname = %s, strcmp(kstate, "kd") = %d\n", kstate, kname, strcmp(kstate, "kd"));
+		printf("kstate = %s, kname = %s, strcmp(kstate, \"kd\") = %d\n", kstate, kname, strcmp(kstate, "kd"));
 		return 1;
 	}
 	else {
