@@ -36,6 +36,8 @@ int main() {
 	assert(fixedpt_floor(fixedpt_rconst(5.2)) == fixedpt_fromint(5));
 	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(5.2))) == 5);
 
+
+	printf("left = 0x%x, right = 0x%lx\n", fixedpt_rconst(-5.2), fixedpt_fromint(-6));
 	assert(fixedpt_floor(fixedpt_rconst(-5.2)) == fixedpt_fromint(-6));
 	assert(fixedpt_toint(fixedpt_floor(fixedpt_rconst(-5.2))) == -6);
 
