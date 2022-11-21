@@ -14,6 +14,8 @@ static int memfb_fd = -1;
 
 static int screen_width = -1;
 static int screen_height = -1;	
+static int canvas_width = -1;
+static int canvas_height = -1;	
 
 // 以毫秒为单位返回系统时间
 uint32_t NDL_GetTicks() {
@@ -45,6 +47,8 @@ void NDL_OpenCanvas(int *w, int *h) {
 		*w = screen_width;
 		*h = screen_height;
 	}
+	canvas_width = *w;
+	canvas_height = *h;
 	close(dispinfo_fd);
 	printf("just before getenv\n");
 	// get the size of screen -- end
@@ -68,9 +72,12 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
 }
 
+// 向画布`(x, y)`坐标处绘制`w*h`的矩形图像, 并将该绘制区域同步到屏幕上
+// 图像像素按行优先方式存储在`pixels`中, 每个像素用32位整数以`00RRGGBB`的方式描述颜色
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
 	for(int r = y; r < y + h; r++) {
-		lseek(memfb_fd, (screen_width * r + x) * sizeof(uint32_t), SEEK_SET);
+		int screenpos = (screen_width * (screen_height/2 - canvas_height/2 + y) + (screen_width/2 - canvas_width/2 + x)) * sizeof(uint32_t);
+		lseek(memfb_fd, screenpos, SEEK_SET);
 		write(memfb_fd, pixels + w*(r-y), sizeof(uint32_t) * w);
 	}
 }
