@@ -76,7 +76,8 @@ void NDL_OpenCanvas(int *w, int *h) {
 // 图像像素按行优先方式存储在`pixels`中, 每个像素用32位整数以`00RRGGBB`的方式描述颜色
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
 	for(int r = y; r < y + h; r++) {
-		int screenpos = (screen_width * (screen_height/2 - canvas_height/2 + y) + (screen_width/2 - canvas_width/2 + x)) * sizeof(uint32_t);
+//		int canvaspos = (screen_width * r + x) * sizeof(uint32_t);
+		int screenpos = (screen_width * (screen_height/2 - canvas_height/2 + r) + (screen_width/2 - canvas_width/2 + x)) * sizeof(uint32_t);
 		lseek(memfb_fd, screenpos, SEEK_SET);
 		write(memfb_fd, pixels + w*(r-y), sizeof(uint32_t) * w);
 	}
