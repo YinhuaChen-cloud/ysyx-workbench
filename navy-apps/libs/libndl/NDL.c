@@ -31,6 +31,8 @@ int NDL_PollEvent(char *buf, int len) {
 	return retval;
 }
 
+// 打开一张(*w) X (*h)的画布
+// 如果*w和*h均为0, 则将系统全屏幕作为画布, 并将*w和*h分别设为系统屏幕的大小
 void NDL_OpenCanvas(int *w, int *h) {
 	// get the size of screen -- start
 	char buf[128];
@@ -44,6 +46,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     int fbctl = 4;
     fbdev = 5;
     screen_w = *w; screen_h = *h;
+		printf("screen_w = %d, screen_h = %d\n", screen_w, screen_h);
     char buf[64];
     int len = sprintf(buf, "%d %d", screen_w, screen_h);
     // let NWM resize the window and create the frame buffer
