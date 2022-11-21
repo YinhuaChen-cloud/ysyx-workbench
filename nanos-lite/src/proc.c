@@ -26,7 +26,7 @@ void init_proc() {
 
   // load program here
 	extern void naive_uload(PCB *pcb, const char *filename);
-	naive_uload(NULL, "/bin/nslider");
+	naive_uload(NULL, "/bin/bmp-test");
 }
 
 Context* schedule(Context *prev) {
