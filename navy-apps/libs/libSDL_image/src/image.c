@@ -17,6 +17,7 @@ SDL_Surface* IMG_Load(const char *filename) {
 	// 1. 用libc中的文件操作打开文件, 并获取文件大小size
 	FILE *fp = fopen(filename, "r");
 	fseek(fp, 0, SEEK_END);
+	printf("execute fseek successfully\n");
 	size_t filesize = ftell(fp);
 	// 2. 申请一段大小为size的内存区间buf
 	uint8_t *buf = (uint8_t *)malloc(sizeof(filesize));
