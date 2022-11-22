@@ -27,6 +27,7 @@ SDL_Surface* IMG_Load(const char *filename) {
 	fread(buf, filesize, 1, fp);
 	printf("execute fread successfully\n");
 	// 4. 将buf和size作为参数, 调用STBIMG_LoadFromMemory(), 它会返回一个SDL_Surface结构的指针
+	printf("buf = 0x%p\n", buf);
 	SDL_Surface *s = STBIMG_LoadFromMemory(buf, filesize);	
 	printf("execute STBIMGLOAD successfully\n");
 	// 5. 关闭文件, 释放申请的内存
