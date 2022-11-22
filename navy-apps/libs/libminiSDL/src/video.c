@@ -11,24 +11,48 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 	uint8_t pixel_width = dst->format->BitsPerPixel;
 	assert(32 == pixel_width);
 
-	if(srcrect) {
-		assert(0);
-	}
-	else {
-	}
+	SDL_Surface mid;
+	SDL_Surface *midpointer;
 
-	if(dstrect) {
+	if(srcrect) {
+		mid.w = srcrect->w;
+		mid.h = srcrect->h;
+		mid.pixels = (uint32_t *)malloc(sizeof(uint32_t) * srcrect->w * srcrect->h);
 		int i = 0;
-		for(int r = dstrect->y; r < dstrect->y + src->h; r++) {
-			for(int c = dstrect->x; c < dstrect->x + src->w; c++) {
-				((uint32_t *)(dst->pixels))[r * dst->w + c] = ((uint32_t *)(src->pixels))[i];
+		for(int r = srcrect->y; r < srcrect->y + srcrect->h; r++) {
+			for(int c = srcrect->x; c < srcrect->x + srcrect->w; c++) {
+				((uint32_t *)(mid.pixels))[i] = ((uint32_t *)(src->pixels))[r * src->w + c];
 				i++;
 			}
 		}
 	}
 	else {
-		assert(0);
+		mid = *src;
 	}
+
+	midpointer = &mid;
+
+	if(dstrect) {
+		int i = 0;
+		for(int r = dstrect->y; r < dstrect->y + midpointer->h; r++) {
+			for(int c = dstrect->x; c < dstrect->x + midpointer->w; c++) {
+				((uint32_t *)(dst->pixels))[r * dst->w + c] = ((uint32_t *)(midpointer->pixels))[i];
+				i++;
+			}
+		}
+	}
+	else {
+		int i = 0;
+		for(int r = 0; r < midpointer->h; r++) {
+			for(int c = 0; c < midpointer->w; c++) {
+				((uint32_t *)(dst->pixels))[r * dst->w + c] = ((uint32_t *)(midpointer->pixels))[i];
+				i++;
+			}
+		}
+	}
+
+	free(mid.pixels);
+	mid.pixels = NULL;
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
