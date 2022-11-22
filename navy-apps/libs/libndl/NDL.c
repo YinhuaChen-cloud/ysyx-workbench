@@ -17,12 +17,18 @@ static int screen_height = -1;
 static int canvas_width = -1;
 static int canvas_height = -1;	
 
+static struct timeval boot_time;
+
 // 以毫秒为单位返回系统时间
 uint32_t NDL_GetTicks() {
 	struct timeval current_time;
 	gettimeofday(&current_time, NULL);
+
+	struct timeval return_time;
+	return_time.tv_sec = current_time.tv_sec - boot_time.tv_sec;
+	return_time.tv_usec = current_time.tv_usec - boot_time.tv_usec;
 //	printf("tv_sec = %ld, us = %ld\n", current_time.tv_sec, current_time.tv_usec);
-	uint32_t ms = (uint32_t)(current_time.tv_sec * 1000 + current_time.tv_usec/1000);
+	uint32_t ms = (uint32_t)(return_time.tv_sec * 1000 + return_time.tv_usec/1000);
 //	printf("ms = %u\n", ms);
   return ms;
 }
@@ -107,6 +113,7 @@ int NDL_Init(uint32_t flags) {
   }
 	event_fd = open("/dev/events", "r");
 	memfb_fd = open("/dev/fb", "w");
+	gettimeofday(&boot_time, NULL);
   return 0;
 }
 

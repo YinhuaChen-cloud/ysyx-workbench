@@ -23,6 +23,18 @@ static void sh_prompt() {
 }
 
 static void sh_handle_cmd(const char *cmd) {
+	char cmdcpy[256];
+	strncpy(cmdcpy, cmd, 256);
+	char *str = strtok(cmdcpy, " ");
+	while(str != NULL) {
+		if(strcmp(str, "echo") == 0) {
+			sh_printf("%s", str + strlen(str) + 1);
+		}
+		else {
+			sh_printf("Unknown command!\n");
+		}
+		break;
+	}
 }
 
 void builtin_sh_run() {
