@@ -16,6 +16,7 @@ SDL_Surface* IMG_Load(const char *filename) {
 	printf("In IMG_Load, omg, filename = %s\n", filename);
 	// 1. 用libc中的文件操作打开文件, 并获取文件大小size
 	FILE *fp = fopen(filename, "r");
+	assert(fp);
 	fseek(fp, 0, SEEK_END);
 	printf("In IMG_Load, execute fseek successfully\n");
 	size_t filesize = ftell(fp);
