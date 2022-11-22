@@ -94,6 +94,8 @@ void *_sbrk(intptr_t increment) {
 //	此时更新之前记录的program break的位置, 并将旧program break的位置作为_sbrk()的返回值返回
 		uintptr_t old_program_break = program_break;
 		program_break = next_program_break;
+		sprintf(buf, "old_program_break = 0x%lx\n", old_program_break);	
+		write(1, buf, 128);
 		return (void *)old_program_break;
 	}
 	else {
