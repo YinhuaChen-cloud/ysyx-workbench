@@ -22,7 +22,7 @@ SDL_Surface* IMG_Load(const char *filename) {
 	size_t filesize = ftell(fp);
 	printf("In IMG_Load, filesize = %ld\n", filesize);
 	// 2. 申请一段大小为size的内存区间buf
-	uint8_t *buf = (uint8_t *)malloc(sizeof(filesize));
+	uint8_t *buf = (uint8_t *)malloc(filesize);
 	printf("In IMG_Load, execute malloc successfully\n");
 	// 3. 将整个文件读取到buf中
 	fseek(fp, 0, SEEK_SET);
