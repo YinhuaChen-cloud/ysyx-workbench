@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <assert.h>
+#include <sdl-video.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
@@ -80,12 +81,42 @@ void NDL_OpenCanvas(int *w, int *h) {
 
 // 向画布`(x, y)`坐标处绘制`w*h`的矩形图像, 并将该绘制区域同步到屏幕上
 // 图像像素按行优先方式存储在`pixels`中, 每个像素用32位整数以`00RRGGBB`的方式描述颜色
-void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h, SDL_Surface *s) {
+	int bitsPerPixel;
+	uint32_t *pixels_from_palette = NULL;
+
+	if(NULL == s) {
+		bitsPerPixel = 32;
+	}
+	else {
+		bitsPerPixel = s->format->BitsPerPixel;
+	}
+
+	assert(32 == bitsPerPixel || 8 == bitsPerPixel);
+
+	if(8 == bitsPerPixel) {
+		pixels_from_palette = (uint32_t *)malloc(sizeof(uint32_t) * w);
+	}
+
 	for(int r = y; r < y + h; r++) {
 //		int canvaspos = (screen_width * r + x) * sizeof(uint32_t);
 		int screenpos = (screen_width * (screen_height/2 - canvas_height/2 + r) + (screen_width/2 - canvas_width/2 + x)) * sizeof(uint32_t);
 		lseek(memfb_fd, screenpos, SEEK_SET);
-		write(memfb_fd, pixels + w*(r-y), sizeof(uint32_t) * w);
+		if(32 == bitsPerPixel) {
+			write(memfb_fd, pixels + w*(r-y), sizeof(uint32_t) * w);
+		}
+		else {
+			for(int i = 0; i < w; i++) {
+//				printf("s->format->palette[s->pixels[w*(r-y) + i]].colors = %p\n", s->format->palette[s->pixels[w*(r-y) + i]].colors);
+//				printf("s->pixels[w*(r-y) + i] = %hhd\n", s->pixels[w*(r-y) + i]);
+				pixels_from_palette[i] = s->format->palette->colors[s->pixels[w*(r-y) + i]].val;
+			}
+			write(memfb_fd, pixels_from_palette, sizeof(uint32_t) * w);
+		}
+	}
+
+	if(8 == bitsPerPixel) {
+		free(pixels_from_palette);
 	}
 }
 

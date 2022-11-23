@@ -83,7 +83,12 @@ int SDL_PeepEvents(SDL_Event *ev, int numevents, int action, uint32_t mask) {
   return 0;
 }
 
+// Gets  a snapshot of the current keyboard state. The current state is return as a pointer to an array, the size of this array is stored in numkeys. The array is indexed by the SDLK_* symbols.
+// A value of 1 means the key is pressed and a value of 0 means its not. The pointer returned is a pointer to an internal SDL array and should not be freed by the caller.
+
+static const uint8_t keyboard_state[sizeof(keyname)/sizeof(keyname[0])] = {0};
+
 uint8_t* SDL_GetKeyState(int *numkeys) {
-	assert(0);
-  return NULL;
+	// TODO: All keyboard state is 0, no need to implement this completely yet
+  return keyboard_state;
 }

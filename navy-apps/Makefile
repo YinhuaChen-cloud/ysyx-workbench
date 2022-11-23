@@ -106,6 +106,7 @@ ASFLAGS  +=  $(CFLAGS)
 
 ### Rule (compile): a single `.c` -> `.o` (gcc)
 $(DST_DIR)/%.o: %.c
+	@echo "INCFLAGS = $(INCFLAGS)"
 	@mkdir -p $(dir $@) && echo + CC $<
 	@$(CC) -std=gnu11 $(CFLAGS) -c -o $@ $(realpath $<)
 
@@ -185,7 +186,7 @@ $(CLEAN_ALL):
 .PHONY: clean-all $(CLEAN_ALL)
 
 ### Build fsimg and ramdisk for Nanos-lite
-APPS = bird nslider menu nterm 
+APPS = bird nslider menu nterm pal
 TESTS = dummy hello file-test timer-test event-test bmp-test fixedpt-test
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))

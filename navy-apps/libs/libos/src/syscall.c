@@ -109,6 +109,11 @@ int _read(int fd, void *buf, size_t count) {
 }
 
 int _close(int fd) {
+	// --- added for debug -- start
+	char buf[128];
+	sprintf(buf, "In navy-apps _close\n");	
+	write(1, buf, 128);
+	// --- added for debug -- end
   return _syscall_(SYS_close, fd, 0, 0);
 }
 
