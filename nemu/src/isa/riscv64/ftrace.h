@@ -51,6 +51,7 @@ void get_symtab_strtab(){
 			if(strcmp("/bin/pal", file_table[ram_fd].name) == 0)
 				break;
 		}
+		assert(ram_fd < sizeof(file_table)/sizeof(file_table[0]));
 
 		fseek(fp, file_table[ram_fd].disk_offset, SEEK_SET);
 		long size = file_table[ram_fd].size;
