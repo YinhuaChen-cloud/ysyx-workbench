@@ -61,18 +61,30 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	assert(elfheader->e_machine == EXPECT_TYPE);	
 	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
 
-	while(1);
+	Elf_Phdr program_headers_entity;
+	Elf_Phdr *program_headers = &program_headers_entity;
+	fs_lseek(fd, elfheader->e_phoff, SEEK_SET);
+	fs_read(fd, (void *)program_headers, sizeof(Elf_Phdr));
+//	Elf_Phdr *program_headers = (Elf_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
 
-	Elf_Phdr *program_headers = (Elf_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
-
-	for(Elf_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
-		if(p->p_type != PT_LOAD) {
+//	for(Elf_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
+	for(int i = 1; i < elfheader->e_phnum; i++){
+//		if(p->p_type != PT_LOAD) {
+		if(program_headers->p_type != PT_LOAD) {
+			fs_lseek(fd, elfheader->e_phoff + i*elfheader->e_phentsize, SEEK_SET);
+			fs_read(fd, (void *)program_headers, sizeof(Elf_Phdr));
 			continue;
 		}
-		fs_lseek(fd, p->p_offset, SEEK_SET);
-		fs_read(fd, (void *)(p->p_vaddr), p->p_filesz);
-//		ramdisk_read((void *)(p->p_vaddr), p->p_offset, p->p_filesz); 
-		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
+//		fs_lseek(fd, p->p_offset, SEEK_SET);
+//		fs_read(fd, (void *)(p->p_vaddr), p->p_filesz);
+//		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
+
+		fs_lseek(fd, program_headers->p_offset, SEEK_SET);
+		fs_read(fd, (void *)(program_headers->p_vaddr), program_headers->p_filesz);
+		memset((uint8_t *)(program_headers->p_vaddr) + program_headers->p_filesz, 0, program_headers->p_memsz - program_headers->p_filesz ); // -- zero
+
+		fs_lseek(fd, elfheader->e_phoff + i*elfheader->e_phentsize, SEEK_SET);
+		fs_read(fd, (void *)program_headers, sizeof(Elf_Phdr));
 	}
 
 	printf("in loader, after reading ramdisk, filename = %s\n", filename);
