@@ -18,21 +18,21 @@
 # error Unsupported ISA
 #endif
 
-// yinhua add this -- start
-#define RAM_READ_BUF_LEN 0x2000000
-static uint8_t osmem[RAM_READ_BUF_LEN];
-
-//static inline uint8_t  inb(uintptr_t addr) { return *(volatile uint8_t  *)addr; }
-//static inline uint16_t inw(uintptr_t addr) { return *(volatile uint16_t *)addr; }
-//static inline uint32_t inl(uintptr_t addr) { return *(volatile uint32_t *)addr; }
-
-//static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
-//static inline void outw(uintptr_t addr, uint16_t data) { *(volatile uint16_t *)addr = data; }
-//static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)addr = data; }
-//static inline void outb(uintptr_t addr, uint8_t  data) { osmem[addr] = data; }
-//static inline void outw(uintptr_t addr, uint16_t data) { osmem[addr] = data; }
-//static inline void outl(uintptr_t addr, uint32_t data) { osmem[addr] = data; }
-// yinhua add this -- end
+//// yinhua add this -- start
+//#define RAM_READ_BUF_LEN 0x2000000
+//static uint8_t osmem[RAM_READ_BUF_LEN];
+//
+////static inline uint8_t  inb(uintptr_t addr) { return *(volatile uint8_t  *)addr; }
+////static inline uint16_t inw(uintptr_t addr) { return *(volatile uint16_t *)addr; }
+////static inline uint32_t inl(uintptr_t addr) { return *(volatile uint32_t *)addr; }
+//
+////static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
+////static inline void outw(uintptr_t addr, uint16_t data) { *(volatile uint16_t *)addr = data; }
+////static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)addr = data; }
+////static inline void outb(uintptr_t addr, uint8_t  data) { osmem[addr] = data; }
+////static inline void outw(uintptr_t addr, uint16_t data) { osmem[addr] = data; }
+////static inline void outl(uintptr_t addr, uint32_t data) { osmem[addr] = data; }
+//// yinhua add this -- end
 
 static uintptr_t loader(PCB *pcb, const char *filename) {
 //	1. read program from ramdisk -- invoke ramdisk_read()
@@ -49,12 +49,19 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
 //	Elf_Ehdr file_elfheader;
 
-	fs_read(fd, osmem, -1);
-	Elf_Ehdr *elfheader = (Elf_Ehdr *)osmem; 
+//	fs_read(fd, osmem, -1);
+//	Elf_Ehdr *elfheader = (Elf_Ehdr *)osmem; 
 //	Elf_Ehdr *elfheader = (Elf_Ehdr *)(&ramdisk_start + file_table[fp].disk_offset); 
+
+	Elf_Ehdr elfheader_entity;
+	Elf_Ehdr *elfheader = &elfheader_entity; 
+
+	fs_read(fd, (void *)elfheader, sizeof(Elf_Ehdr));
 
 	assert(elfheader->e_machine == EXPECT_TYPE);	
 	assert(*(uint64_t *)elfheader->e_ident == 0x00010102464c457f);	
+
+	while(1);
 
 	Elf_Phdr *program_headers = (Elf_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
 
