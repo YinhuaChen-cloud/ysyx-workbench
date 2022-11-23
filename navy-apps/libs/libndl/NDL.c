@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <assert.h>
-#include <sdl-video.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
@@ -81,15 +80,15 @@ void NDL_OpenCanvas(int *w, int *h) {
 
 // 向画布`(x, y)`坐标处绘制`w*h`的矩形图像, 并将该绘制区域同步到屏幕上
 // 图像像素按行优先方式存储在`pixels`中, 每个像素用32位整数以`00RRGGBB`的方式描述颜色
-void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h, SDL_Surface *s) {
+void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h, void *palette) {
 	int bitsPerPixel;
 	uint32_t *pixels_from_palette = NULL;
 
-	if(NULL == s) {
+	if(NULL == palette) {
 		bitsPerPixel = 32;
 	}
 	else {
-		bitsPerPixel = s->format->BitsPerPixel;
+		bitsPerPixel = 8;
 	}
 
 	assert(32 == bitsPerPixel || 8 == bitsPerPixel);
@@ -107,9 +106,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h, SDL_Surface *s) 
 		}
 		else {
 			for(int i = 0; i < w; i++) {
-//				printf("s->format->palette[s->pixels[w*(r-y) + i]].colors = %p\n", s->format->palette[s->pixels[w*(r-y) + i]].colors);
-//				printf("s->pixels[w*(r-y) + i] = %hhd\n", s->pixels[w*(r-y) + i]);
-				pixels_from_palette[i] = s->format->palette->colors[s->pixels[w*(r-y) + i]].val;
+				pixels_from_palette[i] = ((uint32_t *)palette)[((uint8_t *)pixels)[w*(r-y) + i]];
 			}
 			write(memfb_fd, pixels_from_palette, sizeof(uint32_t) * w);
 		}

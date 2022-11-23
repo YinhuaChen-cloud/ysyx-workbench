@@ -48,7 +48,7 @@ void get_symtab_strtab(){
 	
 		int ram_fd = 0;
 		for(; ram_fd < sizeof(file_table)/sizeof(file_table[0]); ram_fd++) {
-			if(strcmp("/bin/bird", file_table[ram_fd].name) == 0)
+			if(strcmp("/bin/pal", file_table[ram_fd].name) == 0)
 				break;
 		}
 

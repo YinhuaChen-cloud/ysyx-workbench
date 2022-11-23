@@ -127,10 +127,10 @@ $(DST_DIR)/%.o: %.S
 
 ### Rule (recursive make): build dependent libraries (libc, libos, ...)
 libs:
-	@echo "In libs target ================== hot pot"
-	@echo "In libs, LIBS = $(LIBS) ================== hot pot"
-	@echo "In libs, pwd=$(shell pwd) =========================== hot pot"
-	@echo "In libs, LIB_DEP=$(LIB_DEP) =========================== hot pot"
+#	@echo "In libs target ================== hot pot"
+#	@echo "In libs, LIBS = $(LIBS) ================== hot pot"
+#	@echo "In libs, pwd=$(shell pwd) =========================== hot pot"
+#	@echo "In libs, LIB_DEP=$(LIB_DEP) =========================== hot pot"
 	@for t in $(LIBS); do $(MAKE) -C $(NAVY_HOME)/libs/$$t archive; done
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `$(APP)`, the final ELF binary to be packed into application (ld)
@@ -143,9 +143,9 @@ $(APP): $(OBJS) libs
 
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
 $(ARCHIVE): $(OBJS) libs
-	@echo "In ARCHIVE, ISA=$(ISA) ========================== hot pot "
-	@echo "In ARCHIVE, LIBS=$(LIBS) =========================== hot pot"
-	@echo "In ARCHIVE, pwd=$(shell pwd) =========================== hot pot"
+#	@echo "In ARCHIVE, ISA=$(ISA) ========================== hot pot "
+#	@echo "In ARCHIVE, LIBS=$(LIBS) =========================== hot pot"
+#	@echo "In ARCHIVE, pwd=$(shell pwd) =========================== hot pot"
 	@echo + AR "->" $(shell realpath $@ --relative-to .)
 	@ar rcsT $@ $(LINKAGE)
 
@@ -186,8 +186,10 @@ $(CLEAN_ALL):
 .PHONY: clean-all $(CLEAN_ALL)
 
 ### Build fsimg and ramdisk for Nanos-lite
-APPS = bird nslider menu nterm pal
-TESTS = dummy hello file-test timer-test event-test bmp-test fixedpt-test
+# APPS = pal nterm menu nslider bird
+# TESTS = dummy hello file-test timer-test event-test bmp-test fixedpt-test
+APPS = pal
+TESTS =
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 	-for t in $^; do $(MAKE) -s -C $(NAVY_HOME)/$$t install; done
