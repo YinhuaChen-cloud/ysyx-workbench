@@ -55,6 +55,7 @@ void get_symtab_strtab(){
 
 		fseek(fp, file_table[ram_fd].disk_offset, SEEK_SET);
 		long size = file_table[ram_fd].size;
+		printf("In get_symtab_strtab for pal, size = %ld\n", size);
 
 		// TODO: we need to free ramdisk_content after used it, not implemented yet
 		ramdisk_elf = (char *)malloc(size);
