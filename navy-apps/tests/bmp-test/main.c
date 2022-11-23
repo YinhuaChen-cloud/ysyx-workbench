@@ -11,7 +11,7 @@ int main() {
 	printf("by cyh, in bmp-test main.c w = %d, h = %d\n", w, h);
   assert(bmp);
   NDL_OpenCanvas(&w, &h);
-  NDL_DrawRect(bmp, 0, 0, w, h);
+  NDL_DrawRect(bmp, 0, 0, w, h, NULL);
   free(bmp);
   NDL_Quit();
   printf("Test ends! Spinning...\n");

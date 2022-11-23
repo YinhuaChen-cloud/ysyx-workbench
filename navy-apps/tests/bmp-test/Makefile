@@ -1,5 +1,5 @@
 NAME = bmp-test
 SRCS = main.c
-LIBS += libbmp libndl
+LIBS += libbmp libndl libminiSDL
 include $(NAVY_HOME)/Makefile
 # make ISA=native run

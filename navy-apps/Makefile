@@ -106,6 +106,7 @@ ASFLAGS  +=  $(CFLAGS)
 
 ### Rule (compile): a single `.c` -> `.o` (gcc)
 $(DST_DIR)/%.o: %.c
+	@echo "INCFLAGS = $(INCFLAGS)"
 	@mkdir -p $(dir $@) && echo + CC $<
 	@$(CC) -std=gnu11 $(CFLAGS) -c -o $@ $(realpath $<)
 
