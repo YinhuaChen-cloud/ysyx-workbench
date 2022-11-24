@@ -114,6 +114,9 @@ char *addrToFunc(Elf64_Addr addr){
 			printf("addr 0x%lx belongs to symtab\n", addr);
 			break;
 		}
+		else if(addr == p->st_value && p->st_size == 0 && ELF64_ST_TYPE(p->st_info) == STT_NOTYPE) {
+			return strtab + p->st_name;
+		}
 	}
 
 // 	printf("catch you, addr = 0x%lx\n", addr);
@@ -127,6 +130,9 @@ char *addrToFunc(Elf64_Addr addr){
 			count++;
 			if(addr >= p->st_value && addr < p->st_value + p->st_size){
 				break;
+			}
+			else if(addr == p->st_value && p->st_size == 0 && ELF64_ST_TYPE(p->st_info) == STT_NOTYPE) {
+				return ramdisk_strtab + p->st_name;
 			}
 		}
 	}
