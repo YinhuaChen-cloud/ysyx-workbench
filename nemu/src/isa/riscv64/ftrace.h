@@ -130,7 +130,7 @@ char *addrToFunc(Elf64_Addr addr){
 			}
 		}
 	}
-	printf("p = %p, ramdisk_symtab + ramdisk_symtab_size = %p\n", p, ramdisk_symtab + ramdisk_symtab_size);
+	printf("p = %p, ramdisk_symtab + ramdisk_symtab_size = %p\n", p, (char*)ramdisk_symtab + ramdisk_symtab_size);
 	Assert(p != symtab, "p is just symtab");
 	Assert(p != ramdisk_symtab, "p is just ramdisk_symtab");
 	Assert(((char *)p < (char *)symtab + symtab_size || ((char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
