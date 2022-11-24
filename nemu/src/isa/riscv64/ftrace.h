@@ -111,7 +111,7 @@ char *addrToFunc(Elf64_Addr addr){
 	for(; (char *)p < (char *)symtab + symtab_size; p++){
 		//printf("p->st_value = 0x%lx, p->st_size = %ld\n", p->st_value, p->st_size);
 		if(addr >= p->st_value && addr < p->st_value + p->st_size){
-			printf("addr 0x%lx belongs to symtab\n", addr);
+//			printf("addr 0x%lx belongs to symtab\n", addr);
 			break;
 		}
 		else if(addr == p->st_value && p->st_size == 0 && ELF64_ST_TYPE(p->st_info) == STT_NOTYPE) {
@@ -124,10 +124,10 @@ char *addrToFunc(Elf64_Addr addr){
 	// search addr in user program elf
 	if((char *)p >= (char *)symtab + symtab_size) {
 //		assert(0);
-		int count = 0;
+//		int count = 0;
 		for(p = ramdisk_symtab; (char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size; p++){
-			printf("In ramdisk loop, count = %d\n", count);
-			count++;
+//			printf("In ramdisk loop, count = %d\n", count);
+//			count++;
 			if(addr >= p->st_value && addr < p->st_value + p->st_size){
 				break;
 			}
@@ -136,7 +136,7 @@ char *addrToFunc(Elf64_Addr addr){
 			}
 		}
 	}
-	printf("p = %p, ramdisk_symtab + ramdisk_symtab_size = %p\n", p, (char*)ramdisk_symtab + ramdisk_symtab_size);
+//	printf("p = %p, ramdisk_symtab + ramdisk_symtab_size = %p\n", p, (char*)ramdisk_symtab + ramdisk_symtab_size);
 	Assert(p != symtab, "p is just symtab");
 	Assert(p != ramdisk_symtab, "p is just ramdisk_symtab");
 	Assert((p >= symtab && (char *)p < (char *)symtab + symtab_size) || ((char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size && p >= ramdisk_symtab), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
