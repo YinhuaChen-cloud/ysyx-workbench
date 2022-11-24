@@ -121,10 +121,11 @@ char *addrToFunc(Elf64_Addr addr){
 	// search addr in user program elf
 	if((char *)p >= (char *)symtab + symtab_size) {
 //		assert(0);
+		int count = 0;
 		for(p = ramdisk_symtab; (char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size; p++){
-			printf("In ramdisk loop\n");
+			printf("In ramdisk loop, count = %d\n", count);
+			count++;
 			if(addr >= p->st_value && addr < p->st_value + p->st_size){
-				printf("addr 0x%lx belongs to ramdisk_symtab\n", addr);
 				break;
 			}
 		}
