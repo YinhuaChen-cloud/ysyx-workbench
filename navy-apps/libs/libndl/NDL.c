@@ -91,8 +91,6 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h, void *palette) {
 		bitsPerPixel = 8;
 	}
 
-	assert(32 == bitsPerPixel || 8 == bitsPerPixel);
-
 	if(8 == bitsPerPixel) {
 		pixels_from_palette = (uint32_t *)malloc(sizeof(uint32_t) * w);
 	}
