@@ -133,7 +133,7 @@ char *addrToFunc(Elf64_Addr addr){
 	printf("p = %p, ramdisk_symtab + ramdisk_symtab_size = %p\n", p, (char*)ramdisk_symtab + ramdisk_symtab_size);
 	Assert(p != symtab, "p is just symtab");
 	Assert(p != ramdisk_symtab, "p is just ramdisk_symtab");
-	Assert(((char *)p < (char *)symtab + symtab_size || ((char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
+	Assert((p >= symtab && (char *)p < (char *)symtab + symtab_size) || ((char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size && p >= ramdisk_symtab), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
 	Assert(ELF64_ST_TYPE(p->st_info) == STT_FUNC, "[%s:%d] The entry we found is not FUNC, addr = 0x%lx", __FILE__, __LINE__, addr);
 	if(p >= symtab && (char *)p < (char *)symtab + symtab_size)
 		return strtab + p->st_name;
