@@ -48,9 +48,10 @@ void get_symtab_strtab(){
 	
 		int ram_fd = 0;
 		for(; ram_fd < sizeof(file_table)/sizeof(file_table[0]); ram_fd++) {
-			if(strcmp("/bin/bird", file_table[ram_fd].name) == 0)
+			if(strcmp("/bin/pal", file_table[ram_fd].name) == 0)
 				break;
 		}
+		assert(ram_fd < sizeof(file_table)/sizeof(file_table[0]));
 
 		fseek(fp, file_table[ram_fd].disk_offset, SEEK_SET);
 		long size = file_table[ram_fd].size;
@@ -110,7 +111,11 @@ char *addrToFunc(Elf64_Addr addr){
 	for(; (char *)p < (char *)symtab + symtab_size; p++){
 		//printf("p->st_value = 0x%lx, p->st_size = %ld\n", p->st_value, p->st_size);
 		if(addr >= p->st_value && addr < p->st_value + p->st_size){
+//			printf("addr 0x%lx belongs to symtab\n", addr);
 			break;
+		}
+		else if(addr == p->st_value && p->st_size == 0 && ELF64_ST_TYPE(p->st_info) == STT_NOTYPE) {
+			return strtab + p->st_name;
 		}
 	}
 
@@ -119,16 +124,23 @@ char *addrToFunc(Elf64_Addr addr){
 	// search addr in user program elf
 	if((char *)p >= (char *)symtab + symtab_size) {
 //		assert(0);
+//		int count = 0;
 		for(p = ramdisk_symtab; (char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size; p++){
+//			printf("In ramdisk loop, count = %d\n", count);
+//			count++;
 			if(addr >= p->st_value && addr < p->st_value + p->st_size){
 				break;
 			}
+			else if(addr == p->st_value && p->st_size == 0 && ELF64_ST_TYPE(p->st_info) == STT_NOTYPE) {
+				return ramdisk_strtab + p->st_name;
+			}
 		}
 	}
+//	printf("p = %p, ramdisk_symtab + ramdisk_symtab_size = %p\n", p, (char*)ramdisk_symtab + ramdisk_symtab_size);
 	Assert(p != symtab, "p is just symtab");
 	Assert(p != ramdisk_symtab, "p is just ramdisk_symtab");
-	Assert(((char *)p < (char *)symtab + symtab_size || ((char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
-	Assert(ELF64_ST_TYPE(p->st_info) == STT_FUNC, "[%s:%d] The entry we found is not FUNC", __FILE__, __LINE__);
+	Assert((p >= symtab && (char *)p < (char *)symtab + symtab_size) || ((char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size && p >= ramdisk_symtab), "p is out of symtab range, the current pc is 0x%lx", cpu.pc);
+	Assert(ELF64_ST_TYPE(p->st_info) == STT_FUNC, "[%s:%d] The entry we found is not FUNC, addr = 0x%lx", __FILE__, __LINE__, addr);
 	if(p >= symtab && (char *)p < (char *)symtab + symtab_size)
 		return strtab + p->st_name;
 	else if(p >= ramdisk_symtab && (char *)p < (char *)ramdisk_symtab + ramdisk_symtab_size)

@@ -18,7 +18,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 		mid.w = srcrect->w;
 		mid.h = srcrect->h;
 		if(32 == pixel_width) {
-			mid.pixels = (uint32_t *)malloc(sizeof(uint32_t) * srcrect->w * srcrect->h);
+			mid.pixels = (uint8_t *)malloc(sizeof(uint32_t) * srcrect->w * srcrect->h);
 		}
 		else {
 			mid.pixels = (uint8_t *)malloc(sizeof(uint8_t) * srcrect->w * srcrect->h);
@@ -87,7 +87,13 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 }
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
-	NDL_DrawRect((uint32_t *)s->pixels, x, y, s->w, s->h, s);
+
+	assert(32 == s->format->BitsPerPixel || 8 == s->format->BitsPerPixel);
+
+	if(8 == s->format->BitsPerPixel)
+		NDL_DrawRect((uint32_t *)s->pixels, x, y, s->w, s->h, s->format->palette->colors);
+	else
+		NDL_DrawRect((uint32_t *)s->pixels, x, y, s->w, s->h, NULL);
 }
 
 // APIs below are already implemented.
