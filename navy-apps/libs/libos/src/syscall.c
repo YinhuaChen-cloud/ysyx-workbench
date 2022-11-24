@@ -81,21 +81,21 @@ void *_sbrk(intptr_t increment) {
 //3. 通过SYS_brk系统调用来让操作系统设置新program break
   uintptr_t retval =  _syscall_(SYS_brk, next_program_break, 0, 0);
 //4. 若SYS_brk系统调用成功, 该系统调用会返回0
-	// --- added for debug -- start
-	char buf[128];
-	sprintf(buf, "program_break = 0x%lx\n", program_break);	
-	write(1, buf, 128);
-	sprintf(buf, "increment = %ld\n", increment);	
-	write(1, buf, 128);
-	sprintf(buf, "next_program_break = 0x%lx\n", next_program_break);	
-	write(1, buf, 128);
-	// --- added for debug -- end
+//	// --- added for debug -- start
+//	char buf[128];
+//	sprintf(buf, "program_break = 0x%lx\n", program_break);	
+//	write(1, buf, 128);
+//	sprintf(buf, "increment = %ld\n", increment);	
+//	write(1, buf, 128);
+//	sprintf(buf, "next_program_break = 0x%lx\n", next_program_break);	
+//	write(1, buf, 128);
+//	// --- added for debug -- end
 	if(retval == 0) {
 //	此时更新之前记录的program break的位置, 并将旧program break的位置作为_sbrk()的返回值返回
 		uintptr_t old_program_break = program_break;
 		program_break = next_program_break;
-		sprintf(buf, "old_program_break = 0x%lx\n", old_program_break);	
-		write(1, buf, 128);
+//		sprintf(buf, "old_program_break = 0x%lx\n", old_program_break);	
+//		write(1, buf, 128);
 		return (void *)old_program_break;
 	}
 	else {
