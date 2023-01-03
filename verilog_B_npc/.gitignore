@@ -1,0 +1,14 @@
+*.*
+*
+!*/
+!Makefile
+!*.mk
+!*.[cSh]
+!*.v
+!*.cc
+!*.cpp
+!.gitignore
+!README.md
+/build/
+/obj_dir/
+/vsrc_backup/
