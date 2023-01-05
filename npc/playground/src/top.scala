@@ -11,7 +11,15 @@ class top extends Module {
   })
 
   val x = RegInit(0.U(1.W))
+  val CNT_MAX = 50000000
+  val cnt = RegInit(0.U(32.W))
 
-  x := ~x
+  when(cnt < CNT_MAX) {
+    cnt := cnt + 1
+  }.otherwise {
+    cnt := 0
+    x := ~x
+  }
+
   io.led := x
 }
