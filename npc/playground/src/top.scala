@@ -11,13 +11,13 @@ class top extends Module {
   })
 
   val x = RegInit(0.U(1.W))
-  val CNT_MAX = 50000000
+  val CNT_MAX = 50000000.U
   val cnt = RegInit(0.U(32.W))
 
   when(cnt < CNT_MAX) {
-    cnt := cnt + 1
+    cnt := cnt + 1.U
   }.otherwise {
-    cnt := 0
+    cnt := 0.U
     x := ~x
   }
 
