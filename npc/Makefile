@@ -1,4 +1,4 @@
-BUILD_DIR = out
+BUILD_DIR = ./build
 
 export PATH := $(PATH):$(abspath ./utils)
 
@@ -26,7 +26,7 @@ checkformat:
 	mill -i __.checkFormat
 
 clean:
-	rm -rf $(BUILD_DIR) test_run_dir
+	-rm -rf $(BUILD_DIR)
 
 .PHONY: test verilog help compile bsp reformat checkformat clean
 
