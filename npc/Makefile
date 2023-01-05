@@ -1,4 +1,4 @@
-BUILD_DIR = ./build
+BUILD_DIR = ./build ./out ./test_run_dir
 
 export PATH := $(PATH):$(abspath ./utils)
 
