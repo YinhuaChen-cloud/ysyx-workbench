@@ -37,12 +37,22 @@ module top(	// <stdin>:2:10
          reset,
   output io_led);
 
-  reg x;	// top.scala:13:18
+  reg        x;	// top.scala:13:18
+  reg [31:0] cnt;	// top.scala:15:20
   always @(posedge clock) begin
-    if (reset)
+    if (reset) begin
       x <= 1'h0;	// top.scala:13:18
-    else
-      x <= ~x;	// top.scala:13:18, :15:8
+      cnt <= 32'h0;	// top.scala:15:20
+    end
+    else begin
+      automatic logic _T;	// top.scala:17:12
+      _T = cnt < 32'h2FAF080;	// top.scala:15:20, :17:12
+      x <= _T ^ ~x;	// top.scala:13:18, :17:{12,23}, :21:7
+      if (_T)	// top.scala:17:12
+        cnt <= cnt + 32'h1;	// top.scala:15:20, :18:16
+      else	// top.scala:17:12
+        cnt <= 32'h0;	// top.scala:15:20
+    end
   end // always @(posedge)
   `ifndef SYNTHESIS	// <stdin>:2:10
     `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2:10
@@ -50,12 +60,15 @@ module top(	// <stdin>:2:10
     `endif // FIRRTL_BEFORE_INITIAL
     initial begin	// <stdin>:2:10
       automatic logic [31:0] _RANDOM_0;	// <stdin>:2:10
+      automatic logic [31:0] _RANDOM_1;	// <stdin>:2:10
       `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2:10
         `INIT_RANDOM_PROLOG_	// <stdin>:2:10
       `endif // INIT_RANDOM_PROLOG_
       `ifdef RANDOMIZE_REG_INIT	// <stdin>:2:10
         _RANDOM_0 = `RANDOM;	// <stdin>:2:10
+        _RANDOM_1 = `RANDOM;	// <stdin>:2:10
         x = _RANDOM_0[0];	// top.scala:13:18
+        cnt = {_RANDOM_0[31:1], _RANDOM_1[0]};	// top.scala:13:18, :15:20
       `endif // RANDOMIZE_REG_INIT
     end // initial
     `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2:10
