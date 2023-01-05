@@ -35,7 +35,6 @@ class IFU (xlen: Int) extends Module {
   })
 
   val pc_reg = RegInit("h80000000".U(xlen.W))
-
   io.pc := pc_reg
 
 }
