@@ -16,13 +16,6 @@
 //  //TODO: the "pc + 4" here may be a problem
 //	assign next_pc = pc_wen ? pc_wdata : pc+4;  
 
-//	always@(posedge clk)
-//		$display("In IFU, pc = 0x%x", pc);
-//	always@(posedge clk)
-//		$display("In IFU, next_pc = 0x%x", next_pc);
-//	always@(posedge clk)
-//		$display("In IFU, pc_wen = %d", pc_wen);
-
 //endmodule
 
 import chisel3._
@@ -35,6 +28,7 @@ class IFU (xlen: Int) extends Module {
   })
 
   val pc_reg = RegInit("h80000000".U(xlen.W))
+  pc_reg := pc_wen ? pc_wdata : pc_reg + 4
   io.pc := pc_reg
 
 }
