@@ -86,7 +86,7 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 
 all: default
 
-run: verilog $(BIN)
+run: $(BIN)
 	# BIN build/top
 	@$^
 
