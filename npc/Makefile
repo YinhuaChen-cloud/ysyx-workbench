@@ -74,7 +74,7 @@ CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
 # build/top: 
-$(BIN): verilog $(CSRCS) $(NVBOARD_ARCHIVE)
+$(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	echo "debug by cyh VSRCS = $(VSRCS)"
 	echo "debug by cyh CSRCS = $(CSRCS)"
 	echo "debug by cyh NVBOARD_ARCHIVE = $(NVBOARD_ARCHIVE)"
@@ -86,7 +86,7 @@ $(BIN): verilog $(CSRCS) $(NVBOARD_ARCHIVE)
 
 all: default
 
-run: $(BIN)
+run: verilog $(BIN)
 	# BIN build/top
 	@$^
 
