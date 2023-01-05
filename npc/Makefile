@@ -1,4 +1,4 @@
-BUILD_DIR = ./build
+BUILD_DIR = ./vsrc
 
 export PATH := $(PATH):$(abspath ./utils)
 
