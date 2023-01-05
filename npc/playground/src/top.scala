@@ -7,8 +7,6 @@ class top extends Module {
     val led   = Output(Bool())
   })
 
-  IFU ifu(led)
-
   val ifu = Module(new IFU)
   io.led := ifu.io.led
 
