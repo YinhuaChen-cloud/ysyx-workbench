@@ -3,12 +3,13 @@
 import chisel3._
 
 class top extends Module {
+  val xlen = 32
   val io = IO(new Bundle {
     val led   = Output(Bool())
   })
 
-  val ifu = Module(new IFU)
-  io.led := ifu.io.led
+  val ifu = Module(new IFU(xlen))
+  io.led := ifu.io.pc(31)
 
 }
 

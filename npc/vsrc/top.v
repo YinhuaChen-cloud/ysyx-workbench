@@ -32,26 +32,26 @@
   `define INIT_RANDOM_PROLOG_
 `endif // RANDOMIZE
 
-module top(	// <stdin>:2:10
+module IFU(	// <stdin>:2:10
   input  clock,
          reset,
   output io_led);
 
-  reg        x;	// top.scala:15:18
-  reg [31:0] cnt;	// top.scala:17:20
+  reg        x;	// IFU.scala:35:18
+  reg [31:0] cnt;	// IFU.scala:37:20
   always @(posedge clock) begin
     if (reset) begin
-      x <= 1'h0;	// top.scala:15:18
-      cnt <= 32'h0;	// top.scala:17:20
+      x <= 1'h0;	// IFU.scala:35:18
+      cnt <= 32'h0;	// IFU.scala:37:20
     end
     else begin
-      automatic logic _T;	// top.scala:19:12
-      _T = cnt < 32'h17D7840;	// top.scala:17:20, :19:12
-      x <= _T ^ ~x;	// top.scala:15:18, :19:{12,23}, :23:7
-      if (_T)	// top.scala:19:12
-        cnt <= cnt + 32'h1;	// top.scala:17:20, :20:16
-      else	// top.scala:19:12
-        cnt <= 32'h0;	// top.scala:17:20
+      automatic logic _T;	// IFU.scala:39:12
+      _T = cnt < 32'h17D7840;	// IFU.scala:37:20, :39:12
+      x <= _T ^ ~x;	// IFU.scala:35:18, :39:{12,23}, :43:7
+      if (_T)	// IFU.scala:39:12
+        cnt <= cnt + 32'h1;	// IFU.scala:37:20, :40:16
+      else	// IFU.scala:39:12
+        cnt <= 32'h0;	// IFU.scala:37:20
     end
   end // always @(posedge)
   `ifndef SYNTHESIS	// <stdin>:2:10
@@ -67,14 +67,26 @@ module top(	// <stdin>:2:10
       `ifdef RANDOMIZE_REG_INIT	// <stdin>:2:10
         _RANDOM_0 = `RANDOM;	// <stdin>:2:10
         _RANDOM_1 = `RANDOM;	// <stdin>:2:10
-        x = _RANDOM_0[0];	// top.scala:15:18
-        cnt = {_RANDOM_0[31:1], _RANDOM_1[0]};	// top.scala:15:18, :17:20
+        x = _RANDOM_0[0];	// IFU.scala:35:18
+        cnt = {_RANDOM_0[31:1], _RANDOM_1[0]};	// IFU.scala:35:18, :37:20
       `endif // RANDOMIZE_REG_INIT
     end // initial
     `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2:10
       `FIRRTL_AFTER_INITIAL	// <stdin>:2:10
     `endif // FIRRTL_AFTER_INITIAL
   `endif // not def SYNTHESIS
-  assign io_led = x;	// <stdin>:2:10, top.scala:15:18
+  assign io_led = x;	// <stdin>:2:10, IFU.scala:35:18
+endmodule
+
+module top(	// <stdin>:22:10
+  input  clock,
+         reset,
+  output io_led);
+
+  IFU ifu (	// top.scala:10:19
+    .clock  (clock),
+    .reset  (reset),
+    .io_led (io_led)
+  );
 endmodule
 
