@@ -9,5 +9,8 @@ class top extends Module {
 
   IFU ifu(led)
 
+  val ifu = Module(new IFU)
+  io.led := ifu.io.led
+
 }
 
