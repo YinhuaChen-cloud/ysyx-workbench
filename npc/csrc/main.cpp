@@ -8,14 +8,14 @@ void nvboard_bind_all_pins(Vtop* top);
 // actually, nvboard_bind_all_pins invokes nvboard_bind_pin to complete its fucntion. You can check my words in build/auto_bind.cpp
 
 static void single_cycle() {
-  dut.clk = 0; dut.eval();
-  dut.clk = 1; dut.eval();
+  dut.clock = 0; dut.eval();
+  dut.clock = 1; dut.eval();
 }
 
 static void reset(int n) {
-  dut.rst = 1;
+  dut.reset = 1;
   while (n -- > 0) single_cycle();
-  dut.rst = 0;
+  dut.reset = 0;
 }
 
 int main() {
