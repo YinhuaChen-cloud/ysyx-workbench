@@ -26,10 +26,7 @@ reformat:
 checkformat:
 	mill -i __.checkFormat
 
-clean:
-	-rm -rf $(VSRC_DIR) ./out ./test_run_dir
-
-.PHONY: test verilog help compile bsp reformat checkformat clean
+.PHONY: test verilog help compile bsp reformat checkformat
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
@@ -94,7 +91,7 @@ run: $(BIN)
 	@$^
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR) $(VSRC_DIR) ./out ./test_run_dir
 
 .PHONY: default all clean run
 
