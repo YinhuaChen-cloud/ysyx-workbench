@@ -163,7 +163,6 @@ int main(int argc, char** argv, char** env) {
 			sv_regs_to_c();
 
 			difftest_step();
-			printf("In main\n");
 			if (npc_state.state != NPC_RUNNING) break;
 		}
 	}
