@@ -46,7 +46,7 @@ module top(	// <stdin>:2:10
     end
     else begin
       automatic logic _T;	// top.scala:17:12
-      _T = cnt < 32'h2FAF080;	// top.scala:15:20, :17:12
+      _T = cnt < 32'h17D7840;	// top.scala:15:20, :17:12
       x <= _T ^ ~x;	// top.scala:13:18, :17:{12,23}, :21:7
       if (_T)	// top.scala:17:12
         cnt <= cnt + 32'h1;	// top.scala:15:20, :18:16
