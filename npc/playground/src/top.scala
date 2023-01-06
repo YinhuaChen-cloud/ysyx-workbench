@@ -9,7 +9,7 @@ class top extends Module {
   })
 
   val ifu = Module(new IFU(xlen))
-  ifu.io.pc_wen := 1.U
+  ifu.io.pc_wen := 0.U
   ifu.io.pc_wdata := 1.U
   io.pc := ifu.io.pc
 
