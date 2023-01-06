@@ -28,9 +28,14 @@ checkformat:
 
 .PHONY: test verilog help compile bsp reformat checkformat
 
-sim:
+sim: run-env 
+	@echo "BIN = $(BIN)"
+	@echo "ARGS = $(ARGS)"
+	@echo "IMG = $(IMG)"
+	$(BIN) $(ARGS) $(IMG)
+# 	verilator -Wall --cc --exe --build --trace $(NPC_HOME)/csrc/main.cpp $(NPC_HOME)/vsrc/top.v
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@echo "Write this Makefile by yourself."
+	cd ${NPC_HOME}/..; cscope -b -R;
 
 include ../Makefile
 
@@ -99,15 +104,6 @@ run-env: $(VSRCS) $(CSRCS)
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
-
-sim: run-env 
-	@echo "BIN = $(BIN)"
-	@echo "ARGS = $(ARGS)"
-	@echo "IMG = $(IMG)"
-	$(BIN) $(ARGS) $(IMG)
-# 	verilator -Wall --cc --exe --build --trace $(NPC_HOME)/csrc/main.cpp $(NPC_HOME)/vsrc/top.v
-	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	cd ${NPC_HOME}/..; cscope -b -R;
 
 gdb: run-env
 	$(call git_commit, "gdb NEMU")
