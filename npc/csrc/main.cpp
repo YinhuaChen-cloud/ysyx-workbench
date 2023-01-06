@@ -1,11 +1,14 @@
 #include "Vtop.h"
 #include "verilated.h"
 #include "svdpi.h"
-#include "Vtop__Dpi.h"
+//#include "Vtop__Dpi.h"
 #include <getopt.h>
 
 #define _BSD_SOURCE
 #include <sys/time.h>
+
+VerilatedContext* contextp;
+Vtop* top;
 
 static void single_cycle() {
   top->clock = 0; top->eval();
