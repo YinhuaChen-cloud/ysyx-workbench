@@ -42,7 +42,7 @@ module IFU(	// <stdin>:2:10
     if (reset)
       pc_reg <= 32'h80000000;	// IFU.scala:30:23
     else
-      pc_reg <= 32'h1;	// <stdin>:2:10, IFU.scala:30:23
+      pc_reg <= pc_reg + 32'h4;	// IFU.scala:30:23, :31:48
   end // always @(posedge)
   `ifndef SYNTHESIS	// <stdin>:2:10
     `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2:10
