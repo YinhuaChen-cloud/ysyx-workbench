@@ -11,7 +11,7 @@ class top extends Module {
   val ifu = Module(new IFU(xlen))
   ifu.io.pc_wen := 0.U
   ifu.io.pc_wdata := 1.U
-  io.led := ifu.io.pc(0)
+  io.led := ifu.io.pc(1)
 
 }
 
