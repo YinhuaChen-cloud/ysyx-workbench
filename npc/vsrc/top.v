@@ -76,6 +76,6 @@ module top(	// <stdin>:15:10
     .reset (reset),
     .io_pc (_ifu_io_pc)
   );
-  assign io_led = _ifu_io_pc[1];	// <stdin>:15:10, top.scala:11:19, :14:22
+  assign io_led = _ifu_io_pc[31];	// <stdin>:15:10, top.scala:11:19, :14:22
 endmodule
 
