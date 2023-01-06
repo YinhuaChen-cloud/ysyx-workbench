@@ -5,13 +5,13 @@ import chisel3._
 class top extends Module {
   val xlen = 32
   val io = IO(new Bundle {
-    val led = Output(Bool())
+    val pc = Output(UInt(xlen.W))
   })
 
   val ifu = Module(new IFU(xlen))
   ifu.io.pc_wen := 0.U
   ifu.io.pc_wdata := 1.U
-  io.led := ifu.io.pc(31)
+  io.pc := ifu.io.pc(31)
 
 }
 
