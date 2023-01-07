@@ -30,7 +30,7 @@ int main(int argc, char** argv, char** env) {
 	reset(10);
 
 	while (!contextp->gotFinish()) {
-		printf("io_pc = 0x%x\n", top->io_pc);
+		printf("io_pc = 0x%lx\n", top->io_pc);
 		contextp->timeInc(1);
 		single_cycle();
 	}
