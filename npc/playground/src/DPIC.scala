@@ -14,7 +14,7 @@ class DPIC (xlen: Int = 64) extends BlackBox(Map("XLEN" -> xlen)) with HasBlackB
             |module DPIC #(XLEN=64) (
             |           input clk,
             |           input rst,
-            |           output [XLEN-1:0] pc);
+            |           input [XLEN-1:0] pc);
             |
             |  import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
             |  initial set_pc(pc);  
