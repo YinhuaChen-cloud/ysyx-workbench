@@ -43,6 +43,8 @@ class top (xlen: Int = 64,
   idu.io.inst := exu.io.inst
 
   dpic.io.pc := ifu.io.pc
+  dpic.io.clk = clock
+  dpic.io.rst = reset
 
 }
 
