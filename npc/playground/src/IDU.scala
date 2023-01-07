@@ -18,12 +18,11 @@ class IDU (xlen: Int = 64,
     val pc_wen = Output(Bool())
   })
 
-  src1 := 0
-  src2 := 0
-  destI := 0
-  func := 0
-  pc_wen := 0
-
+  src1 := 0.U
+  src2 := 0.U
+  destI := 0.U
+  func := 0.U
+  pc_wen := 0.U
 
 }
 
