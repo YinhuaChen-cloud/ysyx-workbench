@@ -1,5 +1,6 @@
 # ==================== mill project template --- start
 VSRC_DIR = ./vsrc
+CONFIG ?= DefaultConfig
 
 export PATH := $(PATH):$(abspath ./utils)
 
@@ -9,7 +10,7 @@ test:
 verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(VSRC_DIR)
-	mill -i __.test.runMain Elaborate -td $(VSRC_DIR)
+	mill -i __.test.runMain Elaborate -td $(VSRC_DIR) --config $(CONFIG)
 
 help:
 	mill -i __.test.runMain Elaborate --help
