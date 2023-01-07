@@ -1,4 +1,5 @@
 import chisel3._
+import chisel3.util.HasBlackBoxInline
 
 class IFU (xlen: Int = 64) extends Module {
   val io = IO(new Bundle {
@@ -6,6 +7,11 @@ class IFU (xlen: Int = 64) extends Module {
     val pc_wdata = Input(UInt(xlen.W))
     val pc = Output(UInt(xlen.W))
   })
+
+  setInline("IFU.v",
+    """import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
+      |initial set_pc(pc);  
+    """.stripMargin)
 
   val pc_reg = RegInit("h80000000".U(xlen.W))
   pc_reg := Mux(io.pc_wen, io.pc_wdata, pc_reg + 4.U)
