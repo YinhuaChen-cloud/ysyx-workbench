@@ -7,7 +7,8 @@
 
 import chisel3._
 
-class top (xlen: Int = 64) extends Module {
+class top (xlen: Int = 64,
+  inst_len: Int = 32) extends Module {
   val io = IO(new Bundle {
     val pc = Output(UInt(xlen.W))
   })
