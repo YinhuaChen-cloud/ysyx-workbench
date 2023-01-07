@@ -2,7 +2,7 @@ import chisel3._
 import chisel3.util._
 //import chisel3.experimental._
 
-class DPIC (xlen: Int = 64) extends BlackBox(Map("XLEN" -> xlen)) with HasBlackBoxInline {
+class DPIC (xlen: Int = 64) extends  with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
