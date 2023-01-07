@@ -11,7 +11,7 @@ class DPIC (xlen: Int = 64) extends BlackBox(Map("XLEN" -> xlen)) with HasBlackB
 
   setInline("DPIC.v",
             """
-            |module DPIC(
+            |module DPIC #(XLEN=64) (
             |           input clk,
             |           input rst,
             |           output [XLEN-1:0] pc);
