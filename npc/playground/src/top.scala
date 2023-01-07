@@ -15,7 +15,7 @@ class top (xlen: Int = 64,
 	// submodule3: EXU
   val exu = Module(new EXU(xlen, inst_len))
 	// submodule4: DPIC
-//  val dpic = Module(new DPIC(xlen))
+  val dpic = Module(new DPIC(xlen))
   // wire relationships between modules:
   //	wire pc_wen; // IDU -> IFU
   //	wire [XLEN-1:0] dnpc; // EXU -> IFU
@@ -42,9 +42,9 @@ class top (xlen: Int = 64,
   idu.io.exec_result := exu.io.exec_result
   idu.io.inst := exu.io.inst
 
-//  dpic.io.pc := ifu.io.pc
-//  dpic.io.clk := clock
-//  dpic.io.rst := reset
+  dpic.io.pc := ifu.io.pc
+  dpic.io.clk := clock
+  dpic.io.rst := reset
 
 }
 
