@@ -9,7 +9,7 @@ class DPIC (xlen: Int = 64) extends BlackBox(Map("XLEN" -> xlen)) with HasBlackB
     val pc = Input(UInt(xlen.W))
   })
 
-  setInline("",
+  setInline("DPIC.v",
             """
             |module DPIC #(XLEN=64) (
             |           input clk,
