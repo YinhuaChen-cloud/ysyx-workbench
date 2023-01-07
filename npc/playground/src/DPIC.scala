@@ -10,7 +10,7 @@ class DPIC (xlen: Int = 64) extends BlackBox(Map("XLEN" -> xlen)) with HasBlackB
   })
 
   setInline("DPIC.v",
-            """
+            s"""
             |import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
             |module DPIC #(XLEN=64) (
             |           input clk,
