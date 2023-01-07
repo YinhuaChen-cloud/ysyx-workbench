@@ -15,8 +15,12 @@ class top (xlen: Int = 64,
 //	wire [XLEN-1:0] dnpc; // EXU -> IFU
 //	wire [XLEN-1:0] pc; // IFU -> EXU
   val ifu = Module(new IFU(xlen))
-  ifu.io.pc_wen := idu.io.pc_wen
-  ifu.io.pc_wdata := exu.io.dnpc
+  ifu.io.pc_wen := 0
+  ifu.io.pc_wdata := 1
+   
+
+//  ifu.io.pc_wen := idu.io.pc_wen
+//  ifu.io.pc_wdata := exu.io.dnpc
 //  exu.io.pc := ifu.io.pc
 
 	// submodule2: IDU
