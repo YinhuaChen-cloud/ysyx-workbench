@@ -1,21 +1,26 @@
 import chisel3._
-import chisel3.util.HasBlackBoxInline
-
 import chisel3.util._
+import chisel3.experimental._
 
-class DPIC (xlen: Int = 64) extends BlackBox with HasBlackBoxInline {
+class DPIC (xlen: Int = 64) extends BlackBox(MAP("XLEN" -> xlen)) with HasBlackBoxInline {
   val io = IO(new Bundle {
+    val clk = Input(Bool())
+    val rst = Input(Bool())
     val pc = Input(UInt(xlen.W))
   })
 
   setInline("DPIC.v",
             """
-            |import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
-            |initial set_pc(pc);  
+            |module DPIC(
+            |           input clk,
+            |           input rst,
+            |           output [XLEN-1:0] pc);
+            |
+            |  import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
+            |  initial set_pc(pc);  
+
+            |endmodule
             """.stripMargin)
 
 }
-
-
-
 
