@@ -1,39 +1,42 @@
-#include <nvboard.h>
-#include <Vtop.h>
+#include "Vtop.h"
+#include "verilated.h"
+#include "svdpi.h"
+//#include "Vtop__Dpi.h"
+#include <getopt.h>
 
-static TOP_NAME dut;
+#define _BSD_SOURCE
+#include <sys/time.h>
 
-// 调用该文件中的nvboard_bind_all_pins(dut)函数即可完成所有信号的绑定。
-void nvboard_bind_all_pins(Vtop* top);
-// actually, nvboard_bind_all_pins invokes nvboard_bind_pin to complete its fucntion. You can check my words in build/auto_bind.cpp
+VerilatedContext* contextp;
+Vtop* top;
 
 static void single_cycle() {
-  dut.clock = 0; dut.eval();
-  dut.clock = 1; dut.eval();
+  top->clock = 0; top->eval();
+  top->clock = 1; top->eval();
 }
 
 static void reset(int n) {
-  dut.reset = 1;
+  top->reset = 1;
   while (n -- > 0) single_cycle();
-  dut.reset = 0;
+  top->reset = 0;
 }
 
-int main() {
+int main(int argc, char** argv, char** env) {
 
-//在进入verilator仿真的循环前，先对引脚进行绑定，然后对NVBoard进行初始化
+	contextp = new VerilatedContext;
+	contextp->commandArgs(argc, argv);
+	top = new Vtop{contextp};
 
-  nvboard_bind_all_pins(&dut);
-  nvboard_init(); // initialize NVBOARD nvboard_quit(): 退出NVBoard
+	reset(10);
 
-  reset(10);
+	while (!contextp->gotFinish()) {
+		printf("io_pc = 0x%lx\n", top->io_pc);
+		contextp->timeInc(1);
+		single_cycle();
+	}
 
-  while(1) {
-//在verilator仿真的循环中更新NVBoard各组件的状态
-    nvboard_update(); // 更新NVBoard中各组件的状态，每当电路状态发生改变时都需要调用该函数
-    single_cycle();
-  }
+	delete top;
+	delete contextp;
 
-//退出verilator仿真的循环后，销毁NVBoard的相关资源
-	nvboard_quit();
 }
 

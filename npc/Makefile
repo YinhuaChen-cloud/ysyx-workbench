@@ -92,7 +92,7 @@ endif
 
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
-run-env: $(VSRCS) $(CSRCS)
+run-env: verilog $(VSRCS) $(CSRCS)
 	@echo "in run-env, debug by cyh CSRCS = $(CSRCS)"
 	@echo "in run-env, debug by cyh VSRCS = $(VSRCS)"
 	@echo "in run-env, debug by cyh VERILATOR_CFLAGS = $(VERILATOR_CFLAGS)"
@@ -101,7 +101,7 @@ run-env: $(VSRCS) $(CSRCS)
 	@echo "debug by cyh $$^ = $^"
 	@rm -rf $(OBJ_DIR)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
-		--top-module $(TOPNAME) $^ \
+		--top-module $(TOPNAME) $(VSRCS) $(CSRCS) \
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
