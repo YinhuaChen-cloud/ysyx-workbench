@@ -8,6 +8,7 @@ class top (xlen: Int = 64,
     val pc = Output(UInt(xlen.W))
   })
 
+  io.pc := ifu.io.pc
 
   // submodule1 IFU
 //	wire pc_wen; // IDU -> IFU
@@ -16,7 +17,6 @@ class top (xlen: Int = 64,
   val ifu = Module(new IFU(xlen))
   ifu.io.pc_wen := 0.U
   ifu.io.pc_wdata := 1.U
-  io.pc := ifu.io.pc
    
 
 //  ifu.io.pc_wen := idu.io.pc_wen
