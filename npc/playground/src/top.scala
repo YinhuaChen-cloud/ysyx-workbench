@@ -5,7 +5,7 @@ import chisel3._
 class top (xlen: Int = 64,
   inst_len: Int = 32) extends Module {
   val io = IO(new Bundle {
-//    val pc = Output(UInt(xlen.W))
+    val pc = Output(UInt(xlen.W))
   })
 
   // submodule1 IFU
@@ -29,7 +29,7 @@ class top (xlen: Int = 64,
   //	wire [INST_LEN-1:0] inst; // EXU -> IDU
   //
   // wire [XLEN-1:0] pc // IFU -> DPIC
-//  io.pc := ifu.io.pc
+  io.pc := ifu.io.pc
 
   ifu.io.pc_wen := idu.io.pc_wen
   ifu.io.pc_wdata := exu.io.dnpc
