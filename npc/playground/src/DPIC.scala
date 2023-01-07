@@ -17,7 +17,7 @@ class DPIC (xlen: Int = 64) extends ExtModule(Map("XLEN" -> xlen)) with HasExtMo
               |           input [XLEN-1:0] io_pc);
               |  
               |  import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
-              |  initial set_pc(pc);  
+              |  initial set_pc(io_pc);  
               |
               |endmodule
             """.stripMargin)
