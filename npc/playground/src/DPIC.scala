@@ -11,15 +11,15 @@ class DPIC (xlen: Int = 64) extends ExtModule(Map("XLEN" -> xlen)) with HasExtMo
 
   setInline("DPIC.v",
             s"""
-            |import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
-            |module DPIC #(XLEN=64) (
-            |           input clk,
-            |           input rst,
-            |           input [XLEN-1:0] pc);
-            |  
-            |  initial set_pc(pc);  
-            |
-            |endmodule
+              |module DPIC #(XLEN=64) (
+              |           input clk,
+              |           input rst,
+              |           input [XLEN-1:0] pc);
+              |  
+              |  import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
+              |  initial set_pc(pc);  
+              |
+              |endmodule
             """.stripMargin)
 
 }
