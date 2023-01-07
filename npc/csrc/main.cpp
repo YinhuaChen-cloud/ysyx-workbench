@@ -9,6 +9,12 @@
 
 VerilatedContext* contextp;
 Vtop* top;
+uint64_t *pc = NULL;
+
+extern "C" void set_pc(const svOpenArrayHandle a) {
+  pc = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
+//	printf("In set_pc, *pc = %lx\n", *pc);
+}
 
 static void single_cycle() {
   top->clock = 0; top->eval();
