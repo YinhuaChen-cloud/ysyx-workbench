@@ -1,7 +1,8 @@
 import chisel3._
 import chisel3.util.HasBlackBoxInline
 
-class IFU (xlen: Int = 64) extends Module {
+//class IFU (xlen: Int = 64) extends Module {
+class IFU (xlen: Int = 64) extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val pc_wen = Input(Bool())
     val pc_wdata = Input(UInt(xlen.W))
