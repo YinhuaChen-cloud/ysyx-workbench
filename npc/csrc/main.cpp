@@ -9,6 +9,8 @@
 
 VerilatedContext* contextp;
 Vtop* top;
+
+#include "verilated_dpi.h"
 uint64_t *pc = NULL;
 
 extern "C" void set_pc(const svOpenArrayHandle a) {
