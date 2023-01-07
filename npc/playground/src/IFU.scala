@@ -20,7 +20,7 @@
 
 import chisel3._
 
-class IFU (xlen: Int) extends Module {
+class IFU (xlen: Int = 64) extends Module {
   val io = IO(new Bundle {
     val pc_wen = Input(Bool())
     val pc_wdata = Input(UInt(xlen.W))
