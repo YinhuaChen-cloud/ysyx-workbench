@@ -36,7 +36,7 @@ class top (xlen: Int = 64,
   exu.io.destI := idu.io.destI
   exu.io.func := idu.io.func
   idu.io.exec_result := exu.io.exec_result
-  idu.io.inst := exu.io.result
+  idu.io.inst := exu.io.inst
 
 }
 
