@@ -9,19 +9,20 @@ class IDU (xlen: Int = 64,
   nr_reg: Int = 32,
   reg_sel: Int = 5) extends Module {
   val io = IO(new Bundle {
-                           output Allinst func,
     val inst = Input(UInt(inst_len.W))
     val exec_result = Input(UInt(xlen.W))
     val src1 = Output(UInt(xlen.W))
     val src2 = Output(UInt(xlen.W))
     val destI = Output(UInt(xlen.W))
-    val func = Output()
+    val func = Output(UInt(macros.func_len.W))
     val pc_wen = Output(Bool())
   })
 
-  val pc_reg = RegInit("h80000000".U(xlen.W))
-  pc_reg := Mux(io.pc_wen, io.pc_wdata, pc_reg + 4.U)
-  io.pc := pc_reg
+  io.src1 := 0.U
+  io.src2 := 0.U
+  io.destI := 0.U
+  io.func := 0.U
+  io.pc_wen := 0.U
 
 }
 

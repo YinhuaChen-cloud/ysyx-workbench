@@ -10,6 +10,14 @@
 VerilatedContext* contextp;
 Vtop* top;
 
+#include "verilated_dpi.h"
+uint64_t *pc = NULL;
+
+extern "C" void set_pc(const svOpenArrayHandle a) {
+  pc = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
+//	printf("In set_pc, *pc = %lx\n", *pc);
+}
+
 static void single_cycle() {
   top->clock = 0; top->eval();
   top->clock = 1; top->eval();
@@ -30,7 +38,7 @@ int main(int argc, char** argv, char** env) {
 	reset(10);
 
 	while (!contextp->gotFinish()) {
-		printf("io_pc = 0x%lx\n", top->io_pc);
+		printf("io_pc = 0x%lx\n", *pc);
 		contextp->timeInc(1);
 		single_cycle();
 	}
