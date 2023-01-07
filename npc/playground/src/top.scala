@@ -8,13 +8,13 @@ class top (xlen: Int = 64,
     val pc = Output(UInt(xlen.W))
   })
 
-  io.pc := ifu.io.pc
 
   // submodule1 IFU
 //	wire pc_wen; // IDU -> IFU
 //	wire [XLEN-1:0] dnpc; // EXU -> IFU
 //	wire [XLEN-1:0] pc; // IFU -> EXU
   val ifu = Module(new IFU(xlen))
+  io.pc := ifu.io.pc
 //  ifu.io.pc_wen := idu.io.pc_wen
 //  ifu.io.pc_wdata := exu.io.dnpc
 //  exu.io.pc := ifu.io.pc
