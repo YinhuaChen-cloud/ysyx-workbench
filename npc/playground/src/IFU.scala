@@ -1,5 +1,4 @@
 import chisel3._
-import chisel3.util.HasBlackBoxInline
 
 class IFU (xlen: Int = 64) extends Module {
   val io = IO(new Bundle {

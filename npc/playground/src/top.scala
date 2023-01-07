@@ -5,7 +5,7 @@ import chisel3._
 class top (xlen: Int = 64,
   inst_len: Int = 32) extends Module {
   val io = IO(new Bundle {
-    val pc = Output(UInt(xlen.W))
+//    val pc = Output(UInt(xlen.W))
   })
 
   // submodule1 IFU
@@ -14,6 +14,8 @@ class top (xlen: Int = 64,
   val idu = Module(new IDU(xlen, inst_len))
 	// submodule3: EXU
   val exu = Module(new EXU(xlen, inst_len))
+	// submodule4: DPIC
+  val dpic = Module(new DPIC(xlen))
   // wire relationships between modules:
   //	wire pc_wen; // IDU -> IFU
   //	wire [XLEN-1:0] dnpc; // EXU -> IFU
@@ -25,7 +27,9 @@ class top (xlen: Int = 64,
   //	wire [`ysyx_22050039_FUNC_LEN-1:0] func; // IDU -> EXU
   //	wire [XLEN-1:0] exec_result; // EXU -> IDU
   //	wire [INST_LEN-1:0] inst; // EXU -> IDU
-  io.pc := ifu.io.pc
+  //
+  // wire [XLEN-1:0] pc // IFU -> DPIC
+//  io.pc := ifu.io.pc
 
   ifu.io.pc_wen := idu.io.pc_wen
   ifu.io.pc_wdata := exu.io.dnpc
@@ -37,6 +41,8 @@ class top (xlen: Int = 64,
   exu.io.func := idu.io.func
   idu.io.exec_result := exu.io.exec_result
   idu.io.inst := exu.io.inst
+
+  dpic.io.pc := ifu.io.pc
 
 }
 
