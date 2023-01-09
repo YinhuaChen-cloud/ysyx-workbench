@@ -146,7 +146,7 @@ int main(int argc, char** argv, char** env) {
 	npc_state.state = NPC_RUNNING;
 	uint64_t pc_before_exec = cpu.pc;
 
-	init_mtrace();
+	// init_mtrace();
 
 	if(is_sdb_mode) {
 		init_sdb();
