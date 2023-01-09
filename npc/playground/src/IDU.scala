@@ -39,6 +39,7 @@ class IDU (xlen: Int = 64,
     val pc_wen = Output(Bool())
   })
 
+// --------------------------------------------
 //   // submodule1 - registers_heap: generate GPRS x0-x31
 //   val reg_stack = RegInit(Vec(Seq.fill(nr_reg)(0.U(xlen.W))))
 //   val reg_each_wen = Wire(Vec(nr_reg, Bool())) // TODO: not drive yet
@@ -89,6 +90,7 @@ class IDU (xlen: Int = 64,
 //   // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
 //     )
 //   )
+// --------------------------------------------
 
   io.src1 := 0.U
   io.src2 := 0.U
