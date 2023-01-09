@@ -5,6 +5,7 @@ import chisel3._
 class top (xlen: Int = 64,
   inst_len: Int = 32) extends Module {
   val io = IO(new Bundle {
+    val inst = Input(UInt(inst_len.W))
   })
 
   // submodule1 IFU
@@ -38,7 +39,7 @@ class top (xlen: Int = 64,
   exu.io.destI := idu.io.destI
   exu.io.exuop := idu.io.exuop
   idu.io.exec_result := exu.io.exec_result
-  idu.io.inst := exu.io.inst
+  idu.io.inst := io.inst
 
   dpic.io.pc := ifu.io.pc
   dpic.io.clk := clock

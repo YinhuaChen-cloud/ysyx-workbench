@@ -8,7 +8,7 @@ class EXU (xlen: Int = 64,
     val src2 = Input(UInt(xlen.W))
     val destI = Input(UInt(xlen.W))
     val pc = Input(UInt(xlen.W))
-    val inst = Output(UInt(inst_len.W))
+    // val inst = Output(UInt(inst_len.W))
     val exec_result = Output(UInt(xlen.W))
     val dnpc = Output(UInt(xlen.W))
   })
