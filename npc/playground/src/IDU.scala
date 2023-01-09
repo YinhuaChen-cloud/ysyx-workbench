@@ -55,13 +55,13 @@ class IDU (xlen: Int = 64,
     reg_stack(i) := Mux(reg_total_wen & reg_each_wen(i), io.exec_result, reg_stack(i)) 
   }
 
-//   // submodule2 - instruction decoder: decode inst
-//   val rd = Wire(UInt(reg_sel.W))
-//   val rs1 = Wire(UInt(reg_sel.W))
-//   val rs2 = Wire(UInt(reg_sel.W))
-//   rd := inst(11:7) // TODO: not used yet
-//   rs1 := inst(19:15) // TODO: not used yet
-//   rs2 := inst(24:20) // TODO: not used yet
+  // submodule2 - instruction decoder: decode inst
+  val rd = Wire(UInt(reg_sel.W))
+  val rs1 = Wire(UInt(reg_sel.W))
+  val rs2 = Wire(UInt(reg_sel.W))
+  rd := inst(11:7) // TODO: not used yet
+  rs1 := inst(19:15) // TODO: not used yet
+  rs2 := inst(24:20) // TODO: not used yet
 
 //   class Inst_Segs extends Bundle {
 //     val imm = Wire(UInt(20.W))
@@ -95,6 +95,16 @@ class IDU (xlen: Int = 64,
 //   // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
 //     )
 //   )
+
+  // submodule4 - reg addressing: 5-32 decoder
+  // Only 1 bit of output can be high, and that is the reg to write
+  reg_each_wen := MuxLookup(
+    rd, "hdeadbeef".U,
+    Array(
+      0.U -> "h0000_0000".U
+    )
+  )
+
 
   io.src1 := 0.U
   io.src2 := 0.U
