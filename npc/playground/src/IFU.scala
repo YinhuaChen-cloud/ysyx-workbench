@@ -7,7 +7,7 @@ class IFU (xlen: Int = 64) extends Module {
     val pc = Output(UInt(xlen.W))
   })
 
-  val pc_reg = RegInit("h80000000".U(xlen.W))
+  val pc_reg = RegInit("h8000_0000".U(xlen.W))
   pc_reg := Mux(io.pc_wen, io.pc_wdata, pc_reg + 4.U)
   io.pc := pc_reg
 
