@@ -138,10 +138,10 @@ int main(int argc, char** argv, char** env) {
 
 	reset(10);
 
-// difftest start
-	sv_regs_to_c();
-	init_difftest(diff_so_file, img_size, difftest_port);
-// difftest end
+// // difftest start
+// 	sv_regs_to_c();
+// 	init_difftest(diff_so_file, img_size, difftest_port);
+// // difftest end
 
 	npc_state.state = NPC_RUNNING;
 	uint64_t pc_before_exec = cpu.pc;
