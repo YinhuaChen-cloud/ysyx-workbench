@@ -1,9 +1,9 @@
 #include <common.h>
-#include "Vysyx_22050039_top.h"
+#include "Vtop.h"
 #include "verilated.h"
 
 VerilatedContext* contextp;
-Vysyx_22050039_top* top;
+Vtop* top;
 
 void single_cycle() {
 //	printf("In single_cycle, clk = 0\n");

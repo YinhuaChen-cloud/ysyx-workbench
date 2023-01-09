@@ -1,7 +1,7 @@
-#include "Vysyx_22050039_top.h"
+#include "Vtop.h"
 #include "verilated.h"
 #include "svdpi.h"
-#include "Vysyx_22050039_top__Dpi.h"
+#include "Vtop__Dpi.h"
 #include <getopt.h>
 #include "diff.h"
 #include "common.h"
@@ -126,7 +126,7 @@ int main(int argc, char** argv, char** env) {
 
 	contextp = new VerilatedContext;
 	contextp->commandArgs(argc, argv);
-	top = new Vysyx_22050039_top{contextp};
+	top = new Vtop{contextp};
 
 	parse_args(argc, argv);
 	init_pmem();
