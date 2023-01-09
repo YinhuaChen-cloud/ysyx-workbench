@@ -45,15 +45,15 @@ class IDU (xlen: Int = 64,
     val pc_wen = Output(Bool())
   })
 
-  // // submodule1 - registers_heap: generate GPRS x0-x31
-  // val reg_stack = RegInit(Vec(Seq.fill(nr_reg)(0.U(xlen.W))))
-  // val reg_each_wen = Wire(Vec(nr_reg, Bool())) // TODO: not drive yet
-  // val reg_total_wen = Wire(Bool()) // TODO: not drive yet
+  // submodule1 - registers_heap: generate GPRS x0-x31
+  val reg_stack = RegInit(Vec(Seq.fill(nr_reg)(0.U(xlen.W))))
+  val reg_each_wen = Wire(Vec(nr_reg, Bool())) // TODO: not drive yet
+  val reg_total_wen = Wire(Bool()) // TODO: not drive yet
 
-  // reg_stack(0) := 0.U // $zero/x0 is always 0 TODO: what will happen to pending wire?
-  // for(i <- 1 to nr_reg) {
-  //   reg_stack(i) := Mux(reg_total_wen & reg_each_wen(i), exec_result, reg_stack(i)) 
-  // }
+  reg_stack(0) := 0.U // $zero/x0 is always 0 TODO: what will happen to pending wire?
+  for(i <- 1 to nr_reg) {
+    reg_stack(i) := Mux(reg_total_wen & reg_each_wen(i), exec_result, reg_stack(i)) 
+  }
 
 //   // submodule2 - instruction decoder: decode inst
 //   val rd = Wire(UInt(reg_sel.W))
