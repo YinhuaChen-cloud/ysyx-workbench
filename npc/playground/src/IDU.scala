@@ -63,6 +63,8 @@ class IDU (xlen: Int = 64,
   rs1 := io.inst(19, 15) // TODO: not used yet
   rs2 := io.inst(24, 20) // TODO: not used yet
 
+  printf("rd = %d\n", rd)
+
 //   class Inst_Segs extends Bundle {
 //     val imm = Wire(UInt(20.W))
 //     val InstType = Wire(RV64InstrType())
