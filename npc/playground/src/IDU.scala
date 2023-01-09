@@ -52,7 +52,7 @@ class IDU (xlen: Int = 64,
 
   reg_stack(0) := 0.U // $zero/x0 is always 0 TODO: what will happen to pending wire?
   for(i <- 1 to nr_reg) {
-    reg_stack(i) := Mux(reg_total_wen & reg_each_wen(i), exec_result, reg_stack(i)) 
+    reg_stack(i) := Mux(reg_total_wen & reg_each_wen(i), io.exec_result, reg_stack(i)) 
   }
 
 //   // submodule2 - instruction decoder: decode inst
