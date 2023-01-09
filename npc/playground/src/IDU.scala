@@ -51,7 +51,7 @@ class IDU (xlen: Int = 64,
   val reg_total_wen = Wire(Bool()) // TODO: not drive yet
 
   reg_stack(0) := 0.U // $zero/x0 is always 0 TODO: what will happen to pending wire?
-  for(i <- 1 to nr_reg) {
+  for(i <- 1 to nr_reg-1) {
     reg_stack(i) := Mux(reg_total_wen & reg_each_wen(i), io.exec_result, reg_stack(i)) 
   }
 
