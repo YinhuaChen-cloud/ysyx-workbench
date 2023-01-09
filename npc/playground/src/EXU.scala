@@ -13,7 +13,7 @@ class EXU (xlen: Int = 64,
     val dnpc = Output(UInt(xlen.W))
   })
 
-  io.inst := 0.U
+  // io.inst := 0.U
   io.exec_result := 0.U
   io.dnpc := 0.U
 
