@@ -101,7 +101,7 @@ class IDU (xlen: Int = 64,
   reg_each_wen := MuxLookup(
     rd, "hdeadbeef".U,
     Array(
-      0.U -> "h0000_0000".U // $zero is always 0
+      0.U -> "h0000_0000".U, // $zero is always 0
       1.U -> "h0000_0002".U
     )
   )
