@@ -46,5 +46,7 @@ class top (xlen: Int = 64,
   dpic.io.clk := clock
   dpic.io.rst := reset
 
+  printf("out is 0x%x\n", io.inst)
+
 }
 
