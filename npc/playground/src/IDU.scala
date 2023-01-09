@@ -103,7 +103,7 @@ class IDU (xlen: Int = 64,
     Array(
       0.U -> "h0000_0000".U, // $zero is always 0
       1.U -> "h0000_0002".U
-    ).toIndexedSeq()
+    )
   )
 
   reg_total_wen := 1.U 
