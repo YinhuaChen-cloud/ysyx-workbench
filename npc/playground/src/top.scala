@@ -39,6 +39,7 @@ class top (xlen: Int = 64,
   exu.io.destI := idu.io.destI
   exu.io.exuop := idu.io.exuop
   idu.io.exec_result := exu.io.exec_result
+  // idu.io.inst := exu.io.inst
   idu.io.inst := io.inst
 
   dpic.io.pc := ifu.io.pc
