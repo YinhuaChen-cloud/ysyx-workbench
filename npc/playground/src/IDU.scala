@@ -100,7 +100,7 @@ class IDU (xlen: Int = 64,
   // Only 1 bit of output can be high, and that is the reg to write
   reg_each_wen := MuxLookup(
     rd, "hdeadbeef".U,
-    Array(
+    ArraySeq.unsafeWrapArray(
       0.U -> "h0000_0000".U, // $zero is always 0
       1.U -> "h0000_0002".U
     )
