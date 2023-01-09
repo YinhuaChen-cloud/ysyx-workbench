@@ -6,6 +6,7 @@ import chisel3._
 import chisel3.util._
 import chisel3.stage.ChiselStage
 import chisel3.experimental.ChiselEnum
+import scala.collection.immutable.ArraySeq
 
 object RV64InstrType extends ChiselEnum {
   val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
@@ -100,7 +101,7 @@ class IDU (xlen: Int = 64,
   // Only 1 bit of output can be high, and that is the reg to write
   reg_each_wen := MuxLookup(
     rd, "hdeadbeef".U,
-    Array(
+    ArraySeq.unsafeWrapArray(
       0.U -> "h0000_0000".U, // $zero is always 0
       1.U -> "h0000_0002".U,
       2.U -> "h0000_0004".U,
