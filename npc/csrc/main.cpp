@@ -160,9 +160,9 @@ int main(int argc, char** argv, char** env) {
 
 			single_cycle();
 
-			sv_regs_to_c();
+			// sv_regs_to_c();
 
-			difftest_step();
+			// difftest_step();
 			if (npc_state.state != NPC_RUNNING) break;
 		}
 	}
@@ -175,7 +175,7 @@ int main(int argc, char** argv, char** env) {
 	delete contextp;
 	free(pmem);
 
-	close_mtrace();
+	// close_mtrace();
 
 	// TODO: maybe need to be changed
 	return is_exit_status_bad();
