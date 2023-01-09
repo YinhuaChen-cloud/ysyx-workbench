@@ -18,6 +18,12 @@ object RV64InstrType extends ChiselEnum {
   // val J = Wire(Bool())
 }
 
+// addi
+// auipc
+// jal
+// jalr
+// sd
+// ebreak
 object RV64Instr {
   // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
   def ADDI = BitPat("b?????????????????000?????0010011")
@@ -39,16 +45,15 @@ class IDU (xlen: Int = 64,
     val pc_wen = Output(Bool())
   })
 
-// --------------------------------------------
-//   // submodule1 - registers_heap: generate GPRS x0-x31
-//   val reg_stack = RegInit(Vec(Seq.fill(nr_reg)(0.U(xlen.W))))
-//   val reg_each_wen = Wire(Vec(nr_reg, Bool())) // TODO: not drive yet
-//   val reg_total_wen = Wire(Bool()) // TODO: not drive yet
+  // submodule1 - registers_heap: generate GPRS x0-x31
+  val reg_stack = RegInit(Vec(Seq.fill(nr_reg)(0.U(xlen.W))))
+  val reg_each_wen = Wire(Vec(nr_reg, Bool())) // TODO: not drive yet
+  val reg_total_wen = Wire(Bool()) // TODO: not drive yet
 
-//   reg_stack(0) := 0.U // $zero/x0 is always 0 TODO: what will happen to pending wire?
-//   for(i <- 1 to nr_reg) {
-//     reg_stack(i) := Mux(reg_total_wen & reg_each_wen(i), exec_result, reg_stack(i)) 
-//   }
+  reg_stack(0) := 0.U // $zero/x0 is always 0 TODO: what will happen to pending wire?
+  for(i <- 1 to nr_reg) {
+    reg_stack(i) := Mux(reg_total_wen & reg_each_wen(i), exec_result, reg_stack(i)) 
+  }
 
 //   // submodule2 - instruction decoder: decode inst
 //   val rd = Wire(UInt(reg_sel.W))
@@ -90,7 +95,6 @@ class IDU (xlen: Int = 64,
 //   // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
 //     )
 //   )
-// --------------------------------------------
 
   io.src1 := 0.U
   io.src2 := 0.U
