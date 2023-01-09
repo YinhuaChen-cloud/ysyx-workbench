@@ -59,9 +59,9 @@ class IDU (xlen: Int = 64,
   val rd = Wire(UInt(reg_sel.W))
   val rs1 = Wire(UInt(reg_sel.W))
   val rs2 = Wire(UInt(reg_sel.W))
-  rd := inst(11:7) // TODO: not used yet
-  rs1 := inst(19:15) // TODO: not used yet
-  rs2 := inst(24:20) // TODO: not used yet
+  rd := io.inst(11:7) // TODO: not used yet
+  rs1 := io.inst(19:15) // TODO: not used yet
+  rs2 := io.inst(24:20) // TODO: not used yet
 
 //   class Inst_Segs extends Bundle {
 //     val imm = Wire(UInt(20.W))
