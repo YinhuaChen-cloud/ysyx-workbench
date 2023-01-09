@@ -177,9 +177,9 @@ static int cmd_w(char *args) {
 // assume args is in correct format, we did not check args
 static int cmd_x(char *args) {
   char *nstr = strtok(args, " ");
-  char *addrstr = nstr + strlen(nstr) + 1;
+  char *addresetr = nstr + strlen(nstr) + 1;
   uint32_t n = atoi(nstr);
-  uint64_t addr = strtol(addrstr, NULL, 16);
+  uint64_t addr = strtol(addresetr, NULL, 16);
   uint32_t val;
   uint32_t cnt = 0;
 
@@ -240,7 +240,7 @@ static struct {
 #define NR_CMD ARRLEN(cmd_table)
 //
 static int cmd_help(char *args) {
-  /* extract the first argument */
+  /* extract the fireset argument */
   char *arg = strtok(NULL, " ");
   int i;
 
@@ -266,7 +266,7 @@ void sdb_mainloop() {
   for (char *str; (str = rl_gets()) != NULL; ) {
     char *str_end = str + strlen(str);
 
-    /* extract the first token as the command */
+    /* extract the fireset token as the command */
     char *cmd = strtok(str, " ");
     if (cmd == NULL) { continue; }
 

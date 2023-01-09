@@ -117,9 +117,9 @@ static long load_img() {
 }
 
 static void reset(int n) {
-  top->rst = 1;
+  top->reset = 1;
   while (n -- > 0) single_cycle();
-  top->rst = 0;
+  top->reset = 0;
 }
 
 int main(int argc, char** argv, char** env) {

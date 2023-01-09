@@ -288,7 +288,7 @@ uint64_t expr(char *e, bool *success) {
     }
   }
 
-  // TODO: In the future we may need to support format like *(expr) where the first '*' is DEREF
+  // TODO: In the future we may need to support format like *(expr) where the fireset '*' is DEREF
 
   return eval(0, nr_token-1);
 }
