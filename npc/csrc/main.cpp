@@ -38,7 +38,7 @@ int main(int argc, char** argv, char** env) {
 	reset(10);
 
 	while (!contextp->gotFinish()) {
-		top->inst = 0xdeadbeef;
+		top->io_inst = 0xdeadbeef;
 		printf("io_pc = 0x%lx\n", *pc);
 		contextp->timeInc(1);
 		single_cycle();
