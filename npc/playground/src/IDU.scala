@@ -105,7 +105,7 @@ class IDU (xlen: Int = 64,
     )
   )
 
-
+  reg_total_wen := 1.U 
   io.src1 := 0.U
   io.src2 := 0.U
   io.destI := 0.U
