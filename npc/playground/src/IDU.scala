@@ -6,7 +6,6 @@ import chisel3._
 import chisel3.util._
 import chisel3.stage.ChiselStage
 import chisel3.experimental.ChiselEnum
-import chisel3.experimental.suppressEnumCastWarning
 
 object RV64InstrType extends ChiselEnum {
   val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
