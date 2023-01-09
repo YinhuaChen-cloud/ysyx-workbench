@@ -64,13 +64,13 @@ class IDU (xlen: Int = 64,
   rs1 := io.inst(19, 15) // TODO: not used yet
   rs2 := io.inst(24, 20) // TODO: not used yet
 
-//   class Inst_Segs extends Bundle {
-//     val imm = Wire(UInt(20.W))
-//     val InstType = Wire(RV64InstrType())
-//     val exuop = Wire(UInt(macros.func_len.W)) // TODO: need to connect with io
-//     val pc_wen = Wire(Bool()) // TODO: need to connect with io
-//     val reg_total_wen = Wire(Bool()) // TODO: need to connect with io
-//   }
+  class Inst_Segs extends Bundle {
+    val imm = Wire(UInt(20.W))
+    val InstType = Wire(RV64InstrType())
+    val exuop = Wire(UInt(macros.func_len.W)) // TODO: need to connect with io
+    val pc_wen = Wire(Bool()) // TODO: need to connect with io
+    val reg_total_wen = Wire(Bool()) // TODO: need to connect with io
+  }
 
 //   // val z = Wire(UInt(9.W))
 //   // z := ...
