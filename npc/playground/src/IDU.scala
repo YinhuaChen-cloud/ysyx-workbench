@@ -46,7 +46,7 @@ class IDU (xlen: Int = 64,
   })
 
   // submodule1 - registers_heap: generate GPRS x0-x31
-  val reg_stack = RegInit(Vec(Seq.fill(nr_reg)(0.U(xlen.W))))
+  val reg_stack = RegInit(VecInit(Seq.fill(nr_reg)(0.U(xlen.W))))
   val reg_each_wen = Wire(Vec(nr_reg, Bool())) // TODO: not drive yet
   val reg_total_wen = Wire(Bool()) // TODO: not drive yet
 
