@@ -40,56 +40,56 @@ class IDU (xlen: Int = 64,
     val pc_wen = Output(Bool())
   })
 
-  // submodule1 - registers_heap: generate GPRS x0-x31
-  val reg_stack = RegInit(Vec(Seq.fill(nr_reg)(0.U(xlen.W))))
-  val reg_each_wen = Wire(Vec(nr_reg, Bool())) // TODO: not drive yet
-  val reg_total_wen = Wire(Bool()) // TODO: not drive yet
+//   // submodule1 - registers_heap: generate GPRS x0-x31
+//   val reg_stack = RegInit(Vec(Seq.fill(nr_reg)(0.U(xlen.W))))
+//   val reg_each_wen = Wire(Vec(nr_reg, Bool())) // TODO: not drive yet
+//   val reg_total_wen = Wire(Bool()) // TODO: not drive yet
 
-  reg_stack(0) := 0.U // $zero/x0 is always 0 TODO: what will happen to pending wire?
-  for(i <- 1 to nr_reg) {
-    reg_stack(i) := Mux(reg_total_wen & reg_each_wen(i), exec_result, reg_stack(i)) 
-  }
+//   reg_stack(0) := 0.U // $zero/x0 is always 0 TODO: what will happen to pending wire?
+//   for(i <- 1 to nr_reg) {
+//     reg_stack(i) := Mux(reg_total_wen & reg_each_wen(i), exec_result, reg_stack(i)) 
+//   }
 
-  // submodule2 - instruction decoder: decode inst
-  val rd = Wire(UInt(reg_sel.W))
-  val rs1 = Wire(UInt(reg_sel.W))
-  val rs2 = Wire(UInt(reg_sel.W))
-  rd := inst(11:7) // TODO: not used yet
-  rs1 := inst(19:15) // TODO: not used yet
-  rs2 := inst(24:20) // TODO: not used yet
+//   // submodule2 - instruction decoder: decode inst
+//   val rd = Wire(UInt(reg_sel.W))
+//   val rs1 = Wire(UInt(reg_sel.W))
+//   val rs2 = Wire(UInt(reg_sel.W))
+//   rd := inst(11:7) // TODO: not used yet
+//   rs1 := inst(19:15) // TODO: not used yet
+//   rs2 := inst(24:20) // TODO: not used yet
 
-  class Inst_Segs extends Bundle {
-    val imm = Wire(UInt(20.W))
-    val InstType = Wire(RV64InstrType())
-    val exuop = Wire(UInt(macros.func_len.W)) // TODO: need to connect with io
-    val pc_wen = Wire(Bool()) // TODO: need to connect with io
-    val reg_total_wen = Wire(Bool()) // TODO: need to connect with io
-  }
+//   class Inst_Segs extends Bundle {
+//     val imm = Wire(UInt(20.W))
+//     val InstType = Wire(RV64InstrType())
+//     val exuop = Wire(UInt(macros.func_len.W)) // TODO: need to connect with io
+//     val pc_wen = Wire(Bool()) // TODO: need to connect with io
+//     val reg_total_wen = Wire(Bool()) // TODO: need to connect with io
+//   }
 
-  // val z = Wire(UInt(9.W))
-  // z := ...
-  // val unpacked = z.asTypeOf(new MyBundle)
-  }
+//   // val z = Wire(UInt(9.W))
+//   // z := ...
+//   // val unpacked = z.asTypeOf(new MyBundle)
+//   }
 
-  // val z = Wire(UInt(9.W))
-  // z := ...
-  // val unpacked = z.asTypeOf(new MyBundle)
-  // unpacked.a
-  // unpacked.b
-  // unpacked.c
+//   // val z = Wire(UInt(9.W))
+//   // z := ...
+//   // val unpacked = z.asTypeOf(new MyBundle)
+//   // unpacked.a
+//   // unpacked.b
+//   // unpacked.c
 
-`define ysyx_22050039_INSTINVALID() \
-	default : bundle = {
-		{inst[31], \
-		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
-  val decoder = MuxCase(,
-    Array(
-      ADDI -> a,
-      EBREAK -> b
-  // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
-  // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
-    )
-  )
+// `define ysyx_22050039_INSTINVALID() \
+// 	default : bundle = {
+// 		{inst[31], \
+// 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
+//   val decoder = MuxCase(,
+//     Array(
+//       ADDI -> a,
+//       EBREAK -> b
+//   // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
+//   // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
+//     )
+//   )
 
   io.src1 := 0.U
   io.src2 := 0.U
