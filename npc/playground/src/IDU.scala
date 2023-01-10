@@ -64,7 +64,7 @@ class IDU (xlen: Int = 64,
   rs1 := io.inst(19, 15) // TODO: not used yet
   rs2 := io.inst(24, 20) // TODO: not used yet
 
-  class Inst_Segs extends Bundle {
+  class Decoded_output extends Bundle {
     val imm = Wire(UInt(20.W))
     val InstType = Wire(RV64InstrType())
     val exuop = Wire(UInt(macros.func_len.W)) // TODO: need to connect with io
@@ -88,14 +88,18 @@ class IDU (xlen: Int = 64,
 // 	default : bundle = {
 // 		{inst[31], \
 // 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
-//   val decoder = MuxCase(,
-//     Array(
-//       ADDI -> a,
-//       EBREAK -> b
-//   // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
-//   // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
-//     )
-//   )
+
+  // The core of DecodeUnit
+  val decoded_output = Wire(UInt())
+  decoded_output = MuxLookup(
+    io.inst, 0.U,
+    ArraySeq.unsafeWrapArray(Array(
+      ADDI -> a,
+      EBREAK -> b
+  // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
+  // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
+    ))
+  )
 
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
