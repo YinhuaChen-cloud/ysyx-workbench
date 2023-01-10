@@ -103,7 +103,7 @@ class IDU (xlen: Int = 64,
 
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
-  assert(reg_each_wen =/= "hdeadbeef".U)
+  assert(reg_each_wen === "hdeadbeef".U)
   reg_each_wen := MuxLookup(
     rd, "hdeadbeef".U,
     ArraySeq.unsafeWrapArray(Array(
