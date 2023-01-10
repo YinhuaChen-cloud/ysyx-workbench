@@ -31,11 +31,11 @@ class top (xlen: Int = 64,
   // wire [XLEN-1:0] pc // IFU -> DPIC
 
   ifu.io <> idu.io
-  idu <> ifu
-  idu <> exu
-  exu <> idu
-  ifu <> exu
-  exu <> ifu
+  idu.io <> ifu.io
+  idu.io <> exu.io
+  exu.io <> idu.io
+  ifu.io <> exu.io
+  exu.io <> ifu.io
   // ifu.io.pc_wen := idu.io.pc_wen
   // ifu.io.pc_wdata := exu.io.dnpc
   // exu.io.pc := ifu.io.pc
