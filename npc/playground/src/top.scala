@@ -30,17 +30,23 @@ class top (xlen: Int = 64,
   //
   // wire [XLEN-1:0] pc // IFU -> DPIC
 
-  ifu.io.pc_wen := idu.io.pc_wen
-  ifu.io.pc_wdata := exu.io.dnpc
-  exu.io.pc := ifu.io.pc
+  ifu <> idu
+  idu <> ifu
+  idu <> exu
+  exu <> idu
+  ifu <> exu
+  exu <> ifu
+  // ifu.io.pc_wen := idu.io.pc_wen
+  // ifu.io.pc_wdata := exu.io.dnpc
+  // exu.io.pc := ifu.io.pc
 
-  exu.io.src1 := idu.io.src1
-  exu.io.src2 := idu.io.src2
-  exu.io.destI := idu.io.destI
-  exu.io.exuop := idu.io.exuop
-  idu.io.exec_result := exu.io.exec_result
-  // idu.io.inst := exu.io.inst
-  idu.io.inst := io.inst
+  // exu.io.src1 := idu.io.src1
+  // exu.io.src2 := idu.io.src2
+  // exu.io.destI := idu.io.destI
+  // exu.io.exuop := idu.io.exuop
+  // idu.io.exec_result := exu.io.exec_result
+  // // idu.io.inst := exu.io.inst
+  // idu.io.inst := io.inst
 
   dpic.io.pc := ifu.io.pc
   dpic.io.clk := clock
