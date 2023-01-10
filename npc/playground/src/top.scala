@@ -30,7 +30,7 @@ class top (xlen: Int = 64,
   //
   // wire [XLEN-1:0] pc // IFU -> DPIC
 
-  ifu <> idu
+  ifu.io <> idu.io
   idu <> ifu
   idu <> exu
   exu <> idu
