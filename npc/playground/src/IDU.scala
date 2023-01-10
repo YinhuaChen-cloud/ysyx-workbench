@@ -93,12 +93,12 @@ class IDU (xlen: Int = 64,
   val decoded_output = Wire(UInt())
   decoded_output := MuxLookup(
     io.inst, 0.U,
-    ArraySeq.unsafeWrapArray(Array(
+    Array(
       RV64Instr.ADDI -> List("h1234_5678".U),
       RV64Instr.EBREAK -> List("h1234_5678".U) 
   // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
   // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
-    ))
+    )
   )
 
   // submodule4 - reg addressing: 5-32 decoder
