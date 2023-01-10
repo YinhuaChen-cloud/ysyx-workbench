@@ -94,8 +94,8 @@ class IDU (xlen: Int = 64,
   decoded_output := MuxLookup(
     io.inst, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      RV64Instr.ADDI -> a,
-      RV64Instr.EBREAK -> b
+      RV64Instr.ADDI -> List(),
+      RV64Instr.EBREAK -> List() 
   // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
   // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
     ))
