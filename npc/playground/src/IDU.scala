@@ -103,7 +103,7 @@ class IDU (xlen: Int = 64,
 //		type, func, pc_wen, reg_wen}; 
      ))
    )
-   println(s"abc = $decoded_output")
+   printf("abc = 0x%x\n", decoded_output)
 
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
