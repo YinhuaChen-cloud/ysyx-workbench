@@ -89,23 +89,24 @@ class IDU (xlen: Int = 64,
 // 		{inst[31], \
 // 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
 
-//   // The core of DecodeUnit
-//   val decoded_output = Wire(UInt(32.W))
-//   decoded_output := MuxLookup(
-//     io.inst, "hdead_beef".U,
-//     Array(
+   // The core of DecodeUnit
+   val decoded_output = Wire(UInt(32.W))
+   decoded_output := MuxLookup(
+     io.inst, "hdead_beef".U,
+     Array(
+       BitPat("b?????????????????000?????0010011") -> "h1234_5678".U
 //       RV64Instr.ADDI -> "h1234_5678".U,
 //       RV64Instr.EBREAK -> "h1234_5678".U 
-//   // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
-//   // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
-//     )
-//   )
+   // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
+   // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
+     )
+   )
 
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
   assert(reg_each_wen =/= "hdeadbeef".U)
   reg_each_wen := MuxLookup(
-    io.inst(4,0), "hdeadbeef".U,
+    rd, "hdeadbeef".U,
     ArraySeq.unsafeWrapArray(Array(
       0.U -> "h0000_0000".U, // $zero is always 0
       1.U -> "h0000_0002".U,
