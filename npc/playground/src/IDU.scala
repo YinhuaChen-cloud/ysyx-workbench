@@ -104,7 +104,7 @@ class IDU (xlen: Int = 64,
     ))
   )
   printf("decoded_output = 0x%x\n", decoded_output)
-  printf("Vec(32, io.inst(31)) = 0x%x\n", Vec(32, io.inst(31)))
+  printf("Vec(32, io.inst(31)) = 0x%x\n", Vec(32, io.inst(31)).asUInt)
 
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
