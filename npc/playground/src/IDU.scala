@@ -89,17 +89,17 @@ class IDU (xlen: Int = 64,
 // 		{inst[31], \
 // 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
 
-  // // The core of DecodeUnit
-  // val decoded_output = Wire(UInt())
-  // decoded_output := MuxLookup(
-  //   io.inst, 0.U,
-  //   Array(
-  //     RV64Instr.ADDI -> List("h1234_5678".U),
-  //     RV64Instr.EBREAK -> List("h1234_5678".U) 
-  // // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
-  // // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
-  //   )
-  // )
+   // The core of DecodeUnit
+   val decoded_output = Wire(UInt())
+   decoded_output := MuxLookup(
+     io.inst, 0.U,
+     Array(
+       RV64Instr.ADDI -> List("h1234_5678".U),
+       RV64Instr.EBREAK -> List("h1234_5678".U) 
+   // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
+   // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
+     )
+   )
 
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
