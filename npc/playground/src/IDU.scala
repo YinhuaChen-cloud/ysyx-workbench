@@ -90,7 +90,7 @@ class IDU (xlen: Int = 64,
 // 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
 
    // The core of DecodeUnit
-   val decoded_output = Wire(UInt())
+   val decoded_output = Wire(UInt(32.W))
    decoded_output := MuxLookup(
      io.inst, 0.U,
      Array(
