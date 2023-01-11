@@ -103,9 +103,9 @@ class IDU (xlen: Int = 64,
 //		type, func, pc_wen, reg_wen}; 
      ))
    )
-   printf("1 = 0x%x\n", Cat(Seq("h1234".U, "h5678".U)))
-   printf("2 = 0x%x\n", Cat("h1234".U(16.W), "h5678".U(16.W)))
-   printf("3 = 0x%x\n", "h1234_5678".U)
+  printf("1 = 0x%x\n", Cat(Seq("h1234".U(16.W), "h5678".U(16.W))))
+  printf("2 = 0x%x\n", Cat("h1234".U(16.W), "h5678".U(16.W)))
+  printf("3 = 0x%x\n", "h1234_5678".U)
 
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
