@@ -25,12 +25,12 @@ object RV64InstrType extends ChiselEnum {
 // jalr
 // sd
 // ebreak
-//object RV64Instr {
-// `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
-def ADDI(inst: UInt) = (BitPat("b?????????????????000?????0010011") === inst)
-// `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
-def EBREAK(inst: UInt) = (BitPat("b00000000000100000000000001110011") === inst)
-//}
+object RV64Instr {
+  // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
+  def ADDI(inst: UInt) = (BitPat("b?????????????????000?????0010011") === inst)
+  // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
+  def EBREAK(inst: UInt) = (BitPat("b00000000000100000000000001110011") === inst)
+}
 
 class IDU (xlen: Int = 64, 
   inst_len: Int = 32,
@@ -93,8 +93,8 @@ class IDU (xlen: Int = 64,
    val decoded_output = Wire(UInt(32.W))
    decoded_output := MuxCase("hdead_beef".U,
      ArraySeq.unsafeWrapArray(Array(
-       ADDI(io.inst) -> "h1234_5678".U,
-       EBREAK(io.inst) -> "h1234_5678".U 
+       RV64Instr.ADDI(io.inst) -> "h1234_5678".U,
+       RV64Instr.EBREAK(io.inst) -> "h1234_5678".U 
    // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
    // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
      ))
