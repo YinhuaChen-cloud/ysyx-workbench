@@ -20,7 +20,7 @@ object RV64InstrType extends ChiselEnum {
 }
 
 object RV64ExuOp {
-  val a :: b :: c :: Nil = Enum(3)
+  val a :: b :: c :: Nil = Enum()
 }
 
 // addi
