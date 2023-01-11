@@ -11,7 +11,7 @@ import scala.collection.immutable.ArraySeq
 //object RV64InstrType extends ChiselEnum {
 object mylove {
 //  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
-  val Rtype :: Itype :: Stype :: Btype :: Utype :: Jtype :: Special :: Nil = Enum(7)
+  val omg :: Itype :: Stype :: Btype :: Utype :: Jtype :: Special :: Nil = Enum(7)
   // Special: Ebreak, Invalid
   // val R = Wire(Bool())
   // val I = Wire(Bool())
