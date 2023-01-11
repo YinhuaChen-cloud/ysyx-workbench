@@ -9,17 +9,17 @@ import chisel3.experimental.ChiselEnum
 import scala.collection.immutable.ArraySeq
 
 //object RV64InstrType extends ChiselEnum {
-//object RV64InstrType {
-////  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
-//  val Rtype :: Itype :: Stype :: Btype :: Utype :: Jtype :: Special :: Nil = Enum(7)
-//  // Special: Ebreak, Invalid
-//  // val R = Wire(Bool())
-//  // val I = Wire(Bool())
-//  // val S = Wire(Bool())
-//  // val B = Wire(Bool())
-//  // val U = Wire(Bool())
-//  // val J = Wire(Bool())
-//}
+object RV64InstrType {
+//  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
+  val Rtype :: Itype :: Stype :: Btype :: Utype :: Jtype :: Special :: Nil = Enum(7)
+  // Special: Ebreak, Invalid
+  // val R = Wire(Bool())
+  // val I = Wire(Bool())
+  // val S = Wire(Bool())
+  // val B = Wire(Bool())
+  // val U = Wire(Bool())
+  // val J = Wire(Bool())
+}
 
 object RV64ExuOp {
   val a :: b :: c :: Nil = Enum(3)
