@@ -8,8 +8,10 @@ import chisel3.stage.ChiselStage
 import chisel3.experimental.ChiselEnum
 import scala.collection.immutable.ArraySeq
 
-object RV64InstrType extends ChiselEnum {
-  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
+//object RV64InstrType extends ChiselEnum {
+object RV64InstrType {
+//  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
+  val Rtype :: Itype :: Stype :: Btype :: Utype :: Jtype :: Special :: Nil = Enum(7)
   // Special: Ebreak, Invalid
   // val R = Wire(Bool())
   // val I = Wire(Bool())
@@ -20,7 +22,7 @@ object RV64InstrType extends ChiselEnum {
 }
 
 object RV64ExuOp {
-  val a :: b :: c :: Nil = Enum()
+  val a :: b :: c :: Nil = Enum(3)
 }
 
 // addi
