@@ -92,7 +92,7 @@ class IDU (xlen: Int = 64,
    // The core of DecodeUnit
    val decoded_output = Wire(UInt(32.W))
    decoded_output := MuxLookup(
-     io.inst, 0.toInt(32.W),
+     io.inst, 0.toInt,
      Array(
        RV64Instr.ADDI -> "h1234_5678".U,
        RV64Instr.EBREAK -> "h1234_5678".U 
