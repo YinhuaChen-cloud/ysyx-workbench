@@ -90,7 +90,7 @@ class IDU (xlen: Int = 64,
 // 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
 
    // The core of DecodeUnit
-   val decoded_output = Wire(UInt(32.W))
+   val decoded_output = Wire(UInt())
    decoded_output := MuxCase("hdead_beef".U,
      ArraySeq.unsafeWrapArray(Array(
        RV64Instr.ADDI(io.inst) -> "h1234_5678".U,
