@@ -72,7 +72,7 @@ class IDU (xlen: Int = 64,
 
   class Decoded_output extends Bundle {
     val imm = Wire(UInt(20.W))
-    val InstType = Wire(RV64InstrType.rtype.asUInt)
+    val InstType = Wire(UInt(RV64InstrType.rtype.getWidth))
     val exuop = Wire(UInt(macros.func_len.W)) // TODO: need to connect with io
     val pc_wen = Wire(Bool()) // TODO: need to connect with io
     val reg_total_wen = Wire(Bool()) // TODO: need to connect with io
@@ -99,7 +99,7 @@ class IDU (xlen: Int = 64,
   val decoded_output = Wire(UInt())
     decoded_output := MuxCase(0.U,
       ArraySeq.unsafeWrapArray(Array(
-        RV64Instr.ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), RV64InstrType.rtype),
+        RV64Instr.ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), RV64InstrType.stype),
         RV64Instr.EBREAK(io.inst) -> "hdeadbeef".U 
     // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
     // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
