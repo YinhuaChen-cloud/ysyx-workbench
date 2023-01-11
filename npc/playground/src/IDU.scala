@@ -9,7 +9,7 @@ import chisel3.experimental.ChiselEnum
 import scala.collection.immutable.ArraySeq
 
 //object RV64InstrType extends ChiselEnum {
-object RV64InstrType {
+object mylove {
 //  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
   val Rtype :: Itype :: Stype :: Btype :: Utype :: Jtype :: Special :: Nil = Enum(7)
   // Special: Ebreak, Invalid
