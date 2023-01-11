@@ -97,6 +97,10 @@ class IDU (xlen: Int = 64,
        RV64Instr.EBREAK(io.inst) -> "h1234_5678".U 
    // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
    // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
+//`define ysyx_22050039_INSTPAT(pattern, imm, type, func, pc_wen, reg_wen) \
+//	pattern: bundle = {inst[6:0], inst[14:12], \
+//		inst[11:7], inst[19:15], inst[24:20], inst[31:25], imm, \
+//		type, func, pc_wen, reg_wen}; 
      ))
    )
 
