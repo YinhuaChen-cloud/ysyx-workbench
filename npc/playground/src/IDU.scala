@@ -30,12 +30,18 @@ object RV64GeneralMacros {
   val NO_WPC = 0.U
   val WREG = 1.U
   val NO_WREG = 0.U
+
   def SEXT(xlen: Int, bits: UInt, bitlen: Int) = {
     assert(xlen >= bitlen)
     assert(bits.getWidth == bitlen)
     Cat(Fill(xlen-bitlen, bits(bitlen-1)), bits)
   }
-  def UEXT(xlen: Int, bits: UInt, bitlen: Int) = Cat(Fill(xlen-bitlen, 0.U(1.W)), bits)
+
+  def UEXT(xlen: Int, bits: UInt, bitlen: Int) = {
+    assert(xlen >= bitlen)
+    assert(bits.getWidth == bitlen)
+    Cat(Fill(xlen-bitlen, 0.U(1.W)), bits)
+  }
 }
 
 class IDU (xlen: Int = 64, 
