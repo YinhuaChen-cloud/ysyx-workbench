@@ -71,11 +71,11 @@ class IDU (xlen: Int = 64,
   rs2 := io.inst(24, 20) // TODO: not used yet
 
   class Decoded_output extends Bundle {
-    val imm = Wire(UInt(20.W))
-    val instType = Wire(RV64InstType())
-    val exuop = Wire(UInt(macros.func_len.W)) // TODO: need to connect with io
-    val pc_wen = Wire(Bool()) // TODO: need to connect with io
-    val reg_total_wen = Wire(Bool()) // TODO: need to connect with io
+    val imm = UInt(20.W)
+    val instType = RV64InstType()
+    val exuop = UInt(macros.func_len.W) // TODO: need to connect with io
+    val pc_wen = Bool() // TODO: need to connect with io
+    val reg_total_wen = Bool() // TODO: need to connect with io
   }
 
 //   // val z = Wire(UInt(9.W))
