@@ -116,7 +116,20 @@ class IDU (xlen: Int = 64,
       Special.asUInt -> 0.U,
     ))
   )
-   
+
+  io.src2 := MuxLookup(
+    unpacked.instType.asUInt, 0.U,
+    ArraySeq.unsafeWrapArray(Array(
+      Rtype.asUInt -> reg_stack(rs2),
+      Itype.asUInt -> Cat(Fill(xlen-20, unpacked.imm(19)), unpacked.imm), // TODO: assume only 32-bit and 64-bit CPU are supported
+      Stype.asUInt -> reg_stack(rs2),
+      Btype.asUInt -> reg_stack(rs2),
+      Utype.asUInt -> 0.U, 
+      Jtype.asUInt -> 0.U,
+      Special.asUInt -> 0.U,
+    ))
+  )
+
 //	All_inst_types inst_type;
 //  assign inst_type = {R, I, S, B, U, J};
 //  
@@ -136,8 +149,6 @@ class IDU (xlen: Int = 64,
 //			default : assert(0);
 //		endcase
 //  end
-//  io.src1 := 0.U
-  io.src2 := 0.U
   io.destI := 0.U
   
   // submodule4 - reg addressing: 5-32 decoder
