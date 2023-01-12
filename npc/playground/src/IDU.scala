@@ -84,13 +84,6 @@ class IDU (xlen: Int = 64,
     val reg_total_wen = Bool() // TODO: need to connect with io
   }
 
-//   // val z = Wire(UInt(9.W))
-//   // z := ...
-//   // val unpacked = z.asTypeOf(new MyBundle)
-//   // unpacked.a
-//   // unpacked.b
-//   // unpacked.c
-
   // The core of DecodeUnit
   import RV64Inst._
   import RV64InstType._
@@ -114,7 +107,7 @@ class IDU (xlen: Int = 64,
   io.exuop := unpacked.exuop
   io.pc_wen := unpacked.pc_wen
 
-  // submodule3 - define src1 src2 destI
+  // submodule3 - determine src1 src2 destI
   assert(unpacked.instType.asUInt >= 0.U && unpacked.instType < InvalidType) 
   io.src1 := MuxLookup(
     unpacked.instType.asUInt, 0.U,
@@ -154,26 +147,6 @@ class IDU (xlen: Int = 64,
       Special.asUInt -> 0.U,
     ))
   )
-
-//	All_inst_types inst_type;
-//  assign inst_type = {R, I, S, B, U, J};
-//  
-//  always@(*) begin
-//    src1 = 0;
-//    src2 = 0;
-//		destI = 0;
-//    case(inst_type)
-//			Rtype		: begin src1 = regs[rs1]; src2 = regs[rs2]; end // checked
-//			Itype		: begin src1 = regs[rs1]; src2 = {{44{imm[19]}}, imm}; end // checked
-//			Stype		: begin destI = `ysyx_22050039_SEXT(XLEN, imm, 20); src1 = regs[rs1]; src2 = regs[rs2]; end // checked
-//			Btype		: begin destI = `ysyx_22050039_SEXT(XLEN, {imm, 1'b0}, 21); src1 = regs[rs1]; src2 = regs[rs2]; end // checked
-//			Utype		: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end // checked
-//			Jtype		: begin src1 = {{43{imm[19]}}, imm, 1'b0}; end // checked
-//			// ebreak and invalid
-//			Special	: ;
-//			default : assert(0);
-//		endcase
-//  end
   
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
