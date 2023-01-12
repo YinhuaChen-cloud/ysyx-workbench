@@ -38,8 +38,6 @@ object RV64Instr {
   def EBREAK(inst: UInt) = (BitPat("b00000000000100000000000001110011") === inst)
 }
 
-import RV64ExuOp._
-
 class IDU (xlen: Int = 64, 
   inst_len: Int = 32,
   nr_reg: Int = 32,
@@ -100,6 +98,7 @@ class IDU (xlen: Int = 64,
 // 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
 
    // The core of DecodeUnit
+  import RV64ExuOp._
   val decoded_output = Wire(UInt())
     decoded_output := MuxCase(0.U,
       ArraySeq.unsafeWrapArray(Array(
