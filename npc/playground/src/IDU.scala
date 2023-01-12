@@ -30,6 +30,8 @@ object RV64GeneralMacros {
   val NO_WPC = 0.U
   val WREG = 1.U
   val NO_WREG = 0.U
+  def SEXT(xlen: Int, bits: UInt, bitlen: Int) = Cat(Fill(xlen-bitlen, bits(bitlen-1)), bits)
+  def UEXT(xlen: Int, bits: UInt, bitlen: Int) = Cat(Fill(xlen-bitlen, 0.U(1.W)), bits)
 }
 
 class IDU (xlen: Int = 64, 
@@ -121,7 +123,7 @@ class IDU (xlen: Int = 64,
     unpacked.instType.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
       Rtype.asUInt -> reg_stack(rs2),
-      Itype.asUInt -> unpacked.imm.asSInt.asSInt(64.W),  // Cat(Fill(xlen-20, unpacked.imm(19)), unpacked.imm), // TODO: assume only 32-bit and 64-bit CPU are supported
+      Itype.asUInt -> Cat(Fill(xlen-20, unpacked.imm(19)), unpacked.imm), // TODO: assume only 32-bit and 64-bit CPU are supported
       Stype.asUInt -> reg_stack(rs2),
       Btype.asUInt -> reg_stack(rs2),
       Utype.asUInt -> 0.U, 
