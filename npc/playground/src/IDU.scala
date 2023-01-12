@@ -104,9 +104,18 @@ class IDU (xlen: Int = 64,
 
   // submodule3 - define src1 src2 destI
   assert(unpacked.instType.asUInt >= 0.U && unpacked.instType < InvalidType) 
-//  io.src1 := MuxLookup(
-//    unpacked.instType, 
-//  )
+  io.src1 := MuxLookup(
+    unpacked.instType, 0.U,
+    ArraySeq.unsafeWrapArray(Array(
+      Rtype -> reg_stack(rs1)
+      Itype -> reg_stack(rs1),
+      Stype -> reg_stack(rs1),
+      Btype -> reg_stack(rs1)
+//      Utype -> Cat(xlen-32, unpacked.imm), // TODO: assume only 32-bit and 64-bit CPU are supported
+//      Jtype -> 0.U
+      // Special -> do nothing, return 0
+    ))
+  )
    
 //	All_inst_types inst_type;
 //  assign inst_type = {R, I, S, B, U, J};
@@ -127,7 +136,7 @@ class IDU (xlen: Int = 64,
 //			default : assert(0);
 //		endcase
 //  end
-  io.src1 := 0.U
+//  io.src1 := 0.U
   io.src2 := 0.U
   io.destI := 0.U
   
