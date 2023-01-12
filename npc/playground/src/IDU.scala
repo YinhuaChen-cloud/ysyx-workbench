@@ -104,7 +104,7 @@ class IDU (xlen: Int = 64,
   )
 
   val unpacked = decoded_output.asTypeOf(new Decoded_output)
-  reg_total_wen := unpacked.reg_total_wen
+  reg_total_wen := 1.U 
   io.src1 := 0.U
   io.src2 := 0.U
   io.destI := 0.U
@@ -113,25 +113,25 @@ class IDU (xlen: Int = 64,
 
 
   // submodule3 - define src1 src2 TODO: maybe we need to determine rd here
-//	All_inst_types inst_type;
-//  assign inst_type = {R, I, S, B, U, J};
-//  
-//  always@(*) begin
-//    src1 = 0;
-//    src2 = 0;
-//		destI = 0;
-//    case(inst_type)
-//			Rtype		: begin src1 = regs[rs1]; src2 = regs[rs2]; end // checked
-//			Itype		: begin src1 = regs[rs1]; src2 = {{44{imm[19]}}, imm}; end // checked
-//			Stype		: begin destI = `ysyx_22050039_SEXT(XLEN, imm, 20); src1 = regs[rs1]; src2 = regs[rs2]; end // checked
-//			Btype		: begin destI = `ysyx_22050039_SEXT(XLEN, {imm, 1'b0}, 21); src1 = regs[rs1]; src2 = regs[rs2]; end // checked
-//			Utype		: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end // checked
-//			Jtype		: begin src1 = {{43{imm[19]}}, imm, 1'b0}; end // checked
-//			// ebreak and invalid
-//			Special	: ;
-//			default : assert(0);
-//		endcase
-//  end
+	All_inst_types inst_type;
+  assign inst_type = {R, I, S, B, U, J};
+  
+  always@(*) begin
+    src1 = 0;
+    src2 = 0;
+		destI = 0;
+    case(inst_type)
+			Rtype		: begin src1 = regs[rs1]; src2 = regs[rs2]; end // checked
+			Itype		: begin src1 = regs[rs1]; src2 = {{44{imm[19]}}, imm}; end // checked
+			Stype		: begin destI = `ysyx_22050039_SEXT(XLEN, imm, 20); src1 = regs[rs1]; src2 = regs[rs2]; end // checked
+			Btype		: begin destI = `ysyx_22050039_SEXT(XLEN, {imm, 1'b0}, 21); src1 = regs[rs1]; src2 = regs[rs2]; end // checked
+			Utype		: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end // checked
+			Jtype		: begin src1 = {{43{imm[19]}}, imm, 1'b0}; end // checked
+			// ebreak and invalid
+			Special	: ;
+			default : assert(0);
+		endcase
+  end
   
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
