@@ -101,12 +101,12 @@ class IDU (xlen: Int = 64,
   reg_total_wen := unpacked.reg_total_wen 
   io.exuop := unpacked.exuop
   io.pc_wen := unpacked.pc_wen
-  io.src1 := 0.U
-  io.src2 := 0.U
-  io.destI := 0.U
 
-
-  // submodule3 - define src1 src2 TODO: maybe we need to determine rd here
+  // submodule3 - define src1 src2 destI
+//  io.src1 := MuxLookup(
+//    unpacked.instType, 
+//  )
+   
 //	All_inst_types inst_type;
 //  assign inst_type = {R, I, S, B, U, J};
 //  
@@ -126,10 +126,13 @@ class IDU (xlen: Int = 64,
 //			default : assert(0);
 //		endcase
 //  end
+  io.src1 := 0.U
+  io.src2 := 0.U
+  io.destI := 0.U
   
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
-  assert(reg_each_wen =/= "hdeadbeef".U)
+  assert(rd >= 0.U && rd <= 31.U)
   reg_each_wen := MuxLookup(
     rd, "hdeadbeef".U,
     ArraySeq.unsafeWrapArray(Array(
