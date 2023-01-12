@@ -87,12 +87,15 @@ class IDU (xlen: Int = 64,
 // 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
 
    // The core of DecodeUnit
+  import RV64Inst._
+  import RV64InstType._
   import RV64ExuOp._
+
   val decoded_output = Wire(UInt())
-    decoded_output := MuxCase(0.U,
-      ArraySeq.unsafeWrapArray(Array(
-        RV64Inst.ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), RV64InstType.Itype.asUInt, Addi.asUInt, 0.U, 1.U),
-        RV64Inst.EBREAK(io.inst) -> "hdeadbeef".U 
+  decoded_output := MuxCase(0.U,
+    ArraySeq.unsafeWrapArray(Array(
+      ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Addi.asUInt, 0.U, 1.U),
+      EBREAK(io.inst) -> "hdeadbeef".U 
     // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
     // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
     //`define ysyx_22050039_INSTPAT(pattern, imm, type, func, pc_wen, reg_wen) \
