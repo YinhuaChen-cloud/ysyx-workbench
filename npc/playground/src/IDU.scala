@@ -8,10 +8,10 @@ import chisel3.stage.ChiselStage
 import chisel3.experimental.ChiselEnum
 import scala.collection.immutable.ArraySeq
 
-//object RV64InstrType extends ChiselEnum {
-object RV64InstrType {
-//  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
-  val rtype :: itype :: stype :: btype :: utype :: jtype :: special :: Nil = Enum(7)
+object RV64InstrType extends ChiselEnum {
+//object RV64InstrType {
+  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
+//  val rtype :: itype :: stype :: btype :: utype :: jtype :: special :: Nil = Enum(7)
   // Special: Ebreak, Invalid
   // val R = Wire(Bool())
   // val I = Wire(Bool())
@@ -77,8 +77,8 @@ class IDU (xlen: Int = 64,
     val pc_wen = Wire(Bool()) // TODO: need to connect with io
     val reg_total_wen = Wire(Bool()) // TODO: need to connect with io
   }
-//  val InstType = Wire(UInt(RV64InstrType.rtype.getWidth.W))
-  printf("============ RV64InstrType.stype = %s\n", RV64InstrType.stype.getClass)
+  val InstType = Wire(UInt(RV64InstrType.Rtype.W))
+//  printf("============ RV64InstrType.stype = %s\n", RV64InstrType.stype.getClass)
 //  val InstType = Wire(UInt(RV64InstrType.rtype.getWidth.W))
 
 //   // val z = Wire(UInt(9.W))
