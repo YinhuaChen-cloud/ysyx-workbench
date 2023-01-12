@@ -81,21 +81,11 @@ class IDU (xlen: Int = 64,
 //   // val z = Wire(UInt(9.W))
 //   // z := ...
 //   // val unpacked = z.asTypeOf(new MyBundle)
-//   }
-
-//   // val z = Wire(UInt(9.W))
-//   // z := ...
-//   // val unpacked = z.asTypeOf(new MyBundle)
 //   // unpacked.a
 //   // unpacked.b
 //   // unpacked.c
 
-// `define ysyx_22050039_INSTINVALID() \
-// 	default : bundle = {
-// 		{inst[31], \
-// 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
-
-   // The core of DecodeUnit
+  // The core of DecodeUnit
   import RV64Inst._
   import RV64InstType._
   import RV64ExuOp._
@@ -113,6 +103,36 @@ class IDU (xlen: Int = 64,
     ))
   )
 
+  val unpacked = decoded_output.asTypeOf(new Decoded_output)
+  reg_total_wen := unpacked.reg_total_wen
+  io.src1 := 0.U
+  io.src2 := 0.U
+  io.destI := 0.U
+  io.exuop := 0.U
+  io.pc_wen := 0.U
+
+
+  // submodule3 - define src1 src2 TODO: maybe we need to determine rd here
+	All_inst_types inst_type;
+  assign inst_type = {R, I, S, B, U, J};
+  
+  always@(*) begin
+    src1 = 0;
+    src2 = 0;
+		destI = 0;
+    case(inst_type)
+			Rtype		: begin src1 = regs[rs1]; src2 = regs[rs2]; end // checked
+			Itype		: begin src1 = regs[rs1]; src2 = {{44{imm[19]}}, imm}; end // checked
+			Stype		: begin destI = `ysyx_22050039_SEXT(XLEN, imm, 20); src1 = regs[rs1]; src2 = regs[rs2]; end // checked
+			Btype		: begin destI = `ysyx_22050039_SEXT(XLEN, {imm, 1'b0}, 21); src1 = regs[rs1]; src2 = regs[rs2]; end // checked
+			Utype		: begin src1 = {{32{imm[19]}}, imm, 12'b0}; end // checked
+			Jtype		: begin src1 = {{43{imm[19]}}, imm, 1'b0}; end // checked
+			// ebreak and invalid
+			Special	: ;
+			default : assert(0);
+		endcase
+  end
+  
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
   assert(reg_each_wen =/= "hdeadbeef".U)
@@ -153,13 +173,6 @@ class IDU (xlen: Int = 64,
       31.U -> "h8000_000".U
     ))
   )
-
-  reg_total_wen := 1.U 
-  io.src1 := 0.U
-  io.src2 := 0.U
-  io.destI := 0.U
-  io.exuop := 0.U
-  io.pc_wen := 0.U
 
 }
 
