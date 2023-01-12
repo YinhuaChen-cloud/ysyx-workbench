@@ -104,7 +104,7 @@ class IDU (xlen: Int = 64,
   )
 
   val unpacked = decoded_output.asTypeOf(new Decoded_output)
-  reg_total_wen := 1.U 
+  reg_total_wen := unpacked.reg_total_wen 
   io.src1 := 0.U
   io.src2 := 0.U
   io.destI := 0.U
