@@ -117,7 +117,7 @@ class IDU (xlen: Int = 64,
   io.src1 := MuxLookup(
     unpacked.instType.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      Rtype.asUInt -> reg_stack(rs1)
+      Rtype -> reg_stack(rs1)
 //      Itype. -> reg_stack(rs1),
 //      Stype -> reg_stack(rs1),
 //      Btype -> reg_stack(rs1)
