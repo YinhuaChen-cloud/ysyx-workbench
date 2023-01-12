@@ -102,7 +102,7 @@ class IDU (xlen: Int = 64,
 // 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
 
    // The core of DecodeUnit
-  import RV64CPUMacros.ExuOp
+  import RV64CPUMacros.ExuOp._
   val decoded_output = Wire(UInt())
     decoded_output := MuxCase(0.U,
       ArraySeq.unsafeWrapArray(Array(
