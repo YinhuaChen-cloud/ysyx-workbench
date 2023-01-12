@@ -103,8 +103,7 @@ class IDU (xlen: Int = 64,
   decoded_output := MuxCase(0.U,
     ArraySeq.unsafeWrapArray(Array(
       ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Addi.asUInt, NO_WPC, WREG),
-      EBREAK(io.inst) -> "hdeadbeef".U 
-    // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
+      EBREAK(io.inst) -> Cat(Fill(20, 0), Special.asUInt, Ebreak.asUInt, NO_WPC, NO_WREG)
     // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
     //`define ysyx_22050039_INSTPAT(pattern, imm, type, func, pc_wen, reg_wen) \
     //	pattern: bundle = {inst[6:0], inst[14:12], \
