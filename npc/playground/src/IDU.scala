@@ -32,8 +32,7 @@ object RV64GeneralMacros {
   val NO_WREG = 0.U
   def SEXT(xlen: Int, bits: UInt, bitlen: Int) = {
     assert(xlen >= bitlen)
-    assert(bits.getWidth == bitlen)
-    printf("a = %s\n", bits.getWidth.getClass)
+    assert(bits.getWidth === bitlen)
     Cat(Fill(xlen-bitlen, bits(bitlen-1)), bits)
   }
   def UEXT(xlen: Int, bits: UInt, bitlen: Int) = Cat(Fill(xlen-bitlen, 0.U(1.W)), bits)
