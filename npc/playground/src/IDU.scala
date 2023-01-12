@@ -110,7 +110,7 @@ class IDU (xlen: Int = 64,
       Rtype.asUInt -> reg_stack(rs1),
       Itype.asUInt -> reg_stack(rs1),
       Stype.asUInt -> reg_stack(rs1),
-      Btype.asUInt -> reg_stack(rs1)
+      Btype.asUInt -> reg_stack(rs1),
       Utype.asUInt -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)) // TODO: assume only 32-bit and 64-bit CPU are supported
 //      Jtype -> 0.U
       // Special -> do nothing, return 0
