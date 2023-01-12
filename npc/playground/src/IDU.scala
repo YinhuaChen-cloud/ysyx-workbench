@@ -8,21 +8,23 @@ import chisel3.stage.ChiselStage
 import chisel3.experimental.ChiselEnum
 import scala.collection.immutable.ArraySeq
 
-object RV64InstrType extends ChiselEnum {
-//object RV64InstrType {
-  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
-//  val rtype :: itype :: stype :: btype :: utype :: jtype :: special :: Nil = Enum(7)
-  // Special: Ebreak, Invalid
-  // val R = Wire(Bool())
-  // val I = Wire(Bool())
-  // val S = Wire(Bool())
-  // val B = Wire(Bool())
-  // val U = Wire(Bool())
-  // val J = Wire(Bool())
-}
+object RV64CPUMacros {
+  object InstType extends ChiselEnum {
+  //object RV64InstrType {
+    val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
+  //  val rtype :: itype :: stype :: btype :: utype :: jtype :: special :: Nil = Enum(7)
+    // Special: Ebreak, Invalid
+    // val R = Wire(Bool())
+    // val I = Wire(Bool())
+    // val S = Wire(Bool())
+    // val B = Wire(Bool())
+    // val U = Wire(Bool())
+    // val J = Wire(Bool())
+  }
 
-object RV64ExuOp extends ChiselEnum {
-  val Addi, Ebreak = Value
+  object ExuOp extends ChiselEnum {
+    val Addi, Ebreak = Value
+  }
 }
 
 // addi
@@ -98,8 +100,7 @@ class IDU (xlen: Int = 64,
 // 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
 
    // The core of DecodeUnit
-  import RV64ExuOp._
-  import RV64ExuOp.{_ => abc}
+  import RV64CPUMacros.ExuOp
   val decoded_output = Wire(UInt())
     decoded_output := MuxCase(0.U,
       ArraySeq.unsafeWrapArray(Array(
