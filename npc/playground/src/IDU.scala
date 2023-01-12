@@ -12,20 +12,22 @@ object RV64InstType extends ChiselEnum {
   val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
 }
 
-object RV64ExuOp extends ChiselEnum {
-  val Addi, Ebreak, Invalid = Value
-}
-
 // addi
 // auipc
 // jal
 // jalr
 // sd
 // ebreak
+object RV64ExuOp extends ChiselEnum {
+  val Addi, Auipc, Jal, Jalr, Sd, Ebreak, Invalid = Value
+}
+
 object RV64Inst {
-  // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
   def ADDI(inst: UInt) = (BitPat("b?????????????????000?????0010011") === inst)
-  // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
+  def AUIPC(inst: UInt) = (BitPat("b?????????????????????????0010111") === inst)
+  def JAL(inst: UInt) = (BitPat("b?????????????????????????1101111") === inst)
+  def JALR(inst: UInt) = (BitPat("b?????????????????000?????1100111") === inst)
+  def SD(inst: UInt) = (BitPat("b?????????????????011?????0100011") === inst)
   def EBREAK(inst: UInt) = (BitPat("b00000000000100000000000001110011") === inst)
 }
 
@@ -103,10 +105,13 @@ class IDU (xlen: Int = 64,
   decoded_output := MuxCase( Cat(Fill(20, 0.U(1.W)), Special.asUInt, Invalid.asUInt, NO_WPC, NO_WREG),
     ArraySeq.unsafeWrapArray(Array(
       ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Addi.asUInt, NO_WPC, WREG),
+      AUIPC(io.inst) -> Cat(io.inst(31, 12), Utype.asUInt, Auipc.asUInt, NO_WPC, WREG),
+      JAL(io.inst) -> Cat(io.inst(31), io.inst(19, 12), io.inst(20), io.inst(30, 21), Jtype.asUInt, Jal.asUInt, WPC, WREG),
+      JALR(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Jalr.asUInt, WPC, WREG),
+      SD(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 25), io.inst(11, 7), Stype.asUInt, Sd.asUInt, NO_WPC, NO_WREG),
       EBREAK(io.inst) -> Cat(Fill(20, 0.U(1.W)), Special.asUInt, Ebreak.asUInt, NO_WPC, NO_WREG)
     ))
   )
-  printf("decoded_output = 0x%x\n", decoded_output)
 
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
