@@ -10,6 +10,16 @@ import scala.collection.immutable.ArraySeq
 
 object RV64InstType extends ChiselEnum {
   val Rtype, Itype, Stype, Btype, Utype, Jtype, Special, InvalidType = Value
+  val correct_annotation_map = Map[String, UInt](
+    "Rtype"  -> 0.U,
+    "Itype"  -> 1.U,
+    "Stype"  -> 2.U,
+    "Btype"  -> 3.U,
+    "Utype" -> 4.U,
+    "Jtype"  -> 5.U,
+    "Special"  -> 6.U,
+    "InvalidType"  -> 7.U
+  )
 }
 
 object RV64ExuOp extends ChiselEnum {
