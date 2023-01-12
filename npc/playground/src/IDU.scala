@@ -123,7 +123,7 @@ class IDU (xlen: Int = 64,
     unpacked.instType.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
       Rtype.asUInt -> reg_stack(rs2),
-      Itype.asUInt -> Cat(Fill(xlen-20, unpacked.imm(19)), unpacked.imm), // TODO: assume only 32-bit and 64-bit CPU are supported
+      Itype.asUInt -> SEXT(xlen, unpacked.imm, 20) // Cat(Fill(xlen-20, unpacked.imm(19)), unpacked.imm), // TODO: assume only 32-bit and 64-bit CPU are supported
       Stype.asUInt -> reg_stack(rs2),
       Btype.asUInt -> reg_stack(rs2),
       Utype.asUInt -> 0.U, 
