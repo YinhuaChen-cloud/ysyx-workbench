@@ -142,20 +142,18 @@ class IDU (xlen: Int = 64,
     ))
   )
 
-  io.destI := 0.U
-    
-//  io.destI := MuxLookup(
-//    unpacked.instType.asUInt, 0.U,
-//    ArraySeq.unsafeWrapArray(Array(
-//      Rtype.asUInt -> 0.U
-//      Itype.asUInt -> 0.U
-//      Stype.asUInt -> reg_stack(rs2),
-//      Btype.asUInt -> reg_stack(rs2),
-//      Utype.asUInt -> 0.U, 
-//      Jtype.asUInt -> 0.U,
-//      Special.asUInt -> 0.U,
-//    ))
-//  )
+  io.destI := MuxLookup(
+    unpacked.instType.asUInt, 0.U,
+    ArraySeq.unsafeWrapArray(Array(
+      Rtype.asUInt -> 0.U
+      Itype.asUInt -> 0.U
+      Stype.asUInt -> SEXT(xlen, unpacked.imm, 20),
+      Btype.asUInt -> SEXT(xlen, Cat(unpacked.imm, 0.U(1.W), 21)),
+      Utype.asUInt -> 0.U, 
+      Jtype.asUInt -> 0.U,
+      Special.asUInt -> 0.U,
+    ))
+  )
 
 //	All_inst_types inst_type;
 //  assign inst_type = {R, I, S, B, U, J};
