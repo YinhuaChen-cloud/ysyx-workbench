@@ -108,6 +108,7 @@ class IDU (xlen: Int = 64,
   io.pc_wen := unpacked.pc_wen
 
   // submodule3 - determine src1 src2 destI
+  printf("unpacked.instType.asUInt = %d\n", unpacked.instType.asUInt)
   assert(unpacked.instType.asUInt >= 0.U && unpacked.instType < InvalidType) 
   io.src1 := MuxLookup(
     unpacked.instType.asUInt, 0.U,
