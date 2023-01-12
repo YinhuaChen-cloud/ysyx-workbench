@@ -9,7 +9,7 @@ import chisel3.experimental.ChiselEnum
 import scala.collection.immutable.ArraySeq
 
 object RV64InstType extends ChiselEnum {
-  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
+  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special, InvalidType = Value
 }
 
 object RV64ExuOp extends ChiselEnum {
@@ -103,6 +103,7 @@ class IDU (xlen: Int = 64,
   io.pc_wen := unpacked.pc_wen
 
   // submodule3 - define src1 src2 destI
+  assert(unpacked.instType >= 0.U && unpacked.instType < InvalidType) 
 //  io.src1 := MuxLookup(
 //    unpacked.instType, 
 //  )
