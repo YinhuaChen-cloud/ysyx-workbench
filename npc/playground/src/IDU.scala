@@ -77,7 +77,9 @@ class IDU (xlen: Int = 64,
     val pc_wen = Wire(Bool()) // TODO: need to connect with io
     val reg_total_wen = Wire(Bool()) // TODO: need to connect with io
   }
-  val InstType = Wire(UInt(RV64InstrType.rtype.getWidth.W))
+//  val InstType = Wire(UInt(RV64InstrType.rtype.getWidth.W))
+  printf("============ RV64InstrType.rtype = %d\n", RV64InstrType.rtype)
+//  val InstType = Wire(UInt(RV64InstrType.rtype.getWidth.W))
 
 //   // val z = Wire(UInt(9.W))
 //   // z := ...
