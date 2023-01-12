@@ -68,8 +68,6 @@ class IDU (xlen: Int = 64,
     val pc_wen = Wire(Bool()) // TODO: need to connect with io
     val reg_total_wen = Wire(Bool()) // TODO: need to connect with io
   }
-//  printf("============ RV64InstrType.stype = %s\n", RV64InstrType.stype.getClass)
-//  val InstType = Wire(UInt(RV64InstrType.rtype.getWidth.W))
 
 //   // val z = Wire(UInt(9.W))
 //   // z := ...
@@ -89,6 +87,7 @@ class IDU (xlen: Int = 64,
 // 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
 
    // The core of DecodeUnit
+  import RV64ExuOp 
   val decoded_output = Wire(UInt())
     decoded_output := MuxCase(0.U,
       ArraySeq.unsafeWrapArray(Array(
