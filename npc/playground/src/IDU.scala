@@ -27,7 +27,7 @@ object RV64CPUMacros {
   }
 }
 
-import RV64CPUMacros
+import RV64CPUMacros._
 
 // addi
 // auipc
