@@ -13,7 +13,7 @@ object RV64InstType extends ChiselEnum {
 }
 
 object RV64ExuOp extends ChiselEnum {
-  val Addi, Ebreak = Value
+  val Addi, Ebreak, Invalid = Value
 }
 
 // addi
@@ -100,15 +100,10 @@ class IDU (xlen: Int = 64,
   import RV64GeneralMacros._
 
   val decoded_output = Wire(UInt())
-  decoded_output := MuxCase(0.U,
+  decoded_output := MuxCase( Cat(Fill(20, 0.U(1.W)), Special.asUInt, Invalid.asUInt, NO_WPC, NO_WREG),
     ArraySeq.unsafeWrapArray(Array(
       ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Addi.asUInt, NO_WPC, WREG),
       EBREAK(io.inst) -> Cat(Fill(20, 0.U(1.W)), Special.asUInt, Ebreak.asUInt, NO_WPC, NO_WREG)
-    // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
-    //`define ysyx_22050039_INSTPAT(pattern, imm, type, func, pc_wen, reg_wen) \
-    //	pattern: bundle = {inst[6:0], inst[14:12], \
-    //		inst[11:7], inst[19:15], inst[24:20], inst[31:25], imm, \
-    //		type, func, pc_wen, reg_wen}; 
     ))
   )
   printf("decoded_output = 0x%x\n", decoded_output)
