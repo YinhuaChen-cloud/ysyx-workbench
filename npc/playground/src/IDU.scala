@@ -38,7 +38,7 @@ object RV64Instr {
   def EBREAK(inst: UInt) = (BitPat("b00000000000100000000000001110011") === inst)
 }
 
-import RV64ExuOp
+import RV64ExuOp._
 
 class IDU (xlen: Int = 64, 
   inst_len: Int = 32,
