@@ -130,6 +130,21 @@ class IDU (xlen: Int = 64,
     ))
   )
 
+  io.destI := 0.U
+    
+//  io.destI := MuxLookup(
+//    unpacked.instType.asUInt, 0.U,
+//    ArraySeq.unsafeWrapArray(Array(
+//      Rtype.asUInt -> 0.U
+//      Itype.asUInt -> 0.U
+//      Stype.asUInt -> reg_stack(rs2),
+//      Btype.asUInt -> reg_stack(rs2),
+//      Utype.asUInt -> 0.U, 
+//      Jtype.asUInt -> 0.U,
+//      Special.asUInt -> 0.U,
+//    ))
+//  )
+
 //	All_inst_types inst_type;
 //  assign inst_type = {R, I, S, B, U, J};
 //  
@@ -149,7 +164,6 @@ class IDU (xlen: Int = 64,
 //			default : assert(0);
 //		endcase
 //  end
-  io.destI := 0.U
   
   // submodule4 - reg addressing: 5-32 decoder
   // Only 1 bit of output can be high, and that is the reg to write
