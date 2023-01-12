@@ -107,10 +107,10 @@ class IDU (xlen: Int = 64,
   io.src1 := MuxLookup(
     unpacked.instType.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      Rtype -> reg_stack(rs1),
-      Itype -> reg_stack(rs1),
-      Stype -> reg_stack(rs1),
-      Btype -> reg_stack(rs1)
+      Rtype.asUInt -> reg_stack(rs1)
+//      Itype. -> reg_stack(rs1),
+//      Stype -> reg_stack(rs1),
+//      Btype -> reg_stack(rs1)
 //      Utype -> Cat(xlen-32, unpacked.imm), // TODO: assume only 32-bit and 64-bit CPU are supported
 //      Jtype -> 0.U
       // Special -> do nothing, return 0
