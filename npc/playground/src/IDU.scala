@@ -12,12 +12,6 @@ object RV64InstType extends ChiselEnum {
   val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
 }
 
-// addi
-// auipc
-// jal
-// jalr
-// sd
-// ebreak
 object RV64ExuOp extends ChiselEnum {
   val Addi, Auipc, Jal, Jalr, Sd, Ebreak, Invalid = Value
 }
@@ -105,11 +99,11 @@ class IDU (xlen: Int = 64,
 
   val unpacked = decoded_output.asTypeOf(new Decoded_output)
   reg_total_wen := unpacked.reg_total_wen 
+  io.exuop := unpacked.exuop
+  io.pc_wen := unpacked.pc_wen
   io.src1 := 0.U
   io.src2 := 0.U
   io.destI := 0.U
-  io.exuop := 0.U
-  io.pc_wen := 0.U
 
 
   // submodule3 - define src1 src2 TODO: maybe we need to determine rd here
