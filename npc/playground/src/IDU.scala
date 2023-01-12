@@ -8,26 +8,13 @@ import chisel3.stage.ChiselStage
 import chisel3.experimental.ChiselEnum
 import scala.collection.immutable.ArraySeq
 
-object RV64CPUMacros {
-  object InstType extends ChiselEnum {
-  //object RV64InstrType {
-    val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
-  //  val rtype :: itype :: stype :: btype :: utype :: jtype :: special :: Nil = Enum(7)
-    // Special: Ebreak, Invalid
-    // val R = Wire(Bool())
-    // val I = Wire(Bool())
-    // val S = Wire(Bool())
-    // val B = Wire(Bool())
-    // val U = Wire(Bool())
-    // val J = Wire(Bool())
-  }
-
-  object ExuOp extends ChiselEnum {
-    val Addi, Ebreak = Value
-  }
+object RV64InstType extends ChiselEnum {
+  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special = Value
 }
 
-import RV64CPUMacros._
+object RV64ExuOp extends ChiselEnum {
+  val Addi, Ebreak = Value
+}
 
 // addi
 // auipc
@@ -35,7 +22,7 @@ import RV64CPUMacros._
 // jalr
 // sd
 // ebreak
-object RV64Instr {
+object RV64Inst {
   // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
   def ADDI(inst: UInt) = (BitPat("b?????????????????000?????0010011") === inst)
   // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
@@ -76,7 +63,7 @@ class IDU (xlen: Int = 64,
 
   class Decoded_output extends Bundle {
     val imm = Wire(UInt(20.W))
-    val instType = Wire(InstType())
+    val instType = Wire(RV64InstType())
     val exuop = Wire(UInt(macros.func_len.W)) // TODO: need to connect with io
     val pc_wen = Wire(Bool()) // TODO: need to connect with io
     val reg_total_wen = Wire(Bool()) // TODO: need to connect with io
@@ -102,13 +89,11 @@ class IDU (xlen: Int = 64,
 // 		inst[19:12], inst[20], inst[30:21]}, Special, Invalid, 1'b0, 1'b0}; 
 
    // The core of DecodeUnit
-  import RV64CPUMacros.ExuOp._
-  import RV64CPUMacros.{ExuOp => _, _}
   val decoded_output = Wire(UInt())
     decoded_output := MuxCase(0.U,
       ArraySeq.unsafeWrapArray(Array(
-        RV64Instr.ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), InstType.Itype.asUInt, Addi.asUInt, 0.U, 1.U),
-        RV64Instr.EBREAK(io.inst) -> "hdeadbeef".U 
+        RV64Inst.ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), RV64InstType.Itype.asUInt, Addi.asUInt, 0.U, 1.U),
+        RV64Inst.EBREAK(io.inst) -> "hdeadbeef".U 
     // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
     // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
     //`define ysyx_22050039_INSTPAT(pattern, imm, type, func, pc_wen, reg_wen) \
