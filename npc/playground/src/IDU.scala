@@ -115,7 +115,7 @@ class IDU (xlen: Int = 64,
   // submodule3 - define src1 src2 destI
   assert(unpacked.instType.asUInt >= 0.U && unpacked.instType < InvalidType) 
   io.src1 := MuxLookup(
-    unpacked.instType, 0.U,
+    unpacked.instType.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
       Rtype.asUInt -> reg_stack(rs1)
 //      Itype. -> reg_stack(rs1),
