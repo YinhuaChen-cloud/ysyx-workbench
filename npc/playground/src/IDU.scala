@@ -145,8 +145,8 @@ class IDU (xlen: Int = 64,
   io.destI := MuxLookup(
     unpacked.instType.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      Rtype.asUInt -> 0.U
-      Itype.asUInt -> 0.U
+      Rtype.asUInt -> 0.U,
+      Itype.asUInt -> 0.U,
       Stype.asUInt -> SEXT(xlen, unpacked.imm, 20),
       Btype.asUInt -> SEXT(xlen, Cat(unpacked.imm, 0.U(1.W), 21)),
       Utype.asUInt -> 0.U, 
