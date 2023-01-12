@@ -29,6 +29,13 @@ object RV64Inst {
   def EBREAK(inst: UInt) = (BitPat("b00000000000100000000000001110011") === inst)
 }
 
+object RV64GeneralMacros {
+  val WPC = 1.U
+  val NO_WPC = 0.U
+  val WREG = 1.U
+  val NO_WREG = 0.U
+}
+
 class IDU (xlen: Int = 64, 
   inst_len: Int = 32,
   nr_reg: Int = 32,
@@ -90,11 +97,12 @@ class IDU (xlen: Int = 64,
   import RV64Inst._
   import RV64InstType._
   import RV64ExuOp._
+  import RV64GeneralMacros._
 
   val decoded_output = Wire(UInt())
   decoded_output := MuxCase(0.U,
     ArraySeq.unsafeWrapArray(Array(
-      ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Addi.asUInt, 0.U, 1.U),
+      ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Addi.asUInt, NO_WPC, WREG),
       EBREAK(io.inst) -> "hdeadbeef".U 
     // `ysyx_22050039_INSTPAT(32'b?????????????????000?????0010011, {{8{inst[31]}}, inst[31:20]}, Itype, Addi, `ysyx_22050039_NO_WPC, `ysyx_22050039_WREG)
     // `ysyx_22050039_INSTPAT(32'b00000000000100000000000001110011, 20'b0, Special, Ebreak, `ysyx_22050039_NO_WPC, `ysyx_22050039_NO_WREG)
