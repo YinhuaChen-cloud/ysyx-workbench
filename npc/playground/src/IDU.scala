@@ -99,7 +99,7 @@ class IDU (xlen: Int = 64,
 
    // The core of DecodeUnit
   import RV64ExuOp._
-  import RV64ExuOp.{_ => _}
+  import RV64ExuOp.{_ => abc}
   val decoded_output = Wire(UInt())
     decoded_output := MuxCase(0.U,
       ArraySeq.unsafeWrapArray(Array(
