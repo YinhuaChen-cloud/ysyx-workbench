@@ -44,7 +44,7 @@ object RV64GeneralMacros {
 
   def UEXT(xlen: Int, bits: UInt) = {
     assert(xlen >= bits.getWidth)
-    Cat(Fill(xlen-bits.getWidth, bits(bits.getWidth-1)), bits)
+t   Cat(Fill(xlen-bits.getWidth, bits(bits.getWidth-1)), bits)
   }
 }
 
@@ -107,7 +107,7 @@ class IDU (xlen: Int = 64,
   reg_total_wen := unpacked.reg_total_wen 
   io.pc_wen := unpacked.pc_wen
 
-  io.exuop := MuxCase(,
+  io.exuop := MuxCase( InvalidExuOp,
     ArraySeq.unsafeWrapArray(Array(
       ADDI(io.inst) -> Addi,
       AUIPC(io.inst) -> Auipc,
@@ -118,7 +118,7 @@ class IDU (xlen: Int = 64,
     ))
   )
 
-  val instType = Wire(RV64InstType())
+//  val instType = Wire(RV64InstType())
 //  val exuop = Wire(RV64ExuOp()) // TODO: need to connect with io
 
   // submodule3 - determine src1 src2 destI
