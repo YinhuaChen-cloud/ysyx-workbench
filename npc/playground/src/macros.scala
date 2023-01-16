@@ -1,3 +1,5 @@
+import chisel3.experimental.ChiselEnum
+
 object macros {
   val func_len = 8
 }
