@@ -116,7 +116,6 @@ class IDU (xlen: Int = 64,
   Predef.printf("======predef=========Rtype.getWidth = %d\n", Rtype.getWidth)
   Predef.printf("======predef=========InvalidInstType.getWidth = %d\n", InvalidInstType.getWidth)
   Predef.printf("======predef=========Utype.getWidth = %d\n", Utype.getWidth)
-  printf("======predef=========Rtype.all = %d\n", Rtype.all)
   printf("======predef=========Rtype.asUInt = %d\n", Rtype.asUInt)
   printf("======predef=========InvalidInstType = %d\n", InvalidInstType.asUInt)
   printf("======predef=========Utype.asUInt = %d\n", Utype.asUInt)
