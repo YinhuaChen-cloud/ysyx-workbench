@@ -144,7 +144,7 @@ class IDU (xlen: Int = 64,
 //  Predef.printf("======predef=========Rtype.asUInt.getWidth = %d\n", Rtype.asUInt.getWidth)
 //  printf("unpacked.instType.asUInt = %d\n", unpacked.instType.asUInt)
 //  printf("invalid = %d\n", InvalidInstType.asUInt)
-  assert(unpacked.instType.asUInt >= 0.U && unpacked.instType < InvalidInstType) 
+  assert(instType.asUInt >= 0.U && instType < InvalidInstType) 
   io.src1 := MuxLookup(
     unpacked.instType.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
