@@ -108,6 +108,7 @@ class IDU (xlen: Int = 64,
   io.pc_wen := unpacked.pc_wen
 
   // submodule3 - determine src1 src2 destI
+  printf("unpacked.instType.asUInt.getWidth = %d\n", unpacked.instType.asUInt.getWidth)
   printf("unpacked.instType.asUInt = %d\n", unpacked.instType.asUInt)
   printf("invalid = %d\n", InvalidInstType.asUInt)
   assert(unpacked.instType.asUInt >= 0.U && unpacked.instType < InvalidInstType) 
