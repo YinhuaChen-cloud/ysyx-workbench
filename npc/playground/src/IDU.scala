@@ -10,7 +10,6 @@ import scala.collection.immutable.ArraySeq
 
 object RV64InstType extends ChiselEnum {
   val Rtype, Itype, Stype, Btype, Utype, Jtype, Special, InvalidInstType = Value
-  val unk = Value(15.U)
 }
 
 object RV64Inst {
@@ -88,8 +87,8 @@ class IDU (xlen: Int = 64,
 
   class Decoded_output extends Bundle {
     val imm = UInt(20.W)
-    val instType = RV64InstType()
-    val exuop = RV64ExuOp() // TODO: need to connect with io
+//    val instType = RV64InstType()
+//    val exuop = RV64ExuOp() // TODO: need to connect with io
     val pc_wen = Bool() // TODO: need to connect with io
     val reg_total_wen = Bool() // TODO: need to connect with io
   }
@@ -113,16 +112,16 @@ class IDU (xlen: Int = 64,
   io.pc_wen := unpacked.pc_wen
 
   // submodule3 - determine src1 src2 destI
-  Predef.printf("======predef=========unpacked.instType.asUInt.getWidth = %d\n", unpacked.instType.asUInt.getWidth)
-  Predef.printf("======predef=========Rtype.getWidth = %d\n", Rtype.getWidth)
-  Predef.printf("======predef=========InvalidInstType.getWidth = %d\n", InvalidInstType.getWidth)
-  Predef.printf("======predef=========Utype.getWidth = %d\n", Utype.getWidth)
-  printf("======predef=========Rtype.asUInt = %d\n", Rtype.asUInt)
-  printf("======predef=========InvalidInstType = %d\n", InvalidInstType.asUInt)
-  printf("======predef=========Utype.asUInt = %d\n", Utype.asUInt)
-  Predef.printf("======predef=========Rtype.asUInt.getWidth = %d\n", Rtype.asUInt.getWidth)
-  printf("unpacked.instType.asUInt = %d\n", unpacked.instType.asUInt)
-  printf("invalid = %d\n", InvalidInstType.asUInt)
+//  Predef.printf("======predef=========unpacked.instType.asUInt.getWidth = %d\n", unpacked.instType.asUInt.getWidth)
+//  Predef.printf("======predef=========Rtype.getWidth = %d\n", Rtype.getWidth)
+//  Predef.printf("======predef=========InvalidInstType.getWidth = %d\n", InvalidInstType.getWidth)
+//  Predef.printf("======predef=========Utype.getWidth = %d\n", Utype.getWidth)
+//  printf("======predef=========Rtype.asUInt = %d\n", Rtype.asUInt)
+//  printf("======predef=========InvalidInstType = %d\n", InvalidInstType.asUInt)
+//  printf("======predef=========Utype.asUInt = %d\n", Utype.asUInt)
+//  Predef.printf("======predef=========Rtype.asUInt.getWidth = %d\n", Rtype.asUInt.getWidth)
+//  printf("unpacked.instType.asUInt = %d\n", unpacked.instType.asUInt)
+//  printf("invalid = %d\n", InvalidInstType.asUInt)
   assert(unpacked.instType.asUInt >= 0.U && unpacked.instType < InvalidInstType) 
   io.src1 := MuxLookup(
     unpacked.instType.asUInt, 0.U,
