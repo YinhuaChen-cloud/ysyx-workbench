@@ -118,7 +118,19 @@ class IDU (xlen: Int = 64,
     ))
   )
 
-//  val instType = Wire(RV64InstType())
+  val instType = Wire(RV64InstType())
+  instType := MuxCase( InvalidInstType,
+    ArraySeq.unsafeWrapArray(Array(
+      ADDI(io.inst) -> Itype,
+      AUIPC(io.inst) -> Utype,
+      JAL(io.inst) -> Jtype,
+      JALR(io.inst) -> Itype,
+      SD(io.inst) -> Stype,
+      EBREAK(io.inst) -> Special
+    ))
+  )
+
+
 //  val exuop = Wire(RV64ExuOp()) // TODO: need to connect with io
 
   // submodule3 - determine src1 src2 destI
