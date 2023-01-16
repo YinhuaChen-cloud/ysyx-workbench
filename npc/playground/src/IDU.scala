@@ -52,6 +52,11 @@ object RV64GeneralMacros {
   }
 }
 
+import RV64Inst._
+import RV64InstType._
+import RV64ExuOp._
+import RV64GeneralMacros._
+
 class IDU (xlen: Int = 64, 
   inst_len: Int = 32,
   nr_reg: Int = 32,
@@ -62,7 +67,7 @@ class IDU (xlen: Int = 64,
     val src1 = Output(UInt(xlen.W))
     val src2 = Output(UInt(xlen.W))
     val destI = Output(UInt(xlen.W))
-    val exuop = Output(UInt(macros.func_len.W))
+    val exuop = Output(RV64ExuOp())
     val pc_wen = Output(Bool())
   })
 
@@ -93,11 +98,6 @@ class IDU (xlen: Int = 64,
   }
 
   // The core of DecodeUnit
-  import RV64Inst._
-  import RV64InstType._
-  import RV64ExuOp._
-  import RV64GeneralMacros._
-
   val decoded_output = Wire(UInt((new Decoded_output).getWidth.W))
   decoded_output := MuxCase( Cat(Fill(20, 0.U(1.W)), Special.asUInt, InvalidExuOp.asUInt, NO_WPC, NO_WREG),
     ArraySeq.unsafeWrapArray(Array(
