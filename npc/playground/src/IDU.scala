@@ -9,11 +9,11 @@ import chisel3.experimental.ChiselEnum
 import scala.collection.immutable.ArraySeq
 
 object RV64InstType extends ChiselEnum {
-  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special, InvalidType = Value
+  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special, InvalidInstType = Value
 }
 
 object RV64ExuOp extends ChiselEnum {
-  val Addi, Auipc, Jal, Jalr, Sd, Ebreak, Invalid = Value
+  val Addi, Auipc, Jal, Jalr, Sd, Ebreak, InvalidExuOp = Value
 }
 
 object RV64Inst {
@@ -91,7 +91,7 @@ class IDU (xlen: Int = 64,
   import RV64GeneralMacros._
 
   val decoded_output = Wire(UInt())
-  decoded_output := MuxCase( Cat(Fill(20, 0.U(1.W)), Special.asUInt, Invalid.asUInt, NO_WPC, NO_WREG),
+  decoded_output := MuxCase( Cat(Fill(20, 0.U(1.W)), Special.asUInt, InvalidExuOp.asUInt, NO_WPC, NO_WREG),
     ArraySeq.unsafeWrapArray(Array(
       ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Addi.asUInt, NO_WPC, WREG),
       AUIPC(io.inst) -> Cat(io.inst(31, 12), Utype.asUInt, Auipc.asUInt, NO_WPC, WREG),
