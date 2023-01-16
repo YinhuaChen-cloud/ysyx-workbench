@@ -48,7 +48,7 @@ object RV64GeneralMacros {
 
   def UEXT(xlen: Int, bits: UInt) = {
     assert(xlen >= bits.getWidth)
-    Cat(Fill(xlen-bits.getWidth, bits(bits.getWidth-1)), bits)
+    Wire(Cat(Fill(xlen-bits.getWidth, bits(bits.getWidth-1)), bits))
   }
 }
 
