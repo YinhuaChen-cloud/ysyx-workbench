@@ -41,16 +41,14 @@ object RV64GeneralMacros {
   val WREG = true.B
   val NO_WREG = false.B
 
-  def SEXT(xlen: Int, bits: UInt, bitlen: Int) = {
-    assert(xlen >= bitlen)
-    assert(bits.getWidth == bitlen)
-    Cat(Fill(xlen-bitlen, bits(bitlen-1)), bits)
+  def SEXT(xlen: Int, bits: UInt) = {
+    assert(xlen >= bits.getWidth)
+    Cat(Fill(xlen-bits.getWidth, bits(bits.getWidth-1)), bits)
   }
 
   def UEXT(xlen: Int, bits: UInt, bitlen: Int) = {
-    assert(xlen >= bitlen)
-    assert(bits.getWidth == bitlen)
-    Cat(Fill(xlen-bitlen, 0.U(1.W)), bits)
+    assert(xlen >= bits.getWidth)
+    Cat(Fill(xlen-bits.getWidth, false.B), bits)
   }
 }
 
