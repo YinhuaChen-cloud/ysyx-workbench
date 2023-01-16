@@ -93,14 +93,14 @@ class IDU (xlen: Int = 64,
 
   // The core of DecodeUnit
   val decoded_output = Wire(UInt((new Decoded_output).getWidth.W))
-  decoded_output := MuxCase( Cat(Fill(20, 0.U(1.W)), Special.asUInt, InvalidExuOp.asUInt, NO_WPC, NO_WREG),
+  decoded_output := MuxCase( Cat(Fill(20, 0.U(1.W)), NO_WPC, NO_WREG),
     ArraySeq.unsafeWrapArray(Array(
-      ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Addi.asUInt, NO_WPC, WREG),
-      AUIPC(io.inst) -> Cat(io.inst(31, 12), Utype.asUInt, Auipc.asUInt, NO_WPC, WREG),
-      JAL(io.inst) -> Cat(io.inst(31), io.inst(19, 12), io.inst(20), io.inst(30, 21), Jtype.asUInt, Jal.asUInt, WPC, WREG),
-      JALR(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Jalr.asUInt, WPC, WREG),
-      SD(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 25), io.inst(11, 7), Stype.asUInt, Sd.asUInt, NO_WPC, NO_WREG),
-      EBREAK(io.inst) -> Cat(Fill(20, 0.U(1.W)), Special.asUInt, Ebreak.asUInt, NO_WPC, NO_WREG)
+      ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), NO_WPC, WREG),
+      AUIPC(io.inst) -> Cat(io.inst(31, 12), NO_WPC, WREG),
+      JAL(io.inst) -> Cat(io.inst(31), io.inst(19, 12), io.inst(20), io.inst(30, 21), WPC, WREG),
+      JALR(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), WPC, WREG),
+      SD(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 25), io.inst(11, 7), NO_WPC, NO_WREG),
+      EBREAK(io.inst) -> Cat(Fill(20, 0.U(1.W)), NO_WPC, NO_WREG)
     ))
   )
   val unpacked = decoded_output.asTypeOf(new Decoded_output)
@@ -119,7 +119,7 @@ class IDU (xlen: Int = 64,
   )
 
   val instType = Wire(RV64InstType())
-  instType := MuxCase( InvalidInstType,
+  instType := MuxCase( Special,
     ArraySeq.unsafeWrapArray(Array(
       ADDI(io.inst) -> Itype,
       AUIPC(io.inst) -> Utype,
@@ -129,9 +129,6 @@ class IDU (xlen: Int = 64,
       EBREAK(io.inst) -> Special
     ))
   )
-
-
-//  val exuop = Wire(RV64ExuOp()) // TODO: need to connect with io
 
   // submodule3 - determine src1 src2 destI
 //  Predef.printf("======predef=========unpacked.instType.asUInt.getWidth = %d\n", unpacked.instType.asUInt.getWidth)
