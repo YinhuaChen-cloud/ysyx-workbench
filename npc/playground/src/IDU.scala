@@ -90,7 +90,7 @@ class IDU (xlen: Int = 64,
   import RV64ExuOp._
   import RV64GeneralMacros._
 
-  val decoded_output = Wire(UInt())
+  val decoded_output = Wire(UInt((new Decoded_output).getWidth.W))
   decoded_output := MuxCase( Cat(Fill(20, 0.U(1.W)), Special.asUInt, InvalidExuOp.asUInt, NO_WPC, NO_WREG),
     ArraySeq.unsafeWrapArray(Array(
       ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Addi.asUInt, NO_WPC, WREG),
