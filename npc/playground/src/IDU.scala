@@ -103,7 +103,7 @@ class IDU (xlen: Int = 64,
   val decoded_output = Wire(UInt((new Decoded_output).getWidth.W))
   decoded_output := MuxCase( Cat(Fill(20, 0.U(1.W)), Special.asUInt, InvalidExuOp.asUInt, NO_WPC, NO_WREG),
     ArraySeq.unsafeWrapArray(Array(
-      ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt(3.W), Addi.asUInt, NO_WPC, WREG),
+      ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt(3), Addi.asUInt, NO_WPC, WREG),
       AUIPC(io.inst) -> Cat(io.inst(31, 12), Utype.asUInt, Auipc.asUInt, NO_WPC, WREG),
       JAL(io.inst) -> Cat(io.inst(31), io.inst(19, 12), io.inst(20), io.inst(30, 21), Jtype.asUInt, Jal.asUInt, WPC, WREG),
       JALR(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Jalr.asUInt, WPC, WREG),
