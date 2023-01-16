@@ -37,9 +37,9 @@ object RV64Inst {
 
 object RV64GeneralMacros {
   val WPC = true.B
-  val NO_WPC = 0.U(1.W)
-  val WREG = 1.U(1.W)
-  val NO_WREG = 0.U(1.W)
+  val NO_WPC = false.B
+  val WREG = true.B
+  val NO_WREG = false.B
 
   def SEXT(xlen: Int, bits: UInt, bitlen: Int) = {
     assert(xlen >= bitlen)
