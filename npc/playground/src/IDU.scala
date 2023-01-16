@@ -123,6 +123,7 @@ class IDU (xlen: Int = 64,
   printf("======predef=========Rtype.asUInt = %d\n", Rtype.asUInt)
   printf("======predef=========InvalidInstType = %d\n", InvalidInstType.asUInt)
   printf("======predef=========Utype.asUInt = %d\n", Utype.asUInt)
+  Predef.printf("======predef=========Rtype.asUInt.getWidth = %d\n", Rtype.asUInt.getWidth)
   printf("unpacked.instType.asUInt = %d\n", unpacked.instType.asUInt)
   printf("invalid = %d\n", InvalidInstType.asUInt)
   assert(unpacked.instType.asUInt >= 0.U && unpacked.instType < InvalidInstType) 
