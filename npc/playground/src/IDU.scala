@@ -46,7 +46,7 @@ object RV64GeneralMacros {
     Cat(Fill(xlen-bits.getWidth, bits(bits.getWidth-1)), bits)
   }
 
-  def UEXT(xlen: Int, bits: UInt, bitlen: Int) = {
+  def UEXT(xlen: Int, bits: UInt) = {
     assert(xlen >= bits.getWidth)
     Cat(Fill(xlen-bits.getWidth, false.B), bits)
   }
@@ -101,7 +101,7 @@ class IDU (xlen: Int = 64,
   val decoded_output = Wire(UInt((new Decoded_output).getWidth.W))
   decoded_output := MuxCase( Cat(Fill(20, 0.U(1.W)), Special.asUInt, InvalidExuOp.asUInt, NO_WPC, NO_WREG),
     ArraySeq.unsafeWrapArray(Array(
-      ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), UEXT(Itype.asUInt, 3), UEXT(Addi.asUInt, 3), NO_WPC, WREG),
+      ADDI(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), UEXT(3, Itype.asUInt), UEXT(3, Addi.asUInt), NO_WPC, WREG),
       AUIPC(io.inst) -> Cat(io.inst(31, 12), Utype.asUInt, Auipc.asUInt, NO_WPC, WREG),
       JAL(io.inst) -> Cat(io.inst(31), io.inst(19, 12), io.inst(20), io.inst(30, 21), Jtype.asUInt, Jal.asUInt, WPC, WREG),
       JALR(io.inst) -> Cat(Fill(8, io.inst(31)), io.inst(31, 20), Itype.asUInt, Jalr.asUInt, WPC, WREG),
