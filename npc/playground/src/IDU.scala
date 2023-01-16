@@ -87,8 +87,6 @@ class IDU (xlen: Int = 64,
 
   class Decoded_output extends Bundle {
     val imm = UInt(20.W)
-    val instType = RV64InstType(3.W)
-    val exuop = RV64ExuOp(3.W) // TODO: need to connect with io
     val pc_wen = Bool() // TODO: need to connect with io
     val reg_total_wen = Bool() // TODO: need to connect with io
   }
@@ -105,11 +103,23 @@ class IDU (xlen: Int = 64,
       EBREAK(io.inst) -> Cat(Fill(20, 0.U(1.W)), Special.asUInt, Ebreak.asUInt, NO_WPC, NO_WREG)
     ))
   )
-
   val unpacked = decoded_output.asTypeOf(new Decoded_output)
   reg_total_wen := unpacked.reg_total_wen 
-  io.exuop := unpacked.exuop
   io.pc_wen := unpacked.pc_wen
+
+  io.exuop := MuxCase(,
+    ArraySeq.unsafeWrapArray(Array(
+      ADDI(io.inst) -> Addi,
+      AUIPC(io.inst) -> Auipc,
+      JAL(io.inst) -> Jal,
+      JALR(io.inst) -> Jalr,
+      SD(io.inst) -> Sd,
+      EBREAK(io.inst) -> Ebreak
+    ))
+  )
+
+  val instType = Wire(RV64InstType())
+//  val exuop = Wire(RV64ExuOp()) // TODO: need to connect with io
 
   // submodule3 - determine src1 src2 destI
 //  Predef.printf("======predef=========unpacked.instType.asUInt.getWidth = %d\n", unpacked.instType.asUInt.getWidth)
