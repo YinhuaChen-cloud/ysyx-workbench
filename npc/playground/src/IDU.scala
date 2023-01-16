@@ -12,10 +12,6 @@ object RV64InstType extends ChiselEnum {
   val Rtype, Itype, Stype, Btype, Utype, Jtype, Special, InvalidInstType = Value
 }
 
-object RV64ExuOp extends ChiselEnum {
-  val Addi, Auipc, Jal, Jalr, Sd, Ebreak, InvalidExuOp = Value
-}
-
 object RV64Inst {
   def ADDI(inst: UInt) = {
     when(BitPat("b???????_?????_?????_000_?????_0010011") === inst) {
