@@ -10,6 +10,7 @@ import scala.collection.immutable.ArraySeq
 
 object RV64InstType extends ChiselEnum {
   val Rtype, Itype, Stype, Btype, Utype, Jtype, Special, InvalidInstType = Value
+  val unk = Value(15.U)
 }
 
 object RV64Inst {
