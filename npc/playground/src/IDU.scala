@@ -121,15 +121,8 @@ class IDU (xlen: Int = 64,
   )
 
   // submodule3 - determine src1 src2 destI
-//  Predef.printf("======predef=========unpacked.instType.asUInt.getWidth = %d\n", unpacked.instType.asUInt.getWidth)
-//  Predef.printf("======predef=========Rtype.getWidth = %d\n", Rtype.getWidth)
-//  Predef.printf("======predef=========InvalidInstType.getWidth = %d\n", InvalidInstType.getWidth)
 //  Predef.printf("======predef=========Utype.getWidth = %d\n", Utype.getWidth)
-//  printf("======predef=========Rtype.asUInt = %d\n", Rtype.asUInt)
-//  printf("======predef=========InvalidInstType = %d\n", InvalidInstType.asUInt)
 //  printf("======predef=========Utype.asUInt = %d\n", Utype.asUInt)
-//  Predef.printf("======predef=========Rtype.asUInt.getWidth = %d\n", Rtype.asUInt.getWidth)
-//  printf("unpacked.instType.asUInt = %d\n", unpacked.instType.asUInt)
 //  printf("invalid = %d\n", InvalidInstType.asUInt)
   assert(instType.asUInt >= 0.U && instType < InvalidInstType) 
   io.src1 := MuxLookup(
