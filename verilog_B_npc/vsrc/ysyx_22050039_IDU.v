@@ -120,8 +120,7 @@ module ysyx_22050039_IDU #(XLEN = 64,
   `ysyx_22050039_INSTPAT_END()
   
   // submodule3 - define src1 src2 TODO: maybe we need to determine rd here
-  // the future
-	All_inst_types inst_type;
+All_inst_types inst_type;
   assign inst_type = {R, I, S, B, U, J};
   
   always@(*) begin
