@@ -19,10 +19,10 @@ class EXU (xlen: Int = 64,
   io.exec_result := MuxLookup(
     io.exuop, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      ADDI -> io.src1 + io.src2,
-      AUIPC -> io.src1 + io.pc,
-      JAL -> io.pc + 4.U,
-      JALR -> io.pc + 4.U,
+      Addi -> io.src1 + io.src2,
+      Auipc -> io.src1 + io.pc,
+      Jal -> io.pc + 4.U,
+      Jalr -> io.pc + 4.U,
 //      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
     ))
@@ -31,8 +31,8 @@ class EXU (xlen: Int = 64,
   io.dnpc := MuxLookup(
     io.exuop, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      JAL -> io.pc + io.src1,
-      JALR -> io.src1 + io.src2,
+      Jal -> io.pc + io.src1,
+      Jalr -> io.src1 + io.src2,
 //      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
     ))
