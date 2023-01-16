@@ -146,7 +146,7 @@ class IDU (xlen: Int = 64,
 //  printf("invalid = %d\n", InvalidInstType.asUInt)
   assert(instType.asUInt >= 0.U && instType < InvalidInstType) 
   io.src1 := MuxLookup(
-    unpacked.instType.asUInt, 0.U,
+    instType.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
       Rtype.asUInt -> reg_stack(rs1),
       Itype.asUInt -> reg_stack(rs1),
@@ -159,7 +159,7 @@ class IDU (xlen: Int = 64,
   )
 
   io.src2 := MuxLookup(
-    unpacked.instType.asUInt, 0.U,
+    instType.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
       Rtype.asUInt -> reg_stack(rs2),
       Itype.asUInt -> SEXT(xlen, unpacked.imm),
@@ -172,7 +172,7 @@ class IDU (xlen: Int = 64,
   )
 
   io.destI := MuxLookup(
-    unpacked.instType.asUInt, 0.U,
+    instType.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
       Rtype.asUInt -> 0.U,
       Itype.asUInt -> 0.U,
