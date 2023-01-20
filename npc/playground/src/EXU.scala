@@ -22,7 +22,7 @@ class EXU (xlen: Int = 64,
   io.exec_result := MuxLookup(
     io.exuop, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      Addi -> io.src1,
+      Addi -> io.src1 + io.src2,
       Auipc -> io.src1 + io.pc,
       Jal -> io.pc + 4.U,
       Jalr -> io.pc + 4.U,
