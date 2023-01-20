@@ -20,12 +20,12 @@ class EXU (xlen: Int = 64,
 
   // The core of ExecuteUnit
   io.exec_result := MuxLookup(
-    io.exuop, 0.U,
+    io.exuop.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      Addi -> io.src1 + io.src2,
-      Auipc -> io.src1 + io.pc,
-      Jal -> io.pc + 4.U,
-      Jalr -> io.pc + 4.U,
+      Addi.asUInt -> io.src1 + io.src2,
+      Auipc.asUInt -> io.src1 + io.pc,
+      Jal.asUInt -> io.pc + 4.U,
+      Jalr.asUInt -> io.pc + 4.U,
     ))
   )
 //      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
