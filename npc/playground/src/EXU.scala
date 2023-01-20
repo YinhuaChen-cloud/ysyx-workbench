@@ -13,10 +13,10 @@ class EXU (xlen: Int = 64,
     val src2 = Input(UInt(xlen.W))
     val destI = Input(UInt(xlen.W))
     val pc = Input(UInt(xlen.W))
-    // val inst = Output(UInt(inst_len.W))
     val exec_result = Output(UInt(xlen.W))
     val dnpc = Output(UInt(xlen.W))
   })
+
 
   // The core of ExecuteUnit
   io.exec_result := MuxLookup(
@@ -30,6 +30,7 @@ class EXU (xlen: Int = 64,
   )
 //      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
+//
 
   io.dnpc := MuxLookup(
     io.exuop, 0.U,
