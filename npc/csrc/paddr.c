@@ -29,9 +29,9 @@ void init_mtrace() {
 }
 
 void close_mtrace() {
-	assert(mtrace_fp);
-	fclose(mtrace_fp);
-	mtrace_fp = NULL;
+//	assert(mtrace_fp);
+//	fclose(mtrace_fp);
+//	mtrace_fp = NULL;
 }
 
 extern "C" void pmem_read(long long raddr, long long *rdata) {
