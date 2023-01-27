@@ -30,7 +30,7 @@ class EXU (xlen: Int = 64,
 
   // The core of ExecuteUnit
   val tmpsrc1 = Wire(UInt(xlen.W)) 
-  val tmpsrc2 = Wire(UInt(xlen.W)) 
+//  val tmpsrc2 = Wire(UInt(xlen.W)) 
 
   tmpsrc1 := MuxLookup(
     io.exuop, 0.U,
@@ -42,26 +42,26 @@ class EXU (xlen: Int = 64,
     ))
   )
   
-  io.exec_result := MuxLookup(
-    io.exuop, 0.U,
-    ArraySeq.unsafeWrapArray(Array(
-      Addi -> io.src1 + io.src2,
-      Auipc -> io.src1 + io.pc,
-      Jal -> io.pc + 4.U,
-      Jalr -> io.pc + 4.U,
-    ))
-  )
+//  io.exec_result := MuxLookup(
+//    io.exuop, 0.U,
+//    ArraySeq.unsafeWrapArray(Array(
+//      Addi -> io.src1 + io.src2,
+//      Auipc -> io.src1 + io.pc,
+//      Jal -> io.pc + 4.U,
+//      Jalr -> io.pc + 4.U,
+//    ))
+//  )
 //      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
 //
 
-  io.dnpc := MuxLookup(
-    io.exuop, 0.U,
-    ArraySeq.unsafeWrapArray(Array(
-      Jal -> io.pc + io.src1,
-      Jalr -> io.src1 + io.src2,
-    ))
-  )
+//  io.dnpc := MuxLookup(
+//    io.exuop, 0.U,
+//    ArraySeq.unsafeWrapArray(Array(
+//      Jal -> io.pc + io.src1,
+//      Jalr -> io.src1 + io.src2,
+//    ))
+//  )
 //      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
   
