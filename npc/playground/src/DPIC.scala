@@ -7,6 +7,7 @@ class DPIC (xlen: Int = 64) extends ExtModule(Map("XLEN" -> xlen)) with HasExtMo
     val clk = Input(Clock())
     val rst = Input(Bool())
     val pc = Input(UInt(xlen.W))
+    val isEbreak = Input(Bool())
   })
 
   setInline("DPIC.v",
@@ -14,10 +15,17 @@ class DPIC (xlen: Int = 64) extends ExtModule(Map("XLEN" -> xlen)) with HasExtMo
               |module DPIC #(XLEN=64) (
               |           input io_clk,
               |           input io_rst,
-              |           input [XLEN-1:0] io_pc);
+              |           input [XLEN-1:0] io_pc,
+              |           input io_isEbreak);
               |  
               |  import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
               |  initial set_pc(io_pc);  
+              |
+              |  import "DPI-C" function void ebreak();
+              |  always@(*) begin
+              |    if(io_isEbreak)
+              |      ebreak();   
+              |  end
               |
               |endmodule
             """.stripMargin)

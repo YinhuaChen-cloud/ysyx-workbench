@@ -45,6 +45,7 @@ class top (xlen: Int = 64,
   dpic.io.pc := ifu.io.pc
   dpic.io.clk := clock
   dpic.io.rst := reset
+  dpic.io.isEbreak := exu.io.isEbreak
 
 }
 

@@ -153,7 +153,8 @@ int main(int argc, char** argv, char** env) {
 		sdb_mainloop();
 	}
 	else {
-		while (!contextp->gotFinish() && contextp->time() < 20) {
+//		while (!contextp->gotFinish() && contextp->time() < 20) {
+		while (!contextp->gotFinish()) {
 			contextp->timeInc(1);
 			// pc_before_exec = cpu.pc;
 			printf("In while, *pc = 0x%lx\n", *pc);

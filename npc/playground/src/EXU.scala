@@ -15,6 +15,7 @@ class EXU (xlen: Int = 64,
     val pc = Input(UInt(xlen.W))
     val exec_result = Output(UInt(xlen.W))
     val dnpc = Output(UInt(xlen.W))
+    val isEbreak = Output(Bool())
   })
 
   class ADDER (width: Int = 64) extends Module {
@@ -29,28 +30,65 @@ class EXU (xlen: Int = 64,
   }
 
   // The core of ExecuteUnit
-  io.exec_result := MuxLookup(
-    io.exuop, 0.U,
+  val tmpsrc1 = Wire(UInt(xlen.W)) 
+  val tmpsrc2 = Wire(UInt(xlen.W)) 
+
+  tmpsrc1 := MuxLookup(
+    io.exuop.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      Addi -> io.src1 + io.src2,
-      Auipc -> io.src1 + io.pc,
-      Jal -> io.pc + 4.U,
-      Jalr -> io.pc + 4.U,
+      Addi.asUInt -> io.src1,
+      Auipc.asUInt -> io.src1,
+      Jal.asUInt -> io.pc,
+      Jalr.asUInt -> io.pc,
     ))
   )
+
+  tmpsrc2 := MuxLookup(
+    io.exuop.asUInt, 0.U,
+    ArraySeq.unsafeWrapArray(Array(
+      Addi.asUInt -> io.src2,
+      Auipc.asUInt -> io.pc,
+      Jal.asUInt -> 4.U,
+      Jalr.asUInt -> 4.U,
+    ))
+  )
+  
+  val adder1 = Module(new ADDER(xlen))
+  io.exec_result := adder1.io.sum
+  adder1.io.input1 := tmpsrc1
+  adder1.io.input2 := tmpsrc2
+
 //      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
 //
 
-  io.dnpc := MuxLookup(
-    io.exuop, 0.U,
+  val dnpc_src1 = Wire(UInt(xlen.W)) 
+  val dnpc_src2 = Wire(UInt(xlen.W)) 
+  
+  dnpc_src1 := MuxLookup(
+    io.exuop.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      Jal -> io.pc + io.src1,
-      Jalr -> io.src1 + io.src2,
+      Jal.asUInt -> io.pc,
+      Jalr.asUInt -> io.src1,
     ))
   )
-//      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
+
+  dnpc_src2 := MuxLookup(
+    io.exuop.asUInt, 0.U,
+    ArraySeq.unsafeWrapArray(Array(
+      Jal.asUInt -> io.src1,
+      Jalr.asUInt -> io.src2,
+    ))
+  )
+  val adder2 = Module(new ADDER(xlen))
+  io.dnpc := adder2.io.sum
+  adder2.io.input1 := dnpc_src1
+  adder2.io.input2 := dnpc_src2
+
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
+  io.isEbreak := Mux((io.exuop === Ebreak), true.B, false.B)
+
+//      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
   
 // ===================================
 
