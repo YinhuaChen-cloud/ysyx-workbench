@@ -52,6 +52,11 @@ class EXU (xlen: Int = 64,
     ))
   )
   
+  val adder = Module(new ADDER(xlen))
+  io.exec_result := adder.sum
+  adder.input1 := tmpsrc1
+  adder.input2 := tmpsrc2
+
 //  io.exec_result := MuxLookup(
 //    io.exuop, 0.U,
 //    ArraySeq.unsafeWrapArray(Array(
