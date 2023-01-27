@@ -23,7 +23,7 @@ class DPIC (xlen: Int = 64) extends ExtModule(Map("XLEN" -> xlen)) with HasExtMo
               |
               |  import "DPI-C" function void ebreak();
               |  always@(*) begin
-              |    if(isEbreak)
+              |    if(io_isEbreak)
               |      ebreak();   
               |  end
               |
