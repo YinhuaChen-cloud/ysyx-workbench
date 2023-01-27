@@ -35,7 +35,7 @@ class EXU (xlen: Int = 64,
   tmpsrc1 := MuxLookup(
     io.exuop.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      Addi.asUInt -> io.src1,
+      Addi.asUInt -> io.src1 + io.src2,
       Auipc.asUInt -> io.src1,
       Jal.asUInt -> io.pc,
       Jalr.asUInt -> io.pc,
