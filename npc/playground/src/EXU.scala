@@ -15,6 +15,7 @@ class EXU (xlen: Int = 64,
     val pc = Input(UInt(xlen.W))
     val exec_result = Output(UInt(xlen.W))
     val dnpc = Output(UInt(xlen.W))
+    val isEbreak = Output(Bool())
   })
 
   class ADDER (width: Int = 64) extends Module {
@@ -84,8 +85,10 @@ class EXU (xlen: Int = 64,
   adder2.io.input1 := dnpc_src1
   adder2.io.input2 := dnpc_src2
 
-//      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
+  io.isEbreak := Mux((io.exuop === Ebreak), true.B, false.B)
+
+//      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
   
 // ===================================
 
