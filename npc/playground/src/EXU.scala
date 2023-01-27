@@ -35,10 +35,20 @@ class EXU (xlen: Int = 64,
   tmpsrc1 := MuxLookup(
     io.exuop.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      Addi.asUInt -> io.src1 + io.src2,
+      Addi.asUInt -> io.src1,
       Auipc.asUInt -> io.src1,
       Jal.asUInt -> io.pc,
       Jalr.asUInt -> io.pc,
+    ))
+  )
+
+  tmpsrc2 := MuxLookup(
+    io.exuop.asUInt, 0.U,
+    ArraySeq.unsafeWrapArray(Array(
+      Addi.asUInt -> io.src2,
+      Auipc.asUInt -> io.pc,
+      Jal.asUInt -> 4.U,
+      Jalr.asUInt -> 4.U,
     ))
   )
   
