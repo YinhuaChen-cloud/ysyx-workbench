@@ -29,6 +29,19 @@ class EXU (xlen: Int = 64,
   }
 
   // The core of ExecuteUnit
+  val tmpsrc1 = Wire(UInt(xlen.W)) 
+  val tmpsrc2 = Wire(UInt(xlen.W)) 
+
+  tmpsrc1 := MuxLookup(
+    io.exuop, 0.U,
+    ArraySeq.unsafeWrapArray(Array(
+      Addi -> io.src1,
+      Auipc -> io.src1,
+      Jal -> io.pc,
+      Jalr -> io.pc,
+    ))
+  )
+  
   io.exec_result := MuxLookup(
     io.exuop, 0.U,
     ArraySeq.unsafeWrapArray(Array(
