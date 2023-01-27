@@ -33,12 +33,12 @@ class EXU (xlen: Int = 64,
 //  val tmpsrc2 = Wire(UInt(xlen.W)) 
 
   tmpsrc1 := MuxLookup(
-    io.exuop, 0.U,
+    io.exuop.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      Addi -> io.src1,
-      Auipc -> io.src1,
-      Jal -> io.pc,
-      Jalr -> io.pc,
+      Addi.asUInt -> io.src1,
+      Auipc.asUInt -> io.src1,
+      Jal.asUInt -> io.pc,
+      Jalr.asUInt -> io.pc,
     ))
   )
   
