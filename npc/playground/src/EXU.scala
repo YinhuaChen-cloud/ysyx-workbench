@@ -52,31 +52,26 @@ class EXU (xlen: Int = 64,
     ))
   )
   
-  val adder = Module(new ADDER(xlen))
-  io.exec_result := adder.io.sum
-  adder.io.input1 := tmpsrc1
-  adder.io.input2 := tmpsrc2
+  val adder1 = Module(new ADDER(xlen))
+  io.exec_result := adder1.io.sum
+  adder1.io.input1 := tmpsrc1
+  adder1.io.input2 := tmpsrc2
 
-//  io.exec_result := MuxLookup(
-//    io.exuop, 0.U,
-//    ArraySeq.unsafeWrapArray(Array(
-//      Addi -> io.src1 + io.src2,
-//      Auipc -> io.src1 + io.pc,
-//      Jal -> io.pc + 4.U,
-//      Jalr -> io.pc + 4.U,
-//    ))
-//  )
 //      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
 //
 
-//  io.dnpc := MuxLookup(
-//    io.exuop, 0.U,
-//    ArraySeq.unsafeWrapArray(Array(
-//      Jal -> io.pc + io.src1,
-//      Jalr -> io.src1 + io.src2,
-//    ))
-//  )
+  val adder2 = Module(new ADDER(xlen))
+  val dnpc_src1 = Wire(UInt(xlen.W)) 
+  val dnpc_src2 = Wire(UInt(xlen.W)) 
+
+  io.dnpc := MuxLookup(
+    io.exuop.asUInt, 0.U,
+    ArraySeq.unsafeWrapArray(Array(
+      Jal.asUInt -> io.pc + io.src1,
+      Jalr.asUInt -> io.src1 + io.src2,
+    ))
+  )
 //      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
   
