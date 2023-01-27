@@ -30,7 +30,7 @@ class EXU (xlen: Int = 64,
 
   // The core of ExecuteUnit
   val tmpsrc1 = Wire(UInt(xlen.W)) 
-//  val tmpsrc2 = Wire(UInt(xlen.W)) 
+  val tmpsrc2 = Wire(UInt(xlen.W)) 
 
   tmpsrc1 := MuxLookup(
     io.exuop.asUInt, 0.U,
