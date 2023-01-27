@@ -61,17 +61,29 @@ class EXU (xlen: Int = 64,
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
 //
 
-  val adder2 = Module(new ADDER(xlen))
   val dnpc_src1 = Wire(UInt(xlen.W)) 
   val dnpc_src2 = Wire(UInt(xlen.W)) 
-
-  io.dnpc := MuxLookup(
+  
+  dnpc_src1 := MuxLookup(
     io.exuop.asUInt, 0.U,
     ArraySeq.unsafeWrapArray(Array(
-      Jal.asUInt -> io.pc + io.src1,
-      Jalr.asUInt -> io.src1 + io.src2,
+      Jal.asUInt -> io.pc,
+      Jalr.asUInt -> io.src1,
     ))
   )
+
+  dnpc_src2 := MuxLookup(
+    io.exuop.asUInt, 0.U,
+    ArraySeq.unsafeWrapArray(Array(
+      Jal.asUInt -> io.src1,
+      Jalr.asUInt -> io.src2,
+    ))
+  )
+  val adder2 = Module(new ADDER(xlen))
+  io.dnpc := adder2.io.sum
+  adder2.io.input1 := dnpc_src1
+  adder2.io.input2 := dnpc_src2
+
 //      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
 //      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
   
