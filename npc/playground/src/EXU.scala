@@ -78,7 +78,7 @@ class EXU (xlen: Int = 64,
   val alu_op2 = MuxCase(0.U, Array(
 //              (io.op2_sel === OP2_RS2) -> rs2_data,
               (io.op2_sel === OP2_IMI) -> imm_i_sext,
-              (io.op2_sel === OP2_IMS) -> imm_s_sext
+              (io.op2_sel === OP2_IMS) -> imm_s_sext,
               (io.op2_sel === OP2_PC)  -> io.pc,
               )).asUInt()
   
