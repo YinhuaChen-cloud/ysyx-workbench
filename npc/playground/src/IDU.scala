@@ -95,7 +95,7 @@ class IDU (xlen: Int = 64,
     )
   )
 
-  val (valid_inst: Bool) :: op1_sel :: op2_sel :: alu_op :: Nil = control_signals
+  val (valid_inst: Bool) :: op1_sel :: op2_sel :: alu_op :: Nil = decoded_signals
 
   io.invalid_inst := ~valid_inst
   io.op1_sel := op1_sel
