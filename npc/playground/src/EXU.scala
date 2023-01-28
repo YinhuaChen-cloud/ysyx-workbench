@@ -79,7 +79,7 @@ class EXU (xlen: Int = 64,
 //              (io.op2_sel === OP2_RS2) -> rs2_data,
               (io.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.op2_sel === OP2_IMS) -> imm_s_sext
-              (io.op2_sel === OP2_PC)  -> pc_reg,
+              (io.op2_sel === OP2_PC)  -> pc,
               )).asUInt()
   
   val alu_out = Wire(UInt(xlen.W))   
