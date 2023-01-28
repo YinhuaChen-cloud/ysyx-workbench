@@ -50,8 +50,9 @@ class IDU (xlen: Int = 64,
 //    val pc_wen = Output(Bool())
     val op1_sel   = Output(UInt(OP1_X.getWidth.W))
     val op2_sel   = Output(UInt(OP2_X.getWidth.W))
-    val alu_op   = Output(UInt(ALU_X.getWidth.W))
-    val invalid_inst = Output(Bool())
+    val alu_op    = Output(UInt(ALU_X.getWidth.W))
+    val reg_wen   = Output(Bool())
+    val inv_inst  = Output(Bool())
   })
 
 //  // submodule1 - registers_heap: generate GPRS x0-x31
@@ -77,30 +78,31 @@ class IDU (xlen: Int = 64,
   val decoded_signals = ListLookup(
     io.inst,
     // invalid
-    List(N, OP1_X, OP2_X, ALU_X),
+    List(N, OP1_X, OP2_X, ALU_X, WREG_0),
     Array(
       // R-type
       // I-type
-      ADDI      -> List(Y, OP1_RS1, OP2_IMI, ALU_ADD),
-      JALR      -> List(Y, OP1_RS1, OP2_IMI, ALU_X),
+      ADDI      -> List(Y, OP1_RS1, OP2_IMI, ALU_ADD, WREG_1),
+      JALR      -> List(Y, OP1_RS1, OP2_IMI, ALU_X  , WREG_1),
       // S-type
-      SD        -> List(Y, OP1_RS1, OP2_IMS, ALU_ADD),
+      SD        -> List(Y, OP1_RS1, OP2_IMS, ALU_ADD, WREG_0),
       // B-type
       // U-type
-      AUIPC     -> List(Y, OP1_IMU, OP2_PC , ALU_ADD),
+      AUIPC     -> List(Y, OP1_IMU, OP2_PC , ALU_ADD, WREG_1),
       // J-type
-      JAL       -> List(Y, OP1_X  , OP2_X  , ALU_X),
+      JAL       -> List(Y, OP1_X  , OP2_X  , ALU_X  , WREG_1),
       // ebreak
-      EBREAK    -> List(Y, OP1_X  , OP2_X  , ALU_X),
+      EBREAK    -> List(Y, OP1_X  , OP2_X  , ALU_X  , WREG_0),
     )
   )
 
-  val (valid_inst: Bool) :: op1_sel :: op2_sel :: alu_op :: Nil = decoded_signals
+  val (valid_inst: Bool) :: op1_sel :: op2_sel :: alu_op :: (wreg: Bool) :: Nil = decoded_signals
 
   io.invalid_inst := ~valid_inst
   io.op1_sel := op1_sel
   io.op2_sel := op2_sel
   io.alu_op  := alu_op
+  io.reg_wen := wreg
   
 //  class Decoded_output extends Bundle {
 //    val imm = UInt(20.W)

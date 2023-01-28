@@ -160,6 +160,10 @@ trait DecoderConstants {
   val ALU_SLTU= 10.asUInt(4.W)
   val ALU_COPY1= 11.asUInt(4.W)
   val ALU_X   = 0.asUInt(4.W)
+
+  // Whether write register
+  val WREG_0 = false.B 
+  val WREG_1 = true.B 
 }
 
 trait RISCVConstants

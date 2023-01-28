@@ -23,27 +23,30 @@ class EXU (xlen: Int = 64,
     val op1_sel   = Input(UInt(OP1_X.getWidth.W))
     val op2_sel   = Input(UInt(OP2_X.getWidth.W))
     val alu_op   = Input(UInt(ALU_X.getWidth.W))
+    val reg_wen   = Input(Bool())
     val invalid_inst = Input(Bool())
 
     val dnpc = Output(UInt(xlen.W))
   })
 
   // submodule1 - register file
-  val regfile = RegInit(VecInit(Seq.fill(nr_reg)(0.U(xlen.W))))
-  val reg_each_wen = Wire(UInt(nr_reg.W)) // TODO: not drive yet
-  val reg_total_wen = Wire(Bool()) // TODO: not drive yet
-
-  regfile(0) := 0.U // $zero/x0 is always 0 TODO: what will happen to pending wire?
-  for(i <- 1 to nr_reg-1) {
-    regfile(i) := Mux(reg_total_wen & reg_each_wen(i), io.exec_result, regfile(i)) 
-  }
-
-  // submodule2 - ALU
-  // 2-1. get data from regs
+  // 1-1. reg addr
   val rs1_addr = io.inst(RS1_MSB, RS1_LSB)
   val rs2_addr = io.inst(RS2_MSB, RS2_LSB)
   val rd_addr  = io.inst(RD_MSB,  RD_LSB) 
+  // 1-2. write back data
+  val wb_data = Wire(UInt(xlen.W)) // NOTE: data write back to reg or mem
+  // 1-3. register file
+  val regfile = RegInit(VecInit(Seq.fill(nr_reg)(0.U(xlen.W))))
+  regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.reg_wen), wb_data, regfile(rd_addr))
+//  val reg_each_wen = Wire(UInt(nr_reg.W)) // TODO: not drive yet
+//  val reg_total_wen = Wire(Bool()) // TODO: not drive yet
+//  regfile(0) := 0.U // $zero/x0 is always 0 TODO: what will happen to pending wire?
+//  for(i <- 1 to nr_reg-1) {
+//    regfile(i) := Mux(reg_total_wen & reg_each_wen(i), io.exec_result, regfile(i)) 
+//  }
 
+  // submodule2 - ALU
   val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(xlen.W))
   val rs2_data = Mux((rs2_addr =/= 0.U), regfile(rs2_addr), 0.asUInt(xlen.W))
   // 2-2. calculate imm
@@ -86,6 +89,7 @@ class EXU (xlen: Int = 64,
     )
   )
   
+  wb_data := alu_out
 
 ////  class ADDER (width: Int = 64) extends Module {
 ////    val io = IO(new Bundle{
