@@ -49,12 +49,12 @@ class EXU (xlen: Int = 64,
   // 2-2. calculate imm
   // r
   // i
-  val imm_i = inst(31, 20)
+  val imm_i = io.inst(31, 20)
   // s
-  val imm_s = Cat(inst(31, 25), inst(11,7))
+  val imm_s = Cat(io.inst(31, 25), io.inst(11,7))
   // b
   // u
-  val imm_u = inst(31, 12)
+  val imm_u = io.inst(31, 12)
   // j
   // r
   // i
