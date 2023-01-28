@@ -2,15 +2,15 @@ package Macros
 
 import chisel3._
 import chisel3.util._
-import chisel3.experimental.ChiselEnum
+//import chisel3.experimental.ChiselEnum
 
-object macros {
-  val func_len = 8
-}
-
-object RV64ExuOp extends ChiselEnum {
-  val Addi, Auipc, Jal, Jalr, Sd, Ebreak, InvalidExuOp = Value
-}
+//object macros {
+//  val func_len = 8
+//}
+//
+//object RV64ExuOp extends ChiselEnum {
+//  val Addi, Auipc, Jal, Jalr, Sd, Ebreak, InvalidExuOp = Value
+//}
 
 object RV64Inst {
   def BEQ                = BitPat("b?????????????????000?????1100011")
