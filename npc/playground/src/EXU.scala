@@ -3,7 +3,8 @@ import chisel3.util._
 import chisel3.stage.ChiselStage
 import scala.collection.immutable.ArraySeq
 
-import RV64ExuOp._
+import Macros._
+import Macros.RV64ExuOp._
 
 class EXU (xlen: Int = 64, 
   inst_len: Int = 32) extends Module {
