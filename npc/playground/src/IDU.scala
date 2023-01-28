@@ -29,9 +29,10 @@ object RV64GeneralMacros {
   }
 }
 
-import RV64Inst._
+import Macros._
+//import RV64Inst._
 import RV64InstType._
-import RV64ExuOp._
+//import RV64ExuOp._
 import RV64GeneralMacros._
 
 class IDU (xlen: Int = 64, 
