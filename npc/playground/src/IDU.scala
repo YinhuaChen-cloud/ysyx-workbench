@@ -8,7 +8,7 @@ import chisel3.util._
 //import chisel3.experimental.ChiselEnum
 //import scala.collection.immutable.ArraySeq
 import Macros._
-import Macros.RV64ExuOp._
+//import Macros.RV64ExuOp._
 import Macros.RV64Inst._
 import Macros.Constants._
 
