@@ -10,6 +10,7 @@ import chisel3.util._
 import Macros._
 import Macros.RV64ExuOp._
 import Macros.RV64Inst._
+import Macros.Constants._
 
 //object RV64InstType extends ChiselEnum {
 //  val Rtype, Itype, Stype, Btype, Utype, Jtype, Special, InvalidInstType = Value

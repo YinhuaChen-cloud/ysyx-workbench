@@ -162,6 +162,10 @@ trait DecoderConstants {
   val ALU_X   = 0.asUInt(4.W)
 }
 
+object Constants extends
+  DecoderConstants 
+{}
+
 
 
 
