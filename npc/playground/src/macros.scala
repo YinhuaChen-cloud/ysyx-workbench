@@ -162,8 +162,19 @@ trait DecoderConstants {
   val ALU_X   = 0.asUInt(4.W)
 }
 
+trait RISCVConstants
+{
+   val RD_MSB  = 11
+   val RD_LSB  = 7
+   val RS1_MSB = 19
+   val RS1_LSB = 15
+   val RS2_MSB = 24
+   val RS2_LSB = 20
+}
+
 object Constants extends
-  DecoderConstants 
+  DecoderConstants with
+  RISCVConstants
 {}
 
 
