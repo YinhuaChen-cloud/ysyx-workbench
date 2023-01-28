@@ -7,6 +7,7 @@ import chisel3.util._
 import chisel3.stage.ChiselStage
 import chisel3.experimental.ChiselEnum
 import scala.collection.immutable.ArraySeq
+import Macros.RV64Inst._
 
 object RV64InstType extends ChiselEnum {
   val Rtype, Itype, Stype, Btype, Utype, Jtype, Special, InvalidInstType = Value
@@ -29,7 +30,6 @@ object RV64GeneralMacros {
   }
 }
 
-import Macros._
 //import RV64Inst._
 import RV64InstType._
 //import RV64ExuOp._
