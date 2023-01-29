@@ -108,6 +108,8 @@ class EXU (xlen: Int = 64,
 ////               (io.ctl.pc_sel === PC_EXC) -> exception_target
 //               ))
 
+  io.pc_next := 0.U
+
   pc_plus4   := (io.pc + 4.asUInt(xlen.W))
   jmp_target := io.pc + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
