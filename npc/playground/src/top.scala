@@ -25,6 +25,7 @@ class top (xlen: Int = 64,
   exu.io.op1_sel := idu.io.op1_sel
   exu.io.op2_sel := idu.io.op2_sel
   exu.io.alu_op := idu.io.alu_op
+  exu.io.wb_sel := idu.io.wb_sel
   exu.io.reg_wen := idu.io.reg_wen
 
   dpic.io.pc := exu.io.pc

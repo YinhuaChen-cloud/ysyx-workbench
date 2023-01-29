@@ -15,6 +15,7 @@ class EXU (xlen: Int = 64,
     val op1_sel   = Input(UInt(OP1_X.getWidth.W))
     val op2_sel   = Input(UInt(OP2_X.getWidth.W))
     val alu_op    = Input(UInt(ALU_X.getWidth.W))
+    val wb_sel    = Input(UInt(WB_X.getWidth.W))
     val reg_wen   = Input(Bool())
 
     val pc = Output(UInt(xlen.W))
@@ -82,8 +83,6 @@ class EXU (xlen: Int = 64,
     )
   )
   
-  wb_data := alu_out
-
   // submodule3 - next pc
   val pc_plus4         = Wire(UInt(32.W))
 //  val br_target        = Wire(UInt(32.W))
@@ -102,6 +101,16 @@ class EXU (xlen: Int = 64,
   pc_plus4   := (pc_reg + 4.asUInt(xlen.W))
   jmp_target := pc_reg + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
+
+  // submodule4 - wb_data
+  wb_data := MuxCase(alu_out, Array(
+               (io.wb_sel === WB_ALU) -> alu_out,
+//               (io.ctl.wb_sel === WB_MEM) -> io.dmem.resp.bits.data,
+               (io.wb_sel === WB_PC4) -> pc_plus4,
+//               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
+               ))
+
+
   printf("====== rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)
   printf("====== ra, regfile(1) = 0x%x\n", regfile(1))
   printf("====== rd_addr = 0x%x\n", rd_addr)
