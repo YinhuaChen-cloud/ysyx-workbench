@@ -103,6 +103,7 @@ class EXU (xlen: Int = 64,
   pc_plus4   := (pc_reg + 4.asUInt(xlen.W))
   jmp_target := pc_reg + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
+  printf("rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)
 
   // submodule4 - comparison --- for BR mostly
   
