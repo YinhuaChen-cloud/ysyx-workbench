@@ -111,10 +111,10 @@ class EXU (xlen: Int = 64,
                ))
 
 
-//  printf("====== rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)
-//  printf("====== ra, regfile(1) = 0x%x\n", regfile(1))
-//  printf("====== rd_addr = 0x%x\n", rd_addr)
-//  printf("====== wb_data = 0x%x\n", wb_data)
+  printf("====== rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)
+  printf("====== ra, regfile(1) = 0x%x\n", regfile(1))
+  printf("====== rd_addr = 0x%x\n", rd_addr)
+  printf("====== wb_data = 0x%x\n", wb_data)
 
   // submodule4 - comparison --- for BR mostly
   
