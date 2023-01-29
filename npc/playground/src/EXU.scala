@@ -1,168 +1,123 @@
 import chisel3._
 import chisel3.util._
 import chisel3.stage.ChiselStage
-import scala.collection.immutable.ArraySeq
 
-import RV64ExuOp._
+import Macros._
+import Macros.Constants._
 
 class EXU (xlen: Int = 64, 
-  inst_len: Int = 32) extends Module {
+  inst_len: Int = 32,
+  nr_reg: Int = 32) extends Module {
   val io = IO(new Bundle {
-    val exuop = Input(RV64ExuOp())
-    val src1 = Input(UInt(xlen.W))
-    val src2 = Input(UInt(xlen.W))
-    val destI = Input(UInt(xlen.W))
-    val pc = Input(UInt(xlen.W))
-    val exec_result = Output(UInt(xlen.W))
-    val dnpc = Output(UInt(xlen.W))
-    val isEbreak = Output(Bool())
+    val inst = Input(UInt(inst_len.W))
+
+    val pc_sel    = Input(UInt(BR_N.getWidth.W))
+    val op1_sel   = Input(UInt(OP1_X.getWidth.W))
+    val op2_sel   = Input(UInt(OP2_X.getWidth.W))
+    val alu_op    = Input(UInt(ALU_X.getWidth.W))
+    val wb_sel    = Input(UInt(WB_X.getWidth.W))
+    val reg_wen   = Input(Bool())
+
+    val pc = Output(UInt(xlen.W))
   })
 
-  class ADDER (width: Int = 64) extends Module {
-    val io = IO(new Bundle{
-      val input1 = Input(UInt(width.W))
-      val input2 = Input(UInt(width.W))
-      val sum = Output(UInt(width.W))
-    }) 
-    
-    io.sum := io.input1 + io.input2
+  // submodule0 - IFU
+  val pc_next          = Wire(UInt(32.W))
+  val pc_reg = RegInit("h8000_0000".U(32.W))
+  pc_reg := pc_next
+  io.pc := pc_reg
 
-  }
+  // submodule1 - register file
+  // 1-1. reg addr
+  val rs1_addr = io.inst(RS1_MSB, RS1_LSB)
+  val rs2_addr = io.inst(RS2_MSB, RS2_LSB)
+  val rd_addr  = io.inst(RD_MSB,  RD_LSB) 
+  // 1-2. write back data
+  val wb_data = Wire(UInt(xlen.W)) // NOTE: data write back to reg or mem
+  // 1-3. register file
+  val regfile = RegInit(VecInit(Seq.fill(nr_reg)(0.U(xlen.W))))
+  regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.reg_wen), wb_data, regfile(rd_addr))
 
-  // The core of ExecuteUnit
-  val tmpsrc1 = Wire(UInt(xlen.W)) 
-  val tmpsrc2 = Wire(UInt(xlen.W)) 
-
-  tmpsrc1 := MuxLookup(
-    io.exuop.asUInt, 0.U,
-    ArraySeq.unsafeWrapArray(Array(
-      Addi.asUInt -> io.src1,
-      Auipc.asUInt -> io.src1,
-      Jal.asUInt -> io.pc,
-      Jalr.asUInt -> io.pc,
-    ))
-  )
-
-  tmpsrc2 := MuxLookup(
-    io.exuop.asUInt, 0.U,
-    ArraySeq.unsafeWrapArray(Array(
-      Addi.asUInt -> io.src2,
-      Auipc.asUInt -> io.pc,
-      Jal.asUInt -> 4.U,
-      Jalr.asUInt -> 4.U,
-    ))
+  // submodule2 - ALU
+  val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(xlen.W))
+  val rs2_data = Mux((rs2_addr =/= 0.U), regfile(rs2_addr), 0.asUInt(xlen.W))
+  // 2-2. calculate imm
+  // r
+  // i
+  val imm_i = io.inst(31, 20)
+  // s
+  val imm_s = Cat(io.inst(31, 25), io.inst(11,7))
+  // b
+  // u
+  val imm_u = io.inst(31, 12)
+  // j
+  val imm_j = Cat(io.inst(31), io.inst(19,12), io.inst(20), io.inst(30,21))
+  // r
+  // i
+  val imm_i_sext = Cat(Fill(20,imm_i(11)), imm_i)
+  // s
+  val imm_s_sext = Cat(Fill(20,imm_s(11)), imm_s)
+  // b
+  // u
+  val imm_u_sext = Cat(imm_u, Fill(12,0.U))
+  // j
+  val imm_j_sext = Cat(Fill(11,imm_j(19)), imm_j, 0.U)
+  
+  val alu_op1 = MuxCase(0.U, Array(
+              (io.op1_sel === OP1_RS1) -> rs1_data,
+              (io.op1_sel === OP1_IMU) -> imm_u_sext,
+//              (io.op1_sel === OP1_IMZ) -> imm_z
+              )).asUInt()
+ 
+  val alu_op2 = MuxCase(0.U, Array(
+//              (io.op2_sel === OP2_RS2) -> rs2_data,
+              (io.op2_sel === OP2_IMI) -> imm_i_sext,
+              (io.op2_sel === OP2_IMS) -> imm_s_sext,
+              (io.op2_sel === OP2_PC)  -> io.pc,
+              )).asUInt()
+  
+  val alu_out = Wire(UInt(xlen.W))   
+  alu_out := MuxCase(
+    0.U, Array(
+      (io.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
+    )
   )
   
-  val adder1 = Module(new ADDER(xlen))
-  io.exec_result := adder1.io.sum
-  adder1.io.input1 := tmpsrc1
-  adder1.io.input2 := tmpsrc2
+  // submodule3 - next pc
+  val pc_plus4         = Wire(UInt(32.W))
+//  val br_target        = Wire(UInt(32.W))
+  val jmp_target       = Wire(UInt(32.W))
+  val jr_target  = Wire(UInt(32.W))
+//  val exception_target = Wire(UInt(32.W))
 
-//      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
-//      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
-//
+  pc_next := MuxCase(pc_plus4, Array(
+               (io.pc_sel === PC_4)   -> pc_plus4,
+//               (io.ctl.pc_sel === PC_BR)  -> br_target,
+               (io.pc_sel === PC_J )  -> jmp_target,
+               (io.pc_sel === PC_JR)  -> jr_target,
+//               (io.ctl.pc_sel === PC_EXC) -> exception_target
+               ))
 
-  val dnpc_src1 = Wire(UInt(xlen.W)) 
-  val dnpc_src2 = Wire(UInt(xlen.W)) 
+  pc_plus4   := (pc_reg + 4.asUInt(xlen.W))
+  jmp_target := pc_reg + imm_j_sext
+  jr_target  := rs1_data + imm_i_sext 
+
+  // submodule4 - wb_data
+  wb_data := MuxCase(alu_out, Array(
+               (io.wb_sel === WB_ALU) -> alu_out,
+//               (io.ctl.wb_sel === WB_MEM) -> io.dmem.resp.bits.data,
+               (io.wb_sel === WB_PC4) -> pc_plus4,
+//               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
+               ))
+
+
+  printf("====== rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)
+  printf("====== ra, regfile(1) = 0x%x\n", regfile(1))
+  printf("====== rd_addr = 0x%x\n", rd_addr)
+  printf("====== wb_data = 0x%x\n", wb_data)
+
+  // submodule4 - comparison --- for BR mostly
   
-  dnpc_src1 := MuxLookup(
-    io.exuop.asUInt, 0.U,
-    ArraySeq.unsafeWrapArray(Array(
-      Jal.asUInt -> io.pc,
-      Jalr.asUInt -> io.src1,
-    ))
-  )
-
-  dnpc_src2 := MuxLookup(
-    io.exuop.asUInt, 0.U,
-    ArraySeq.unsafeWrapArray(Array(
-      Jal.asUInt -> io.src1,
-      Jalr.asUInt -> io.src2,
-    ))
-  )
-  val adder2 = Module(new ADDER(xlen))
-  io.dnpc := adder2.io.sum
-  adder2.io.input1 := dnpc_src1
-  adder2.io.input2 := dnpc_src2
-
-//      EBREAK -> Cat(Fill(xlen-20-1, unpacked.imm(19)), unpacked.imm, 0.U),
-  io.isEbreak := Mux((io.exuop === Ebreak), true.B, false.B)
-
-//      SD -> Cat(Fill(xlen-32, unpacked.imm(19)), unpacked.imm, Fill(xlen-32-20, 0.U)),
-  
-// ===================================
-
-//	insts do not write mem
-//  always@(*) begin // combinational circuit
-//    exec_result = 0;
-//    dnpc        = 0;
-//    inval       = 0;
-//    case(func)
-//      // Rtype
-//      Addw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] + src2[31:0], 32);
-//      Subw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] - src2[31:0], 32);
-//      Mulw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] * src2[31:0], 32);
-//      Divw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) / $signed(src2[31:0]), 32);
-//      Divuw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] / src2[31:0], 32);
-//      Sllw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] << (src2 & w_shift_mask), 32); 
-//      Srlw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] >> (src2 & w_shift_mask), 32); 
-//      Sraw	: begin exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) >>> (src2 & w_shift_mask), 32); end
-//      Remw	: exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) % $signed(src2[31:0]), 32);
-//      Remuw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] % src2[31:0], 32);
-//      Sub	: exec_result = src1 - src2;
-//      Or	: exec_result = src1 | src2;
-//      Add	: exec_result = src1 + src2;
-//      Mul	: exec_result = src1 * src2;
-//      Xor	: exec_result = src1 ^ src2;
-//      Sll	: exec_result = src1 << (src2 & shift_mask);
-//      Slt	: exec_result = ($signed(src1) < $signed(src2));
-//      Sltu	: exec_result = (src1 < src2);
-//      And	: exec_result = src1 & src2;
-//      Div	: exec_result = $signed(src1) / $signed(src2);
-//      Divu: exec_result = src1 / src2;
-//      Rem	: exec_result = $signed(src1) % $signed(src2);
-//      Remu: exec_result = src1 % src2;
-//      // Itype
-//      Xori	: exec_result = src1 ^ src2;
-//      Sltiu	: exec_result = (src1 < src2);
-//      Slli	: exec_result = src1 << (src2 & shift_mask);
-//      Srli	: exec_result = src1 >> (src2 & shift_mask);
-//      Srai	: exec_result = $signed(src1) >>> (src2 & shift_mask);
-//      Andi	: exec_result = src1 & src2;
-//      Ori		: exec_result = src1 | src2;
-//      Addiw	: exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] + src2[31:0], 32);
-//			Slliw	: begin tmp = src1[31:0] << (src2 & w_shift_mask); exec_result = `ysyx_22050039_SEXT(XLEN, tmp, 32); end
-//      Srliw	: begin exec_result = `ysyx_22050039_SEXT(XLEN, src1[31:0] >> (src2 & w_shift_mask), 32); end
-//			Sraiw	: begin exec_result = `ysyx_22050039_SEXT(XLEN, $signed(src1[31:0]) >>> (src2 & w_shift_mask), 32); end
-//      Ld	: exec_result = rdata; 
-//      Lw	: exec_result = {{32{rdata[31]}}, rdata[31:0]};
-//      Lwu	: exec_result = {32'b0, rdata[31:0]};
-//      Lh	: exec_result = {{48{rdata[15]}}, rdata[15:0]};
-//      Lhu	: exec_result = {48'b0, rdata[15:0]};
-//      Lb	: exec_result = {{56{rdata[7]}}, rdata[7:0]};
-//      Lbu	: exec_result = {56'b0, rdata[7:0]};
-//			Addi	: exec_result = src1 + src2; 
-//			// Stype
-//			Sd	: ;
-//			Sw	: ;
-//			Sh	: ;
-//			Sb	: ;
-//			// Btype
-//			Beq		: begin dnpc = (src1 == src2) ? pc + destI : pc + 4; end 
-//			Bne		: begin dnpc = (src1 != src2) ? pc + destI : pc + 4; end 
-//			Bltu	: begin dnpc = (src1 < src2) ? pc + destI : pc + 4; end 
-//			Bge		: begin dnpc = ($signed(src1) >= $signed(src2)) ? pc + destI : pc + 4; end 
-//			Bgeu	: begin dnpc = (src1 >= src2) ? pc + destI : pc + 4; end 
-//			Blt	: begin dnpc = ($signed(src1) < $signed(src2)) ? pc + destI : pc + 4; end 
-//			// Utype
-//			Auipc	: begin exec_result = src1 + pc; end
-//			Lui	:	exec_result   = src1;
-//			// Jtype
-//			Jal	: begin exec_result = pc + 4; dnpc = pc + src1; end
-//			Ebreak	: ebreak();
-//			default: inval = 1; // invalid
-//    endcase
-//  end
 
 }
 
