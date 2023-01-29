@@ -60,7 +60,7 @@ class EXU (xlen: Int = 64,
   // u
   val imm_u = io.inst(31, 12)
   // j
-  val imm_j = Cat(inst(31), inst(19,12), inst(20), inst(30,21))
+  val imm_j = Cat(io.inst(31), io.inst(19,12), io.inst(20), io.inst(30,21))
   // r
   // i
   val imm_i_sext = Cat(Fill(20,imm_i(11)), imm_i)
