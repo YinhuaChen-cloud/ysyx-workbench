@@ -139,7 +139,7 @@ trait DecoderConstants {
   val PC_BR  = 1.asUInt(3.W)  // branch_target
   val PC_J   = 2.asUInt(3.W)  // jump_target
   val PC_JR  = 3.asUInt(3.W)  // jump_reg_target
-//  val PC_EXC = 4.asUInt(3.W)  // exception
+  val PC_EXC = 4.asUInt(3.W)  // exception
 
   // Branch Type
   val BR_N   = 0.asUInt(4.W)  // Next

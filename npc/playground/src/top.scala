@@ -15,22 +15,23 @@ class top (xlen: Int = 64,
 	// submodule4: DPIC
   val dpic = Module(new DPIC(xlen))
 
-  ifu.io.pc_wen := idu.io.pc_wen
-  ifu.io.pc_wdata := exu.io.dnpc
-  exu.io.pc := ifu.io.pc
+  ifu.io.pc_next := exu.io.pc_next
+  exu.io.pc      := ifu.io.pc
 
-  exu.io.src1 := idu.io.src1
-  exu.io.src2 := idu.io.src2
-  exu.io.destI := idu.io.destI
-  exu.io.exuop := idu.io.exuop
-  idu.io.exec_result := exu.io.exec_result
-  // idu.io.inst := exu.io.inst
-  idu.io.inst := io.inst
+  idu.io.inst    := io.inst // TODO: wait for being removed
+  exu.io.inst    := io.inst
+
+  exu.io.pc_sel := idu.io.pc_sel
+  exu.io.pc_sel := idu.io.pc_sel
+  exu.io.op1_sel := idu.io.op1_sel
+  exu.io.op2_sel := idu.io.op2_sel
+  exu.io.alu_op := idu.io.alu_op
+  exu.io.reg_wen := idu.io.reg_wen
 
   dpic.io.pc := ifu.io.pc
   dpic.io.clk := clock
   dpic.io.rst := reset
-  dpic.io.isEbreak := exu.io.isEbreak
+  dpic.io.isEbreak := idu.io.isEbreak
 
 }
 

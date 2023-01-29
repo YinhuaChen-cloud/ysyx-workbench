@@ -25,7 +25,6 @@ class EXU (xlen: Int = 64,
     val op2_sel   = Input(UInt(OP2_X.getWidth.W))
     val alu_op    = Input(UInt(ALU_X.getWidth.W))
     val reg_wen   = Input(Bool())
-    val invalid_inst = Input(Bool())
 
     val pc_next   = Output(UInt(xlen.W))
   })
@@ -111,6 +110,14 @@ class EXU (xlen: Int = 64,
   pc_plus4   := io.pc + 4.asUInt(xlen.W)
   jmp_target := io.pc + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
+
+  // submodule4 - comparison --- for BR mostly
+  
+  
+  
+  
+  
+  
 
 ////  class ADDER (width: Int = 64) extends Module {
 ////    val io = IO(new Bundle{

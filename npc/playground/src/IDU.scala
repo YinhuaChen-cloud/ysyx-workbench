@@ -1,7 +1,3 @@
-//xiangshan's IDU is here: XiangShan/src/main/scala/xiangshan/backend/decode/DecodeUnit.scala
-//Strongly recommend to refer to it
-//I can refer to it after I can run mario
-
 import chisel3._
 import chisel3.util._
 //import chisel3.stage.ChiselStage
@@ -53,6 +49,7 @@ class IDU (xlen: Int = 64,
     val op2_sel   = Output(UInt(OP2_X.getWidth.W))
     val alu_op    = Output(UInt(ALU_X.getWidth.W))
     val reg_wen   = Output(Bool())
+    val isEbreak  = Output(Bool())
     val inv_inst  = Output(Bool())
   })
 
@@ -79,7 +76,7 @@ class IDU (xlen: Int = 64,
   val decoded_signals = ListLookup(
     io.inst,
     // invalid
-    List(N, OP1_X, OP2_X, ALU_X, WREG_0),
+                   List(N, BR_N , OP1_X  , OP2_X  , ALU_X  , WREG_0),
     Array(
       // R-type
       // I-type
@@ -99,12 +96,34 @@ class IDU (xlen: Int = 64,
 
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: alu_op :: (wreg: Bool) :: Nil = decoded_signals
 
-  io.inv_inst := ~valid_inst
+//  io.src2 := MuxLookup(
+//    instType.asUInt, 0.U,
+//    ArraySeq.unsafeWrapArray(Array(
+//      Rtype.asUInt -> reg_stack(rs2),
+//      Itype.asUInt -> SEXT(xlen, unpacked.imm),
+//      Stype.asUInt -> reg_stack(rs2),
+//      Btype.asUInt -> reg_stack(rs2),
+//      Utype.asUInt -> 0.U, 
+//      Jtype.asUInt -> 0.U,
+//      Special.asUInt -> 0.U,
+//    ))
+//  )
+
+  io.pc_sel  := MuxLookup(
+    br_type, PC_EXC,
+    Array(
+      BR_N  -> PC_4 , 
+      BR_J  -> PC_J , 
+      BR_JR -> PC_JR, 
+    )
+  )
 
   io.op1_sel := op1_sel
   io.op2_sel := op2_sel
   io.alu_op  := alu_op
   io.reg_wen := wreg
+  io.isEbreak := (io.inst === EBREAK)
+  io.inv_inst := ~valid_inst
   
 //  class Decoded_output extends Bundle {
 //    val imm = UInt(20.W)
