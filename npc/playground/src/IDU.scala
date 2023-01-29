@@ -46,7 +46,6 @@ class IDU (xlen: Int = 64,
 
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: alu_op :: (wreg: Bool) :: Nil = decoded_signals
 
-
   io.pc_sel  := MuxLookup(
     br_type, PC_EXC,
     Array(
