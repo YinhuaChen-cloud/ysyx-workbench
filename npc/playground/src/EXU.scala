@@ -22,9 +22,6 @@ class EXU (xlen: Int = 64,
     val pc_next   = Output(UInt(32.W))
   })
 
-  // submodule0 - IFU
-//  io.pc_next := io.pc + 4.U
-
   // submodule1 - register file
   // 1-1. reg addr
   val rs1_addr = io.inst(RS1_MSB, RS1_LSB)
@@ -102,7 +99,7 @@ class EXU (xlen: Int = 64,
 
 //
 
-//  // submodule4 - wb_data
+  // submodule4 - wb_data
   wb_data := MuxCase(alu_out, Array(
                (io.wb_sel === WB_ALU) -> alu_out,
 //               (io.ctl.wb_sel === WB_MEM) -> io.dmem.resp.bits.data,
