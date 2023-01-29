@@ -103,10 +103,10 @@ class EXU (xlen: Int = 64,
 
   io.pc_next := io.pc_sel
   pc_next := MuxCase(pc_plus4, Array(
-               (io.ctl.pc_sel === PC_4)   -> pc_plus4,
+               (io.pc_sel === PC_4)   -> pc_plus4,
 //               (io.ctl.pc_sel === PC_BR)  -> br_target,
-               (io.ctl.pc_sel === PC_J )  -> jmp_target,
-               (io.ctl.pc_sel === PC_JR)  -> jr_target,
+               (io.pc_sel === PC_J )  -> jmp_target,
+               (io.pc_sel === PC_JR)  -> jr_target,
 //               (io.ctl.pc_sel === PC_EXC) -> exception_target
                ))
   pc_plus4   := io.pc + 4.asUInt(xlen.W)
