@@ -6,5 +6,5 @@ class EXU extends Module {
     val pc      = Input(UInt(32.W))
     val pc_next = Output(UInt(32.W))
   })
-  pc_next := pc + 4.U
+  io.pc_next := io.pc + 4.U
 }
