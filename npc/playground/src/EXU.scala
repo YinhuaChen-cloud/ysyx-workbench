@@ -103,13 +103,12 @@ class EXU (xlen: Int = 64,
 //
 
 //  // submodule4 - wb_data
-//  wb_data := MuxCase(alu_out, Array(
-//               (io.wb_sel === WB_ALU) -> alu_out,
-////               (io.ctl.wb_sel === WB_MEM) -> io.dmem.resp.bits.data,
-//               (io.wb_sel === WB_PC4) -> pc_plus4,
-////               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
-//               ))
-  wb_data := 0.U
+  wb_data := MuxCase(alu_out, Array(
+               (io.wb_sel === WB_ALU) -> alu_out,
+//               (io.ctl.wb_sel === WB_MEM) -> io.dmem.resp.bits.data,
+               (io.wb_sel === WB_PC4) -> pc_plus4,
+//               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
+               ))
 
 
   printf("====== rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)
