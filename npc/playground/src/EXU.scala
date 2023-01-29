@@ -18,14 +18,12 @@ class EXU (xlen: Int = 64,
     val wb_sel    = Input(UInt(WB_X.getWidth.W))
     val reg_wen   = Input(Bool())
 
-    val pc = Output(UInt(xlen.W))
+    val pc        = Input(UInt(32.W))
+    val pc_next   = Output(UInt(32.W))
   })
 
   // submodule0 - IFU
-  val pc_next          = Wire(UInt(32.W))
-  val pc_reg = RegInit("h8000_0000".U(32.W))
-  pc_reg := pc_next
-  io.pc := pc_reg
+//  io.pc_next := io.pc + 4.U
 
   // submodule1 - register file
   // 1-1. reg addr
@@ -90,7 +88,11 @@ class EXU (xlen: Int = 64,
   val jr_target  = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
 
-  pc_next := MuxCase(pc_plus4, Array(
+  pc_plus4   := (io.pc + 4.asUInt(xlen.W))
+  jmp_target := io.pc + imm_j_sext
+  jr_target  := rs1_data + imm_i_sext 
+
+  io.pc_next := MuxCase(pc_plus4, Array(
                (io.pc_sel === PC_4)   -> pc_plus4,
 //               (io.ctl.pc_sel === PC_BR)  -> br_target,
                (io.pc_sel === PC_J )  -> jmp_target,
@@ -98,11 +100,9 @@ class EXU (xlen: Int = 64,
 //               (io.ctl.pc_sel === PC_EXC) -> exception_target
                ))
 
-  pc_plus4   := (pc_reg + 4.asUInt(xlen.W))
-  jmp_target := pc_reg + imm_j_sext
-  jr_target  := rs1_data + imm_i_sext 
+//
 
-  // submodule4 - wb_data
+//  // submodule4 - wb_data
   wb_data := MuxCase(alu_out, Array(
                (io.wb_sel === WB_ALU) -> alu_out,
 //               (io.ctl.wb_sel === WB_MEM) -> io.dmem.resp.bits.data,
@@ -111,10 +111,10 @@ class EXU (xlen: Int = 64,
                ))
 
 
-  printf("====== rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)
-  printf("====== ra, regfile(1) = 0x%x\n", regfile(1))
-  printf("====== rd_addr = 0x%x\n", rd_addr)
-  printf("====== wb_data = 0x%x\n", wb_data)
+//  printf("====== rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)
+//  printf("====== ra, regfile(1) = 0x%x\n", regfile(1))
+//  printf("====== rd_addr = 0x%x\n", rd_addr)
+//  printf("====== wb_data = 0x%x\n", wb_data)
 
   // submodule4 - comparison --- for BR mostly
   
