@@ -34,6 +34,7 @@ class EXU (xlen: Int = 64,
   val pc_next          = Wire(UInt(32.W))
   val pc_reg = RegInit("h8000_0000".U(32.W))
   pc_reg := pc_next
+  io.pc := pc_reg
 //  pc_reg := Mux(io.pc_wen, io.pc_wdata, pc_reg + 4.U)
 //  io.pc := pc_reg
 
