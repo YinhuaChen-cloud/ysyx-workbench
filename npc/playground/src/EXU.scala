@@ -17,7 +17,7 @@ class EXU (xlen: Int = 64,
 //    val destI = Input(UInt(xlen.W))
 //    val exec_result = Output(UInt(xlen.W))
 //    val isEbreak = Output(Bool())
-    val pc = Input(UInt(xlen.W))
+//    val pc = Input(UInt(xlen.W))
     val inst = Input(UInt(inst_len.W))
 
     val pc_sel    = Input(UInt(BR_N.getWidth.W))
@@ -26,8 +26,17 @@ class EXU (xlen: Int = 64,
     val alu_op    = Input(UInt(ALU_X.getWidth.W))
     val reg_wen   = Input(Bool())
 
-    val pc_next   = Output(UInt(xlen.W))
+//    val pc_next   = Output(UInt(xlen.W))
+    val pc = Output(UInt(xlen.W))
   })
+
+  // submodule0 - IFU
+  val pc_next          = Wire(UInt(32.W))
+  val pc_reg = RegInit("h8000_0000".U(32.W))
+  pc_reg := pc_next
+//  pc_reg := Mux(io.pc_wen, io.pc_wdata, pc_reg + 4.U)
+//  io.pc := pc_reg
+
 
   // submodule1 - register file
   // 1-1. reg addr
@@ -100,7 +109,7 @@ class EXU (xlen: Int = 64,
   val jr_target  = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
 
-  io.pc_next := MuxCase(pc_plus4, Array(
+  pc_next := MuxCase(pc_plus4, Array(
                (io.pc_sel === PC_4)   -> pc_plus4,
 //               (io.ctl.pc_sel === PC_BR)  -> br_target,
                (io.pc_sel === PC_J )  -> jmp_target,
@@ -108,8 +117,8 @@ class EXU (xlen: Int = 64,
 //               (io.ctl.pc_sel === PC_EXC) -> exception_target
                ))
 
-  pc_plus4   := (io.pc + 4.asUInt(xlen.W))
-  jmp_target := io.pc + imm_j_sext
+  pc_plus4   := (pc_reg + 4.asUInt(xlen.W))
+  jmp_target := pc_reg + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
 
   // submodule4 - comparison --- for BR mostly
