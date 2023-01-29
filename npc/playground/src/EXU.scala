@@ -18,14 +18,12 @@ class EXU (xlen: Int = 64,
     val wb_sel    = Input(UInt(WB_X.getWidth.W))
     val reg_wen   = Input(Bool())
 
-    val pc = Output(UInt(xlen.W))
+    val pc        = Input(UInt(32.W))
+    val pc_next   = Output(UInt(32.W))
   })
 
   // submodule0 - IFU
-  val pc_next          = Wire(UInt(32.W))
-  val pc_reg = RegInit("h8000_0000".U(32.W))
-  pc_reg := pc_next
-  io.pc := pc_reg
+  io.pc_next := io.pc + 4.U
 
   // submodule1 - register file
   // 1-1. reg addr
