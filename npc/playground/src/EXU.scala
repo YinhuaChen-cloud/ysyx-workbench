@@ -81,24 +81,24 @@ class EXU (xlen: Int = 64,
     )
   )
   
-  // submodule3 - next pc
-  val pc_plus4         = Wire(UInt(32.W))
-//  val br_target        = Wire(UInt(32.W))
-  val jmp_target       = Wire(UInt(32.W))
-  val jr_target  = Wire(UInt(32.W))
-//  val exception_target = Wire(UInt(32.W))
-
-  pc_next := MuxCase(pc_plus4, Array(
-               (io.pc_sel === PC_4)   -> pc_plus4,
-//               (io.ctl.pc_sel === PC_BR)  -> br_target,
-               (io.pc_sel === PC_J )  -> jmp_target,
-               (io.pc_sel === PC_JR)  -> jr_target,
-//               (io.ctl.pc_sel === PC_EXC) -> exception_target
-               ))
-
-  pc_plus4   := (pc_reg + 4.asUInt(xlen.W))
-  jmp_target := pc_reg + imm_j_sext
-  jr_target  := rs1_data + imm_i_sext 
+//  // submodule3 - next pc
+//  val pc_plus4         = Wire(UInt(32.W))
+////  val br_target        = Wire(UInt(32.W))
+//  val jmp_target       = Wire(UInt(32.W))
+//  val jr_target  = Wire(UInt(32.W))
+////  val exception_target = Wire(UInt(32.W))
+//
+//  pc_next := MuxCase(pc_plus4, Array(
+//               (io.pc_sel === PC_4)   -> pc_plus4,
+////               (io.ctl.pc_sel === PC_BR)  -> br_target,
+//               (io.pc_sel === PC_J )  -> jmp_target,
+//               (io.pc_sel === PC_JR)  -> jr_target,
+////               (io.ctl.pc_sel === PC_EXC) -> exception_target
+//               ))
+//
+//  pc_plus4   := (pc_reg + 4.asUInt(xlen.W))
+//  jmp_target := pc_reg + imm_j_sext
+//  jr_target  := rs1_data + imm_i_sext 
 
   // submodule4 - wb_data
   wb_data := MuxCase(alu_out, Array(
