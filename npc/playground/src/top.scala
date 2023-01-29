@@ -1,13 +1,37 @@
 import chisel3._
-import chisel3.util._
 
-class top extends Module {
-  val io = IO(new Bundle{
-    val pc      = Output(UInt(32.W))
+class top (xlen: Int = 64,
+  inst_len: Int = 32) extends Module {
+  val io = IO(new Bundle {
+    val inst = Input(UInt(inst_len.W))
   })
 
-  val ifu = Module(new IFU)
-  val exu = Module(new EXU)
-  ifu.io <> exu.io
-  io.pc := ifu.io.pc
+//  // submodule1 IFU
+//  val ifu = Module(new IFU(xlen))
+	// submodule2: IDU
+  val idu = Module(new IDU(xlen, inst_len))
+	// submodule3: EXU
+  val exu = Module(new EXU(xlen, inst_len))
+	// submodule4: DPIC
+  val dpic = Module(new DPIC(xlen))
+
+//  ifu.io.pc_next := exu.io.pc_next
+//  exu.io.pc      := ifu.io.pc
+
+  idu.io.inst    := io.inst // TODO: wait for being removed
+  exu.io.inst    := io.inst
+
+  exu.io.pc_sel := idu.io.pc_sel
+  exu.io.op1_sel := idu.io.op1_sel
+  exu.io.op2_sel := idu.io.op2_sel
+  exu.io.alu_op := idu.io.alu_op
+  exu.io.wb_sel := idu.io.wb_sel
+  exu.io.reg_wen := idu.io.reg_wen
+
+  dpic.io.pc := exu.io.pc
+  dpic.io.clk := clock
+  dpic.io.rst := reset
+  dpic.io.isEbreak := idu.io.isEbreak
+
 }
+
