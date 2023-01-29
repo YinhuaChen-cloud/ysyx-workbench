@@ -20,13 +20,14 @@ class EXU (xlen: Int = 64,
     val pc = Input(UInt(xlen.W))
     val inst = Input(UInt(inst_len.W))
 
+    val pc_sel    = Input(UInt(BR_N.getWidth.W))
     val op1_sel   = Input(UInt(OP1_X.getWidth.W))
     val op2_sel   = Input(UInt(OP2_X.getWidth.W))
-    val alu_op   = Input(UInt(ALU_X.getWidth.W))
+    val alu_op    = Input(UInt(ALU_X.getWidth.W))
     val reg_wen   = Input(Bool())
     val invalid_inst = Input(Bool())
 
-    val dnpc = Output(UInt(xlen.W))
+    val pc_next   = Output(UInt(xlen.W))
   })
 
   // submodule1 - register file
@@ -59,6 +60,7 @@ class EXU (xlen: Int = 64,
   // u
   val imm_u = io.inst(31, 12)
   // j
+  val imm_j = Cat(inst(31), inst(19,12), inst(20), inst(30,21))
   // r
   // i
   val imm_i_sext = Cat(Fill(20,imm_i(11)), imm_i)
@@ -68,6 +70,7 @@ class EXU (xlen: Int = 64,
   // u
   val imm_u_sext = Cat(imm_u, Fill(12,0.U))
   // j
+  val imm_j_sext = Cat(Fill(11,imm_j(19)), imm_j, 0.U)
   
   val alu_op1 = MuxCase(0.U, Array(
               (io.op1_sel === OP1_RS1) -> rs1_data,
@@ -90,6 +93,25 @@ class EXU (xlen: Int = 64,
   )
   
   wb_data := alu_out
+
+  // submodule3 - next pc
+  val pc_plus4         = Wire(UInt(32.W))
+  val br_target        = Wire(UInt(32.W))
+  val jmp_target       = Wire(UInt(32.W))
+  val jr_target  = Wire(UInt(32.W))
+  val exception_target = Wire(UInt(32.W))
+
+  io.pc_next := io.pc_sel
+  pc_next := MuxCase(pc_plus4, Array(
+               (io.ctl.pc_sel === PC_4)   -> pc_plus4,
+//               (io.ctl.pc_sel === PC_BR)  -> br_target,
+               (io.ctl.pc_sel === PC_J )  -> jmp_target,
+               (io.ctl.pc_sel === PC_JR)  -> jr_target,
+//               (io.ctl.pc_sel === PC_EXC) -> exception_target
+               ))
+  pc_plus4   := io.pc + 4.asUInt(xlen.W)
+  jmp_target := io.pc + imm_j_sext
+  jr_target  := rs1_data + imm_i_sext 
 
 ////  class ADDER (width: Int = 64) extends Module {
 ////    val io = IO(new Bundle{

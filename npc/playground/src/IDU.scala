@@ -48,6 +48,7 @@ class IDU (xlen: Int = 64,
 //    val destI = Output(UInt(xlen.W))
 //    val exuop = Output(RV64ExuOp())
 //    val pc_wen = Output(Bool())
+    val pc_sel    = Output(UInt(BR_N.getWidth.W))
     val op1_sel   = Output(UInt(OP1_X.getWidth.W))
     val op2_sel   = Output(UInt(OP2_X.getWidth.W))
     val alu_op    = Output(UInt(ALU_X.getWidth.W))
@@ -82,23 +83,24 @@ class IDU (xlen: Int = 64,
     Array(
       // R-type
       // I-type
-      ADDI      -> List(Y, OP1_RS1, OP2_IMI, ALU_ADD, WREG_1),
-      JALR      -> List(Y, OP1_RS1, OP2_IMI, ALU_X  , WREG_1),
+      ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD, WREG_1),
+      JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X  , WREG_1),
       // S-type
-      SD        -> List(Y, OP1_RS1, OP2_IMS, ALU_ADD, WREG_0),
+      SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD, WREG_0),
       // B-type
       // U-type
-      AUIPC     -> List(Y, OP1_IMU, OP2_PC , ALU_ADD, WREG_1),
+      AUIPC     -> List(Y, BR_N , OP1_IMU, OP2_PC , ALU_ADD, WREG_1),
       // J-type
-      JAL       -> List(Y, OP1_X  , OP2_X  , ALU_X  , WREG_1),
+      JAL       -> List(Y, BR_J , OP1_X  , OP2_X  , ALU_X  , WREG_1),
       // ebreak
-      EBREAK    -> List(Y, OP1_X  , OP2_X  , ALU_X  , WREG_0),
+      EBREAK    -> List(Y, BR_N , OP1_X  , OP2_X  , ALU_X  , WREG_0),
     )
   )
 
-  val (valid_inst: Bool) :: op1_sel :: op2_sel :: alu_op :: (wreg: Bool) :: Nil = decoded_signals
+  val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: alu_op :: (wreg: Bool) :: Nil = decoded_signals
 
   io.inv_inst := ~valid_inst
+
   io.op1_sel := op1_sel
   io.op2_sel := op2_sel
   io.alu_op  := alu_op

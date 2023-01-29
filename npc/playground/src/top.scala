@@ -14,19 +14,6 @@ class top (xlen: Int = 64,
   val exu = Module(new EXU(xlen, inst_len))
 	// submodule4: DPIC
   val dpic = Module(new DPIC(xlen))
-  // wire relationships between modules:
-  //	wire pc_wen; // IDU -> IFU
-  //	wire [XLEN-1:0] dnpc; // EXU -> IFU
-  //	wire [XLEN-1:0] pc; // IFU -> EXU
-  //
-  //	wire [XLEN-1:0] src1; // IDU -> EXU
-  //	wire [XLEN-1:0] src2; // IDU -> EXU
-  //	wire [XLEN-1:0] destI; // IDU -> EXU
-  //	wire [`ysyx_22050039_FUNC_LEN-1:0] func; // IDU -> EXU
-  //	wire [XLEN-1:0] exec_result; // EXU -> IDU
-  //	wire [INST_LEN-1:0] inst; // EXU -> IDU
-  //
-  // wire [XLEN-1:0] pc // IFU -> DPIC
 
   ifu.io.pc_wen := idu.io.pc_wen
   ifu.io.pc_wdata := exu.io.dnpc
