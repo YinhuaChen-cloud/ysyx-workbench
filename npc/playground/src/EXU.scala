@@ -26,7 +26,6 @@ class EXU (xlen: Int = 64,
   pc_reg := pc_next
   io.pc := pc_reg
 
-
   // submodule1 - register file
   // 1-1. reg addr
   val rs1_addr = io.inst(RS1_MSB, RS1_LSB)
@@ -104,7 +103,7 @@ class EXU (xlen: Int = 64,
   jmp_target := pc_reg + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
   printf("rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)
-  printf("wb_data = 0x%x\n", wb_data)
+  printf("ra, regfile(1) = 0x%x\n", regfile(1))
 
   // submodule4 - comparison --- for BR mostly
   
