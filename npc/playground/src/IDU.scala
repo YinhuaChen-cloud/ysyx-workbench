@@ -50,7 +50,7 @@ class IDU (xlen: Int = 64,
     val alu_op    = Output(UInt(ALU_X.getWidth.W))
     val reg_wen   = Output(Bool())
     val isEbreak  = Output(Bool())
-    val inv_inst  = Output(Bool())
+    val inv_inst  = Output(Bool()) // TODO: need to connect to DPIC
   })
 
 //  // submodule1 - registers_heap: generate GPRS x0-x31

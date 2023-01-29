@@ -95,10 +95,10 @@ class EXU (xlen: Int = 64,
 
   // submodule3 - next pc
   val pc_plus4         = Wire(UInt(32.W))
-  val br_target        = Wire(UInt(32.W))
+//  val br_target        = Wire(UInt(32.W))
   val jmp_target       = Wire(UInt(32.W))
   val jr_target  = Wire(UInt(32.W))
-  val exception_target = Wire(UInt(32.W))
+//  val exception_target = Wire(UInt(32.W))
 
   io.pc_next := MuxCase(pc_plus4, Array(
                (io.pc_sel === PC_4)   -> pc_plus4,
