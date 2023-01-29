@@ -23,7 +23,7 @@ class EXU (xlen: Int = 64,
   })
 
   // submodule0 - IFU
-  io.pc_next := io.pc + 4.U
+//  io.pc_next := io.pc + 4.U
 
   // submodule1 - register file
   // 1-1. reg addr
@@ -87,18 +87,19 @@ class EXU (xlen: Int = 64,
   val jmp_target       = Wire(UInt(32.W))
   val jr_target  = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
-//
-//  pc_next := MuxCase(pc_plus4, Array(
-//               (io.pc_sel === PC_4)   -> pc_plus4,
-////               (io.ctl.pc_sel === PC_BR)  -> br_target,
-//               (io.pc_sel === PC_J )  -> jmp_target,
-//               (io.pc_sel === PC_JR)  -> jr_target,
-////               (io.ctl.pc_sel === PC_EXC) -> exception_target
-//               ))
-//
+
   pc_plus4   := (io.pc + 4.asUInt(xlen.W))
   jmp_target := io.pc + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
+
+  io.pc_next := MuxCase(pc_plus4, Array(
+               (io.pc_sel === PC_4)   -> pc_plus4,
+//               (io.ctl.pc_sel === PC_BR)  -> br_target,
+               (io.pc_sel === PC_J )  -> jmp_target,
+               (io.pc_sel === PC_JR)  -> jr_target,
+//               (io.ctl.pc_sel === PC_EXC) -> exception_target
+               ))
+//
 
 //  // submodule4 - wb_data
 //  wb_data := MuxCase(alu_out, Array(
