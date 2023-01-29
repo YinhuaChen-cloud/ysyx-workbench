@@ -100,15 +100,13 @@ class EXU (xlen: Int = 64,
   val jr_target  = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
 
-//  io.pc_next := MuxCase(pc_plus4, Array(
-//               (io.pc_sel === PC_4)   -> pc_plus4,
-////               (io.ctl.pc_sel === PC_BR)  -> br_target,
-//               (io.pc_sel === PC_J )  -> jmp_target,
-//               (io.pc_sel === PC_JR)  -> jr_target,
-////               (io.ctl.pc_sel === PC_EXC) -> exception_target
-//               ))
-
-  io.pc_next := 0.U
+  io.pc_next := MuxCase(jr_target, Array(
+               (io.pc_sel === PC_4)   -> jr_target,
+//               (io.ctl.pc_sel === PC_BR)  -> br_target,
+               (io.pc_sel === PC_J )  -> jr_target,
+               (io.pc_sel === PC_JR)  -> jr_target,
+//               (io.ctl.pc_sel === PC_EXC) -> exception_target
+               ))
 
   pc_plus4   := (io.pc + 4.asUInt(xlen.W))
   jmp_target := io.pc + imm_j_sext
