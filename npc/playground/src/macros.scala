@@ -181,7 +181,7 @@ trait DecoderConstants {
 
   // Writeback Select Signal
   val WB_ALU  = 0.asUInt(2.W)
-//  val WB_MEM  = 1.asUInt(2.W)
+  val WB_MEM  = 1.asUInt(2.W)
   val WB_PC4  = 2.asUInt(2.W)
 //  val WB_CSR  = 3.asUInt(2.W)
   val WB_X    = 0.asUInt(2.W)
