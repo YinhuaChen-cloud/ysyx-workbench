@@ -5,6 +5,11 @@ import Macros._
 import Macros.RV64Inst._
 import Macros.Constants._
 
+//class IDU (xlen: Int = 64, 
+//  inst_len: Int = 32,
+//  nr_reg: Int = 32,
+//  reg_sel: Int = 5) extends Module {
+
 class IDU (implicit val conf: Configuration) extends Module {
   val io = IO(new Bundle {
     val inst = Input(UInt(conf.inst_len.W))
