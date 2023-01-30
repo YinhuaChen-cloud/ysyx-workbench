@@ -5,20 +5,23 @@ import Conf._
 import Macros._
 import Macros.Constants._
 
+
+
+class EXU_bundle extends Bundle() {
+  val inst = Input(UInt(conf.inst_len.W))
+
+  val pc_sel    = Input(UInt(BR_N.getWidth.W))
+  val op1_sel   = Input(UInt(OP1_X.getWidth.W))
+  val op2_sel   = Input(UInt(OP2_X.getWidth.W))
+  val alu_op    = Input(UInt(ALU_X.getWidth.W))
+  val wb_sel    = Input(UInt(WB_X.getWidth.W))
+  val reg_wen   = Input(Bool())
+
+  val ifu_to_exu = Flipped(new IFU_to_EXU())
+}
+
 class EXU (implicit val conf: Configuration) extends Module {
-  val io = IO(new Bundle {
-    val inst = Input(UInt(conf.inst_len.W))
-
-    val pc_sel    = Input(UInt(BR_N.getWidth.W))
-    val op1_sel   = Input(UInt(OP1_X.getWidth.W))
-    val op2_sel   = Input(UInt(OP2_X.getWidth.W))
-    val alu_op    = Input(UInt(ALU_X.getWidth.W))
-    val wb_sel    = Input(UInt(WB_X.getWidth.W))
-    val reg_wen   = Input(Bool())
-
-    val pc        = Input(UInt(32.W))
-    val pc_next   = Output(UInt(32.W))
-  })
+  val io = IO(new EXU_bundle())
 
   // submodule1 - register file
   // 1-1. reg addr
@@ -66,7 +69,7 @@ class EXU (implicit val conf: Configuration) extends Module {
 //              (io.op2_sel === OP2_RS2) -> rs2_data,
               (io.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.op2_sel === OP2_IMS) -> imm_s_sext,
-              (io.op2_sel === OP2_PC)  -> io.pc,
+              (io.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
               )).asUInt()
   
   val alu_out = Wire(UInt(conf.xlen.W))   
@@ -83,11 +86,11 @@ class EXU (implicit val conf: Configuration) extends Module {
   val jr_target  = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
 
-  pc_plus4   := (io.pc + 4.asUInt(conf.xlen.W))
-  jmp_target := io.pc + imm_j_sext
+  pc_plus4   := (io.ifu_to_exu.pc + 4.asUInt(conf.xlen.W))
+  jmp_target := io.ifu_to_exu.pc + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
 
-  io.pc_next := MuxCase(pc_plus4, Array(
+  io.ifu_to_exu.pc_next := MuxCase(pc_plus4, Array(
                (io.pc_sel === PC_4)   -> pc_plus4,
 //               (io.ctl.pc_sel === PC_BR)  -> br_target,
                (io.pc_sel === PC_J )  -> jmp_target,
