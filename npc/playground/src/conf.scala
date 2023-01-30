@@ -10,10 +10,7 @@ case class Configuration() {
   val START_ADDR = "h8000_0000".U(32.W)
 //   val nxprbits = log2Ceil(nxpr)
 //   val rvc = false
-//   val vm = false
-//   val usingUser = false
 }
-
 
 }
 
