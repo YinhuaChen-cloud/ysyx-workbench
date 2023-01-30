@@ -25,9 +25,9 @@ class top extends Module {
 
   idu.io.idu_to_exu <> exu.io.idu_to_exu
 
-  dpic.io.pc := ifu.io.pc
   dpic.io.clk := clock
   dpic.io.rst := reset
+  dpic.io.pc := ifu.io.pc
   dpic.io.isEbreak := idu.io.isEbreak
 
 }
