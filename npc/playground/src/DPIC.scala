@@ -31,8 +31,8 @@ class DPIC (implicit val conf: Configuration) extends ExtModule(Map("XLEN" -> co
               |  end
               |
               |  import "DPI-C" function void invalid();
-              |    always@(*)
-              |      if (io_inv_inst)
+              |    always@(posedge io_clk)
+              |      if (~io_rst && io_inv_inst)
               |        invalid();
               |
               |endmodule
