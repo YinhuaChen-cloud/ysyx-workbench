@@ -1,6 +1,6 @@
 import chisel3._
 import chisel3.util._
-//import scala.collection.immutable.ArraySeq
+import Conf._
 import Macros._
 import Macros.RV64Inst._
 import Macros.Constants._
