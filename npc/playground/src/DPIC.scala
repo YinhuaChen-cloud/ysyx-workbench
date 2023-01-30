@@ -9,6 +9,7 @@ class DPIC (implicit val conf: Configuration) extends ExtModule(Map("XLEN" -> co
     val rst = Input(Bool())
     val pc = Input(UInt(conf.xlen.W))
     val isEbreak = Input(Bool())
+    val inv_inst  = Input(Bool()) // TODO: need to connect to DPIC
   })
 
   setInline("DPIC.v",
@@ -17,7 +18,8 @@ class DPIC (implicit val conf: Configuration) extends ExtModule(Map("XLEN" -> co
               |           input io_clk,
               |           input io_rst,
               |           input [XLEN-1:0] io_pc,
-              |           input io_isEbreak);
+              |           input io_isEbreak,
+              |           input io_inv_inst);
               |  
               |  import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
               |  initial set_pc(io_pc);  
@@ -27,6 +29,11 @@ class DPIC (implicit val conf: Configuration) extends ExtModule(Map("XLEN" -> co
               |    if(io_isEbreak)
               |      ebreak();   
               |  end
+              |
+              |  import "DPI-C" function void invalid();
+              |    always@(posedge io_clk)
+              |      if (~io_rst && io_inv_inst)
+              |        invalid();
               |
               |endmodule
             """.stripMargin)
