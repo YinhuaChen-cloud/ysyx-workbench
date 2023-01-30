@@ -1,13 +1,14 @@
 import chisel3._
 import chisel3.util._
+import Conf._
 
-class IFU extends Module {
+class IFU (implicit val conf: Configuration) extends Module {
   val io = IO(new Bundle{
-    val pc_next = Input(UInt(32.W))
-    val pc      = Output(UInt(32.W))
+    val pc_next = Input(UInt(conf.pc_len.W))
+    val pc      = Output(UInt(conf.pc_len.W))
   })
 
-  val pc_reg = RegInit("h8000_0000".U(32.W))
+  val pc_reg = RegInit(conf.START_ADDR)
   pc_reg := io.pc_next
   io.pc  := pc_reg
 
