@@ -34,7 +34,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   val wb_data = Wire(UInt(conf.xlen.W)) // NOTE: data write back to reg or mem
   // 1-3. register file
   val regfile = RegInit(VecInit(Seq.fill(conf.nr_reg)(0.U(conf.xlen.W))))
-  regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.reg_wen), wb_data, regfile(rd_addr))
+  regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen), wb_data, regfile(rd_addr))
 
   // submodule2 - ALU
   val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(conf.xlen.W))
@@ -62,22 +62,22 @@ class EXU (implicit val conf: Configuration) extends Module {
   val imm_j_sext = Cat(Fill(11,imm_j(19)), imm_j, 0.U)
   
   val alu_op1 = MuxCase(0.U, Array(
-              (io.op1_sel === OP1_RS1) -> rs1_data,
-              (io.op1_sel === OP1_IMU) -> imm_u_sext,
-//              (io.op1_sel === OP1_IMZ) -> imm_z
+              (io.idu_to_exu.op1_sel === OP1_RS1) -> rs1_data,
+              (io.idu_to_exu.op1_sel === OP1_IMU) -> imm_u_sext,
+//              (io.idu_to_exu.op1_sel === OP1_IMZ) -> imm_z
               )).asUInt()
  
   val alu_op2 = MuxCase(0.U, Array(
-//              (io.op2_sel === OP2_RS2) -> rs2_data,
-              (io.op2_sel === OP2_IMI) -> imm_i_sext,
-              (io.op2_sel === OP2_IMS) -> imm_s_sext,
-              (io.op2_sel === OP2_PC)  -> io.exu_get_ifu.pc,
+//              (io.idu_to_exu.op2_sel === OP2_RS2) -> rs2_data,
+              (io.idu_to_exu.op2_sel === OP2_IMI) -> imm_i_sext,
+              (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
+              (io.idu_to_exu.op2_sel === OP2_PC)  -> io.exu_get_ifu.pc,
               )).asUInt()
   
   val alu_out = Wire(UInt(conf.xlen.W))   
   alu_out := MuxCase(
     0.U, Array(
-      (io.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
+      (io.idu_to_exu.wb === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
     )
   )
   
@@ -93,10 +93,10 @@ class EXU (implicit val conf: Configuration) extends Module {
   jr_target  := rs1_data + imm_i_sext 
 
   io.exu_get_ifu.pc_next := MuxCase(pc_plus4, Array(
-               (io.pc_sel === PC_4)   -> pc_plus4,
+               (io.idu_to_exu.pc_sel === PC_4)   -> pc_plus4,
 //               (io.ctl.pc_sel === PC_BR)  -> br_target,
-               (io.pc_sel === PC_J )  -> jmp_target,
-               (io.pc_sel === PC_JR)  -> jr_target,
+               (io.idu_to_exu.pc_sel === PC_J )  -> jmp_target,
+               (io.idu_to_exu.pc_sel === PC_JR)  -> jr_target,
 //               (io.ctl.pc_sel === PC_EXC) -> exception_target
                ))
 
@@ -104,9 +104,9 @@ class EXU (implicit val conf: Configuration) extends Module {
 
   // submodule4 - wb_data
   wb_data := MuxCase(alu_out, Array(
-               (io.wb_sel === WB_ALU) -> alu_out,
+               (io.idu_to_exu.wb_sel === WB_ALU) -> alu_out,
 //               (io.ctl.wb_sel === WB_MEM) -> io.dmem.resp.bits.data,
-               (io.wb_sel === WB_PC4) -> pc_plus4,
+               (io.idu_to_exu.wb_sel === WB_PC4) -> pc_plus4,
 //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
                ))
 
