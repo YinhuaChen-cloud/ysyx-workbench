@@ -9,7 +9,7 @@ class DPIC (implicit val conf: Configuration) extends ExtModule(Map("XLEN" -> co
     val rst = Input(Bool())
     val pc = Input(UInt(conf.xlen.W))
     val isEbreak = Input(Bool())
-    val inv_inst  = Output(Bool()) // TODO: need to connect to DPIC
+    val inv_inst  = Input(Bool()) // TODO: need to connect to DPIC
   })
 
   setInline("DPIC.v",
