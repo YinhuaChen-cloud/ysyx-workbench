@@ -19,7 +19,7 @@ class top extends Module {
 	// submodule3: EXU
   val exu = Module(new EXU)
 	// submodule4: DPIC
-  val dpic = Module(new DPIC(xlen))
+  val dpic = Module(new DPIC)
 
   ifu.io.pc_next := exu.io.pc_next
   exu.io.pc      := ifu.io.pc
