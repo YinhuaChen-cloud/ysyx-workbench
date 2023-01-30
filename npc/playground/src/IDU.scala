@@ -5,20 +5,24 @@ import Macros._
 import Macros.RV64Inst._
 import Macros.Constants._
 
+class IDU_to_EXU extends Bundle() {
+  val pc_sel    = Output(UInt(BR_N.getWidth.W))
+  val op1_sel   = Output(UInt(OP1_X.getWidth.W))
+  val op2_sel   = Output(UInt(OP2_X.getWidth.W))
+  val alu_op    = Output(UInt(ALU_X.getWidth.W))
+  val wb_sel    = Output(UInt(WB_X.getWidth.W))
+  val reg_wen   = Output(Bool())
+}
+
+class IDU_bundle (implicit val conf: Configuration) extends Bundle() {
+  val inst = Input(UInt(conf.inst_len.W))
+  val idu_to_exu = new IDU_to_EXU()
+  val isEbreak  = Output(Bool())
+  val inv_inst  = Output(Bool()) // TODO: need to connect to DPIC
+} 
+
 class IDU (implicit val conf: Configuration) extends Module {
-  val io = IO(new Bundle {
-    val inst = Input(UInt(conf.inst_len.W))
-
-    val pc_sel    = Output(UInt(BR_N.getWidth.W))
-    val op1_sel   = Output(UInt(OP1_X.getWidth.W))
-    val op2_sel   = Output(UInt(OP2_X.getWidth.W))
-    val alu_op    = Output(UInt(ALU_X.getWidth.W))
-    val wb_sel    = Output(UInt(WB_X.getWidth.W))
-    val reg_wen   = Output(Bool())
-
-    val isEbreak  = Output(Bool())
-    val inv_inst  = Output(Bool()) // TODO: need to connect to DPIC
-  })
+  val io = IO(new IDU_bundle())
 
   // The core of DecodeUnit
   val decoded_signals = ListLookup(
@@ -45,7 +49,7 @@ class IDU (implicit val conf: Configuration) extends Module {
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
   val alu_op :: wb_sel :: (wreg: Bool) :: Nil = ds0
 
-  io.pc_sel  := MuxLookup(
+  io.idu_to_exu.pc_sel  := MuxLookup(
     br_type, PC_EXC,
     Array(
       BR_N  -> PC_4 , 
@@ -54,11 +58,11 @@ class IDU (implicit val conf: Configuration) extends Module {
     )
   )
 
-  io.op1_sel := op1_sel
-  io.op2_sel := op2_sel
-  io.alu_op  := alu_op
-  io.wb_sel  := wb_sel
-  io.reg_wen := wreg
+  io.idu_to_exu.op1_sel := op1_sel
+  io.idu_to_exu.op2_sel := op2_sel
+  io.idu_to_exu.alu_op  := alu_op
+  io.idu_to_exu.wb_sel  := wb_sel
+  io.idu_to_exu.reg_wen := wreg
   io.isEbreak := (io.inst === EBREAK)
   io.inv_inst := ~valid_inst
   
