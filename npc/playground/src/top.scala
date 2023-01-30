@@ -9,9 +9,6 @@ class top extends Module {
     val inst = Input(UInt(conf.inst_len.W))
   })
 
-  val xlen = 64
-  val inst_len = 32
-
   // submodule1 IFU
   val ifu = Module(new IFU)
 	// submodule2: IDU
