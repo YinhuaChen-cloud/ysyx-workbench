@@ -5,17 +5,19 @@ import Macros._
 import Macros.RV64Inst._
 import Macros.Constants._
 
+class IDU_to_EXU extends Bundle() {
+  val pc_sel    = Output(UInt(BR_N.getWidth.W))
+  val op1_sel   = Output(UInt(OP1_X.getWidth.W))
+  val op2_sel   = Output(UInt(OP2_X.getWidth.W))
+  val alu_op    = Output(UInt(ALU_X.getWidth.W))
+  val wb_sel    = Output(UInt(WB_X.getWidth.W))
+  val reg_wen   = Output(Bool())
+}
+
 class IDU (implicit val conf: Configuration) extends Module {
   val io = IO(new Bundle {
     val inst = Input(UInt(conf.inst_len.W))
-
-    val pc_sel    = Output(UInt(BR_N.getWidth.W))
-    val op1_sel   = Output(UInt(OP1_X.getWidth.W))
-    val op2_sel   = Output(UInt(OP2_X.getWidth.W))
-    val alu_op    = Output(UInt(ALU_X.getWidth.W))
-    val wb_sel    = Output(UInt(WB_X.getWidth.W))
-    val reg_wen   = Output(Bool())
-
+    val idu_to_exu = 
     val isEbreak  = Output(Bool())
     val inv_inst  = Output(Bool()) // TODO: need to connect to DPIC
   })

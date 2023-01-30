@@ -17,7 +17,7 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val wb_sel    = Input(UInt(WB_X.getWidth.W))
   val reg_wen   = Input(Bool())
 
-  val ifu_to_exu = Flipped(new IFU_to_EXU())
+  val exu_get_ifu = Flipped(new IFU_to_EXU())
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
@@ -69,7 +69,7 @@ class EXU (implicit val conf: Configuration) extends Module {
 //              (io.op2_sel === OP2_RS2) -> rs2_data,
               (io.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.op2_sel === OP2_IMS) -> imm_s_sext,
-              (io.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
+              (io.op2_sel === OP2_PC)  -> io.exu_get_ifu.pc,
               )).asUInt()
   
   val alu_out = Wire(UInt(conf.xlen.W))   
@@ -86,11 +86,11 @@ class EXU (implicit val conf: Configuration) extends Module {
   val jr_target  = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
 
-  pc_plus4   := (io.ifu_to_exu.pc + 4.asUInt(conf.xlen.W))
-  jmp_target := io.ifu_to_exu.pc + imm_j_sext
+  pc_plus4   := (io.exu_get_ifu.pc + 4.asUInt(conf.xlen.W))
+  jmp_target := io.exu_get_ifu.pc + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
 
-  io.ifu_to_exu.pc_next := MuxCase(pc_plus4, Array(
+  io.exu_get_ifu.pc_next := MuxCase(pc_plus4, Array(
                (io.pc_sel === PC_4)   -> pc_plus4,
 //               (io.ctl.pc_sel === PC_BR)  -> br_target,
                (io.pc_sel === PC_J )  -> jmp_target,
