@@ -49,7 +49,7 @@ class IDU (implicit val conf: Configuration) extends Module {
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
   val alu_op :: wb_sel :: (wreg: Bool) :: Nil = ds0
 
-  io.pc_sel  := MuxLookup(
+  io.idu_to_exu.pc_sel  := MuxLookup(
     br_type, PC_EXC,
     Array(
       BR_N  -> PC_4 , 
@@ -58,11 +58,11 @@ class IDU (implicit val conf: Configuration) extends Module {
     )
   )
 
-  io.op1_sel := op1_sel
-  io.op2_sel := op2_sel
-  io.alu_op  := alu_op
-  io.wb_sel  := wb_sel
-  io.reg_wen := wreg
+  io.idu_to_exu.op1_sel := op1_sel
+  io.idu_to_exu.op2_sel := op2_sel
+  io.idu_to_exu.alu_op  := alu_op
+  io.idu_to_exu.wb_sel  := wb_sel
+  io.idu_to_exu.reg_wen := wreg
   io.isEbreak := (io.inst === EBREAK)
   io.inv_inst := ~valid_inst
   
