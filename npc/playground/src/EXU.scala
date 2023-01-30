@@ -1,15 +1,13 @@
 import chisel3._
 import chisel3.util._
 import chisel3.stage.ChiselStage
-
+import Conf._
 import Macros._
 import Macros.Constants._
 
-class EXU (xlen: Int = 64, 
-  inst_len: Int = 32,
-  nr_reg: Int = 32) extends Module {
+class EXU (implicit val conf: Configuration) extends Module {
   val io = IO(new Bundle {
-    val inst = Input(UInt(inst_len.W))
+    val inst = Input(UInt(conf.inst_len.W))
 
     val pc_sel    = Input(UInt(BR_N.getWidth.W))
     val op1_sel   = Input(UInt(OP1_X.getWidth.W))
@@ -22,23 +20,20 @@ class EXU (xlen: Int = 64,
     val pc_next   = Output(UInt(32.W))
   })
 
-  // submodule0 - IFU
-//  io.pc_next := io.pc + 4.U
-
   // submodule1 - register file
   // 1-1. reg addr
   val rs1_addr = io.inst(RS1_MSB, RS1_LSB)
   val rs2_addr = io.inst(RS2_MSB, RS2_LSB)
   val rd_addr  = io.inst(RD_MSB,  RD_LSB) 
   // 1-2. write back data
-  val wb_data = Wire(UInt(xlen.W)) // NOTE: data write back to reg or mem
+  val wb_data = Wire(UInt(conf.xlen.W)) // NOTE: data write back to reg or mem
   // 1-3. register file
-  val regfile = RegInit(VecInit(Seq.fill(nr_reg)(0.U(xlen.W))))
+  val regfile = RegInit(VecInit(Seq.fill(conf.nr_reg)(0.U(conf.xlen.W))))
   regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.reg_wen), wb_data, regfile(rd_addr))
 
   // submodule2 - ALU
-  val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(xlen.W))
-  val rs2_data = Mux((rs2_addr =/= 0.U), regfile(rs2_addr), 0.asUInt(xlen.W))
+  val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(conf.xlen.W))
+  val rs2_data = Mux((rs2_addr =/= 0.U), regfile(rs2_addr), 0.asUInt(conf.xlen.W))
   // 2-2. calculate imm
   // r
   // i
@@ -74,7 +69,7 @@ class EXU (xlen: Int = 64,
               (io.op2_sel === OP2_PC)  -> io.pc,
               )).asUInt()
   
-  val alu_out = Wire(UInt(xlen.W))   
+  val alu_out = Wire(UInt(conf.xlen.W))   
   alu_out := MuxCase(
     0.U, Array(
       (io.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
@@ -88,7 +83,7 @@ class EXU (xlen: Int = 64,
   val jr_target  = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
 
-  pc_plus4   := (io.pc + 4.asUInt(xlen.W))
+  pc_plus4   := (io.pc + 4.asUInt(conf.xlen.W))
   jmp_target := io.pc + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
 
@@ -102,7 +97,7 @@ class EXU (xlen: Int = 64,
 
 //
 
-//  // submodule4 - wb_data
+  // submodule4 - wb_data
   wb_data := MuxCase(alu_out, Array(
                (io.wb_sel === WB_ALU) -> alu_out,
 //               (io.ctl.wb_sel === WB_MEM) -> io.dmem.resp.bits.data,

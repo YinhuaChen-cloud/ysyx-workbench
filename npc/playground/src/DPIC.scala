@@ -1,12 +1,13 @@
 import chisel3._
 import chisel3.util._
 import chisel3.experimental._
+import Conf._
 
-class DPIC (xlen: Int = 64) extends ExtModule(Map("XLEN" -> xlen)) with HasExtModuleInline {
+class DPIC (implicit val conf: Configuration) extends ExtModule(Map("XLEN" -> conf.xlen)) with HasExtModuleInline {
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
-    val pc = Input(UInt(xlen.W))
+    val pc = Input(UInt(conf.xlen.W))
     val isEbreak = Input(Bool())
   })
 

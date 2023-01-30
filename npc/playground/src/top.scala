@@ -1,19 +1,25 @@
 import chisel3._
+import Conf._
 
-class top (xlen: Int = 64,
-  inst_len: Int = 32) extends Module {
+class top extends Module {
+
+  implicit val conf = Configuration()
+
   val io = IO(new Bundle {
-    val inst = Input(UInt(inst_len.W))
+    val inst = Input(UInt(conf.inst_len.W))
   })
+
+  val xlen = 64
+  val inst_len = 32
 
   // submodule1 IFU
   val ifu = Module(new IFU)
 	// submodule2: IDU
-  val idu = Module(new IDU(xlen, inst_len))
+  val idu = Module(new IDU)
 	// submodule3: EXU
-  val exu = Module(new EXU(xlen, inst_len))
+  val exu = Module(new EXU)
 	// submodule4: DPIC
-  val dpic = Module(new DPIC(xlen))
+  val dpic = Module(new DPIC)
 
   ifu.io.pc_next := exu.io.pc_next
   exu.io.pc      := ifu.io.pc
