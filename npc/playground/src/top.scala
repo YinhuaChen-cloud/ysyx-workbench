@@ -26,12 +26,13 @@ class top extends Module {
   idu.io.inst    := io.inst // TODO: wait for being removed
   exu.io.inst    := io.inst
 
-  exu.io.pc_sel := idu.io.pc_sel
-  exu.io.op1_sel := idu.io.op1_sel
-  exu.io.op2_sel := idu.io.op2_sel
-  exu.io.alu_op := idu.io.alu_op
-  exu.io.wb_sel := idu.io.wb_sel
-  exu.io.reg_wen := idu.io.reg_wen
+  idu.io.idu_to_exu <> exu.io.idu_to_exu
+//  exu.io.pc_sel := idu.io.pc_sel
+//  exu.io.op1_sel := idu.io.op1_sel
+//  exu.io.op2_sel := idu.io.op2_sel
+//  exu.io.alu_op := idu.io.alu_op
+//  exu.io.wb_sel := idu.io.wb_sel
+//  exu.io.reg_wen := idu.io.reg_wen
 
   dpic.io.pc := ifu.io.pc
   dpic.io.clk := clock
