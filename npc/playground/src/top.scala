@@ -21,8 +21,9 @@ class top extends Module {
 	// submodule4: DPIC
   val dpic = Module(new DPIC)
 
-  ifu.io.pc_next := exu.io.pc_next
-  exu.io.pc      := ifu.io.pc
+  ifu.io <> exu.io.ifu_to_exu
+//  ifu.io.pc_next := exu.io.pc_next
+//  exu.io.pc      := ifu.io.pc
 
   idu.io.inst    := io.inst // TODO: wait for being removed
   exu.io.inst    := io.inst
