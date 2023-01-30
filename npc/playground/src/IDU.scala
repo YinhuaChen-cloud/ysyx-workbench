@@ -11,12 +11,14 @@ class IDU (xlen: Int = 64,
   reg_sel: Int = 5) extends Module {
   val io = IO(new Bundle {
     val inst = Input(UInt(inst_len.W))
+
     val pc_sel    = Output(UInt(BR_N.getWidth.W))
     val op1_sel   = Output(UInt(OP1_X.getWidth.W))
     val op2_sel   = Output(UInt(OP2_X.getWidth.W))
     val alu_op    = Output(UInt(ALU_X.getWidth.W))
     val wb_sel    = Output(UInt(WB_X.getWidth.W))
     val reg_wen   = Output(Bool())
+
     val isEbreak  = Output(Bool())
     val inv_inst  = Output(Bool()) // TODO: need to connect to DPIC
   })
