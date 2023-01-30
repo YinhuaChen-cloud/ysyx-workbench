@@ -5,11 +5,6 @@ import Macros._
 import Macros.RV64Inst._
 import Macros.Constants._
 
-//class IDU (xlen: Int = 64, 
-//  inst_len: Int = 32,
-//  nr_reg: Int = 32,
-//  reg_sel: Int = 5) extends Module {
-
 class IDU (implicit val conf: Configuration) extends Module {
   val io = IO(new Bundle {
     val inst = Input(UInt(conf.inst_len.W))
@@ -25,12 +20,10 @@ class IDU (implicit val conf: Configuration) extends Module {
     val inv_inst  = Output(Bool()) // TODO: need to connect to DPIC
   })
 
-//
-//  // submodule2 - instruction decoder: decode inst
   // The core of DecodeUnit
   val decoded_signals = ListLookup(
     io.inst,
-    // invalid
+                   // invalid
                    List(N, BR_N , OP1_X  , OP2_X  , ALU_X  , WB_X  , WREG_0),
     Array(
       // R-type

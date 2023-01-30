@@ -17,7 +17,7 @@ class top extends Module {
 	// submodule2: IDU
   val idu = Module(new IDU)
 	// submodule3: EXU
-  val exu = Module(new EXU(xlen, inst_len))
+  val exu = Module(new EXU)
 	// submodule4: DPIC
   val dpic = Module(new DPIC(xlen))
 
