@@ -10,12 +10,14 @@ import Macros.Constants._
 class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val inst = Input(UInt(conf.inst_len.W))
 
-  val pc_sel    = Input(UInt(BR_N.getWidth.W))
-  val op1_sel   = Input(UInt(OP1_X.getWidth.W))
-  val op2_sel   = Input(UInt(OP2_X.getWidth.W))
-  val alu_op    = Input(UInt(ALU_X.getWidth.W))
-  val wb_sel    = Input(UInt(WB_X.getWidth.W))
-  val reg_wen   = Input(Bool())
+  val idu_to_exu = Flipped(new IDU_to_EXU())
+
+//  val pc_sel    = Input(UInt(BR_N.getWidth.W))
+//  val op1_sel   = Input(UInt(OP1_X.getWidth.W))
+//  val op2_sel   = Input(UInt(OP2_X.getWidth.W))
+//  val alu_op    = Input(UInt(ALU_X.getWidth.W))
+//  val wb_sel    = Input(UInt(WB_X.getWidth.W))
+//  val reg_wen   = Input(Bool())
 
   val exu_get_ifu = Flipped(new IFU_to_EXU())
 }
