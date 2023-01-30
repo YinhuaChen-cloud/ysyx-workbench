@@ -7,7 +7,7 @@ import Macros.Constants._
 
 
 
-class EXU_bundle extends Bundle() {
+class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val inst = Input(UInt(conf.inst_len.W))
 
   val pc_sel    = Input(UInt(BR_N.getWidth.W))
