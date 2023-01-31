@@ -9,12 +9,11 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val inst = Input(UInt(conf.inst_len.W))
   val idu_to_exu = Flipped(new IDU_to_EXU())
   val ifu_to_exu = Flipped(new IFU_to_EXU())
-//  val regfile = Output(Vec(conf.nr_reg, UInt(conf.xlen.W)))
-  val regfile = Output(UInt((conf.nr_reg * conf.xlen).W))
+  val regfile_output = Output(UInt((conf.nr_reg * conf.xlen).W))
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
-  val io = dontTouch(IO(new EXU_bundle()))
+  val io = IO(new EXU_bundle())
 
   // submodule1 - register file
   // 1-1. reg addr
@@ -26,16 +25,11 @@ class EXU (implicit val conf: Configuration) extends Module {
   // 1-3. register file
   val regfile = RegInit(VecInit(Seq.fill(conf.nr_reg)(0.U(conf.xlen.W))))
   regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen), wb_data, regfile(rd_addr))
-//  for(i <- 0 until conf.nr_reg * conf.xlen) {
-//    io.regfile(i) := true.B
-//  }
-  val io_regfile_aux = dontTouch(Wire(Vec(conf.nr_reg * conf.xlen, Bool())))
-  val whatever = VecInit(Seq(true.B, true.B, true.B))
-  io_regfile_aux := DontCare
-//  io_regfile_aux.slice(0, 3).zip(regfile(0).asBools.slice(0, 3)).foreach {case (a, b) => a := b}
-  io_regfile_aux.slice(0, conf.xlen).zip(regfile(0).asBools).foreach {case (a, b) => a := b}
 
-//  io_regfile_aux(0) := regfile(0)(0)
+  val regfile_output_aux = Wire(Vec(conf.nr_reg * conf.xlen, Bool()))
+  for(i <- 0 until conf.nr_reg) {
+    regfile_output_aux.slice(i * conf.xlen, (i+1) * conf.xlen).zip(regfile(i).asBools).foreach{case (a, b) => a := b}
+  }
   io.regfile := io_regfile_aux.asUInt
 
   // submodule2 - ALU
