@@ -122,6 +122,7 @@ static void reset(int n) {
   top->reset = 0;
 	printf("In reset, pc = 0x%p\n", pc);
 	printf("In reset, *pc = 0x%lx\n", *pc);
+	printf("In reset, *(*pc) = 0x%lx\n", *(*pc));
 }
 
 int main(int argc, char** argv, char** env) {
