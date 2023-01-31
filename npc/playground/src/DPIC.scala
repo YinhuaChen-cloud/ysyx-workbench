@@ -22,8 +22,7 @@ with HasExtModuleInline {
               |           input io_rst,
               |           input [XLEN-1:0] io_pc,
               |           input io_isEbreak,
-              |           input io_inv_inst,
-              |           input [NR_REG * XLEN - 1:0] io_regfile);
+              |           input io_inv_inst);
               |
               |  import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
               |  initial set_pc(io_pc);  
@@ -45,6 +44,7 @@ with HasExtModuleInline {
 
 }
 
+//              |           input [NR_REG * XLEN - 1:0] io_regfile);
 //              |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN-1:0] a []);
 //              |  initial set_gpr_ptr(io_regfile);
 
