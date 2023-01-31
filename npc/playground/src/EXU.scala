@@ -30,7 +30,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   for(i <- 0 until conf.nr_reg) {
     regfile_output_aux.slice(i * conf.xlen, (i+1) * conf.xlen).zip(regfile(i).asBools).foreach{case (a, b) => a := b}
   }
-  io.regfile := io_regfile_aux.asUInt
+  io.regfile_output := regfile_output_aux.asUInt
 
   // submodule2 - ALU
   val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(conf.xlen.W))
