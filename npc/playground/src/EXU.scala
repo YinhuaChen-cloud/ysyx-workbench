@@ -9,7 +9,7 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val inst = Input(UInt(conf.inst_len.W))
   val idu_to_exu = Flipped(new IDU_to_EXU())
   val ifu_to_exu = Flipped(new IFU_to_EXU())
-  val regs = Output(Vec(conf.nr_reg, UInt(conf.xlen)))
+  val regs = Output(Vec(conf.nr_reg, UInt(conf.xlen.W)))
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
