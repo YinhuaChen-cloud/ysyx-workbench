@@ -11,11 +11,11 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val ifu_to_exu = Flipped(new IFU_to_EXU())
 //  val regfile = Output(Vec(conf.nr_reg, UInt(conf.xlen.W)))
 //  val regfile = Output(UInt((conf.nr_reg * conf.xlen).W))
-  val regfile = dontTouch(Output(Vec(conf.nr_reg * conf.xlen, Bool())))
+  val regfile = Output(Vec(conf.nr_reg * conf.xlen, Bool()))
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
-  val io = IO(new EXU_bundle())
+  val io = dontTouch(IO(new EXU_bundle()))
 
   // submodule1 - register file
   // 1-1. reg addr
