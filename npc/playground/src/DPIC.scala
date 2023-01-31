@@ -23,7 +23,7 @@ with HasExtModuleInline {
               |           input [XLEN-1:0] io_pc,
               |           input io_isEbreak,
               |           input io_inv_inst,
-              |           input [XLEN-1:0] io_regfile[NR_REG-1:0]);
+              |           input [XLEN-1:0] io_regfile [NR_REG-1:0]);
               |
               |  import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
               |  initial set_pc(io_pc);  
