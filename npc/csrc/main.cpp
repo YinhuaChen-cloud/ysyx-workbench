@@ -117,7 +117,7 @@ static long load_img() {
 }
 
 static void reset(int n) {
-	printf("In reset, pc = 0x%lx\n", pc);
+	printf("In reset, pc = 0x%p\n", pc);
 	printf("In reset, *pc = 0x%lx\n", *pc);
   top->reset = 1;
   while (n -- > 0) single_cycle();
