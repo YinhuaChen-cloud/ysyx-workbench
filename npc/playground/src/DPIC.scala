@@ -19,7 +19,7 @@ with HasExtModuleInline {
 
   setInline("DPIC.v",
             s"""
-              |module DPIC #(XLEN=64) (
+              |module DPIC #(XLEN=64, NR_REG=32) (
               |           input io_clk,
               |           input io_rst,
               |           input [XLEN-1:0] io_pc,
