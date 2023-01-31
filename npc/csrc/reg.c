@@ -11,7 +11,7 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
 }
 
 extern "C" void set_pc(const svOpenArrayHandle a) {
-  pc = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
+  pc = (uint32_t *)(((VerilatedDpiOpenVar*)a)->datap());
 //	printf("In set_pc, *pc = %lx\n", *pc);
 }
 
