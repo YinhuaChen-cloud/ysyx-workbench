@@ -19,10 +19,10 @@ typedef word_t vaddr_t;
 typedef struct {
   word_t gpr[32];
   vaddr_t pc;
-	uint64_t mstatus;
-	uint64_t mtvec;
-	uint64_t mepc;
-	uint64_t mcause;
+//	uint64_t mstatus; // TODO: uncomment these after finishing B line
+//	uint64_t mtvec;
+//	uint64_t mepc;
+//	uint64_t mcause;
 } riscv64_CPU_state;
 
 extern riscv64_CPU_state cpu;
