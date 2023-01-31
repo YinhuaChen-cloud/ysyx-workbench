@@ -9,7 +9,7 @@ with HasExtModuleInline {
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
-    val pc = Input(UInt(conf.xlen.W))
+    val pc = Input(UInt(conf.pc_len.W))
     val isEbreak = Input(Bool())
     val inv_inst  = Input(Bool())
 //    val regfile = Input(UInt((conf.nr_reg * conf.xlen).W))
