@@ -30,7 +30,7 @@ class EXU (implicit val conf: Configuration) extends Module {
 //    io.regfile(i) := true.B
 //  }
   val io_regfile_aux = Wire(Vec(conf.nr_reg * conf.xlen, Bool()))
-  io_regfile_aux(2, 0) := Vec(3, true.B)
+//  io_regfile_aux(2, 0) := Vec(3, true.B)
   io.regfile := DontCare 
 
   // submodule2 - ALU
