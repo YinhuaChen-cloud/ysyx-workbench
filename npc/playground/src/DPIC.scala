@@ -4,7 +4,7 @@ import chisel3.experimental._
 import Conf._
 
 class DPIC (implicit val conf: Configuration) 
-extends ExtModule(Map("XLEN" -> conf.xlen, "NR_REG" -> conf.nr_reg)) 
+extends ExtModule(Map("XLEN" -> conf.xlen, "NR_REG" -> conf.nr_reg, "PC_LEN" -> conf.pc_len)) 
 with HasExtModuleInline {
   val io = IO(new Bundle {
     val clk = Input(Clock())
@@ -20,11 +20,11 @@ with HasExtModuleInline {
               |module DPIC #(XLEN=64, NR_REG=32) (
               |           input io_clk,
               |           input io_rst,
-              |           input [XLEN-1:0] io_pc,
+              |           input [PC_LEN-1:0] io_pc,
               |           input io_isEbreak,
               |           input io_inv_inst);
               |
-              |  import "DPI-C" function void set_pc(input logic [XLEN-1:0] a []);
+              |  import "DPI-C" function void set_pc(input logic [PC_LEN-1:0] a []);
               |  initial set_pc(io_pc);  
               |
               |  import "DPI-C" function void ebreak();
