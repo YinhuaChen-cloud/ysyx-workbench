@@ -14,9 +14,6 @@ with HasExtModuleInline {
     val inv_inst  = Input(Bool())
     val regfile = Output(Vec(conf.nr_reg, UInt(conf.xlen.W)))
   })
-//              |           input [XLEN-1:0] regs [NR_REG-1:0]);
-//              |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN-1:0] a []);
-//              |  initial set_gpr_ptr(regs);
 
   setInline("DPIC.v",
             s"""
@@ -42,6 +39,8 @@ with HasExtModuleInline {
               |      if (~io_rst && io_inv_inst)
               |        invalid();
               |
+              |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN-1:0] a []);
+              |  initial set_gpr_ptr(io_regfile);
               |
               |
               |endmodule
