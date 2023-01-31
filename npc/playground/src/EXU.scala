@@ -30,7 +30,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   for(i <- 0 until conf.nr_reg * conf.xlen) {
     io.regfile(i) := true.B
   }
-  io.regfile.suggestName("io_regfile")
+  io.regfile.suggestName("cyh")
 
   // submodule2 - ALU
   val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(conf.xlen.W))
