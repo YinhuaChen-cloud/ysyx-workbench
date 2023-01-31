@@ -2,7 +2,7 @@
 #include "common.h"
 
 uint64_t *cpu_gpr = NULL;
-uint64_t *pc = NULL;
+uint32_t *pc = NULL;
 
 riscv64_CPU_state cpu = {};
 
