@@ -27,7 +27,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   val regfile = RegInit(VecInit(Seq.fill(conf.nr_reg)(0.U(conf.xlen.W))))
   regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen), wb_data, regfile(rd_addr))
   for(i <- 0 to conf.nr_reg-1) {
-    io.regfile(conf.xlen*(i+1) - 1, conf.xlen*i) := regfile(i)
+    io.regfile.slice(conf.xlen*(i+1) - 1, conf.xlen*i) := regfile(i)
   }
 
   // submodule2 - ALU
