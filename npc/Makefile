@@ -48,7 +48,7 @@ INC_PATH ?= $(NPC_HOME)/cinclude
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
-				-O2 --x-assign fast --x-initial fast 
+				-O0 --x-assign fast --x-initial fast 
 
 ifeq ($(MODE), ASSERT)
 	VERILATOR_CFLAGS += --assert
