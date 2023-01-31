@@ -29,7 +29,7 @@ class EXU (implicit val conf: Configuration) extends Module {
 //  for(i <- 0 until conf.nr_reg * conf.xlen) {
 //    io.regfile(i) := true.B
 //  }
-  val io_regfile_aux = Wire(Vec(conf.nr_reg * conf.xlen, Bool()))
+  val io_regfile_aux = dontTouch(Wire(Vec(conf.nr_reg * conf.xlen, Bool())))
   val whatever = VecInit(Seq(true.B, true.B, true.B))
   io_regfile_aux := DontCare
 //  io_regfile_aux.slice(2, 0).zip(whatever).foreach {case (a,b) => a := b}
