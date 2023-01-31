@@ -10,8 +10,7 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val idu_to_exu = Flipped(new IDU_to_EXU())
   val ifu_to_exu = Flipped(new IFU_to_EXU())
 //  val regfile = Output(Vec(conf.nr_reg, UInt(conf.xlen.W)))
-//  val regfile = Output(UInt((conf.nr_reg * conf.xlen).W))
-  val regfile = Output(Vec(conf.nr_reg * conf.xlen, Bool()))
+  val regfile = Output(UInt((conf.nr_reg * conf.xlen).W))
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
