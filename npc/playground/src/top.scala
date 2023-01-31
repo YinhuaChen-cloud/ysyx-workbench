@@ -30,7 +30,7 @@ class top extends Module {
   dpic.io.pc  := ifu.io.pc
   dpic.io.isEbreak := idu.io.isEbreak
   dpic.io.inv_inst := idu.io.inv_inst
-//  dpic.io.regfile  := exu.io.regfile
+  dpic.io.regfile  := exu.io.regfile_output
 
 }
 

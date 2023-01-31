@@ -12,7 +12,7 @@ with HasExtModuleInline {
     val pc = Input(UInt(conf.xlen.W))
     val isEbreak = Input(Bool())
     val inv_inst  = Input(Bool())
-//    val regfile = Input(Vec(conf.nr_reg, UInt(conf.xlen.W)))
+    val regfile = Input(UInt((conf.nr_reg * conf.xlen).W))
   })
 
 //              |           input [XLEN-1:0] io_regfile [NR_REG-1:0]);
