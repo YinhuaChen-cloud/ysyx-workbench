@@ -49,6 +49,8 @@ class IDU (implicit val conf: Configuration) extends Module {
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
   val alu_op :: wb_sel :: (wreg: Bool) :: Nil = ds0
 
+  println(s"In IDU, io.inst = ${io.inst}, and valid_inst = ${valid_inst}")
+
   io.idu_to_exu.pc_sel  := MuxLookup(
     br_type, PC_EXC,
     Array(
