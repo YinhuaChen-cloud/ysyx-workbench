@@ -9,7 +9,7 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val inst = Input(UInt(conf.inst_len.W))
   val idu_to_exu = Flipped(new IDU_to_EXU())
   val ifu_to_exu = Flipped(new IFU_to_EXU())
-  val regfile_output = Output(UInt((conf.nr_reg * conf.xlen).W))
+  val regfile_output = Output(Vec(conf.nr_reg, UInt(conf.xlen.W)))
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
@@ -24,6 +24,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   val wb_data = Wire(UInt(conf.xlen.W)) // NOTE: data write back to reg or mem
   // 1-3. register file
   val regfile = RegInit(VecInit(Seq.fill(conf.nr_reg)(0.U(conf.xlen.W))))
+
   regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen), wb_data, regfile(rd_addr))
 
   val regfile_output_aux = Wire(Vec(conf.nr_reg * conf.xlen, Bool()))
