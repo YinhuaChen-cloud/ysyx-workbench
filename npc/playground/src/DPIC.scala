@@ -4,7 +4,7 @@ import chisel3.experimental._
 import Conf._
 
 class DPIC (implicit val conf: Configuration) 
-extends ExtModule(Map("XLEN" -> conf.xlen, "NR_REG" -> conf.nr_reg, "PC_LEN" -> conf.pc_len)) 
+extends ExtModule(Map("XLEN" -> conf.xlen, "NR_REG" -> conf.nr_reg, "PC_LEN" -> conf.pc_len, "INST_LEN" -> conf.inst_len)) 
 with HasExtModuleInline {
   val io = IO(new Bundle {
     val clk = Input(Clock())
@@ -13,32 +13,38 @@ with HasExtModuleInline {
     val isEbreak = Input(Bool())
     val inv_inst  = Input(Bool())
     val regfile = Input(UInt((conf.nr_reg * conf.xlen).W))
+    val inst = Output(UInt(conf.inst_len.W))
   })
 
   setInline("DPIC.v",
             s"""
-              |module DPIC #(XLEN=${conf.xlen}, NR_REG=${conf.nr_reg}, PC_LEN=${conf.pc_len}) (
+              |module DPIC #(XLEN=${conf.xlen}, NR_REG=${conf.nr_reg}, PC_LEN=${conf.pc_len}, INST_LEN=${conf.inst_len}) (
               |           input io_clk,
               |           input io_rst,
               |           input [PC_LEN-1:0] io_pc,
               |           input io_isEbreak,
               |           input io_inv_inst,
-              |           input [NR_REG * XLEN - 1:0] io_regfile);
+              |           input [NR_REG * XLEN - 1:0] io_regfile,
+              |           output [INST_LEN - 1:0] io_inst);
               |
+              |  // expose pc to cpp simulation environment
               |  import "DPI-C" function void set_pc(input logic [PC_LEN-1:0] a []);
               |  initial set_pc(io_pc);  
               |
+              |  // only cpp simulation environment can execute ebreak()
               |  import "DPI-C" function void ebreak();
               |  always@(*) begin
               |    if(io_isEbreak)
               |      ebreak();   
               |  end
               |
+              |  // used to report invalid inst error
               |  import "DPI-C" function void invalid();
               |    always@(posedge io_clk)
               |      if (~io_rst && io_inv_inst)
               |        invalid();
               |
+              |  // expose regfile for difftest
               |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN-1:0] a []);
               |  wire [XLEN-1:0] regs [NR_REG-1:0];
               |  genvar i;
@@ -48,6 +54,25 @@ with HasExtModuleInline {
               |    end
               |  endgenerate
               |  initial set_gpr_ptr(regs);
+              |
+              |  // for mem_rw
+              |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
+              |  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
+              |  // for inst read from pmem // TODO: the pmem_read implementation will be changed greatly after implement BUS
+              |  reg [XLEN-1:0]	inst_aux;
+              |  always@(*) begin
+              |    if(~io_clk)
+              |      pmem_read(io_pc, inst_aux); 
+              |    else
+              |      inst_aux = '0; 
+              |  end
+              |  // inst selection	
+              |  always@(*) 
+              |    case(io_pc[2:0])
+              |      3'h0: io_inst = inst_aux[INST_LEN-1:0];
+              |      3'h4: io_inst = inst_aux[XLEN-1:INST_LEN];
+              |      default: begin io_inst = '0; assert(0); end
+              |    endcase
               |
               |endmodule
             """.stripMargin)
