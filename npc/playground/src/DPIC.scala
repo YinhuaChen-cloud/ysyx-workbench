@@ -25,7 +25,7 @@ with HasExtModuleInline {
               |           input io_isEbreak,
               |           input io_inv_inst,
               |           input [NR_REG * XLEN - 1:0] io_regfile,
-              |           output [INST_LEN - 1:0] io_inst);
+              |           output reg [INST_LEN - 1:0] io_inst);
               |
               |  // expose pc to cpp simulation environment
               |  import "DPI-C" function void set_pc(input logic [PC_LEN-1:0] a []);
