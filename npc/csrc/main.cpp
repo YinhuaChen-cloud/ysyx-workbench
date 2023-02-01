@@ -135,13 +135,13 @@ int main(int argc, char** argv, char** env) {
 	init_pmem();
 	long img_size = load_img();
 
-	printf("============ just before rest(10) =============\n");
+	printf("============ just before reset(10) =============\n");
 
   gettimeofday(&boot_time, NULL);
 
 	reset(10);
 
-	printf("============ just after rest(10) =============\n");
+	printf("============ just after reset(10) =============\n");
 
 // // difftest start 
  	sv_regs_to_c();
