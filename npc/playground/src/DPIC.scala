@@ -12,7 +12,7 @@ with HasExtModuleInline {
     val pc = Input(UInt(conf.pc_len.W))
     val isEbreak = Input(Bool())
     val inv_inst  = Input(Bool())
-    val regfile = Input(UInt((conf.nr_reg * conf.xlen).W))
+    val regfile_input = Input(Vec(conf.nr_reg, UInt(conf.xlen.W)))
   })
 
   setInline("DPIC.v",
