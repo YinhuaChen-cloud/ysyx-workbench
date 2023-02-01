@@ -7,7 +7,7 @@
 #define GPR_NR 32
 
 extern uint64_t *cpu_gpr;
-extern uint32_t *pc;
+extern uint64_t *pc;
 
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r);
 extern const char *regs[GPR_NR];
