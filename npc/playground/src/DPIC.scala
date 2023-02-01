@@ -39,11 +39,13 @@ with HasExtModuleInline {
               |      if (~io_rst && io_inv_inst)
               |        invalid();
               |
-              |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN-1:0] a []);
+              |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN * NR_REG -1:0] a []);
               |  initial set_gpr_ptr(io_regfile);
               |
               |endmodule
             """.stripMargin)
 
 }
+
+//              |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN-1:0] a []);
 
