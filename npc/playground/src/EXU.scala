@@ -28,6 +28,8 @@ class EXU (implicit val conf: Configuration) extends Module {
 
   regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen), wb_data, regfile(rd_addr))
 
+  io.regfile_output := regfile
+
 //  val regfile_output_aux = Wire(Vec(conf.nr_reg * conf.xlen, Bool()))
 //  for(i <- 0 until conf.nr_reg) {
 //    regfile_output_aux.slice(i * conf.xlen, (i+1) * conf.xlen).zip(regfile(i).asBools).foreach{case (a, b) => a := b}
