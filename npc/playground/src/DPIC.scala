@@ -43,7 +43,7 @@ with HasExtModuleInline {
               |  wire [XLEN-1:0] regs [NR_REG-1:0];
               |  genvar i;
               |  generate
-              |    for(int i = 0; i < NR_REG; i = i+1) begin
+              |    for(i = 0; i < NR_REG; i = i+1) begin
               |      assign regs[i] = io_regfile[(i+1)*XLEN - 1 : i*XLEN]; 
               |    end
               |  endgenerate
