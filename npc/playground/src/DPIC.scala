@@ -40,7 +40,7 @@ with HasExtModuleInline {
               |        invalid();
               |
               |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN * NR_REG -1:0] a []);
-              |  set_gpr_ptr(io_regfile);
+              |  initial set_gpr_ptr(io_regfile);
               |
               |endmodule
             """.stripMargin)
