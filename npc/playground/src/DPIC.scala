@@ -39,8 +39,12 @@ with HasExtModuleInline {
               |      if (~io_rst && io_inv_inst)
               |        invalid();
               |
-              |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN * NR_REG -1:0] a []);
-              |  initial set_gpr_ptr(io_regfile);
+              |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN-1:0] a []);
+              |  wire [XLEN-1:0] regs [NR_REG-1:0];
+              |  for(int i = 0; i < NR_REG; i = i+1) begin
+              |    assign regs[i] = io_regfile[(i+1)*XLEN - 1 : i*XLEN]; 
+              |  end
+              |  initial set_gpr_ptr(regs);
               |
               |endmodule
             """.stripMargin)
@@ -48,4 +52,5 @@ with HasExtModuleInline {
 }
 
 //              |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN-1:0] a []);
+//              |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN * NR_REG -1:0] a []);
 
