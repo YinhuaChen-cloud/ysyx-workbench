@@ -6,7 +6,7 @@ case class Configuration() {
   val xlen = 64
   val inst_len = 32
   val nr_reg = 32
-  val pc_len = 32
+  val pc_len = xlen
   val START_ADDR = "h8000_0000".U(32.W)
 //   val nxprbits = log2Ceil(nxpr)
 //   val rvc = false
