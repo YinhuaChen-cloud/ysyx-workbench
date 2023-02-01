@@ -41,9 +41,12 @@ with HasExtModuleInline {
               |
               |  import "DPI-C" function void set_gpr_ptr(input logic [XLEN-1:0] a []);
               |  wire [XLEN-1:0] regs [NR_REG-1:0];
-              |  for(int i = 0; i < NR_REG; i = i+1) begin
-              |    assign regs[i] = io_regfile[(i+1)*XLEN - 1 : i*XLEN]; 
-              |  end
+              |  genvar i;
+              |  generate
+              |    for(int i = 0; i < NR_REG; i = i+1) begin
+              |      assign regs[i] = io_regfile[(i+1)*XLEN - 1 : i*XLEN]; 
+              |    end
+              |  endgenerate
               |  initial set_gpr_ptr(regs);
               |
               |endmodule
