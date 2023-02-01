@@ -161,8 +161,8 @@ int main(int argc, char** argv, char** env) {
 			contextp->timeInc(1);
 			// pc_before_exec = cpu.pc;
 			printf("In while, *pc = 0x%x\n", *pc);
-			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
-			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
+			printf("In while, inst = 0x%x\n", *((uint64_t *)(pmem + *pc - 0x80000000)));
+			top->io_inst = *((uint64_t *)(pmem + *pc - 0x80000000));
 
 			single_cycle();
 
