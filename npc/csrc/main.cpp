@@ -141,6 +141,8 @@ int main(int argc, char** argv, char** env) {
 
 	reset(10);
 
+	printf("============ just after rest(10) =============\n");
+
 // // difftest start 
  	sv_regs_to_c();
  	init_difftest(diff_so_file, img_size, difftest_port);
