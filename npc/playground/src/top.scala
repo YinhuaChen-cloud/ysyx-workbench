@@ -27,9 +27,10 @@ class top extends Module {
 
   dpic.io.clk := clock
   dpic.io.rst := reset
-  dpic.io.pc := ifu.io.pc
+  dpic.io.pc  := ifu.io.pc
   dpic.io.isEbreak := idu.io.isEbreak
   dpic.io.inv_inst := idu.io.inv_inst
+  dpic.io.regfile  := exu.io.regfile_output
 
 }
 

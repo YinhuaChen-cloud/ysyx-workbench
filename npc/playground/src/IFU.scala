@@ -14,4 +14,7 @@ class IFU (implicit val conf: Configuration) extends Module {
   pc_reg := io.pc_next
   io.pc  := pc_reg
 
+//  printf("pc_reg = 0x%x\n", pc_reg)
+//  printf("pc_next = 0x%x\n", pc_next)
+
 }

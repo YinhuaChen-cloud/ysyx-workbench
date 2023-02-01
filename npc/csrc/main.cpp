@@ -120,6 +120,9 @@ static void reset(int n) {
   top->reset = 1;
   while (n -- > 0) single_cycle();
   top->reset = 0;
+//	printf("In reset, pc = 0x%p\n", pc);
+//	printf("In reset, *pc = 0x%lx\n", *pc);
+//	printf("In reset, *(uint32_t *)(*pc) = 0x%lx\n", *(uint32_t *)(*pc));
 }
 
 int main(int argc, char** argv, char** env) {
@@ -139,8 +142,8 @@ int main(int argc, char** argv, char** env) {
 	reset(10);
 
 // // difftest start 
-// 	sv_regs_to_c();
-// 	init_difftest(diff_so_file, img_size, difftest_port);
+ 	sv_regs_to_c();
+ 	init_difftest(diff_so_file, img_size, difftest_port);
 // // difftest end
 
 	npc_state.state = NPC_RUNNING;
@@ -158,14 +161,16 @@ int main(int argc, char** argv, char** env) {
 			contextp->timeInc(1);
 			// pc_before_exec = cpu.pc;
 			printf("In while, *pc = 0x%lx\n", *pc);
-			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
-			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
+			printf("In while, inst = 0x%lx\n", *((uint64_t *)(pmem + *pc - 0x80000000)));
+			top->io_inst = *((uint64_t *)(pmem + *pc - 0x80000000));
 
 			single_cycle();
 
-			// sv_regs_to_c();
+			// difftest - start
+			sv_regs_to_c();
+			difftest_step();
+			// difftest - end
 
-			// difftest_step();
 			if (npc_state.state != NPC_RUNNING) break;
 		}
 	}

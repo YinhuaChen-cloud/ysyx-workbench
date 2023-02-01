@@ -5,21 +5,11 @@ import Conf._
 import Macros._
 import Macros.Constants._
 
-
-
 class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val inst = Input(UInt(conf.inst_len.W))
-
   val idu_to_exu = Flipped(new IDU_to_EXU())
-
-//  val pc_sel    = Input(UInt(BR_N.getWidth.W))
-//  val op1_sel   = Input(UInt(OP1_X.getWidth.W))
-//  val op2_sel   = Input(UInt(OP2_X.getWidth.W))
-//  val alu_op    = Input(UInt(ALU_X.getWidth.W))
-//  val wb_sel    = Input(UInt(WB_X.getWidth.W))
-//  val reg_wen   = Input(Bool())
-
   val ifu_to_exu = Flipped(new IFU_to_EXU())
+  val regfile_output = Output(UInt((conf.nr_reg * conf.xlen).W))
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
@@ -35,6 +25,12 @@ class EXU (implicit val conf: Configuration) extends Module {
   // 1-3. register file
   val regfile = RegInit(VecInit(Seq.fill(conf.nr_reg)(0.U(conf.xlen.W))))
   regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen), wb_data, regfile(rd_addr))
+
+  val regfile_output_aux = Wire(Vec(conf.nr_reg * conf.xlen, Bool()))
+  for(i <- 0 until conf.nr_reg) {
+    regfile_output_aux.slice(i * conf.xlen, (i+1) * conf.xlen).zip(regfile(i).asBools).foreach{case (a, b) => a := b}
+  }
+  io.regfile_output := regfile_output_aux.asUInt
 
   // submodule2 - ALU
   val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(conf.xlen.W))
