@@ -61,7 +61,7 @@ with HasExtModuleInline {
               |  // for inst read from pmem // TODO: the pmem_read implementation will be changed greatly after implement BUS
               |  reg [XLEN-1:0]	inst_aux;
               |  always@(*) begin
-              |    if(~io_clk)
+              |    if(~io_rst)
               |      pmem_read(io_pc, inst_aux); 
               |    else
               |      inst_aux = '0; 
