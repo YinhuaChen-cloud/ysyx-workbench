@@ -166,12 +166,14 @@ int main(int argc, char** argv, char** env) {
 //			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
 //			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
 
-			single_cycle();
+			cpu_exec(-1);
 
-			// difftest - start
-			sv_regs_to_c();
-			difftest_step();
-			// difftest - end
+//			single_cycle();
+//
+//			// difftest - start
+//			sv_regs_to_c();
+//			difftest_step();
+//			// difftest - end
 
 			if (npc_state.state != NPC_RUNNING) break;
 		}

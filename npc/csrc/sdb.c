@@ -60,7 +60,7 @@ static void cpu_exec(uint32_t n) {
 
 		difftest_step();
 
-		printred("The pc of the instruction just executed is 0x%lx\n", prev_pc);
+//		printred("The pc of the instruction just executed is 0x%lx\n", prev_pc);
 
 		if (npc_state.state != NPC_RUNNING) break;
 	}
