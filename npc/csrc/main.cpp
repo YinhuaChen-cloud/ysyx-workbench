@@ -135,11 +135,13 @@ int main(int argc, char** argv, char** env) {
 	init_pmem();
 	long img_size = load_img();
 
-	printf("============ just before rest(10) =============\n");
+	printf("============ just before reset(10) =============\n");
 
   gettimeofday(&boot_time, NULL);
 
 	reset(10);
+
+	printf("============ just after reset(10) =============\n");
 
 // // difftest start 
  	sv_regs_to_c();
@@ -160,9 +162,9 @@ int main(int argc, char** argv, char** env) {
 		while (!contextp->gotFinish()) {
 			contextp->timeInc(1);
 			// pc_before_exec = cpu.pc;
-			printf("In while, *pc = 0x%lx\n", *pc);
-			printf("In while, inst = 0x%lx\n", *((uint64_t *)(pmem + *pc - 0x80000000)));
-			top->io_inst = *((uint64_t *)(pmem + *pc - 0x80000000));
+//			printf("In while, *pc = 0x%lx\n", *pc);
+//			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
+//			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
 
 			single_cycle();
 
