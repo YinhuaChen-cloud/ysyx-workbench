@@ -44,7 +44,7 @@ static void check_all_watchpoints() {
   }
 }
 
-static void cpu_exec(uint32_t n) {
+void cpu_exec(uint32_t n) {
 
 	uint64_t prev_pc = 0;
 
