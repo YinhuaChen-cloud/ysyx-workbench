@@ -15,7 +15,7 @@ with HasExtModuleInline {
     val regfile = Input(UInt((conf.nr_reg * conf.xlen).W))
     val mem_addr = Input(UInt(conf.xlen.W))
     val isRead = Input(Bool())
-    val isWriteMem = Iutput(Bool())
+    val isWriteMem = Input(Bool())
     val mem_write_data = Input(UInt(conf.xlen.W))
     val inst = Output(UInt(conf.inst_len.W))
     val mem_in = Output(UInt(conf.xlen.W))
