@@ -155,6 +155,14 @@ int main(int argc, char** argv, char** env) {
 #endif
   printf(" -------------\n");
 
+	printf("------------ watchpoints is ");
+#ifdef CONFIG_WATCHPOINTS
+	printf("on");
+#else
+	printf("off");
+#endif
+  printf(" -------------\n");
+
 	printf("------------ difftest is ");
 #ifdef CONFIG_DIFFTEST
 	printf("on");
@@ -163,13 +171,6 @@ int main(int argc, char** argv, char** env) {
 #endif
   printf(" -------------\n");
 
-	printf("------------ watchpoints is ");
-#ifdef CONFIG_WATCHPOINTS
-	printf("on");
-#else
-	printf("off");
-#endif
-  printf(" -------------\n");
 	// ------------- tell the user the status of debugging tools ----- end
 
 	printf("============ after reset(10) =============\n");
