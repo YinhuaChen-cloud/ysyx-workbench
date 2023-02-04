@@ -20,7 +20,7 @@ class IDU_bundle (implicit val conf: Configuration) extends Bundle() {
   val inst = Input(UInt(conf.inst_len.W))
   val idu_to_exu = new IDU_to_EXU()
   val isEbreak  = Output(Bool())
-  val inv_inst  = Output(Bool()) // TODO: need to connect to DPIC
+  val inv_inst  = Output(Bool())
 } 
 
 class IDU (implicit val conf: Configuration) extends Module {
@@ -40,7 +40,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_ALU, WREG_1, MSK_X),
       JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X   , WB_PC4, WREG_1, MSK_X),
       SLTIU     -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_SLTU, WB_ALU, WREG_1, MSK_X),
-      // S-type TODO: I guess we need mtrace to debug S-type inst
+      // S-type
       SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, MSK_X),
       // B-type
       BEQ       -> List(Y, BR_EQ, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, MSK_X),
