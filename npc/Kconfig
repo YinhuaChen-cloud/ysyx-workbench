@@ -8,6 +8,9 @@ config WATCHPOINTS
 	depends on SDB
   bool "Enable watchpoints"
 	default 0
+config MTRACE
+	bool "Enable mtrace"
+	default 0
 config DIFFTEST
   bool "Enable difftest"
 	default 0

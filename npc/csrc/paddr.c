@@ -10,10 +10,12 @@ extern struct timeval boot_time;
 
 uint8_t *pmem = NULL;
 
+#ifdef CONFIG_MTRACE
 #define MTRACE_BUF_LEN 128
 char *mtrace_file = NULL;
 static FILE *mtrace_fp = NULL;
 static char mtrace_buf[MTRACE_BUF_LEN];
+#endif
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
 uint8_t* cpu_to_sim(paddr_t paddr) { 
@@ -23,15 +25,19 @@ uint8_t* cpu_to_sim(paddr_t paddr) {
 }
 
 void init_mtrace() {
+#ifdef CONFIG_MTRACE
 	assert(mtrace_file);
   mtrace_fp = fopen(mtrace_file, "w");
 	assert(mtrace_fp);
+#endif
 }
 
 void close_mtrace() {
-//	assert(mtrace_fp);
-//	fclose(mtrace_fp);
-//	mtrace_fp = NULL;
+#ifdef CONFIG_MTRACE
+	assert(mtrace_fp);
+	fclose(mtrace_fp);
+	mtrace_fp = NULL;
+#endif
 }
 
 extern "C" void pmem_read(long long raddr, long long *rdata) {

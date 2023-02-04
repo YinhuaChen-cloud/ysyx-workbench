@@ -163,6 +163,14 @@ int main(int argc, char** argv, char** env) {
 #endif
   printf(" -------------\n");
 
+	printf("------------ mtrace is ");
+#ifdef CONFIG_MTRACE
+	printf("on");
+#else
+	printf("off");
+#endif
+  printf(" -------------\n");
+	 
 	printf("------------ difftest is ");
 #ifdef CONFIG_DIFFTEST
 	printf("on");
@@ -182,7 +190,7 @@ int main(int argc, char** argv, char** env) {
 
 	npc_state.state = NPC_RUNNING;
 
-	// init_mtrace();
+	init_mtrace();
 
 	if(is_sdb_mode) {
 		init_sdb();
@@ -212,7 +220,7 @@ int main(int argc, char** argv, char** env) {
 	delete contextp;
 	free(pmem);
 
-	// close_mtrace();
+	close_mtrace();
 
 	// TODO: maybe need to be changed
 	return is_exit_status_bad();
