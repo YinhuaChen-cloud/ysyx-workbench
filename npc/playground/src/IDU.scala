@@ -62,9 +62,9 @@ class IDU (implicit val conf: Configuration) extends Module {
     )
   )
 
-  io.idu_to_exu.mem_msk := MuxCase(0.U(conf.xlen.W), Array(
-               (mem_msk === MSK_W) -> "hffff_ffff".U(32.W),
-               ))
+  io.idu_to_exu.mem_msk := MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
+         (mem_msk === MSK_W) -> "hffff_ffff".U(32.W),
+         ))
 
   io.idu_to_exu.op1_sel := op1_sel
   io.idu_to_exu.op2_sel := op2_sel
