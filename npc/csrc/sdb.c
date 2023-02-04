@@ -65,7 +65,7 @@ void cpu_exec(uint32_t n) {
 
 		extern bool is_sdb_mode;
 		if(is_sdb_mode) {
-			printred("The pc of the instruction just executed is 0x%lx\n", prev_pc);
+			printred("The pc of the instruction just executed is 0x%lx\n", pc_just_exec);
 		}
 
 		if (npc_state.state != NPC_RUNNING) break;
