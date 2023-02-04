@@ -54,11 +54,12 @@ void cpu_exec(uint32_t n) {
 
 		single_cycle();
 
+		// difftest -- start
 		sv_regs_to_c();
+		difftest_step();
+		// difftest -- end
 
 		check_all_watchpoints();
-
-		difftest_step();
 
 //		printred("The pc of the instruction just executed is 0x%lx\n", prev_pc);
 
@@ -285,6 +286,8 @@ void sdb_mainloop() {
         break;
       }
     }
+
+		if (npc_state.state != NPC_RUNNING) break;
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
   }
