@@ -22,7 +22,7 @@ class IDU_bundle (implicit val conf: Configuration) extends Bundle() {
   val isEbreak  = Output(Bool())
   val inv_inst  = Output(Bool())
   val isWriteMem = Output(Bool())
-  val mem_write_msk = Output(UInt(conf.xlen.W))
+//  val mem_write_msk = Output(UInt(conf.xlen.W))
 } 
 
 class IDU (implicit val conf: Configuration) extends Module {
