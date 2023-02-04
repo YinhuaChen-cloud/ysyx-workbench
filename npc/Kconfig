@@ -1,0 +1,14 @@
+mainmenu "NPC Configuration Menu"
+
+menu "Debug Options"
+config SDB
+  bool "Enable sdb"
+	default 0
+config WATCHPOINTS
+  bool "Enable watchpoints"
+	default 0
+config DIFFTEST
+  bool "Enable difftest"
+	default 0
+endmenu
+

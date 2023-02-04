@@ -10,6 +10,8 @@
 #include "watchpoint.h"
 #include <debug.h>
 
+uint64_t pc_just_exec;
+
 static char* rl_gets() {
   static char *line_read = NULL;
 
@@ -44,23 +46,27 @@ static void check_all_watchpoints() {
   }
 }
 
-static void cpu_exec(uint32_t n) {
+void cpu_exec(uint32_t n) {
 
-	uint64_t prev_pc = 0;
+	pc_just_exec = 0xdeadbeef;
 
 	while(n--) {
 
-		prev_pc = cpu.pc;
+		pc_just_exec = cpu.pc;
 
 		single_cycle();
 
+		// difftest -- start
 		sv_regs_to_c();
+		difftest_step();
+		// difftest -- end
 
 		check_all_watchpoints();
 
-		difftest_step();
-
-		printred("The pc of the instruction just executed is 0x%lx\n", prev_pc);
+		extern bool is_sdb_mode;
+		if(is_sdb_mode) {
+			printred("The pc of the instruction just executed is 0x%lx\n", pc_just_exec);
+		}
 
 		if (npc_state.state != NPC_RUNNING) break;
 	}
@@ -285,6 +291,8 @@ void sdb_mainloop() {
         break;
       }
     }
+
+		if (npc_state.state != NPC_RUNNING) break;
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
   }

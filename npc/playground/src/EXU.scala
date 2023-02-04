@@ -48,22 +48,24 @@ class EXU (implicit val conf: Configuration) extends Module {
   val imm_j = Cat(io.inst(31), io.inst(19,12), io.inst(20), io.inst(30,21))
   // r
   // i
-  val imm_i_sext = Cat(Fill(20,imm_i(11)), imm_i)
+  val imm_i_sext = Cat(Fill(conf.xlen - 12, imm_i(11)), imm_i)
   // s
-  val imm_s_sext = Cat(Fill(20,imm_s(11)), imm_s)
+  val imm_s_sext = Cat(Fill(conf.xlen - 12, imm_s(11)), imm_s)
   // b
   // u
-  val imm_u_sext = Cat(imm_u, Fill(12,0.U))
+  val imm_u_sext = Cat(imm_u, Fill(12, 0.U))
   // j
-  val imm_j_sext = Cat(Fill(11,imm_j(19)), imm_j, 0.U)
+  val imm_j_sext = Cat(Fill(conf.xlen - 21, imm_j(19)), imm_j, 0.U)
   
-  val alu_op1 = MuxCase(0.U, Array(
+  val alu_op1 = Wire(UInt(conf.xlen.W))   
+  alu_op1 := MuxCase(0.U, Array(
               (io.idu_to_exu.op1_sel === OP1_RS1) -> rs1_data,
               (io.idu_to_exu.op1_sel === OP1_IMU) -> imm_u_sext,
 //              (io.idu_to_exu.op1_sel === OP1_IMZ) -> imm_z
               )).asUInt()
  
-  val alu_op2 = MuxCase(0.U, Array(
+  val alu_op2 = Wire(UInt(conf.xlen.W))   
+  alu_op2 := MuxCase(0.U, Array(
 //              (io.idu_to_exu.op2_sel === OP2_RS2) -> rs2_data,
               (io.idu_to_exu.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
@@ -76,7 +78,7 @@ class EXU (implicit val conf: Configuration) extends Module {
       (io.idu_to_exu.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
     )
   )
-  
+
   // submodule3 - next pc
   val pc_plus4         = Wire(UInt(32.W))
 //  val br_target        = Wire(UInt(32.W))

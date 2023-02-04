@@ -28,7 +28,7 @@ static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
-static int is_sdb_mode = false;
+bool is_sdb_mode = false;
 extern char *mtrace_file;
 
 static int parse_args(int argc, char *argv[]) {
@@ -149,7 +149,6 @@ int main(int argc, char** argv, char** env) {
 // // difftest end
 
 	npc_state.state = NPC_RUNNING;
-	uint64_t pc_before_exec = cpu.pc;
 
 	// init_mtrace();
 
@@ -161,23 +160,25 @@ int main(int argc, char** argv, char** env) {
 //		while (!contextp->gotFinish() && contextp->time() < 20) {
 		while (!contextp->gotFinish()) {
 			contextp->timeInc(1);
-			// pc_before_exec = cpu.pc;
 //			printf("In while, *pc = 0x%lx\n", *pc);
 //			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
 //			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
 
-			single_cycle();
+//			pc_before_exec = cpu.pc;
+			cpu_exec(-1);
 
-			// difftest - start
-			sv_regs_to_c();
-			difftest_step();
-			// difftest - end
+//			single_cycle();
+//
+//			// difftest - start
+//			sv_regs_to_c();
+//			difftest_step();
+//			// difftest - end
 
 			if (npc_state.state != NPC_RUNNING) break;
 		}
 	}
 
-	npc_state.halt_pc = pc_before_exec;
+	npc_state.halt_pc = pc_just_exec;
 	npc_state.halt_ret = -1; 
 	printTrap();
 

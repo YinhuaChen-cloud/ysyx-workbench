@@ -143,4 +143,6 @@ clean:
 
 .PHONY: clean sim gdb run-env sdb
 
+# Include rules for menuconfig
+include $(NPC_HOME)/scripts/config.mk
 
