@@ -48,7 +48,7 @@ static int parse_args(int argc, char *argv[]) {
       case 'l': log_file = optarg; break;
       case 'm': mtrace_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
-      case 1: img_file = optarg; return 0;
+      case 1: img_file = optarg; break;
       default:
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
         printf("\t-s,--sdb								run with sdb mode\n");
@@ -60,6 +60,11 @@ static int parse_args(int argc, char *argv[]) {
         exit(0);
     }
   }
+#ifdef CONFIG_SDB
+	is_sdb_mode = true;
+#else
+	is_sdb_mode = false;
+#endif
   return 0;
 }
 
@@ -135,18 +140,45 @@ int main(int argc, char** argv, char** env) {
 	init_pmem();
 	long img_size = load_img();
 
-	printf("============ just before reset(10) =============\n");
+	printf("============ before reset(10) =============\n");
 
   gettimeofday(&boot_time, NULL);
 
 	reset(10);
 
-	printf("============ just after reset(10) =============\n");
+	// ------------- tell the user the status of debugging tools ----- start
+	printf("------------ sdb is ");
+#ifdef CONFIG_SDB
+	printf("on");
+#else
+	printf("off");
+#endif
+  printf(" -------------\n");
 
-// // difftest start 
+	printf("------------ watchpoints is ");
+#ifdef CONFIG_WATCHPOINTS
+	printf("on");
+#else
+	printf("off");
+#endif
+  printf(" -------------\n");
+
+	printf("------------ difftest is ");
+#ifdef CONFIG_DIFFTEST
+	printf("on");
+#else
+	printf("off");
+#endif
+  printf(" -------------\n");
+
+	// ------------- tell the user the status of debugging tools ----- end
+
+	printf("============ after reset(10) =============\n");
+
+#ifdef CONFIG_DIFFTEST
  	sv_regs_to_c();
  	init_difftest(diff_so_file, img_size, difftest_port);
-// // difftest end
+#endif
 
 	npc_state.state = NPC_RUNNING;
 
@@ -164,15 +196,9 @@ int main(int argc, char** argv, char** env) {
 //			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
 //			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
 
-//			pc_before_exec = cpu.pc;
 			cpu_exec(-1);
 
 //			single_cycle();
-//
-//			// difftest - start
-//			sv_regs_to_c();
-//			difftest_step();
-//			// difftest - end
 
 			if (npc_state.state != NPC_RUNNING) break;
 		}

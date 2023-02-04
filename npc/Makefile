@@ -43,8 +43,7 @@ include ../Makefile
 # ==================== mill project template --- end
 TOPNAME = top
 NXDC_FILES = constr/top.nxdc
-VERILOG_INC_PATH ?= $(NPC_HOME)/vinclude
-INC_PATH ?= $(NPC_HOME)/cinclude
+INC_PATH ?= $(NPC_HOME)/include
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
@@ -114,8 +113,6 @@ sdb: sim
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
-VERILOG_INCFLAGS = $(addprefix -I, $(VERILOG_INC_PATH))
-VERILATOR_CFLAGS += $(VERILOG_INCFLAGS)
 CFLAGS += $(INCFLAGS) -ggdb3 -O2 -Wall -Werror -DTOP_NAME="\"V$(TOPNAME)\"" 
 LDFLAGS += -lSDL2 -lSDL2_image -lreadline
 

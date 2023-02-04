@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-//include <generated/autoconf.h>
+#include <generated/autoconf.h>
 
 #define RESET_VECTOR (CONFIG_MBASE + CONFIG_PC_RESET_OFFSET)
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)

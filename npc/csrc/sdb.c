@@ -29,6 +29,7 @@ static char* rl_gets() {
   return line_read;
 }
 
+#ifdef CONFIG_SDB
 static void check_all_watchpoints() {
   WP *p = get_wp_head();
   bool success = true;
@@ -45,6 +46,7 @@ static void check_all_watchpoints() {
     p = p->next;
   }
 }
+#endif
 
 void cpu_exec(uint32_t n) {
 
@@ -56,12 +58,14 @@ void cpu_exec(uint32_t n) {
 
 		single_cycle();
 
-		// difftest -- start
+#ifdef CONFIG_DIFFTEST
 		sv_regs_to_c();
 		difftest_step();
-		// difftest -- end
+#endif
 
+#ifdef CONFIG_WATCHPOINTS
 		check_all_watchpoints();
+#endif
 
 		extern bool is_sdb_mode;
 		if(is_sdb_mode) {
@@ -303,7 +307,9 @@ void init_sdb() {
   /* Compile the regular expressions. */
   init_regex();
 
+#ifdef CONFIG_WATCHPOINTS
   /* Initialize the watchpoint pool. */
   init_wp_pool();
+#endif
 }
 
