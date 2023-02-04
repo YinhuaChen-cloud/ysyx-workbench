@@ -57,18 +57,20 @@ class EXU (implicit val conf: Configuration) extends Module {
   // j
   val imm_j_sext = Cat(Fill(conf.xlen - 21, imm_j(19)), imm_j, 0.U)
   
-  val alu_op1 = MuxCase(0.U, Array(
+  val alu_op1 = Wire(UInt(conf.xlen.W))   
+  alu_op1 := MuxCase(0.U, Array(
               (io.idu_to_exu.op1_sel === OP1_RS1) -> rs1_data,
               (io.idu_to_exu.op1_sel === OP1_IMU) -> imm_u_sext,
 //              (io.idu_to_exu.op1_sel === OP1_IMZ) -> imm_z
-              )).asUInt(conf.xlen.W)
+              )).asUInt()
  
-  val alu_op2 = MuxCase(0.U, Array(
+  val alu_op2 = Wire(UInt(conf.xlen.W))   
+  alu_op2 := MuxCase(0.U, Array(
 //              (io.idu_to_exu.op2_sel === OP2_RS2) -> rs2_data,
               (io.idu_to_exu.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
               (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
-              )).asUInt(conf.xlen.W)
+              )).asUInt()
   
   val alu_out = Wire(UInt(conf.xlen.W))   
   alu_out := MuxCase(
