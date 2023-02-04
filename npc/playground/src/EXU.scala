@@ -79,8 +79,6 @@ class EXU (implicit val conf: Configuration) extends Module {
     )
   )
 
-  printf("alu_op1 = 0x%x, alu_op2 = 0x%x\n", alu_op1, alu_op2)
-  
   // submodule3 - next pc
   val pc_plus4         = Wire(UInt(32.W))
 //  val br_target        = Wire(UInt(32.W))
