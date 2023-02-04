@@ -45,7 +45,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   // s
   val imm_s = Cat(io.inst(31, 25), io.inst(11,7))
   // b
-  val imm_b = Cat(inst(31), inst(7), inst(30,25), inst(11,8))
+  val imm_b = Cat(io.inst(31), io.inst(7), io.inst(30,25), io.inst(11,8))
   // u
   val imm_u = io.inst(31, 12)
   // j
@@ -88,7 +88,7 @@ class EXU (implicit val conf: Configuration) extends Module {
 
   // submodule3 - next pc
   io.idu_to_exu.br_eq := (rs1_data === rs2_data) 
-  
+  io.idu_to_exu.br_eq
   val pc_plus4         = Wire(UInt(32.W))
   val br_target        = Wire(UInt(32.W))
   val jmp_target       = Wire(UInt(32.W))
