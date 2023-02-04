@@ -91,10 +91,12 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
 	Assert(mymask != 1, "mymask == 1");	
 	*(uint64_t *)(cpu_to_sim(waddr & ~0x7ull) + offest) &= ~mymask;
 	*(uint64_t *)(cpu_to_sim(waddr & ~0x7ull) + offest) |= wdata & mymask;
-	// mtrace
-//	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx mymask:0x%8lx\n", cpu.pc, "Write", waddr, wdata, mymask); 
-//	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
-//	fflush(mtrace_fp);
+
+#ifdef CONFIG_MTRACE
+	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx mymask:0x%8lx\n", cpu.pc, "Write", waddr, wdata, mymask); 
+	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
+	fflush(mtrace_fp);
+#endif
 }
 
 word_t paddr_read(paddr_t addr, int len) {
