@@ -5,7 +5,7 @@ import Macros._
 import Macros.RV64Inst._
 import Macros.Constants._
 
-class IDU_to_EXU extends Bundle() {
+class IDU_to_EXU (implicit val conf: Configuration) extends Bundle() {
   val pc_sel    = Output(UInt(BR_N.getWidth.W))
   val op1_sel   = Output(UInt(OP1_X.getWidth.W))
   val op2_sel   = Output(UInt(OP2_X.getWidth.W))
