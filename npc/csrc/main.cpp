@@ -60,6 +60,11 @@ static int parse_args(int argc, char *argv[]) {
         exit(0);
     }
   }
+#ifdef CONFIG_SDB
+	is_sdb_mode = true;
+#else
+	is_sdb_mode = false;
+#endif
   return 0;
 }
 
@@ -143,10 +148,10 @@ int main(int argc, char** argv, char** env) {
 
 	printf("============ just after reset(10) =============\n");
 
-// // difftest start 
+#ifdef CONFIG_DIFFTEST
  	sv_regs_to_c();
  	init_difftest(diff_so_file, img_size, difftest_port);
-// // difftest end
+#endif
 
 	npc_state.state = NPC_RUNNING;
 
@@ -164,15 +169,9 @@ int main(int argc, char** argv, char** env) {
 //			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
 //			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
 
-//			pc_before_exec = cpu.pc;
 			cpu_exec(-1);
 
 //			single_cycle();
-//
-//			// difftest - start
-//			sv_regs_to_c();
-//			difftest_step();
-//			// difftest - end
 
 			if (npc_state.state != NPC_RUNNING) break;
 		}
