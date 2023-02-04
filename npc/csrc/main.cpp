@@ -149,7 +149,6 @@ int main(int argc, char** argv, char** env) {
 // // difftest end
 
 	npc_state.state = NPC_RUNNING;
-	uint64_t pc_before_exec = cpu.pc;
 
 	// init_mtrace();
 
@@ -161,11 +160,11 @@ int main(int argc, char** argv, char** env) {
 //		while (!contextp->gotFinish() && contextp->time() < 20) {
 		while (!contextp->gotFinish()) {
 			contextp->timeInc(1);
-			// pc_before_exec = cpu.pc;
 //			printf("In while, *pc = 0x%lx\n", *pc);
 //			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
 //			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
 
+//			pc_before_exec = cpu.pc;
 			cpu_exec(-1);
 
 //			single_cycle();
@@ -179,7 +178,7 @@ int main(int argc, char** argv, char** env) {
 		}
 	}
 
-	npc_state.halt_pc = pc_before_exec;
+	npc_state.halt_pc = pc_just_exec;
 	npc_state.halt_ret = -1; 
 	printTrap();
 

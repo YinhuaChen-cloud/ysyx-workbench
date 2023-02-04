@@ -10,6 +10,8 @@
 #include "watchpoint.h"
 #include <debug.h>
 
+uint64_t pc_just_exec;
+
 static char* rl_gets() {
   static char *line_read = NULL;
 
@@ -46,11 +48,11 @@ static void check_all_watchpoints() {
 
 void cpu_exec(uint32_t n) {
 
-	uint64_t prev_pc = 0;
+	pc_just_exec = 0xdeadbeef;
 
 	while(n--) {
 
-		prev_pc = cpu.pc;
+		pc_just_exec = cpu.pc;
 
 		single_cycle();
 
