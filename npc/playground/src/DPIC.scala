@@ -93,6 +93,9 @@ with HasExtModuleInline {
               |      io_mem_in = '0;
               |  end
               |  // for writing mem
+              |  always@(posedge clk) 
+              |    if(io_isWriteMem) 
+              |      pmem_write(io_mem_addr, io_mem_write_data, io_mem_write_msk);
               |
               |endmodule
             """.stripMargin)
