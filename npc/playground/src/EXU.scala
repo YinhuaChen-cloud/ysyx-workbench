@@ -9,7 +9,11 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val inst = Input(UInt(conf.inst_len.W))
   val idu_to_exu = Flipped(new IDU_to_EXU())
   val ifu_to_exu = Flipped(new IFU_to_EXU())
+  val mem_in = Input(UInt(conf.xlen.W))
   val regfile_output = Output(UInt((conf.nr_reg * conf.xlen).W))
+  val mem_addr = Output(UInt(conf.xlen.W))
+  val mem_write_data = Output(UInt(conf.xlen.W))
+  val isRead = Output(Bool())
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
@@ -42,6 +46,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   // s
   val imm_s = Cat(io.inst(31, 25), io.inst(11,7))
   // b
+  val imm_b = Cat(io.inst(31), io.inst(7), io.inst(30,25), io.inst(11,8))
   // u
   val imm_u = io.inst(31, 12)
   // j
@@ -52,6 +57,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   // s
   val imm_s_sext = Cat(Fill(conf.xlen - 12, imm_s(11)), imm_s)
   // b
+  val imm_b_sext = Cat(Fill(conf.xlen - 13, imm_b(11)), imm_b, 0.U)
   // u
   val imm_u_sext = Cat(imm_u, Fill(12, 0.U))
   // j
@@ -76,46 +82,45 @@ class EXU (implicit val conf: Configuration) extends Module {
   alu_out := MuxCase(
     0.U, Array(
       (io.idu_to_exu.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
+      (io.idu_to_exu.alu_op === ALU_SUB)    -> (alu_op1 - alu_op2).asUInt(),
+      (io.idu_to_exu.alu_op === ALU_SLTU)   -> (alu_op1 < alu_op2).asUInt(),
     )
   )
 
   // submodule3 - next pc
+  io.idu_to_exu.br_eq := (rs1_data === rs2_data) 
+  io.idu_to_exu.br_eq
   val pc_plus4         = Wire(UInt(32.W))
-//  val br_target        = Wire(UInt(32.W))
+  val br_target        = Wire(UInt(32.W))
   val jmp_target       = Wire(UInt(32.W))
-  val jr_target  = Wire(UInt(32.W))
+  val jr_target        = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
 
   pc_plus4   := (io.ifu_to_exu.pc + 4.asUInt(conf.xlen.W))
+  br_target  := io.ifu_to_exu.pc + imm_b_sext 
   jmp_target := io.ifu_to_exu.pc + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
 
   io.ifu_to_exu.pc_next := MuxCase(pc_plus4, Array(
                (io.idu_to_exu.pc_sel === PC_4)   -> pc_plus4,
-//               (io.ctl.pc_sel === PC_BR)  -> br_target,
+               (io.idu_to_exu.pc_sel === PC_BR)  -> br_target,
                (io.idu_to_exu.pc_sel === PC_J )  -> jmp_target,
                (io.idu_to_exu.pc_sel === PC_JR)  -> jr_target,
 //               (io.ctl.pc_sel === PC_EXC) -> exception_target
                ))
 
-//
+  // submodule4 - mem reading and writing
+  io.isRead := (io.idu_to_exu.wb_sel === WB_MEM)
+  io.mem_addr := alu_out
+  io.mem_write_data := rs2_data
 
-  // submodule4 - wb_data
+  // submodule5 - wb_data
   wb_data := MuxCase(alu_out, Array(
                (io.idu_to_exu.wb_sel === WB_ALU) -> alu_out,
-//               (io.ctl.wb_sel === WB_MEM) -> io.dmem.resp.bits.data,
+               (io.idu_to_exu.wb_sel === WB_MEM) -> io.mem_in,
                (io.idu_to_exu.wb_sel === WB_PC4) -> pc_plus4,
 //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
-               ))
-
-
-//  printf("====== rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)
-//  printf("====== ra, regfile(1) = 0x%x\n", regfile(1))
-//  printf("====== rd_addr = 0x%x\n", rd_addr)
-//  printf("====== wb_data = 0x%x\n", wb_data)
-
-  // submodule4 - comparison --- for BR mostly
-  
+               )) & io.idu_to_exu.mem_msk
 
 }
 

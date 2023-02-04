@@ -5,20 +5,24 @@ import Macros._
 import Macros.RV64Inst._
 import Macros.Constants._
 
-class IDU_to_EXU extends Bundle() {
+class IDU_to_EXU (implicit val conf: Configuration) extends Bundle() {
+  val br_eq     = Input(Bool())
   val pc_sel    = Output(UInt(BR_N.getWidth.W))
   val op1_sel   = Output(UInt(OP1_X.getWidth.W))
   val op2_sel   = Output(UInt(OP2_X.getWidth.W))
   val alu_op    = Output(UInt(ALU_X.getWidth.W))
   val wb_sel    = Output(UInt(WB_X.getWidth.W))
   val reg_wen   = Output(Bool())
+  val mem_msk   = Output(UInt(conf.xlen.W))
 }
 
 class IDU_bundle (implicit val conf: Configuration) extends Bundle() {
   val inst = Input(UInt(conf.inst_len.W))
   val idu_to_exu = new IDU_to_EXU()
   val isEbreak  = Output(Bool())
-  val inv_inst  = Output(Bool()) // TODO: need to connect to DPIC
+  val inv_inst  = Output(Bool())
+  val isWriteMem = Output(Bool())
+  val mem_write_msk = Output(UInt(8.W))
 } 
 
 class IDU (implicit val conf: Configuration) extends Module {
@@ -28,26 +32,32 @@ class IDU (implicit val conf: Configuration) extends Module {
   val decoded_signals = ListLookup(
     io.inst,
                    // invalid
-                   List(N, BR_N , OP1_X  , OP2_X  , ALU_X  , WB_X  , WREG_0),
+                   List(N, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X),
     Array(
       // R-type
+      ADDW      -> List(Y, BR_N , OP1_RS1, OP2_RS2, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_W),
+      SUB       -> List(Y, BR_N , OP1_RS1, OP2_RS2, ALU_SUB , WB_ALU, WREG_1, WMEM_0, MSK_X),
       // I-type
-      ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD, WB_ALU, WREG_1),
-      JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X  , WB_PC4, WREG_1),
+      LW        -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_MEM, WREG_1, WMEM_0, MSK_W),
+      ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_X),
+      JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X   , WB_PC4, WREG_1, WMEM_0, MSK_X),
+      SLTIU     -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_SLTU, WB_ALU, WREG_1, WMEM_0, MSK_X),
       // S-type
-      SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD, WB_MEM, WREG_0),
+      SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, WMEM_1, MSK_W),
       // B-type
+      BEQ       -> List(Y, BR_EQ, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X),
+      BNE       -> List(Y, BR_NE, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X),
       // U-type
-      AUIPC     -> List(Y, BR_N , OP1_IMU, OP2_PC , ALU_ADD, WB_ALU, WREG_1),
+      AUIPC     -> List(Y, BR_N , OP1_IMU, OP2_PC , ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_X),
       // J-type
-      JAL       -> List(Y, BR_J , OP1_X  , OP2_X  , ALU_X  , WB_PC4, WREG_1),
+      JAL       -> List(Y, BR_J , OP1_X  , OP2_X  , ALU_X   , WB_PC4, WREG_1, WMEM_0, MSK_X),
       // ebreak
-      EBREAK    -> List(Y, BR_N , OP1_X  , OP2_X  , ALU_X  , WB_X  , WREG_0),
+      EBREAK    -> List(Y, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X),
     )
   )
 
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
-  val alu_op :: wb_sel :: (wreg: Bool) :: Nil = ds0
+  val alu_op :: wb_sel :: (wreg: Bool) :: (wmem: Bool) :: mem_msk_type :: Nil = ds0
 
   println(s"In IDU, io.inst = ${io.inst}, and valid_inst = ${valid_inst}")
 
@@ -57,8 +67,19 @@ class IDU (implicit val conf: Configuration) extends Module {
       BR_N  -> PC_4 , 
       BR_J  -> PC_J , 
       BR_JR -> PC_JR, 
+      BR_EQ -> Mux(io.idu_to_exu.br_eq , PC_BR, PC_4),
+      BR_NE -> Mux(!io.idu_to_exu.br_eq, PC_BR, PC_4),
     )
   )
+
+  // TODO: maybe we can change mem_msk to data_msk
+  io.idu_to_exu.mem_msk := MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
+         (mem_msk_type === MSK_W) -> "hffff_ffff".U(32.W),
+         ))
+
+  io.mem_write_msk := MuxCase("hff".U(8.W), Array(
+         (mem_msk_type === MSK_W) -> "hff".U(8.W),
+         ))
 
   io.idu_to_exu.op1_sel := op1_sel
   io.idu_to_exu.op2_sel := op2_sel
@@ -67,6 +88,7 @@ class IDU (implicit val conf: Configuration) extends Module {
   io.idu_to_exu.reg_wen := wreg
   io.isEbreak := (io.inst === EBREAK)
   io.inv_inst := ~valid_inst
+  io.isWriteMem := wmem
   
 }
 
