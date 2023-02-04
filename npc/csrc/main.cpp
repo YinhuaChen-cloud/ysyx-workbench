@@ -163,6 +163,14 @@ int main(int argc, char** argv, char** env) {
 #endif
   printf(" -------------\n");
 
+	printf("------------ instruction trace is ");
+#ifdef CONFIG_ITRACE
+	printf("on");
+#else
+	printf("off");
+#endif
+  printf(" -------------\n");
+
 	printf("------------ mtrace is ");
 #ifdef CONFIG_MTRACE
 	printf("on");
