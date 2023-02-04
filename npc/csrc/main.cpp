@@ -146,6 +146,7 @@ int main(int argc, char** argv, char** env) {
 
 	reset(10);
 
+	// ------------- tell the user the status of debugging tools ----- start
 	printf("------------ sdb is ");
 #ifdef CONFIG_SDB
 	printf("on");
@@ -154,15 +155,22 @@ int main(int argc, char** argv, char** env) {
 #endif
   printf(" -------------\n");
 
+	printf("------------ difftest is ");
 #ifdef CONFIG_DIFFTEST
-	printf("------------ difftest is on -------------\n");
+	printf("on");
 #else
+	printf("off");
 #endif
+  printf(" -------------\n");
 
+	printf("------------ watchpoints is ");
 #ifdef CONFIG_WATCHPOINTS
-	printf("------------ watchpoints is on -------------\n");
+	printf("on");
 #else
+	printf("off");
 #endif
+  printf(" -------------\n");
+	// ------------- tell the user the status of debugging tools ----- end
 
 	printf("============ after reset(10) =============\n");
 
