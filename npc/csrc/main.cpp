@@ -169,6 +169,8 @@ int main(int argc, char** argv, char** env) {
 
 	// init_mtrace();
 
+	printf("hahah = %d\n", is_sdb_mode);
+
 	if(is_sdb_mode) {
 		init_sdb();
 		sdb_mainloop();
