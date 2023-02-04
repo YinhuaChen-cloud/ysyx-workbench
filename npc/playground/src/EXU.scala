@@ -75,7 +75,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   val alu_out = Wire(UInt(conf.xlen.W))   
   alu_out := MuxCase(
     0.U, Array(
-      (io.idu_to_exu.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
+      (io.idu_to_exu.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2 + 1.U).asUInt(),
     )
   )
 
