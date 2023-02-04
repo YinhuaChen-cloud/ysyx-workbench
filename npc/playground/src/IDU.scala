@@ -22,7 +22,7 @@ class IDU_bundle (implicit val conf: Configuration) extends Bundle() {
   val isEbreak  = Output(Bool())
   val inv_inst  = Output(Bool())
   val isWriteMem = Output(Bool())
-//  val mem_write_msk = Output(UInt(conf.xlen.W))
+  val mem_write_msk = Output(UInt(8.W))
 } 
 
 class IDU (implicit val conf: Configuration) extends Module {
@@ -75,6 +75,10 @@ class IDU (implicit val conf: Configuration) extends Module {
   // TODO: maybe we can change mem_msk to data_msk
   io.idu_to_exu.mem_msk := MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
          (mem_msk_type === MSK_W) -> "hffff_ffff".U(32.W),
+         ))
+
+  io.mem_write_msk := MuxCase("hff".U(8.W), Array(
+         (mem_msk_type === MSK_W) -> "hff".U(8.W),
          ))
 
   io.idu_to_exu.op1_sel := op1_sel
