@@ -76,6 +76,8 @@ class EXU (implicit val conf: Configuration) extends Module {
       (io.idu_to_exu.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
     )
   )
+
+  printf("alu_op1 = 0x%x, alu_op2 = 0x%x\n", alu_op1, alu_op2)
   
   // submodule3 - next pc
   val pc_plus4         = Wire(UInt(32.W))
