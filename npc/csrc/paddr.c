@@ -35,22 +35,22 @@ void close_mtrace() {
 }
 
 extern "C" void pmem_read(long long raddr, long long *rdata) {
-	if(raddr >= CONFIG_RTC_ADDR && raddr < CONFIG_RTC_ADDR + 8) {
-		difftest_skip_ref();
-
-		struct timeval now;
-		gettimeofday(&now, NULL);
-		long seconds = now.tv_sec - boot_time.tv_sec;
-		*rdata = seconds * 1000000;	
-
-		if(raddr == CONFIG_RTC_ADDR) {
-			*rdata &= 0xffffffff;
-		}
-		else if(raddr == CONFIG_RTC_ADDR + 4) {
-			*rdata >>= 32;
-		}
-		return;
-	}
+//	if(raddr >= CONFIG_RTC_ADDR && raddr < CONFIG_RTC_ADDR + 8) {
+//		difftest_skip_ref();
+//
+//		struct timeval now;
+//		gettimeofday(&now, NULL);
+//		long seconds = now.tv_sec - boot_time.tv_sec;
+//		*rdata = seconds * 1000000;	
+//
+//		if(raddr == CONFIG_RTC_ADDR) {
+//			*rdata &= 0xffffffff;
+//		}
+//		else if(raddr == CONFIG_RTC_ADDR + 4) {
+//			*rdata >>= 32;
+//		}
+//		return;
+//	}
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
 	*rdata = *(long long *)cpu_to_sim(raddr & ~0x7ull);
 	// mtrace -> NOTE: we need to judge whether raddr is a inst or a data -> human assistance
@@ -64,12 +64,12 @@ extern "C" void pmem_read(long long raddr, long long *rdata) {
 }
 
 extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
-	// peripheral
-	if(waddr == CONFIG_SERIAL_PORT) {
-		printf("%c", (char)(wdata & 0xff));
-		difftest_skip_ref();
-		return;
-	}
+//	// peripheral
+//	if(waddr == CONFIG_SERIAL_PORT) {
+//		printf("%c", (char)(wdata & 0xff));
+//		difftest_skip_ref();
+//		return;
+//	}
   // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变

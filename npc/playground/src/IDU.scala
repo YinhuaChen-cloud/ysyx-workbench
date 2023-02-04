@@ -12,6 +12,7 @@ class IDU_to_EXU extends Bundle() {
   val alu_op    = Output(UInt(ALU_X.getWidth.W))
   val wb_sel    = Output(UInt(WB_X.getWidth.W))
   val reg_wen   = Output(Bool())
+  val mem_msk   = Output(UInt(conf.xlen.W))
 }
 
 class IDU_bundle (implicit val conf: Configuration) extends Bundle() {
@@ -28,27 +29,27 @@ class IDU (implicit val conf: Configuration) extends Module {
   val decoded_signals = ListLookup(
     io.inst,
                    // invalid
-                   List(N, BR_N , OP1_X  , OP2_X  , ALU_X  , WB_X  , WREG_0),
+                   List(N, BR_N , OP1_X  , OP2_X  , ALU_X  , WB_X  , WREG_0, MSK_X),
     Array(
       // R-type
       // I-type
-      LW        -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD, WB_MEM, WREG_1),
-      ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD, WB_ALU, WREG_1),
-      JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X  , WB_PC4, WREG_1),
-      // S-type
-      SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD, WB_X  , WREG_0),
+      LW        -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD, WB_MEM, WREG_1, MSK_W),
+      ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD, WB_ALU, WREG_1, MSK_X),
+      JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X  , WB_PC4, WREG_1, MSK_X),
+      // S-type TODO: I guess we need mtrace to debug S-type inst
+      SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD, WB_X  , WREG_0, MSK_X),
       // B-type
       // U-type
-      AUIPC     -> List(Y, BR_N , OP1_IMU, OP2_PC , ALU_ADD, WB_ALU, WREG_1),
+      AUIPC     -> List(Y, BR_N , OP1_IMU, OP2_PC , ALU_ADD, WB_ALU, WREG_1, MSK_X),
       // J-type
-      JAL       -> List(Y, BR_J , OP1_X  , OP2_X  , ALU_X  , WB_PC4, WREG_1),
+      JAL       -> List(Y, BR_J , OP1_X  , OP2_X  , ALU_X  , WB_PC4, WREG_1, MSK_X),
       // ebreak
-      EBREAK    -> List(Y, BR_N , OP1_X  , OP2_X  , ALU_X  , WB_X  , WREG_0),
+      EBREAK    -> List(Y, BR_N , OP1_X  , OP2_X  , ALU_X  , WB_X  , WREG_0, MSK_X),
     )
   )
 
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
-  val alu_op :: wb_sel :: (wreg: Bool) :: Nil = ds0
+  val alu_op :: wb_sel :: (wreg: Bool) :: mem_msk :: Nil = ds0
 
   println(s"In IDU, io.inst = ${io.inst}, and valid_inst = ${valid_inst}")
 
@@ -60,6 +61,10 @@ class IDU (implicit val conf: Configuration) extends Module {
       BR_JR -> PC_JR, 
     )
   )
+
+  io.idu_to_exu.mem_msk := MuxCase("ffff_ffff_ffff_ffff".U.W(conf.xlen.W), Array(
+               (mem_msk === MSK_W) -> "hffff_ffff".U(32.W),
+               ))
 
   io.idu_to_exu.op1_sel := op1_sel
   io.idu_to_exu.op2_sel := op2_sel
