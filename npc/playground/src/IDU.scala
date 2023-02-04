@@ -6,6 +6,7 @@ import Macros.RV64Inst._
 import Macros.Constants._
 
 class IDU_to_EXU (implicit val conf: Configuration) extends Bundle() {
+  val br_eq     = Input(Bool())
   val pc_sel    = Output(UInt(BR_N.getWidth.W))
   val op1_sel   = Output(UInt(OP1_X.getWidth.W))
   val op2_sel   = Output(UInt(OP2_X.getWidth.W))
@@ -42,6 +43,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       // S-type TODO: I guess we need mtrace to debug S-type inst
       SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, MSK_X),
       // B-type
+      BEQ       -> List(Y, BR_EQ, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, MSK_X),
       // U-type
       AUIPC     -> List(Y, BR_N , OP1_IMU, OP2_PC , ALU_ADD , WB_ALU, WREG_1, MSK_X),
       // J-type
@@ -62,6 +64,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       BR_N  -> PC_4 , 
       BR_J  -> PC_J , 
       BR_JR -> PC_JR, 
+      BR_EQ -> Mux(io.idu_to_exu.br_eq, PC_BR, PC_4),
     )
   )
 

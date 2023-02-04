@@ -45,6 +45,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   // s
   val imm_s = Cat(io.inst(31, 25), io.inst(11,7))
   // b
+  val imm_b = Cat(inst(31), inst(7), inst(30,25), inst(11,8))
   // u
   val imm_u = io.inst(31, 12)
   // j
@@ -55,6 +56,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   // s
   val imm_s_sext = Cat(Fill(conf.xlen - 12, imm_s(11)), imm_s)
   // b
+  val imm_b_sext = Cat(Fill(conf.xlen - 13, imm_b(11)), imm_b, 0.U)
   // u
   val imm_u_sext = Cat(imm_u, Fill(12, 0.U))
   // j
@@ -85,19 +87,22 @@ class EXU (implicit val conf: Configuration) extends Module {
   )
 
   // submodule3 - next pc
+  io.idu_to_exu.br_eq := (rs1_data === rs2_data) 
+  
   val pc_plus4         = Wire(UInt(32.W))
-//  val br_target        = Wire(UInt(32.W))
+  val br_target        = Wire(UInt(32.W))
   val jmp_target       = Wire(UInt(32.W))
-  val jr_target  = Wire(UInt(32.W))
+  val jr_target        = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
 
   pc_plus4   := (io.ifu_to_exu.pc + 4.asUInt(conf.xlen.W))
+  br_target  := io.ifu_to_exu.pc + imm_b_sext 
   jmp_target := io.ifu_to_exu.pc + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
 
   io.ifu_to_exu.pc_next := MuxCase(pc_plus4, Array(
                (io.idu_to_exu.pc_sel === PC_4)   -> pc_plus4,
-//               (io.ctl.pc_sel === PC_BR)  -> br_target,
+               (io.idu_to_exu.pc_sel === PC_BR)  -> br_target,
                (io.idu_to_exu.pc_sel === PC_J )  -> jmp_target,
                (io.idu_to_exu.pc_sel === PC_JR)  -> jr_target,
 //               (io.ctl.pc_sel === PC_EXC) -> exception_target
@@ -106,11 +111,6 @@ class EXU (implicit val conf: Configuration) extends Module {
   // submodule4 - mem reading
   io.isRead := (io.idu_to_exu.wb_sel === WB_MEM)
   io.mem_addr := alu_out
-//  val mem_read_data = io.idu_to_exu.mem_msk & io.mem_in
-//  val mem_read_data = Wire(UInt(conf.xlen.W))  io.idu_to_exu.mem_msk & io.mem_in
-//  mem_read_data := MuxCase( , Array(
-//    (io.idu_to_exu.mem_msk === ) -> ,
-//    ))
 
   // submodule5 - wb_data
   wb_data := MuxCase(alu_out, Array(
@@ -119,15 +119,6 @@ class EXU (implicit val conf: Configuration) extends Module {
                (io.idu_to_exu.wb_sel === WB_PC4) -> pc_plus4,
 //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
                )) & io.idu_to_exu.mem_msk
-
-
-//  printf("====== rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)
-//  printf("====== ra, regfile(1) = 0x%x\n", regfile(1))
-//  printf("====== rd_addr = 0x%x\n", rd_addr)
-//  printf("====== wb_data = 0x%x\n", wb_data)
-
-  // submodule4 - comparison --- for BR mostly
-  
 
 }
 
