@@ -28,7 +28,7 @@ static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
-static int is_sdb_mode = false;
+bool is_sdb_mode = false;
 extern char *mtrace_file;
 
 static int parse_args(int argc, char *argv[]) {
