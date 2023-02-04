@@ -146,16 +146,22 @@ int main(int argc, char** argv, char** env) {
 
 	reset(10);
 
+	printf("------------ sdb is ");
 #ifdef CONFIG_SDB
-	printf("------------ sdb is on -------------\n");
+	printf("on");
+#else
+	printf("off");
 #endif
+  printf(" -------------\n");
 
 #ifdef CONFIG_DIFFTEST
 	printf("------------ difftest is on -------------\n");
+#else
 #endif
 
 #ifdef CONFIG_WATCHPOINTS
 	printf("------------ watchpoints is on -------------\n");
+#else
 #endif
 
 	printf("============ after reset(10) =============\n");
