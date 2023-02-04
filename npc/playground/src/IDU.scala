@@ -22,6 +22,7 @@ class IDU_bundle (implicit val conf: Configuration) extends Bundle() {
   val isEbreak  = Output(Bool())
   val inv_inst  = Output(Bool())
   val isWriteMem = Output(Bool())
+  val mem_write_msk = Output(UInt(conf.xlen.W))
 } 
 
 class IDU (implicit val conf: Configuration) extends Module {
@@ -42,7 +43,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X   , WB_PC4, WREG_1, WMEM_0, MSK_X),
       SLTIU     -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_SLTU, WB_ALU, WREG_1, WMEM_0, MSK_X),
       // S-type
-      SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, WMEM_1, MSK_X),
+      SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, WMEM_1, MSK_W),
       // B-type
       BEQ       -> List(Y, BR_EQ, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X),
       BNE       -> List(Y, BR_NE, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X),

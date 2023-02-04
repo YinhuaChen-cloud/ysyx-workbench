@@ -17,6 +17,7 @@ with HasExtModuleInline {
     val isRead = Input(Bool())
     val isWriteMem = Input(Bool())
     val mem_write_data = Input(UInt(conf.xlen.W))
+    val mem_write_msk = Input(UInt(conf.xlen.W))
     val inst = Output(UInt(conf.inst_len.W))
     val mem_in = Output(UInt(conf.xlen.W))
   })
@@ -34,6 +35,7 @@ with HasExtModuleInline {
               |           input io_isRead,
               |           input io_isWriteMem,
               |           input [XLEN-1:0] io_mem_write_data,
+              |           input [XLEN-1:0] io_mem_write_msk,
               |           output reg [INST_LEN - 1:0] io_inst,
               |           output [XLEN-1:0] io_mem_in);
               |
