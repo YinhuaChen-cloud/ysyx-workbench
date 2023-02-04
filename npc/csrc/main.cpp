@@ -140,13 +140,25 @@ int main(int argc, char** argv, char** env) {
 	init_pmem();
 	long img_size = load_img();
 
-	printf("============ just before reset(10) =============\n");
+	printf("============ before reset(10) =============\n");
 
   gettimeofday(&boot_time, NULL);
 
 	reset(10);
 
-	printf("============ just after reset(10) =============\n");
+#ifdef CONFIG_SDB
+	printf("------------ sdb is on -------------\n");
+#endif
+
+#ifdef CONFIG_DIFFTEST
+	printf("------------ difftest is on -------------\n");
+#endif
+
+#ifdef CONFIG_WATCHPOINTS
+	printf("------------ watchpoints is on -------------\n");
+#endif
+
+	printf("============ after reset(10) =============\n");
 
 #ifdef CONFIG_DIFFTEST
  	sv_regs_to_c();
