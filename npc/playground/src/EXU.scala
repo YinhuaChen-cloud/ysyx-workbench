@@ -12,6 +12,7 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val mem_in = Input(UInt(conf.xlen.W))
   val regfile_output = Output(UInt((conf.nr_reg * conf.xlen).W))
   val mem_addr = Output(UInt(conf.xlen.W))
+  val mem_write_data = Output(UInt(conf.xlen.W))
   val isRead = Output(Bool())
 }
 
@@ -108,9 +109,10 @@ class EXU (implicit val conf: Configuration) extends Module {
 //               (io.ctl.pc_sel === PC_EXC) -> exception_target
                ))
 
-  // submodule4 - mem reading
+  // submodule4 - mem reading and writing
   io.isRead := (io.idu_to_exu.wb_sel === WB_MEM)
   io.mem_addr := alu_out
+  io.mem_write_data := rs2_data
 
   // submodule5 - wb_data
   wb_data := MuxCase(alu_out, Array(

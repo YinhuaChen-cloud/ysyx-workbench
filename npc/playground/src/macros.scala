@@ -190,6 +190,10 @@ trait DecoderConstants {
   val WREG_0 = false.B 
   val WREG_1 = true.B 
 
+  // Whether write mem
+  val WMEM_0 = false.B 
+  val WMEM_1 = true.B 
+
   // data mask
   val MSK_B   = 0.asUInt(3.W)
   val MSK_BU  = 1.asUInt(3.W)

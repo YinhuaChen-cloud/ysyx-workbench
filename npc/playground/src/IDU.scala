@@ -21,6 +21,7 @@ class IDU_bundle (implicit val conf: Configuration) extends Bundle() {
   val idu_to_exu = new IDU_to_EXU()
   val isEbreak  = Output(Bool())
   val inv_inst  = Output(Bool())
+  val isWriteMem = Output(Bool())
 } 
 
 class IDU (implicit val conf: Configuration) extends Module {
@@ -30,32 +31,32 @@ class IDU (implicit val conf: Configuration) extends Module {
   val decoded_signals = ListLookup(
     io.inst,
                    // invalid
-                   List(N, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, MSK_X),
+                   List(N, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X),
     Array(
       // R-type
-      ADDW      -> List(Y, BR_N , OP1_RS1, OP2_RS2, ALU_ADD , WB_ALU, WREG_1, MSK_W),
-      SUB       -> List(Y, BR_N , OP1_RS1, OP2_RS2, ALU_SUB , WB_ALU, WREG_1, MSK_X),
+      ADDW      -> List(Y, BR_N , OP1_RS1, OP2_RS2, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_W),
+      SUB       -> List(Y, BR_N , OP1_RS1, OP2_RS2, ALU_SUB , WB_ALU, WREG_1, WMEM_0, MSK_X),
       // I-type
-      LW        -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_MEM, WREG_1, MSK_W),
-      ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_ALU, WREG_1, MSK_X),
-      JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X   , WB_PC4, WREG_1, MSK_X),
-      SLTIU     -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_SLTU, WB_ALU, WREG_1, MSK_X),
+      LW        -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_MEM, WREG_1, WMEM_0, MSK_W),
+      ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_X),
+      JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X   , WB_PC4, WREG_1, WMEM_0, MSK_X),
+      SLTIU     -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_SLTU, WB_ALU, WREG_1, WMEM_0, MSK_X),
       // S-type
-      SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, MSK_X),
+      SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, WMEM_1, MSK_X),
       // B-type
-      BEQ       -> List(Y, BR_EQ, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, MSK_X),
-      BNE       -> List(Y, BR_NE, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, MSK_X),
+      BEQ       -> List(Y, BR_EQ, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X),
+      BNE       -> List(Y, BR_NE, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X),
       // U-type
-      AUIPC     -> List(Y, BR_N , OP1_IMU, OP2_PC , ALU_ADD , WB_ALU, WREG_1, MSK_X),
+      AUIPC     -> List(Y, BR_N , OP1_IMU, OP2_PC , ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_X),
       // J-type
-      JAL       -> List(Y, BR_J , OP1_X  , OP2_X  , ALU_X   , WB_PC4, WREG_1, MSK_X),
+      JAL       -> List(Y, BR_J , OP1_X  , OP2_X  , ALU_X   , WB_PC4, WREG_1, WMEM_0, MSK_X),
       // ebreak
-      EBREAK    -> List(Y, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, MSK_X),
+      EBREAK    -> List(Y, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X),
     )
   )
 
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
-  val alu_op :: wb_sel :: (wreg: Bool) :: mem_msk_type :: Nil = ds0
+  val alu_op :: wb_sel :: (wreg: Bool) :: (wmem: Bool) :: mem_msk_type :: Nil = ds0
 
   println(s"In IDU, io.inst = ${io.inst}, and valid_inst = ${valid_inst}")
 
@@ -82,6 +83,7 @@ class IDU (implicit val conf: Configuration) extends Module {
   io.idu_to_exu.reg_wen := wreg
   io.isEbreak := (io.inst === EBREAK)
   io.inv_inst := ~valid_inst
+  io.isWriteMem := wmem
   
 }
 
