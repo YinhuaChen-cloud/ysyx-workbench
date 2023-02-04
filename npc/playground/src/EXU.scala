@@ -104,7 +104,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   // submodule4 - mem reading
   io.isRead := (io.idu_to_exu.wb_sel === WB_MEM)
   io.mem_addr := alu_out
-  val mem_read_data = io.idu_to_exu.mem_msk & io.mem_in
+//  val mem_read_data = io.idu_to_exu.mem_msk & io.mem_in
 //  val mem_read_data = Wire(UInt(conf.xlen.W))  io.idu_to_exu.mem_msk & io.mem_in
 //  mem_read_data := MuxCase( , Array(
 //    (io.idu_to_exu.mem_msk === ) -> ,
@@ -113,10 +113,10 @@ class EXU (implicit val conf: Configuration) extends Module {
   // submodule5 - wb_data
   wb_data := MuxCase(alu_out, Array(
                (io.idu_to_exu.wb_sel === WB_ALU) -> alu_out,
-               (io.idu_to_exu.wb_sel === WB_MEM) -> mem_read_data,
+               (io.idu_to_exu.wb_sel === WB_MEM) -> io.mem_in,
                (io.idu_to_exu.wb_sel === WB_PC4) -> pc_plus4,
 //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
-               ))
+               )) & io.idu_to_exu.mem_msk
 
 
 //  printf("====== rs1_data = 0x%x, imm_i_sext = 0x%x\n", rs1_data, imm_i_sext)

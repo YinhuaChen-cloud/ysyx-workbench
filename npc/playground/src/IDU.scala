@@ -32,6 +32,7 @@ class IDU (implicit val conf: Configuration) extends Module {
                    List(N, BR_N , OP1_X  , OP2_X  , ALU_X  , WB_X  , WREG_0, MSK_X),
     Array(
       // R-type
+      ADDW      -> List(Y, BR_N , OP1_RS1, OP2_RS2, ALU_ADD, WB_ALU, WREG_1, MSK_W),
       // I-type
       LW        -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD, WB_MEM, WREG_1, MSK_W),
       ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD, WB_ALU, WREG_1, MSK_X),
@@ -62,6 +63,7 @@ class IDU (implicit val conf: Configuration) extends Module {
     )
   )
 
+  // TODO: maybe we can change mem_msk to data_msk
   io.idu_to_exu.mem_msk := MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
          (mem_msk_type === MSK_W) -> "hffff_ffff".U(32.W),
          ))
