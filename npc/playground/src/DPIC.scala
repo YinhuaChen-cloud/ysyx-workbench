@@ -13,7 +13,10 @@ with HasExtModuleInline {
     val isEbreak = Input(Bool())
     val inv_inst  = Input(Bool())
     val regfile = Input(UInt((conf.nr_reg * conf.xlen).W))
+    val mem_addr = Input(UInt(conf.xlen.W))
+    val isRead = Input(Bool())
     val inst = Output(UInt(conf.inst_len.W))
+    val mem_in = Output(UInt(conf.xlen.W))
   })
 
   setInline("DPIC.v",
@@ -25,7 +28,10 @@ with HasExtModuleInline {
               |           input io_isEbreak,
               |           input io_inv_inst,
               |           input [NR_REG * XLEN - 1:0] io_regfile,
-              |           output reg [INST_LEN - 1:0] io_inst);
+              |           input [XLEN-1:0] io_mem_addr,
+              |           input io_isRead,
+              |           output reg [INST_LEN - 1:0] io_inst,
+              |           output [XLEN-1:0] io_mem_in);
               |
               |  // expose pc to cpp simulation environment
               |  import "DPI-C" function void set_pc(input logic [PC_LEN-1:0] a []);
@@ -73,6 +79,13 @@ with HasExtModuleInline {
               |      3'h4: io_inst = inst_aux[XLEN-1:INST_LEN];
               |      default: begin io_inst = '0; assert(0); end
               |    endcase
+              |  // for data reading from mem
+              |  always@(*) begin
+              |    if(io_isRead)
+			        |      pmem_read(io_mem_addr, io_mem_in); 
+              |    else
+              |      io_mem_in = '0;
+              |  end
               |
               |endmodule
             """.stripMargin)

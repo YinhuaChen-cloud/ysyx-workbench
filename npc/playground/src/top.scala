@@ -33,6 +33,8 @@ class top extends Module {
   dpic.io.isEbreak := idu.io.isEbreak
   dpic.io.inv_inst := idu.io.inv_inst
   dpic.io.regfile  := exu.io.regfile_output
-
+  dpic.io.mem_addr := exu.io.mem_addr
+  dpic.io.isRead   := exu.io.isRead
+  exu.io.mem_in   := dpic.io.mem_in
 }
 
