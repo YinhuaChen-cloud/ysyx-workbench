@@ -29,23 +29,26 @@ static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
 bool is_sdb_mode = false;
+extern char *itrace_file;
 extern char *mtrace_file;
 
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
     {"sdb"			, no_argument      , NULL, 's'},
     {"log"      , required_argument, NULL, 'l'},
+    {"itrace"   , required_argument, NULL, 'i'},
     {"mtrace"   , required_argument, NULL, 'm'},
     {"diff"     , required_argument, NULL, 'd'},
     {"help"     , no_argument      , NULL, 'h'},
     {0          , 0                , NULL,  0 },
   };
   int o;
-  while ( (o = getopt_long(argc, argv, "-shl:m:d:", table, NULL)) != -1) {
+  while ( (o = getopt_long(argc, argv, "-shl:i:m:d:", table, NULL)) != -1) {
     switch (o) {
       case 's': is_sdb_mode = true; break;
 //      case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
+      case 'i': itrace_file = optarg; break;
       case 'm': mtrace_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
       case 1: img_file = optarg; break;
@@ -53,6 +56,7 @@ static int parse_args(int argc, char *argv[]) {
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
         printf("\t-s,--sdb								run with sdb mode\n");
         printf("\t-l,--log=FILE           output log to FILE\n");
+        printf("\t-i,--itrace=FILE        output itrace to FILE\n");
         printf("\t-m,--mtrace=FILE				output mtrace log to FILE\n");
         printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
 //        printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
