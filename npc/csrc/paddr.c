@@ -92,7 +92,6 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
 	*(uint64_t *)(cpu_to_sim(waddr & ~0x7ull) + offest) &= ~mymask;
 	*(uint64_t *)(cpu_to_sim(waddr & ~0x7ull) + offest) |= wdata & mymask;
 
-	printf("omg this is pmem_write!\n");
 #ifdef CONFIG_MTRACE
 	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx mymask:0x%8lx\n", cpu.pc, "Write", waddr, wdata, mymask); 
 	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
