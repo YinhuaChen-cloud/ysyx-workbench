@@ -29,6 +29,7 @@ static char* rl_gets() {
   return line_read;
 }
 
+#ifdef CONFIG_SDB
 static void check_all_watchpoints() {
   WP *p = get_wp_head();
   bool success = true;
@@ -45,6 +46,7 @@ static void check_all_watchpoints() {
     p = p->next;
   }
 }
+#endif
 
 void cpu_exec(uint32_t n) {
 
