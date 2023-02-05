@@ -37,7 +37,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   io.regfile_output := regfile_output_aux.asUInt
 
   // submodule1.5 - data_msk
-  val data_msk := MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
+  val data_msk = MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
               (io.idu_to_exu.data_msk === MSK_B) -> "hff".U(conf.xlen.W),
               (io.idu_to_exu.data_msk === MSK_H) -> "hffff".U(conf.xlen.W),
               (io.idu_to_exu.data_msk === MSK_W) -> "hffff_ffff".U(conf.xlen.W),
