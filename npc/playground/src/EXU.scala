@@ -159,8 +159,6 @@ class EXU (implicit val conf: Configuration) extends Module {
     ))
   mem_in_result := Mux(io.idu_to_exu.sign_op, mem_in_sel_sext, mem_in_sel)
 
-  printf("mem_in_result = 0x%x\n", mem_in_result)
-
   // submodule5 - wb_data
   wb_data := MuxCase(alu_out, Array(
                (io.idu_to_exu.wb_sel === WB_ALU) -> alu_out,
