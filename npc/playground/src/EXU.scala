@@ -90,7 +90,7 @@ class EXU (implicit val conf: Configuration) extends Module {
               (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
               )).asUInt() & data_msk
   
-  val alu_out = Wire(UInt(conf.xlen.W))   
+  val alu_out_aux = Wire(UInt(conf.xlen.W))   
   alu_out := MuxCase(
     0.U, Array(
       (io.idu_to_exu.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
@@ -98,7 +98,15 @@ class EXU (implicit val conf: Configuration) extends Module {
       (io.idu_to_exu.alu_op === ALU_SLTU)   -> (alu_op1 < alu_op2).asUInt(),
     )
   )
-  printf("alu_op1 = 0x%x, alu_op2 = 0x%x\n", alu_op1, alu_op2)
+
+  val alu_out = Wire(UInt(conf.xlen.W))   
+  alu_out := MuxCase(
+    alu_out_aux, Array(
+      (io.idu_to_exu.msk_type === MSK_W)    -> Cat(Fill(conf.xlen - 32, alu_out_aux(31)), alu_out_aux(31, 0)),
+//      (io.idu_to_exu.msk_type === MSK_H)    -> (alu_op1 - alu_op2).asUInt(),
+//      (io.idu_to_exu.msk_type === MSK_B)    -> (alu_op1 < alu_op2).asUInt(),
+    )
+  )
 
   // submodule3 - next pc
   io.idu_to_exu.br_eq := (rs1_data === rs2_data) 
