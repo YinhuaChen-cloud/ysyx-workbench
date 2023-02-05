@@ -80,7 +80,7 @@ class EXU (implicit val conf: Configuration) extends Module {
               (io.idu_to_exu.op1_sel === OP1_RS1) -> rs1_data,
               (io.idu_to_exu.op1_sel === OP1_IMU) -> imm_u_sext,
 //              (io.idu_to_exu.op1_sel === OP1_IMZ) -> imm_z
-              )).asUInt()
+              )).asUInt() & data_msk
  
   val alu_op2 = Wire(UInt(conf.xlen.W))   
   alu_op2 := MuxCase(0.U, Array(
@@ -88,7 +88,7 @@ class EXU (implicit val conf: Configuration) extends Module {
               (io.idu_to_exu.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
               (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
-              )).asUInt()
+              )).asUInt() & data_msk
   
   val alu_out = Wire(UInt(conf.xlen.W))   
   alu_out := MuxCase(
