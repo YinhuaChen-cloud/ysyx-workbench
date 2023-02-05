@@ -45,7 +45,7 @@ class EXU (implicit val conf: Configuration) extends Module {
               ))
 
   io.mem_write_msk := MuxCase("hff".U(8.W), Array(
-         (mem_msk_type === MSK_W) -> "hff".U(8.W),
+         (io.idu_to_exu.msk_type === MSK_W) -> "hff".U(8.W),
          ))
 
   // submodule2 - ALU
