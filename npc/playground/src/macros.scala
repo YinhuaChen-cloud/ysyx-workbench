@@ -179,6 +179,11 @@ trait DecoderConstants {
   val ALU_COPY1= 11.asUInt(4.W)
   val ALU_X   = 0.asUInt(4.W)
 
+  // ALU Unsigned or Signed
+  val SIGN_N  = false.B
+  val SIGN_Y  = true.B
+  val SIGN_X  = false.B 
+
   // Writeback Select Signal
   val WB_ALU  = 0.asUInt(2.W)
   val WB_MEM  = 1.asUInt(2.W)
