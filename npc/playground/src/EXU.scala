@@ -38,9 +38,9 @@ class EXU (implicit val conf: Configuration) extends Module {
 
   // submodule1.5 - data_msk
   val data_msk = MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
-              (io.idu_to_exu.data_msk === MSK_B) -> "hff".U(conf.xlen.W),
-              (io.idu_to_exu.data_msk === MSK_H) -> "hffff".U(conf.xlen.W),
-              (io.idu_to_exu.data_msk === MSK_W) -> "hffff_ffff".U(conf.xlen.W),
+              (io.idu_to_exu.msk_type === MSK_B) -> "hff".U(conf.xlen.W),
+              (io.idu_to_exu.msk_type === MSK_H) -> "hffff".U(conf.xlen.W),
+              (io.idu_to_exu.msk_type === MSK_W) -> "hffff_ffff".U(conf.xlen.W),
               ))
 
   // submodule2 - ALU

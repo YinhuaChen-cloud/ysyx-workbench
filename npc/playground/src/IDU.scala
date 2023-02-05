@@ -13,7 +13,7 @@ class IDU_to_EXU (implicit val conf: Configuration) extends Bundle() {
   val alu_op    = Output(UInt(ALU_X.getWidth.W))
   val wb_sel    = Output(UInt(WB_X.getWidth.W))
   val reg_wen   = Output(Bool())
-  val data_msk  = Output(UInt(2.W))
+  val msk_type  = Output(UInt(2.W))
   val sign_op   = Output(Bool())
 }
 
@@ -59,7 +59,7 @@ class IDU (implicit val conf: Configuration) extends Module {
 
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
   val alu_op :: wb_sel :: (wreg: Bool) :: (wmem: Bool) :: ds1 = ds0
-  val data_msk :: (sign_op: Bool) :: Nil = ds1
+  val msk_type :: (sign_op: Bool) :: Nil = ds1
 
   println(s"In IDU, io.inst = ${io.inst}, and valid_inst = ${valid_inst}")
 
@@ -92,7 +92,7 @@ class IDU (implicit val conf: Configuration) extends Module {
   io.inv_inst := ~valid_inst
   io.isWriteMem := wmem
   io.idu_to_exu.sign_op := sign_op
-  io.idu_to_exu.data_msk := data_msk
+  io.idu_to_exu.msk_type := msk_type
   
 }
 
