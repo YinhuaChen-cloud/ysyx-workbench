@@ -29,7 +29,7 @@ static char* rl_gets() {
   return line_read;
 }
 
-#ifdef CONFIG_SDB
+#ifdef CONFIG_WATCHPOINTS
 static void check_all_watchpoints() {
   WP *p = get_wp_head();
   bool success = true;
@@ -296,7 +296,7 @@ void sdb_mainloop() {
       }
     }
 
-		if (npc_state.state != NPC_RUNNING) break;
+		if (npc_state.state != NPC_RUNNING && npc_state.state != NPC_STOP) break;
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
   }

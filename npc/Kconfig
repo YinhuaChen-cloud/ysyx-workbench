@@ -7,7 +7,7 @@ config SDB
 config WATCHPOINTS
 	depends on SDB
   bool "Enable watchpoints"
-	default 0
+	default 1
 config ITRACE
 	bool "Enable instruction trace"
 	default 0

@@ -72,7 +72,7 @@ class EXU (implicit val conf: Configuration) extends Module {
  
   val alu_op2 = Wire(UInt(conf.xlen.W))   
   alu_op2 := MuxCase(0.U, Array(
-//              (io.idu_to_exu.op2_sel === OP2_RS2) -> rs2_data,
+              (io.idu_to_exu.op2_sel === OP2_RS2) -> rs2_data,
               (io.idu_to_exu.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
               (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
@@ -86,6 +86,7 @@ class EXU (implicit val conf: Configuration) extends Module {
       (io.idu_to_exu.alu_op === ALU_SLTU)   -> (alu_op1 < alu_op2).asUInt(),
     )
   )
+  printf("alu_op1 = 0x%x, alu_op2 = 0x%x\n", alu_op1, alu_op2)
 
   // submodule3 - next pc
   io.idu_to_exu.br_eq := (rs1_data === rs2_data) 
@@ -113,14 +114,40 @@ class EXU (implicit val conf: Configuration) extends Module {
   io.isRead := (io.idu_to_exu.wb_sel === WB_MEM)
   io.mem_addr := alu_out
   io.mem_write_data := rs2_data
+  // select data part from io.mem_in according to mem_addr(2, 0) 
+  val mem_in_sel = Wire(UInt(conf.xlen.W)) 
+  mem_in_sel := MuxLookup(
+    io.mem_addr(2, 0), 0.U,
+    Array(
+      0.U -> io.mem_in,
+      1.U -> io.mem_in(conf.xlen-1, 8),
+      2.U -> io.mem_in(conf.xlen-1, 16),
+      3.U -> io.mem_in(conf.xlen-1, 24),
+      4.U -> io.mem_in(conf.xlen-1, 32),
+      5.U -> io.mem_in(conf.xlen-1, 40),
+      6.U -> io.mem_in(conf.xlen-1, 48),
+      7.U -> io.mem_in(conf.xlen-1, 56),
+    )
+  )
+  // if the inst is lw, lh, lb. Need to do signed extension
+  val mem_in_sel_sext = Wire(UInt(conf.xlen.W)) 
+  val mem_in_result = Wire(UInt(conf.xlen.W)) 
+  mem_in_sel_sext := MuxCase(mem_in_sel, Array( // by default, mem_msk is -1.U(64.W)
+    (io.idu_to_exu.mem_msk === "hffff_ffff".U) -> Cat(Fill(conf.xlen - 32, mem_in_sel(31)), mem_in_sel(31, 0)),
+    ))
+  mem_in_result := Mux(io.idu_to_exu.sign_op, mem_in_sel_sext, mem_in_sel)
+
+  printf("mem_in_result = 0x%x\n", mem_in_result)
 
   // submodule5 - wb_data
   wb_data := MuxCase(alu_out, Array(
-               (io.idu_to_exu.wb_sel === WB_ALU) -> alu_out,
-               (io.idu_to_exu.wb_sel === WB_MEM) -> io.mem_in,
+               (io.idu_to_exu.wb_sel === WB_ALU) -> (alu_out & io.idu_to_exu.mem_msk).asUInt,
+               (io.idu_to_exu.wb_sel === WB_MEM) -> mem_in_result,
                (io.idu_to_exu.wb_sel === WB_PC4) -> pc_plus4,
 //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
-               )) & io.idu_to_exu.mem_msk
+               ))
+
+//  printf("io.mem_in = 0x%x, io.idu_to_exu.mem_msk = 0x%x\n", io.mem_in, io.idu_to_exu.mem_msk)
 
 }
 

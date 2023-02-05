@@ -2,15 +2,6 @@ package Macros
 
 import chisel3._
 import chisel3.util._
-//import chisel3.experimental.ChiselEnum
-
-//object macros {
-//  val func_len = 8
-//}
-//
-//object RV64ExuOp extends ChiselEnum {
-//  val Addi, Auipc, Jal, Jalr, Sd, Ebreak, InvalidExuOp = Value
-//}
 
 object RV64Inst {
   def BEQ                = BitPat("b?????????????????000?????1100011")
@@ -178,6 +169,11 @@ trait DecoderConstants {
   val ALU_SLTU= 10.asUInt(4.W)
   val ALU_COPY1= 11.asUInt(4.W)
   val ALU_X   = 0.asUInt(4.W)
+
+  // ALU Unsigned or Signed
+  val SIGN_N  = false.B
+  val SIGN_Y  = true.B
+  val SIGN_X  = false.B 
 
   // Writeback Select Signal
   val WB_ALU  = 0.asUInt(2.W)
