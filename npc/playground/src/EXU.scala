@@ -129,11 +129,18 @@ class EXU (implicit val conf: Configuration) extends Module {
       7.U -> io.mem_in(conf.xlen-1, 56),
     )
   )
+  // if the inst is lw, lh, lb. Need to do signed extension
+  val mem_in_sel_sext = Wire(UInt(conf.xlen.W)) 
+  val mem_in_result = Wire(UInt(conf.xlen.W)) 
+  mem_in_sel_sext := MuxCase(0.U, Array(
+    (io.idu_to_exu.mem_msk === "hffff_ffff".U) -> Fill(32, mem_in_sel(31)),
+    ))
+  mem_in_result := Mux(io.idu_to_exu.sign_op, mem_in_sel_sext, mem_in_sel)
 
   // submodule5 - wb_data
   wb_data := MuxCase(alu_out, Array(
                (io.idu_to_exu.wb_sel === WB_ALU) -> alu_out,
-               (io.idu_to_exu.wb_sel === WB_MEM) -> mem_in_sel,
+               (io.idu_to_exu.wb_sel === WB_MEM) -> mem_in_result,
                (io.idu_to_exu.wb_sel === WB_PC4) -> pc_plus4,
 //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
                )) & io.idu_to_exu.mem_msk
