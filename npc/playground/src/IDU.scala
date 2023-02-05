@@ -13,7 +13,7 @@ class IDU_to_EXU (implicit val conf: Configuration) extends Bundle() {
   val alu_op    = Output(UInt(ALU_X.getWidth.W))
   val wb_sel    = Output(UInt(WB_X.getWidth.W))
   val reg_wen   = Output(Bool())
-  val mem_msk   = Output(UInt(conf.xlen.W))
+  val data_msk  = Output(UInt(2.W))
   val sign_op   = Output(Bool())
 }
 
@@ -59,7 +59,7 @@ class IDU (implicit val conf: Configuration) extends Module {
 
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
   val alu_op :: wb_sel :: (wreg: Bool) :: (wmem: Bool) :: ds1 = ds0
-  val mem_msk_type :: (sign_op: Bool) :: Nil = ds1
+  val data_msk :: (sign_op: Bool) :: Nil = ds1
 
   println(s"In IDU, io.inst = ${io.inst}, and valid_inst = ${valid_inst}")
 
@@ -74,14 +74,14 @@ class IDU (implicit val conf: Configuration) extends Module {
     )
   )
 
-  // TODO: maybe we can change mem_msk to data_msk
-  io.idu_to_exu.mem_msk := MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
-         (mem_msk_type === MSK_W) -> "hffff_ffff".U(32.W),
-         ))
-
-  io.mem_write_msk := MuxCase("hff".U(8.W), Array(
-         (mem_msk_type === MSK_W) -> "hff".U(8.W),
-         ))
+//  // TODO: maybe we can change mem_msk to data_msk
+//  io.idu_to_exu.mem_msk := MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
+//         (mem_msk_type === MSK_W) -> "hffff_ffff".U(32.W),
+//         ))
+//
+//  io.mem_write_msk := MuxCase("hff".U(8.W), Array(
+//         (mem_msk_type === MSK_W) -> "hff".U(8.W),
+//         ))
 
   io.idu_to_exu.op1_sel := op1_sel
   io.idu_to_exu.op2_sel := op2_sel
@@ -92,6 +92,7 @@ class IDU (implicit val conf: Configuration) extends Module {
   io.inv_inst := ~valid_inst
   io.isWriteMem := wmem
   io.idu_to_exu.sign_op := sign_op
+  io.idu_to_exu.data_msk := data_msk
   
 }
 
