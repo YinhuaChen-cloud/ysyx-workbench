@@ -36,6 +36,13 @@ class EXU (implicit val conf: Configuration) extends Module {
   }
   io.regfile_output := regfile_output_aux.asUInt
 
+  // submodule1.5 - data_msk
+  val data_msk := MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
+              (io.idu_to_exu.data_msk === MSK_B) -> "hff".U(conf.xlen.W),
+              (io.idu_to_exu.data_msk === MSK_H) -> "hffff".U(conf.xlen.W),
+              (io.idu_to_exu.data_msk === MSK_W) -> "hffff_ffff".U(conf.xlen.W),
+              ))
+
   // submodule2 - ALU
   val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(conf.xlen.W))
   val rs2_data = Mux((rs2_addr =/= 0.U), regfile(rs2_addr), 0.asUInt(conf.xlen.W))
@@ -132,8 +139,8 @@ class EXU (implicit val conf: Configuration) extends Module {
   // if the inst is lw, lh, lb. Need to do signed extension
   val mem_in_sel_sext = Wire(UInt(conf.xlen.W)) 
   val mem_in_result = Wire(UInt(conf.xlen.W)) 
-  mem_in_sel_sext := MuxCase(mem_in_sel, Array( // by default, mem_msk is -1.U(64.W)
-    (io.idu_to_exu.mem_msk === "hffff_ffff".U) -> Cat(Fill(conf.xlen - 32, mem_in_sel(31)), mem_in_sel(31, 0)),
+//  mem_in_sel_sext := MuxCase(mem_in_sel, Array( // by default, mem_msk is -1.U(64.W)
+//    (io.idu_to_exu.mem_msk === "hffff_ffff".U) -> Cat(Fill(conf.xlen - 32, mem_in_sel(31)), mem_in_sel(31, 0)),
 //    (io.idu_to_exu.mem_msk === "hffff_ffff".U) -> mem_in_sel.asSInt,
 
     ))
