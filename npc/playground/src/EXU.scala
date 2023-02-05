@@ -150,7 +150,7 @@ class EXU (implicit val conf: Configuration) extends Module {
 
   // submodule5 - wb_data
   wb_data := MuxCase(alu_out, Array(
-               (io.idu_to_exu.wb_sel === WB_ALU) -> (alu_out & io.idu_to_exu.mem_msk).asUInt,
+               (io.idu_to_exu.wb_sel === WB_ALU) -> (alu_out & data_msk).asUInt,
                (io.idu_to_exu.wb_sel === WB_MEM) -> mem_in_result,
                (io.idu_to_exu.wb_sel === WB_PC4) -> pc_plus4,
 //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
