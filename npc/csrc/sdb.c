@@ -296,7 +296,7 @@ void sdb_mainloop() {
       }
     }
 
-		if (npc_state.state != NPC_RUNNING) break;
+		if (npc_state.state != NPC_RUNNING && npc_state.state != NPC_STOP) break;
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
   }
