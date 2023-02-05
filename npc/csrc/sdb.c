@@ -29,7 +29,7 @@ static char* rl_gets() {
   return line_read;
 }
 
-#ifdef CONFIG_SDB
+#ifdef CONFIG_WATCHPOINTS
 static void check_all_watchpoints() {
   WP *p = get_wp_head();
   bool success = true;
