@@ -72,7 +72,7 @@ class EXU (implicit val conf: Configuration) extends Module {
  
   val alu_op2 = Wire(UInt(conf.xlen.W))   
   alu_op2 := MuxCase(0.U, Array(
-//              (io.idu_to_exu.op2_sel === OP2_RS2) -> rs2_data,
+              (io.idu_to_exu.op2_sel === OP2_RS2) -> rs2_data,
               (io.idu_to_exu.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
               (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
