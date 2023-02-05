@@ -40,6 +40,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       // I-type
       LW        -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_MEM, WREG_1, WMEM_0, MSK_W, SIGN_Y),
       ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_X, SIGN_Y),
+      ADDIW     -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_W, SIGN_Y),
       JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X   , WB_PC4, WREG_1, WMEM_0, MSK_X, SIGN_N),
       SLTIU     -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_SLTU, WB_ALU, WREG_1, WMEM_0, MSK_X, SIGN_N),
       // S-type
