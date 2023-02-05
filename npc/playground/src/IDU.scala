@@ -58,7 +58,8 @@ class IDU (implicit val conf: Configuration) extends Module {
   )
 
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
-  val alu_op :: wb_sel :: (wreg: Bool) :: (wmem: Bool) :: mem_msk_type :: sign_op :: Nil = ds0
+  val alu_op :: wb_sel :: (wreg: Bool) :: (wmem: Bool) :: ds1 = ds0
+  val mem_msk_type :: (sign_op: Bool) :: Nil = ds1
 
   println(s"In IDU, io.inst = ${io.inst}, and valid_inst = ${valid_inst}")
 
@@ -90,7 +91,7 @@ class IDU (implicit val conf: Configuration) extends Module {
   io.isEbreak := (io.inst === EBREAK)
   io.inv_inst := ~valid_inst
   io.isWriteMem := wmem
-  io.idu_to_exu.sign_op  := sign_op
+  io.idu_to_exu.sign_op := sign_op
   
 }
 
