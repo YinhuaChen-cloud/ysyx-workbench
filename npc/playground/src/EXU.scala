@@ -113,17 +113,49 @@ class EXU (implicit val conf: Configuration) extends Module {
   io.isRead := (io.idu_to_exu.wb_sel === WB_MEM)
   io.mem_addr := alu_out
   io.mem_write_data := rs2_data
+  // select data part from io.mem_in according to mem_addr(2, 0) 
+  val mem_in_sel = Wire(UInt(conf.xlen.W)) 
+  mem_in_sel := MuxLookup(
+    io.mem_addr(2, 0), 0.U,
+    Array(
+      0.U -> io.mem_in,
+      1.U -> io.mem_in(conf.xlen-1, 8),
+      2.U -> io.mem_in(conf.xlen-1, 16),
+      3.U -> io.mem_in(conf.xlen-1, 24),
+      4.U -> io.mem_in(conf.xlen-1, 32),
+      5.U -> io.mem_in(conf.xlen-1, 40),
+      6.U -> io.mem_in(conf.xlen-1, 48),
+      7.U -> io.mem_in(conf.xlen-1, 56),
+    )
+  )
 
   // submodule5 - wb_data
   wb_data := MuxCase(alu_out, Array(
                (io.idu_to_exu.wb_sel === WB_ALU) -> alu_out,
-               (io.idu_to_exu.wb_sel === WB_MEM) -> io.mem_in,
+               (io.idu_to_exu.wb_sel === WB_MEM) -> mem_in_sel,
                (io.idu_to_exu.wb_sel === WB_PC4) -> pc_plus4,
 //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
                )) & io.idu_to_exu.mem_msk
 
   printf("io.mem_in = 0x%x, io.idu_to_exu.mem_msk = 0x%x\n", io.mem_in, io.idu_to_exu.mem_msk)
 
+//	// for pmem data read 2
+//	always@(*) begin
+//		rdata = '0;
+//		case(raddr[2:0])
+//			3'h0: rdata = rdata_aux;	
+//			3'h1: rdata[XLEN-1-8:0] = rdata_aux[XLEN-1:8];	
+//			3'h2: rdata[XLEN-1-16:0] = rdata_aux[XLEN-1:16];	
+//			3'h3: rdata[XLEN-1-24:0] = rdata_aux[XLEN-1:24];	
+//			3'h4: rdata[XLEN-1-32:0] = rdata_aux[XLEN-1:32];	
+//			3'h5: rdata[XLEN-1-40:0] = rdata_aux[XLEN-1:40];	
+//			3'h6: rdata[XLEN-1-48:0] = rdata_aux[XLEN-1:48];	
+//			3'h7: rdata[XLEN-1-56:0] = rdata_aux[XLEN-1:56];	
+//			default: assert(0);
+//		endcase
+//
+//	always@(*) begin
+//		  rdata[XLEN-1-raddr[2:0]*8:0] = rdata_aux[XLEN-1:raddr[2:0]*8]
 }
 
 
