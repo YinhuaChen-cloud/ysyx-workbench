@@ -22,7 +22,7 @@ static char mtrace_buf[MTRACE_BUF_LEN];
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
 uint8_t* cpu_to_sim(paddr_t paddr) { 
 	Assert(paddr >= CONFIG_MBASE && paddr < CONFIG_MBASE + CONFIG_MSIZE, \
-			"[%s:%d] In %s, out of mem bound, paddr = 0x%lx", __FILENAME__, __LINE__, __FUNCTION__, paddr);
+			"[%s:%d] In %s, out of mem bound, paddr = 0x%lx.\nAnd now pc is 0x%lx", __FILENAME__, __LINE__, __FUNCTION__, paddr, *pc);
 	return (uint8_t *)((uint64_t)pmem + paddr - CONFIG_MBASE); 
 }
 
