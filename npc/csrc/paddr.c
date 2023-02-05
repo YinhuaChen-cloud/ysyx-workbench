@@ -62,6 +62,8 @@ extern "C" void pmem_read(long long raddr, long long *rdata) {
 	*rdata = *(long long *)cpu_to_sim(raddr & ~0x7ull);
 //	 mtrace -> NOTE: we need to judge whether raddr is a inst or a data -> human assistance	
 #ifdef CONFIG_MTRACE
+	printf("raddr = 0x%lx, *pc = 0x%lx, cpu.pc = 0x%lx, pc_just_exec = 0x%lx\n", 
+			raddr, *pc, cpu.pc, pc_just_exec);
 	if(raddr == *pc) // filter out inst reading
 		return;
 	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx\n", cpu.pc, "Read", raddr, *rdata); 
