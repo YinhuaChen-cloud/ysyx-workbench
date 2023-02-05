@@ -133,7 +133,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   val mem_in_sel_sext = Wire(UInt(conf.xlen.W)) 
   val mem_in_result = Wire(UInt(conf.xlen.W)) 
   mem_in_sel_sext := MuxCase(mem_in_sel, Array( // by default, mem_msk is -1.U(64.W)
-    (io.idu_to_exu.mem_msk === "hffff_ffff".U) -> Cat(Fill(32, mem_in_sel(31)), mem_in_sel(31, 0)),
+    (io.idu_to_exu.mem_msk === "hffff_ffff".U) -> Cat(Fill(conf.xlen - 32, mem_in_sel(31)), mem_in_sel(31, 0)),
     ))
   mem_in_result := Mux(io.idu_to_exu.sign_op, mem_in_sel_sext, mem_in_sel)
 
