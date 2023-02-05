@@ -14,6 +14,7 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val mem_addr = Output(UInt(conf.xlen.W))
   val mem_write_data = Output(UInt(conf.xlen.W))
   val isRead = Output(Bool())
+  val mem_write_msk = Output(UInt(8.W))
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
@@ -42,6 +43,10 @@ class EXU (implicit val conf: Configuration) extends Module {
               (io.idu_to_exu.msk_type === MSK_H) -> "hffff".U(conf.xlen.W),
               (io.idu_to_exu.msk_type === MSK_W) -> "hffff_ffff".U(conf.xlen.W),
               ))
+
+  io.mem_write_msk := MuxCase("hff".U(8.W), Array(
+         (mem_msk_type === MSK_W) -> "hff".U(8.W),
+         ))
 
   // submodule2 - ALU
   val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(conf.xlen.W))
