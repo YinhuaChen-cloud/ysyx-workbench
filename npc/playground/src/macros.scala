@@ -3,25 +3,6 @@ package Macros
 import chisel3._
 import chisel3.util._
 
-class SignExtender(val inWidth: Int, val outWidth: Int) extends Module {
-  val io = IO(new Bundle {
-    val in = Input(UInt(inWidth.W))
-    val out = Output(SInt(outWidth.W))
-  })
-
-  val signBit = io.in(inWidth - 1)
-  io.out := Cat(Fill(outWidth - inWidth, signBit), io.in).asSInt
-}
-
-class UnsignExtender(val inWidth: Int, val outWidth: Int) extends Module {
-  val io = IO(new Bundle {
-    val in = Input(UInt(inWidth.W))
-    val out = Output(UInt(outWidth.W))
-  })
-
-  io.out := Cat(Fill(outWidth - inWidth, 0.U(1.W)), io.in).asUInt
-}
-
 object RV64Inst {
   def BEQ                = BitPat("b?????????????????000?????1100011")
   def BNE                = BitPat("b?????????????????001?????1100011")
