@@ -3,6 +3,7 @@
 #include <common.h>
 #include <diff.h>
 #include <sdb.h>
+#include <reg.h>
 
 #define _BSD_SOURCE
 #include <sys/time.h>
