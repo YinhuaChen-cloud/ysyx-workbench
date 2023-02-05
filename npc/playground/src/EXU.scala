@@ -122,6 +122,8 @@ class EXU (implicit val conf: Configuration) extends Module {
 //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
                )) & io.idu_to_exu.mem_msk
 
+  printf("io.mem_in = 0x%x, io.idu_to_exu.mem_msk = 0x%x\n", io.mem_in, io.idu_to_exu.mem_msk)
+
 }
 
 
