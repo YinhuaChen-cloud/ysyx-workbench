@@ -137,25 +137,8 @@ class EXU (implicit val conf: Configuration) extends Module {
 //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
                )) & io.idu_to_exu.mem_msk
 
-  printf("io.mem_in = 0x%x, io.idu_to_exu.mem_msk = 0x%x\n", io.mem_in, io.idu_to_exu.mem_msk)
+//  printf("io.mem_in = 0x%x, io.idu_to_exu.mem_msk = 0x%x\n", io.mem_in, io.idu_to_exu.mem_msk)
 
-//	// for pmem data read 2
-//	always@(*) begin
-//		rdata = '0;
-//		case(raddr[2:0])
-//			3'h0: rdata = rdata_aux;	
-//			3'h1: rdata[XLEN-1-8:0] = rdata_aux[XLEN-1:8];	
-//			3'h2: rdata[XLEN-1-16:0] = rdata_aux[XLEN-1:16];	
-//			3'h3: rdata[XLEN-1-24:0] = rdata_aux[XLEN-1:24];	
-//			3'h4: rdata[XLEN-1-32:0] = rdata_aux[XLEN-1:32];	
-//			3'h5: rdata[XLEN-1-40:0] = rdata_aux[XLEN-1:40];	
-//			3'h6: rdata[XLEN-1-48:0] = rdata_aux[XLEN-1:48];	
-//			3'h7: rdata[XLEN-1-56:0] = rdata_aux[XLEN-1:56];	
-//			default: assert(0);
-//		endcase
-//
-//	always@(*) begin
-//		  rdata[XLEN-1-raddr[2:0]*8:0] = rdata_aux[XLEN-1:raddr[2:0]*8]
 }
 
 
