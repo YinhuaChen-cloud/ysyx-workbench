@@ -82,7 +82,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       BR_JR  -> PC_JR, 
       BR_EQ  -> Mux(io.idu_to_exu.br_eq , PC_BR, PC_4),
       BR_NE  -> Mux(!io.idu_to_exu.br_eq, PC_BR, PC_4),
-      BR_LTU -> Mux(io.idu_to_exu.ltu, PC_BR, PC_4),
+      BR_LTU -> Mux(io.idu_to_exu.br_ltu, PC_BR, PC_4),
     )
   )
 
