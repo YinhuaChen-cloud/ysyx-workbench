@@ -159,15 +159,18 @@ trait DecoderConstants {
   // ALU Operation Signal
   val ALU_ADD = 1.asUInt(4.W)
   val ALU_SUB = 2.asUInt(4.W)
-  val ALU_SLL = 3.asUInt(4.W)
-  val ALU_SRL = 4.asUInt(4.W)
-  val ALU_SRA = 5.asUInt(4.W)
-  val ALU_AND = 6.asUInt(4.W)
-  val ALU_OR  = 7.asUInt(4.W)
-  val ALU_XOR = 8.asUInt(4.W)
-  val ALU_SLT = 9.asUInt(4.W)
-  val ALU_SLTU= 10.asUInt(4.W)
-  val ALU_COPY1= 11.asUInt(4.W)
+  val ALU_MUX = 3.asUInt(4.W)
+  val ALU_DIV = 4.asUInt(4.W)
+  val ALU_REM = 5.asUInt(4.W)
+  val ALU_SLL = 6.asUInt(4.W)
+  val ALU_SRL = 7.asUInt(4.W)
+  val ALU_SRA = 8.asUInt(4.W)
+  val ALU_AND = 9.asUInt(4.W)
+  val ALU_OR  = 10.asUInt(4.W)
+  val ALU_XOR = 11.asUInt(4.W)
+  val ALU_SLT = 12.asUInt(4.W)
+  val ALU_SLTU= 13.asUInt(4.W)
+  val ALU_COPY1= 14.asUInt(4.W)
   val ALU_X   = 0.asUInt(4.W)
 
   // ALU Unsigned or Signed
@@ -191,10 +194,13 @@ trait DecoderConstants {
   val WMEM_1 = true.B 
 
   // mem mask
-  val MEM_MSK_B   = 0.asUInt(2.W)
-  val MEM_MSK_H   = 1.asUInt(2.W)
-  val MEM_MSK_W   = 2.asUInt(2.W)
-  val MEM_MSK_X   = 3.asUInt(2.W)
+  val MEM_MSK_B   = 0.asUInt(3.W)
+  val MEM_MSK_BU  = 1.asUInt(3.W)
+  val MEM_MSK_H   = 2.asUInt(3.W)
+  val MEM_MSK_HU  = 3.asUInt(3.W)
+  val MEM_MSK_W   = 4.asUInt(3.W)
+  val MEM_MSK_WU  = 5.asUInt(3.W)
+  val MEM_MSK_X   = 6.asUInt(3.W)
 
   // alu mask
   val ALU_MSK_X = 0.asUInt(1.W)
