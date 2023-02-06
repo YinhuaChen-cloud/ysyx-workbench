@@ -193,10 +193,13 @@ trait DecoderConstants {
   val WMEM_1 = true.B 
 
   // mem mask
-  val MEM_MSK_B   = 0.asUInt(2.W)
-  val MEM_MSK_H   = 1.asUInt(2.W)
-  val MEM_MSK_W   = 2.asUInt(2.W)
-  val MEM_MSK_X   = 3.asUInt(2.W)
+  val MEM_MSK_B   = 0.asUInt(3.W)
+  val MEM_MSK_BU  = 1.asUInt(3.W)
+  val MEM_MSK_H   = 2.asUInt(3.W)
+  val MEM_MSK_HU  = 3.asUInt(3.W)
+  val MEM_MSK_W   = 4.asUInt(3.W)
+  val MEM_MSK_WU  = 5.asUInt(3.W)
+  val MEM_MSK_X   = 6.asUInt(3.W)
 
   // alu mask
   val ALU_MSK_X = 0.asUInt(1.W)
