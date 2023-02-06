@@ -81,32 +81,20 @@ class EXU (implicit val conf: Configuration) extends Module {
   // j
   val imm_j_sext = Cat(Fill(conf.xlen - 21, imm_j(19)), imm_j, 0.U)
   
-  val alu_op1_xlen = Wire(UInt(conf.xlen.W))
-  alu_op1_xlen := MuxCase(0.U, Array(
+  val alu_op1 = Wire(UInt(conf.xlen.W))   
+  alu_op1 := MuxCase(0.U, Array(
               (io.idu_to_exu.op1_sel === OP1_RS1) -> rs1_data,
               (io.idu_to_exu.op1_sel === OP1_IMU) -> imm_u_sext,
 //              (io.idu_to_exu.op1_sel === OP1_IMZ) -> imm_z
-              )).asUInt()
-
-  val alu_op1_w = Wire(UInt(32.W))
-  alu_op1_w := alu_op1_xlen(31, 0)
-
-  val alu_op1 = Wire(UInt(conf.xlen.W))   
-  alu_op1 := Mux((io.idu_to_exu.alu_msk_type === ALU_MSK_W), alu_op1_w, alu_op1_xlen)
+              )).asUInt() & alu_msk
  
-  val alu_op2_xlen = Wire(UInt(conf.xlen.W))   
-  alu_op2_xlen := MuxCase(0.U, Array(
+  val alu_op2 = Wire(UInt(conf.xlen.W))   
+  alu_op2 := MuxCase(0.U, Array(
               (io.idu_to_exu.op2_sel === OP2_RS2) -> rs2_data,
               (io.idu_to_exu.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
               (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
-              )).asUInt() 
-
-  val alu_op2_w = Wire(UInt(32.W))
-  alu_op2_w := alu_op2_xlen(31, 0)
-
-  val alu_op2 = Wire(UInt(conf.xlen.W))   
-  alu_op2 := Mux((io.idu_to_exu.alu_msk_type === ALU_MSK_W), alu_op2_w, alu_op2_xlen)
+              )).asUInt() & alu_msk
   
 //  val alu_shamt = Wire(UInt(6.W)) // TODO: maybe we can remove this
 //  alu_shamt := Mux((io.idu_to_exu.alu_msk_type === ALU_MSK_W), alu_op2(4, 0), alu_op2(5, 0))
