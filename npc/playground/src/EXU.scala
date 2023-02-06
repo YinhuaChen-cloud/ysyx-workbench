@@ -123,6 +123,7 @@ class EXU (implicit val conf: Configuration) extends Module {
 
   // submodule3 - next pc
   io.idu_to_exu.br_eq  := (rs1_data === rs2_data) 
+  io.idu_to_exu.br_lt  := (rs1_data.asSInt < rs2_data.asSInt) 
   io.idu_to_exu.br_ltu := (rs1_data.asUInt < rs2_data.asUInt) 
   val pc_plus4         = Wire(UInt(32.W))
   val br_target        = Wire(UInt(32.W))

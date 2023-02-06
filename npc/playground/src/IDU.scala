@@ -7,7 +7,8 @@ import Macros.Constants._
 
 class IDU_to_EXU (implicit val conf: Configuration) extends Bundle() {
   val br_eq     = Input(Bool())
-  val br_ltu     = Input(Bool())
+  val br_lt     = Input(Bool())
+  val br_ltu    = Input(Bool())
   val pc_sel    = Output(UInt(BR_N.getWidth.W))
   val op1_sel   = Output(UInt(OP1_X.getWidth.W))
   val op2_sel   = Output(UInt(OP2_X.getWidth.W))
@@ -58,6 +59,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       // B-type
       BEQ       -> List(Y, BR_EQ , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       BNE       -> List(Y, BR_NE , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
+      BGE       -> List(Y, BR_GE , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       BLTU      -> List(Y, BR_LTU, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       // U-type
       AUIPC     -> List(Y, BR_N  , OP1_IMU, OP2_PC , ALU_ADD , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_N),
@@ -82,6 +84,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       BR_JR  -> PC_JR, 
       BR_EQ  -> Mux(io.idu_to_exu.br_eq , PC_BR, PC_4),
       BR_NE  -> Mux(!io.idu_to_exu.br_eq, PC_BR, PC_4),
+      BR_GE  -> Mux(!io.idu_to_exu.br_lt, PC_BR, PC_4),
       BR_LTU -> Mux(io.idu_to_exu.br_ltu, PC_BR, PC_4),
     )
   )
