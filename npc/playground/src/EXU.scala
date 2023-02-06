@@ -132,6 +132,7 @@ class EXU (implicit val conf: Configuration) extends Module {
 
   // submodule4 - mem reading and writing
   io.isRead := (io.idu_to_exu.wb_sel === WB_MEM)
+  printf("io.isRead = %d\n", io.isRead)
   io.mem_addr := alu_out
   io.mem_write_data := rs2_data
   // select data part from io.mem_in according to mem_addr(2, 0) 
