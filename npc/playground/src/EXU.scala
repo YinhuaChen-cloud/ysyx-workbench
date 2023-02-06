@@ -14,6 +14,7 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val mem_addr = Output(UInt(conf.xlen.W))
   val mem_write_data = Output(UInt(conf.xlen.W))
   val isRead = Output(Bool())
+  val mem_write_msk = Output(UInt(8.W))
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
@@ -35,6 +36,21 @@ class EXU (implicit val conf: Configuration) extends Module {
     regfile_output_aux.slice(i * conf.xlen, (i+1) * conf.xlen).zip(regfile(i).asBools).foreach{case (a, b) => a := b}
   }
   io.regfile_output := regfile_output_aux.asUInt
+
+  // submodule1.5 - data msk
+//  val alu_msk = MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
+//              (io.idu_to_exu.msk_type === MSK_B) -> "hff".U(conf.xlen.W),
+//              (io.idu_to_exu.msk_type === MSK_H) -> "hffff".U(conf.xlen.W),
+//              (io.idu_to_exu.msk_type === MSK_W) -> "hffff_ffff".U(conf.xlen.W),
+//              ))
+//
+  val alu_msk = MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
+              (io.idu_to_exu.alu_msk_type === ALU_MSK_W) -> "hffff_ffff".U(conf.xlen.W),
+              ))
+
+  io.mem_write_msk := MuxCase("hff".U(8.W), Array(
+         (io.idu_to_exu.mem_msk_type === MEM_MSK_W) -> "hf".U(8.W),
+         ))
 
   // submodule2 - ALU
   val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(conf.xlen.W))
@@ -68,7 +84,7 @@ class EXU (implicit val conf: Configuration) extends Module {
               (io.idu_to_exu.op1_sel === OP1_RS1) -> rs1_data,
               (io.idu_to_exu.op1_sel === OP1_IMU) -> imm_u_sext,
 //              (io.idu_to_exu.op1_sel === OP1_IMZ) -> imm_z
-              )).asUInt()
+              )).asUInt() & alu_msk
  
   val alu_op2 = Wire(UInt(conf.xlen.W))   
   alu_op2 := MuxCase(0.U, Array(
@@ -76,17 +92,27 @@ class EXU (implicit val conf: Configuration) extends Module {
               (io.idu_to_exu.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
               (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
-              )).asUInt()
+              )).asUInt() & alu_msk
   
-  val alu_out = Wire(UInt(conf.xlen.W))   
-  alu_out := MuxCase(
+  val alu_out_aux = Wire(UInt(conf.xlen.W))   
+  alu_out_aux := MuxCase(
     0.U, Array(
       (io.idu_to_exu.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
       (io.idu_to_exu.alu_op === ALU_SUB)    -> (alu_op1 - alu_op2).asUInt(),
       (io.idu_to_exu.alu_op === ALU_SLTU)   -> (alu_op1 < alu_op2).asUInt(),
     )
   )
-  printf("alu_op1 = 0x%x, alu_op2 = 0x%x\n", alu_op1, alu_op2)
+
+  // NOTE: All ALU_MSK_W alu_inst needs signed_extension
+  // TODO: we may need signed_alu_op
+  val alu_out = Wire(UInt(conf.xlen.W))   
+  alu_out := MuxCase(
+    alu_out_aux, Array(
+      (io.idu_to_exu.alu_msk_type === ALU_MSK_W)    -> Cat(Fill(conf.xlen - 32, alu_out_aux(31)), alu_out_aux(31, 0)),
+//      (io.idu_to_exu.msk_type === MSK_H)    -> (alu_op1 - alu_op2).asUInt(),
+//      (io.idu_to_exu.msk_type === MSK_B)    -> (alu_op1 < alu_op2).asUInt(),
+    )
+  )
 
   // submodule3 - next pc
   io.idu_to_exu.br_eq := (rs1_data === rs2_data) 
@@ -130,18 +156,19 @@ class EXU (implicit val conf: Configuration) extends Module {
     )
   )
   // if the inst is lw, lh, lb. Need to do signed extension
+  // TODO: we may need MEM_MSK_WU, MEM_MSK_BU ... 
   val mem_in_sel_sext = Wire(UInt(conf.xlen.W)) 
   val mem_in_result = Wire(UInt(conf.xlen.W)) 
   mem_in_sel_sext := MuxCase(mem_in_sel, Array( // by default, mem_msk is -1.U(64.W)
-    (io.idu_to_exu.mem_msk === "hffff_ffff".U) -> Cat(Fill(conf.xlen - 32, mem_in_sel(31)), mem_in_sel(31, 0)),
+//    (io.idu_to_exu.msk_type === MSK_W) -> mem_in_sel().asSInt,
+    (io.idu_to_exu.mem_msk_type === MEM_MSK_W) -> Cat(Fill(conf.xlen - 32, mem_in_sel(31)), mem_in_sel(31, 0)),
+//    (io.idu_to_exu.msk_type === ) -> mem_in_sel.asSInt,
     ))
   mem_in_result := Mux(io.idu_to_exu.sign_op, mem_in_sel_sext, mem_in_sel)
 
-  printf("mem_in_result = 0x%x\n", mem_in_result)
-
   // submodule5 - wb_data
   wb_data := MuxCase(alu_out, Array(
-               (io.idu_to_exu.wb_sel === WB_ALU) -> (alu_out & io.idu_to_exu.mem_msk).asUInt,
+               (io.idu_to_exu.wb_sel === WB_ALU) -> alu_out,
                (io.idu_to_exu.wb_sel === WB_MEM) -> mem_in_result,
                (io.idu_to_exu.wb_sel === WB_PC4) -> pc_plus4,
 //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata

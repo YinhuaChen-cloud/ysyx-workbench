@@ -54,8 +54,15 @@ void cpu_exec(uint32_t n) {
 
 	while(n--) {
 
+		// NOTE: Already invoke sv_regs_to_c() in main.cpp when initialize difftest
+
 		pc_just_exec = cpu.pc;
 
+//		extern bool is_sdb_mode;
+//		if(is_sdb_mode) {
+//			printred("The pc of the instruction about to execute is 0x%lx\n", cpu.pc);
+//		}
+//
 		single_cycle();
 
 #ifdef CONFIG_DIFFTEST
@@ -66,11 +73,6 @@ void cpu_exec(uint32_t n) {
 #ifdef CONFIG_WATCHPOINTS
 		check_all_watchpoints();
 #endif
-
-		extern bool is_sdb_mode;
-		if(is_sdb_mode) {
-			printred("The pc of the instruction just executed is 0x%lx\n", pc_just_exec);
-		}
 
 		if (npc_state.state != NPC_RUNNING) break;
 	}
