@@ -37,15 +37,19 @@ class EXU (implicit val conf: Configuration) extends Module {
   }
   io.regfile_output := regfile_output_aux.asUInt
 
-  // submodule1.5 - data_msk
-  val data_msk = MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
-              (io.idu_to_exu.msk_type === MSK_B) -> "hff".U(conf.xlen.W),
-              (io.idu_to_exu.msk_type === MSK_H) -> "hffff".U(conf.xlen.W),
-              (io.idu_to_exu.msk_type === MSK_W) -> "hffff_ffff".U(conf.xlen.W),
+  // submodule1.5 - data msk
+//  val alu_msk = MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
+//              (io.idu_to_exu.msk_type === MSK_B) -> "hff".U(conf.xlen.W),
+//              (io.idu_to_exu.msk_type === MSK_H) -> "hffff".U(conf.xlen.W),
+//              (io.idu_to_exu.msk_type === MSK_W) -> "hffff_ffff".U(conf.xlen.W),
+//              ))
+//
+  val alu_msk = MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
+              (io.idu_to_exu.alu_msk_type === ALU_MSK_W) -> "hffff_ffff".U(conf.xlen.W),
               ))
 
   io.mem_write_msk := MuxCase("hff".U(8.W), Array(
-         (io.idu_to_exu.msk_type === MSK_W) -> "hff".U(8.W),
+         (io.idu_to_exu.mem_msk_type === MEM_MSK_W) -> "hf".U(8.W),
          ))
 
   // submodule2 - ALU
@@ -80,7 +84,7 @@ class EXU (implicit val conf: Configuration) extends Module {
               (io.idu_to_exu.op1_sel === OP1_RS1) -> rs1_data,
               (io.idu_to_exu.op1_sel === OP1_IMU) -> imm_u_sext,
 //              (io.idu_to_exu.op1_sel === OP1_IMZ) -> imm_z
-              )).asUInt() & data_msk
+              )).asUInt() & alu_msk
  
   val alu_op2 = Wire(UInt(conf.xlen.W))   
   alu_op2 := MuxCase(0.U, Array(
@@ -88,7 +92,7 @@ class EXU (implicit val conf: Configuration) extends Module {
               (io.idu_to_exu.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
               (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
-              )).asUInt() & data_msk
+              )).asUInt() & alu_msk
   
   val alu_out_aux = Wire(UInt(conf.xlen.W))   
   alu_out_aux := MuxCase(
@@ -102,7 +106,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   val alu_out = Wire(UInt(conf.xlen.W))   
   alu_out := MuxCase(
     alu_out_aux, Array(
-      (io.idu_to_exu.msk_type === MSK_W)    -> Cat(Fill(conf.xlen - 32, alu_out_aux(31)), alu_out_aux(31, 0)),
+      (io.idu_to_exu.msk_type === ALU_MSK_W)    -> Cat(Fill(conf.xlen - 32, alu_out_aux(31)), alu_out_aux(31, 0)),
 //      (io.idu_to_exu.msk_type === MSK_H)    -> (alu_op1 - alu_op2).asUInt(),
 //      (io.idu_to_exu.msk_type === MSK_B)    -> (alu_op1 < alu_op2).asUInt(),
     )
