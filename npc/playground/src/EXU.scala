@@ -103,6 +103,8 @@ class EXU (implicit val conf: Configuration) extends Module {
     )
   )
 
+  // NOTE: All ALU_MSK_W alu_inst needs signed_extension
+  // TODO: we may need signed_alu_op
   val alu_out = Wire(UInt(conf.xlen.W))   
   alu_out := MuxCase(
     alu_out_aux, Array(
@@ -136,7 +138,6 @@ class EXU (implicit val conf: Configuration) extends Module {
 
   // submodule4 - mem reading and writing
   io.isRead := (io.idu_to_exu.wb_sel === WB_MEM)
-  printf("io.isRead = %d\n", io.isRead)
   io.mem_addr := alu_out
   io.mem_write_data := rs2_data
   // select data part from io.mem_in according to mem_addr(2, 0) 
@@ -155,6 +156,7 @@ class EXU (implicit val conf: Configuration) extends Module {
     )
   )
   // if the inst is lw, lh, lb. Need to do signed extension
+  // TODO: we may need MEM_MSK_WU, MEM_MSK_BU ... 
   val mem_in_sel_sext = Wire(UInt(conf.xlen.W)) 
   val mem_in_result = Wire(UInt(conf.xlen.W)) 
   mem_in_sel_sext := MuxCase(mem_in_sel, Array( // by default, mem_msk is -1.U(64.W)
