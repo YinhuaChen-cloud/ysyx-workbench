@@ -161,17 +161,18 @@ class EXU (implicit val conf: Configuration) extends Module {
       7.U -> io.mem_in(conf.xlen-1, 56),
     )
   )
-  // if the inst is lw, lh, lb. Need to do signed extension
-  // TODO: we may need MEM_MSK_WU, MEM_MSK_BU ... 
-  val mem_in_sel_sext = Wire(UInt(conf.xlen.W)) 
+//  // if the inst is lw, lh, lb. Need to do signed extension
+//  // TODO: we may need MEM_MSK_WU, MEM_MSK_BU ... 
+//  val mem_in_sel_sext = Wire(UInt(conf.xlen.W)) 
   val mem_in_result = Wire(UInt(conf.xlen.W)) 
-  mem_in_sel_sext := MuxCase(mem_in_sel, Array( // by default, mem_msk is -1.U(64.W)
+
+  mem_in_result := MuxCase(mem_in_sel, Array( // by default, mem_msk is -1.U(64.W)
 //    (io.idu_to_exu.msk_type === MSK_W) -> mem_in_sel().asSInt,
     (io.idu_to_exu.mem_msk_type === MEM_MSK_W)  -> Cat(Fill(conf.xlen - 32, mem_in_sel(31)), mem_in_sel(31, 0)),
     (io.idu_to_exu.mem_msk_type === MEM_MSK_BU) -> Cat(Fill(conf.xlen - 8, false.B), mem_in_sel(7, 0)),
 //    (io.idu_to_exu.msk_type === ) -> mem_in_sel.asSInt,
-    ))
-  mem_in_result := Mux(io.idu_to_exu.sign_op, mem_in_sel_sext, mem_in_sel)
+  ))
+//  mem_in_result := Mux(io.idu_to_exu.sign_op, mem_in_sel_sext, mem_in_sel)
 
   // submodule5 - wb_data
   wb_data := MuxCase(alu_out, Array(
