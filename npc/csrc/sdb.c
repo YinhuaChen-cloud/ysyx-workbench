@@ -54,15 +54,6 @@ void cpu_exec(uint32_t n) {
 
 	while(n--) {
 
-		pc_just_exec = cpu.pc;
-
-		extern bool is_sdb_mode;
-		if(is_sdb_mode) {
-			printred("The pc of the instruction about to execute is 0x%lx\n", cpu.pc);
-		}
-
-		single_cycle();
-
 #ifdef CONFIG_DIFFTEST
 		sv_regs_to_c();
 		difftest_step();
@@ -71,6 +62,15 @@ void cpu_exec(uint32_t n) {
 #ifdef CONFIG_WATCHPOINTS
 		check_all_watchpoints();
 #endif
+
+		pc_just_exec = cpu.pc;
+
+		extern bool is_sdb_mode;
+		if(is_sdb_mode) {
+			printred("The pc of the instruction about to execute is 0x%lx\n", cpu.pc);
+		}
+
+		single_cycle();
 
 		if (npc_state.state != NPC_RUNNING) break;
 	}
