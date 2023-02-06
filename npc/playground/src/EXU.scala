@@ -95,7 +95,7 @@ class EXU (implicit val conf: Configuration) extends Module {
               )).asUInt() & alu_msk
   
   val alu_shamt = Wire(UInt(6.W)) // TODO: maybe we can remove this
-  alu_shamt := Mux((io.idu_to_exu.alu_msk_type === ALU_MSK_W), alu_op2(4, 0).asUInt(), alu_op2(5, 0).asUInt())
+  alu_shamt := Mux((io.idu_to_exu.alu_msk_type === ALU_MSK_W), alu_op2(4, 0), alu_op2(5, 0))
 
   val alu_out_aux = Wire(UInt(conf.xlen.W))   
   alu_out_aux := MuxCase(
