@@ -58,11 +58,11 @@ void cpu_exec(uint32_t n) {
 
 		pc_just_exec = cpu.pc;
 
-		extern bool is_sdb_mode;
-		if(is_sdb_mode) {
-			printred("The pc of the instruction about to execute is 0x%lx\n", cpu.pc);
-		}
-
+//		extern bool is_sdb_mode;
+//		if(is_sdb_mode) {
+//			printred("The pc of the instruction about to execute is 0x%lx\n", cpu.pc);
+//		}
+//
 		single_cycle();
 
 #ifdef CONFIG_DIFFTEST
