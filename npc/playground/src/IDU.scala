@@ -13,7 +13,8 @@ class IDU_to_EXU (implicit val conf: Configuration) extends Bundle() {
   val alu_op    = Output(UInt(ALU_X.getWidth.W))
   val wb_sel    = Output(UInt(WB_X.getWidth.W))
   val reg_wen   = Output(Bool())
-  val msk_type  = Output(UInt(2.W))
+  val mem_msk_type  = Output(UInt(MEM_MSK_X.getWidth.W))
+  val alu_msk_type  = Output(UInt(ALU_MSK_X.getWidth.W))
   val sign_op   = Output(Bool())
 }
 
@@ -32,34 +33,34 @@ class IDU (implicit val conf: Configuration) extends Module {
   val decoded_signals = ListLookup(
     io.inst,
                    // invalid
-                   List(N, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X, SIGN_X),
+                   List(N, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X, ALU_MSK_X, SIGN_X),
     Array(
       // R-type
-      ADDW      -> List(Y, BR_N , OP1_RS1, OP2_RS2, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_W, SIGN_Y),
-      SUB       -> List(Y, BR_N , OP1_RS1, OP2_RS2, ALU_SUB , WB_ALU, WREG_1, WMEM_0, MSK_X, SIGN_N),
+      ADDW      -> List(Y, BR_N , OP1_RS1, OP2_RS2, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X, ALU_MSK_W, SIGN_Y),
+      SUB       -> List(Y, BR_N , OP1_RS1, OP2_RS2, ALU_SUB , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X, ALU_MSK_X, SIGN_N),
       // I-type
-      LW        -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_MEM, WREG_1, WMEM_0, MSK_W, SIGN_Y),
-      ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_X, SIGN_Y),
-      ADDIW     -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_W, SIGN_Y),
-      JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X   , WB_PC4, WREG_1, WMEM_0, MSK_X, SIGN_N),
-      SLTIU     -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_SLTU, WB_ALU, WREG_1, WMEM_0, MSK_X, SIGN_N),
+      LW        -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_MEM, WREG_1, WMEM_0, MEM_MSK_W, ALU_MSK_X, SIGN_Y),
+      ADDI      -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X, ALU_MSK_X, SIGN_Y),
+      ADDIW     -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X, ALU_MSK_W, SIGN_Y),
+      JALR      -> List(Y, BR_JR, OP1_RS1, OP2_IMI, ALU_X   , WB_PC4, WREG_1, WMEM_0, MEM_MSK_X, ALU_MSK_X, SIGN_N),
+      SLTIU     -> List(Y, BR_N , OP1_RS1, OP2_IMI, ALU_SLTU, WB_ALU, WREG_1, WMEM_0, MEM_MSK_X, ALU_MSK_X, SIGN_N),
       // S-type
-      SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, WMEM_1, MSK_X, SIGN_X),
+      SD        -> List(Y, BR_N , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, WMEM_1, MEM_MSK_X, ALU_MSK_X, SIGN_X),
       // B-type
-      BEQ       -> List(Y, BR_EQ, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X, SIGN_Y),
-      BNE       -> List(Y, BR_NE, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X, SIGN_Y),
+      BEQ       -> List(Y, BR_EQ, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X, ALU_MSK_X, SIGN_Y),
+      BNE       -> List(Y, BR_NE, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X, ALU_MSK_X, SIGN_Y),
       // U-type
-      AUIPC     -> List(Y, BR_N , OP1_IMU, OP2_PC , ALU_ADD , WB_ALU, WREG_1, WMEM_0, MSK_X, SIGN_N),
+      AUIPC     -> List(Y, BR_N , OP1_IMU, OP2_PC , ALU_ADD , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X, ALU_MSK_X, SIGN_N),
       // J-type
-      JAL       -> List(Y, BR_J , OP1_X  , OP2_X  , ALU_X   , WB_PC4, WREG_1, WMEM_0, MSK_X, SIGN_N),
+      JAL       -> List(Y, BR_J , OP1_X  , OP2_X  , ALU_X   , WB_PC4, WREG_1, WMEM_0, MEM_MSK_X, ALU_MSK_X, SIGN_N),
       // ebreak
-      EBREAK    -> List(Y, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MSK_X, SIGN_X),
+      EBREAK    -> List(Y, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X, ALU_MSK_X, SIGN_X),
     )
   )
 
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
   val alu_op :: wb_sel :: (wreg: Bool) :: (wmem: Bool) :: ds1 = ds0
-  val msk_type :: (sign_op: Bool) :: Nil = ds1
+  val mem_msk_type :: alu_msk_type :: (sign_op: Bool) :: Nil = ds1
 
   println(s"In IDU, io.inst = ${io.inst}, and valid_inst = ${valid_inst}")
 
@@ -83,7 +84,8 @@ class IDU (implicit val conf: Configuration) extends Module {
   io.inv_inst := ~valid_inst
   io.isWriteMem := wmem
   io.idu_to_exu.sign_op := sign_op
-  io.idu_to_exu.msk_type := msk_type
+  io.idu_to_exu.mem_msk_type := mem_msk_type
+  io.idu_to_exu.alu_msk_type := alu_msk_type
   
 }
 

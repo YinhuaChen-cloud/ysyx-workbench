@@ -190,11 +190,15 @@ trait DecoderConstants {
   val WMEM_0 = false.B 
   val WMEM_1 = true.B 
 
-  // data mask
-  val MSK_B   = 0.asUInt(2.W)
-  val MSK_H   = 1.asUInt(2.W)
-  val MSK_W   = 2.asUInt(2.W)
-  val MSK_X   = 3.asUInt(2.W)
+  // mem mask
+  val MEM_MSK_B   = 0.asUInt(2.W)
+  val MEM_MSK_H   = 1.asUInt(2.W)
+  val MEM_MSK_W   = 2.asUInt(2.W)
+  val MEM_MSK_X   = 3.asUInt(2.W)
+
+  // alu mask
+  val ALU_MSK_X = 0.asUInt(1.W)
+  val ALU_MSK_W = 1.asUInt(1.W) 
 }
 
 trait RISCVConstants
