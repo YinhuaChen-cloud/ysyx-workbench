@@ -69,6 +69,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       BEQ       -> List(Y, BR_EQ , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       BNE       -> List(Y, BR_NE , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       BGE       -> List(Y, BR_GE , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
+      BLT       -> List(Y, BR_LT , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       BLTU      -> List(Y, BR_LTU, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       // U-type
       AUIPC     -> List(Y, BR_N  , OP1_IMU, OP2_PC , ALU_ADD , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_N),
@@ -94,6 +95,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       BR_EQ  -> Mux(io.idu_to_exu.br_eq , PC_BR, PC_4),
       BR_NE  -> Mux(!io.idu_to_exu.br_eq, PC_BR, PC_4),
       BR_GE  -> Mux(!io.idu_to_exu.br_lt, PC_BR, PC_4),
+      BR_LT  -> Mux(io.idu_to_exu.br_lt, PC_BR, PC_4),
       BR_LTU -> Mux(io.idu_to_exu.br_ltu, PC_BR, PC_4),
     )
   )
