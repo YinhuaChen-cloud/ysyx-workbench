@@ -54,14 +54,7 @@ void cpu_exec(uint32_t n) {
 
 	while(n--) {
 
-#ifdef CONFIG_DIFFTEST
-		sv_regs_to_c();
-		difftest_step();
-#endif
-
-#ifdef CONFIG_WATCHPOINTS
-		check_all_watchpoints();
-#endif
+		// NOTE: Already invoke sv_regs_to_c() in main.cpp when initialize difftest
 
 		pc_just_exec = cpu.pc;
 
@@ -71,6 +64,15 @@ void cpu_exec(uint32_t n) {
 		}
 
 		single_cycle();
+
+#ifdef CONFIG_DIFFTEST
+		sv_regs_to_c();
+		difftest_step();
+#endif
+
+#ifdef CONFIG_WATCHPOINTS
+		check_all_watchpoints();
+#endif
 
 		if (npc_state.state != NPC_RUNNING) break;
 	}
