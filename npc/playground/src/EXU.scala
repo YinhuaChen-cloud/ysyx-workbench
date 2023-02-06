@@ -103,7 +103,7 @@ class EXU (implicit val conf: Configuration) extends Module {
       (io.idu_to_exu.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
       (io.idu_to_exu.alu_op === ALU_SUB)    -> (alu_op1 - alu_op2).asUInt(),
       (io.idu_to_exu.alu_op === ALU_SLTU)   -> (alu_op1 < alu_op2).asUInt(),
-      (io.idu_to_exu.alu_op === ALU_SLL)    -> ((alu_op1 << alu_shamt)).asUInt(),
+      (io.idu_to_exu.alu_op === ALU_SLL)    -> (alu_op1 << alu_shamt).asUInt(),
     )
   )
 
