@@ -77,11 +77,12 @@ class IDU (implicit val conf: Configuration) extends Module {
   io.idu_to_exu.pc_sel  := MuxLookup(
     br_type, PC_EXC,
     Array(
-      BR_N  -> PC_4 , 
-      BR_J  -> PC_J , 
-      BR_JR -> PC_JR, 
-      BR_EQ -> Mux(io.idu_to_exu.br_eq , PC_BR, PC_4),
-      BR_NE -> Mux(!io.idu_to_exu.br_eq, PC_BR, PC_4),
+      BR_N   -> PC_4 , 
+      BR_J   -> PC_J , 
+      BR_JR  -> PC_JR, 
+      BR_EQ  -> Mux(io.idu_to_exu.br_eq , PC_BR, PC_4),
+      BR_NE  -> Mux(!io.idu_to_exu.br_eq, PC_BR, PC_4),
+      BR_LTU -> Mux(io.idu_to_exu.ltu, PC_BR, PC_4),
     )
   )
 
