@@ -106,7 +106,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   val alu_out = Wire(UInt(conf.xlen.W))   
   alu_out := MuxCase(
     alu_out_aux, Array(
-      (io.idu_to_exu.msk_type === ALU_MSK_W)    -> Cat(Fill(conf.xlen - 32, alu_out_aux(31)), alu_out_aux(31, 0)),
+      (io.idu_to_exu.alu_msk_type === ALU_MSK_W)    -> Cat(Fill(conf.xlen - 32, alu_out_aux(31)), alu_out_aux(31, 0)),
 //      (io.idu_to_exu.msk_type === MSK_H)    -> (alu_op1 - alu_op2).asUInt(),
 //      (io.idu_to_exu.msk_type === MSK_B)    -> (alu_op1 < alu_op2).asUInt(),
     )
@@ -159,7 +159,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   val mem_in_result = Wire(UInt(conf.xlen.W)) 
   mem_in_sel_sext := MuxCase(mem_in_sel, Array( // by default, mem_msk is -1.U(64.W)
 //    (io.idu_to_exu.msk_type === MSK_W) -> mem_in_sel().asSInt,
-    (io.idu_to_exu.msk_type === MSK_W) -> Cat(Fill(conf.xlen - 32, mem_in_sel(31)), mem_in_sel(31, 0)),
+    (io.idu_to_exu.mem_msk_type === MEM_MSK_W) -> Cat(Fill(conf.xlen - 32, mem_in_sel(31)), mem_in_sel(31, 0)),
 //    (io.idu_to_exu.msk_type === ) -> mem_in_sel.asSInt,
     ))
   mem_in_result := Mux(io.idu_to_exu.sign_op, mem_in_sel_sext, mem_in_sel)
