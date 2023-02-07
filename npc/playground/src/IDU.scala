@@ -46,6 +46,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       MULW      -> List(Y, BR_N  , OP1_RS1, OP2_RS2, ALU_MUX , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_W, SIGN_N),
       DIVW      -> List(Y, BR_N  , OP1_RS1, OP2_RS2, ALU_DIV , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_W, SIGN_N),
       DIVU      -> List(Y, BR_N  , OP1_RS1, OP2_RS2, ALU_DIV , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_N),
+      DIVUW     -> List(Y, BR_N  , OP1_RS1, OP2_RS2, ALU_DIV , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_W, SIGN_N),
       REMW      -> List(Y, BR_N  , OP1_RS1, OP2_RS2, ALU_REM , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_W, SIGN_N),
       SLLW      -> List(Y, BR_N  , OP1_RS1, OP2_RS2, ALU_SLL , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_W, SIGN_N),
       SRLW      -> List(Y, BR_N  , OP1_RS1, OP2_RS2, ALU_SRL , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_W, SIGN_N),
