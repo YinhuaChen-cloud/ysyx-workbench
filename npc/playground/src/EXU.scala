@@ -184,6 +184,7 @@ class EXU (implicit val conf: Configuration) extends Module {
     (io.idu_to_exu.mem_msk_type === MEM_MSK_WU) -> Cat(Fill(conf.xlen - 32, false.B), mem_in_sel(31, 0)),
     (io.idu_to_exu.mem_msk_type === MEM_MSK_H)  -> Cat(Fill(conf.xlen - 16, mem_in_sel(15)), mem_in_sel(15, 0)),
     (io.idu_to_exu.mem_msk_type === MEM_MSK_HU) -> Cat(Fill(conf.xlen - 16, false.B), mem_in_sel(15, 0)),
+    (io.idu_to_exu.mem_msk_type === MEM_MSK_B)  -> Cat(Fill(conf.xlen - 8, mem_in_sel(7)), mem_in_sel(7, 0)),
     (io.idu_to_exu.mem_msk_type === MEM_MSK_BU) -> Cat(Fill(conf.xlen - 8, false.B), mem_in_sel(7, 0)),
 //    (io.idu_to_exu.msk_type === ) -> mem_in_sel.asSInt,
   ))
