@@ -77,7 +77,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   // b
   val imm_b_sext = Cat(Fill(conf.xlen - 13, imm_b(11)), imm_b, 0.U)
   // u
-  val imm_u_sext = Cat(Fill(conf.xlen - 32), imm_u, Fill(12, 0.U))
+  val imm_u_sext = Cat(Fill(conf.xlen - 32, imm_u(19)), imm_u, Fill(12, 0.U))
   // j
   val imm_j_sext = Cat(Fill(conf.xlen - 21, imm_j(19)), imm_j, 0.U)
   
