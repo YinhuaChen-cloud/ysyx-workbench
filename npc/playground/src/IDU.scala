@@ -81,7 +81,7 @@ class IDU (implicit val conf: Configuration) extends Module {
       BEQ       -> List(Y, BR_EQ , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       BNE       -> List(Y, BR_NE , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       BGE       -> List(Y, BR_GE , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
-      BGE       -> List(Y, BR_GEU, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
+      BGEU      -> List(Y, BR_GEU, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       BLT       -> List(Y, BR_LT , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       BLTU      -> List(Y, BR_LTU, OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
       // U-type
