@@ -66,7 +66,7 @@ void cpu_exec(uint32_t n) {
 		single_cycle();
 
 #ifdef CONFIG_DIFFTEST
-		sv_regs_to_c();
+		sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
 		difftest_step();
 #endif
 

@@ -5,4 +5,3 @@
  *
  */
 #define CONFIG_DIFFTEST 1
-#define CONFIG_MTRACE 1

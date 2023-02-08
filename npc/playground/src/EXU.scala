@@ -77,7 +77,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   // b
   val imm_b_sext = Cat(Fill(conf.xlen - 13, imm_b(11)), imm_b, 0.U)
   // u
-  val imm_u_sext = Cat(imm_u, Fill(12, 0.U))
+  val imm_u_sext = Cat(Fill(conf.xlen - 32, imm_u(19)), imm_u, Fill(12, 0.U))
   // j
   val imm_j_sext = Cat(Fill(conf.xlen - 21, imm_j(19)), imm_j, 0.U)
   
@@ -181,8 +181,10 @@ class EXU (implicit val conf: Configuration) extends Module {
   mem_in_result := MuxCase(mem_in_sel, Array( // by default, mem_msk is -1.U(64.W)
 //    (io.idu_to_exu.msk_type === MSK_W) -> mem_in_sel().asSInt,
     (io.idu_to_exu.mem_msk_type === MEM_MSK_W)  -> Cat(Fill(conf.xlen - 32, mem_in_sel(31)), mem_in_sel(31, 0)),
+    (io.idu_to_exu.mem_msk_type === MEM_MSK_WU) -> Cat(Fill(conf.xlen - 32, false.B), mem_in_sel(31, 0)),
     (io.idu_to_exu.mem_msk_type === MEM_MSK_H)  -> Cat(Fill(conf.xlen - 16, mem_in_sel(15)), mem_in_sel(15, 0)),
     (io.idu_to_exu.mem_msk_type === MEM_MSK_HU) -> Cat(Fill(conf.xlen - 16, false.B), mem_in_sel(15, 0)),
+    (io.idu_to_exu.mem_msk_type === MEM_MSK_B)  -> Cat(Fill(conf.xlen - 8, mem_in_sel(7)), mem_in_sel(7, 0)),
     (io.idu_to_exu.mem_msk_type === MEM_MSK_BU) -> Cat(Fill(conf.xlen - 8, false.B), mem_in_sel(7, 0)),
 //    (io.idu_to_exu.msk_type === ) -> mem_in_sel.asSInt,
   ))
