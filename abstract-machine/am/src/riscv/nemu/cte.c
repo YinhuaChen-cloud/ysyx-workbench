@@ -34,6 +34,7 @@ Context* __am_irq_handle(Context *c) {
 
     assert(c != NULL);
 		printf("before user_handler\n");
+		printf("user_handler = 0x%x\n");
     c = user_handler(ev, c);
 		printf("after user_handler\n");
     assert(c != NULL);
