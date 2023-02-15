@@ -21,7 +21,6 @@ module ysyx_22050039_EXU #(XLEN = 64, INST_LEN = 32)
   import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
   import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
 
-
 	// ifetch
 	reg [XLEN-1:0]	inst_aux;
 // instruction width	

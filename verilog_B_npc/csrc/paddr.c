@@ -2,8 +2,6 @@
 #include "debug.h"
 #include <common.h>
 #include <diff.h>
-#include <sdb.h>
-#include <reg.h>
 
 #define _BSD_SOURCE
 #include <sys/time.h>
@@ -12,38 +10,31 @@ extern struct timeval boot_time;
 
 uint8_t *pmem = NULL;
 
-//#ifdef CONFIG_MTRACE
 #define MTRACE_BUF_LEN 128
 char *mtrace_file = NULL;
 static FILE *mtrace_fp = NULL;
 static char mtrace_buf[MTRACE_BUF_LEN];
-//#endif
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
 uint8_t* cpu_to_sim(paddr_t paddr) { 
 	Assert(paddr >= CONFIG_MBASE && paddr < CONFIG_MBASE + CONFIG_MSIZE, \
-			"[%s:%d] In %s, out of mem bound, paddr = 0x%lx.\nAnd now pc is 0x%lx", __FILENAME__, __LINE__, __FUNCTION__, paddr, *pc);
+			"[%s:%d] In %s, out of mem bound, paddr = 0x%lx", __FILENAME__, __LINE__, __FUNCTION__, paddr);
 	return (uint8_t *)((uint64_t)pmem + paddr - CONFIG_MBASE); 
 }
 
 void init_mtrace() {
-#ifdef CONFIG_MTRACE
 	assert(mtrace_file);
   mtrace_fp = fopen(mtrace_file, "w");
 	assert(mtrace_fp);
-#endif
 }
 
 void close_mtrace() {
-#ifdef CONFIG_MTRACE
 	assert(mtrace_fp);
 	fclose(mtrace_fp);
 	mtrace_fp = NULL;
-#endif
 }
 
 extern "C" void pmem_read(long long raddr, long long *rdata) {
-	// if raddr is clock
 	if(raddr >= CONFIG_RTC_ADDR && raddr < CONFIG_RTC_ADDR + 8) {
 		difftest_skip_ref();
 
@@ -62,18 +53,18 @@ extern "C" void pmem_read(long long raddr, long long *rdata) {
 	}
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
 	*rdata = *(long long *)cpu_to_sim(raddr & ~0x7ull);
-//	 mtrace -> NOTE: we need to judge whether raddr is a inst or a data -> human assistance	
-#ifdef CONFIG_MTRACE
-	if(raddr == *pc) // filter out inst reading
-		return;
-	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx\n", cpu.pc, "Read", raddr, *rdata); 
-	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
-	fflush(mtrace_fp);
-#endif
+	// mtrace -> NOTE: we need to judge whether raddr is a inst or a data -> human assistance
+	// filterout inst reading -> human assistance	
+//	#define TEXT_SIZE 0x26c	
+//	if(raddr < CONFIG_MBASE + TEXT_SIZE)
+//		return;
+//	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx\n", cpu.pc, "Read", raddr, *rdata); 
+//	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
+//	fflush(mtrace_fp);
 }
 
 extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
-	// if waddr is uart
+	// peripheral
 	if(waddr == CONFIG_SERIAL_PORT) {
 		printf("%c", (char)(wdata & 0xff));
 		difftest_skip_ref();
@@ -94,12 +85,10 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
 	Assert(mymask != 1, "mymask == 1");	
 	*(uint64_t *)(cpu_to_sim(waddr & ~0x7ull) + offest) &= ~mymask;
 	*(uint64_t *)(cpu_to_sim(waddr & ~0x7ull) + offest) |= wdata & mymask;
-
-#ifdef CONFIG_MTRACE
-	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx mymask:0x%8lx\n", cpu.pc, "Write", waddr, wdata, mymask); 
-	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
-	fflush(mtrace_fp);
-#endif
+	// mtrace
+//	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx mymask:0x%8lx\n", cpu.pc, "Write", waddr, wdata, mymask); 
+//	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
+//	fflush(mtrace_fp);
 }
 
 word_t paddr_read(paddr_t addr, int len) {
