@@ -9,7 +9,7 @@ typedef word_t vaddr_t;
 static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 
 static Context* do_event(Event e, Context* c) {
-	printf("in do_event\n");
+//	printf("in do_event\n");
   switch (e.event) {
 		case EVENT_SYSCALL: // do with syscall
 			{
