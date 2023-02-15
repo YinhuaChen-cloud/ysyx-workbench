@@ -1,7 +1,7 @@
-#include "Vtop.h"
+#include "Vysyx_22050039_top.h"
 #include "verilated.h"
 #include "svdpi.h"
-#include "Vtop__Dpi.h"
+#include "Vysyx_22050039_top__Dpi.h"
 #include <getopt.h>
 #include "diff.h"
 #include "common.h"
@@ -28,35 +28,31 @@ static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
-bool is_sdb_mode = false;
-char *itrace_file;
+static int is_sdb_mode = false;
 extern char *mtrace_file;
 
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
     {"sdb"			, no_argument      , NULL, 's'},
     {"log"      , required_argument, NULL, 'l'},
-    {"itrace"   , required_argument, NULL, 'i'},
     {"mtrace"   , required_argument, NULL, 'm'},
     {"diff"     , required_argument, NULL, 'd'},
     {"help"     , no_argument      , NULL, 'h'},
     {0          , 0                , NULL,  0 },
   };
   int o;
-  while ( (o = getopt_long(argc, argv, "-shl:i:m:d:", table, NULL)) != -1) {
+  while ( (o = getopt_long(argc, argv, "-shl:m:d:", table, NULL)) != -1) {
     switch (o) {
       case 's': is_sdb_mode = true; break;
 //      case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
-      case 'i': itrace_file = optarg; break;
       case 'm': mtrace_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
-      case 1: img_file = optarg; break;
+      case 1: img_file = optarg; return 0;
       default:
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
         printf("\t-s,--sdb								run with sdb mode\n");
         printf("\t-l,--log=FILE           output log to FILE\n");
-        printf("\t-i,--itrace=FILE        output itrace to FILE\n");
         printf("\t-m,--mtrace=FILE				output mtrace log to FILE\n");
         printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
 //        printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
@@ -64,11 +60,6 @@ static int parse_args(int argc, char *argv[]) {
         exit(0);
     }
   }
-#ifdef CONFIG_SDB
-	is_sdb_mode = true;
-#else
-	is_sdb_mode = false;
-#endif
   return 0;
 }
 
@@ -104,7 +95,7 @@ typedef struct {
 
 static long load_img() {
   if (img_file == NULL) {
-    printf("No image is given. Use the default build-in image.\n");
+    printf("No image is given. Use the default build-in image.");
 		memcpy(pmem, default_img, sizeof(default_img));
     return sizeof(default_img); // built-in image size
   }
@@ -126,81 +117,34 @@ static long load_img() {
 }
 
 static void reset(int n) {
-  top->reset = 1;
+  top->rst = 1;
   while (n -- > 0) single_cycle();
-  top->reset = 0;
-//	printf("In reset, pc = 0x%p\n", pc);
-//	printf("In reset, *pc = 0x%lx\n", *pc);
-//	printf("In reset, *(uint32_t *)(*pc) = 0x%lx\n", *(uint32_t *)(*pc));
+  top->rst = 0;
 }
 
 int main(int argc, char** argv, char** env) {
 
 	contextp = new VerilatedContext;
 	contextp->commandArgs(argc, argv);
-	top = new Vtop{contextp};
+	top = new Vysyx_22050039_top{contextp};
 
 	parse_args(argc, argv);
 	init_pmem();
 	long img_size = load_img();
 
-	printf("============ before reset(10) =============\n");
+	printf("============ just before rest(10) =============\n");
 
   gettimeofday(&boot_time, NULL);
 
 	reset(10);
 
-	// ------------- tell the user the status of debugging tools ----- start
-	printf("------------ sdb is ");
-#ifdef CONFIG_SDB
-	printf("on");
-#else
-	printf("off");
-#endif
-  printf(" -------------\n");
-
-	printf("------------ watchpoints is ");
-#ifdef CONFIG_WATCHPOINTS
-	printf("on");
-#else
-	printf("off");
-#endif
-  printf(" -------------\n");
-
-//	printf("------------ instruction trace is ");
-//#ifdef CONFIG_ITRACE
-//	printf("on");
-//#else
-//	printf("off");
-//#endif
-//  printf(" -------------\n");
-
-	printf("------------ mtrace is ");
-#ifdef CONFIG_MTRACE
-	printf("on");
-#else
-	printf("off");
-#endif
-  printf(" -------------\n");
-	 
-	printf("------------ difftest is ");
-#ifdef CONFIG_DIFFTEST
-	printf("on");
-#else
-	printf("off");
-#endif
-  printf(" -------------\n");
-
-	// ------------- tell the user the status of debugging tools ----- end
-
-	printf("============ after reset(10) =============\n");
-
-#ifdef CONFIG_DIFFTEST
- 	sv_regs_to_c();
- 	init_difftest(diff_so_file, img_size, difftest_port);
-#endif
+// difftest start
+	sv_regs_to_c();
+	init_difftest(diff_so_file, img_size, difftest_port);
+// difftest end
 
 	npc_state.state = NPC_RUNNING;
+	uint64_t pc_before_exec = cpu.pc;
 
 	init_mtrace();
 
@@ -209,22 +153,21 @@ int main(int argc, char** argv, char** env) {
 		sdb_mainloop();
 	}
 	else {
-//		while (!contextp->gotFinish() && contextp->time() < 20) {
 		while (!contextp->gotFinish()) {
 			contextp->timeInc(1);
+			pc_before_exec = cpu.pc;
 //			printf("In while, *pc = 0x%lx\n", *pc);
-//			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
-//			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
 
-			cpu_exec(-1);
+			single_cycle();
 
-//			single_cycle();
+			sv_regs_to_c();
 
+			difftest_step();
 			if (npc_state.state != NPC_RUNNING) break;
 		}
 	}
 
-	npc_state.halt_pc = pc_just_exec;
+	npc_state.halt_pc = pc_before_exec;
 	npc_state.halt_ret = -1; 
 	printTrap();
 

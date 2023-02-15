@@ -1,53 +1,11 @@
-# ==================== mill project template --- start
-VSRC_DIR = ./vsrc
-CONFIG ?= DefaultConfig
-
-export PATH := $(PATH):$(abspath ./utils)
-
-test:
-	mill -i __.test
-
-verilog:
-	$(call git_commit, "generate verilog")
-	mkdir -p $(VSRC_DIR)
-	mill -i __.test.runMain Elaborate -td $(VSRC_DIR) -e verilog
-
-help:
-	mill -i __.test.runMain Elaborate --help
-
-compile:
-	mill -i __.compile
-
-bsp:
-	mill -i mill.bsp.BSP/install
-
-reformat:
-	mill -i __.reformat
-
-checkformat:
-	mill -i __.checkFormat
-
-.PHONY: test verilog help compile bsp reformat checkformat
-
-sim: run-env 
-	@echo "BIN = $(BIN)"
-	@echo "ARGS = $(ARGS)"
-	@echo "IMG = $(IMG)"
-	$(BIN) $(ARGS) $(IMG)
-# 	verilator -Wall --cc --exe --build --trace $(NPC_HOME)/csrc/main.cpp $(NPC_HOME)/vsrc/top.v
-	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	cd ${NPC_HOME}/..; cscope -b -R;
-
-include ../Makefile
-
-# ==================== mill project template --- end
-TOPNAME = top
+TOPNAME = ysyx_22050039_top
 NXDC_FILES = constr/top.nxdc
-INC_PATH ?= $(NPC_HOME)/include
+VERILOG_INC_PATH ?= $(NPC_HOME)/vinclude
+INC_PATH ?= $(NPC_HOME)/cinclude
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
-				-O2 --x-assign fast --x-initial fast 
+				-O0 --x-assign fast --x-initial fast 
 
 ifeq ($(MODE), ASSERT)
 	VERILATOR_CFLAGS += --assert
@@ -92,7 +50,7 @@ endif
 
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
-run-env: verilog $(VSRCS) $(CSRCS)
+run-env: $(VSRCS) $(CSRCS)
 	@echo "in run-env, debug by cyh CSRCS = $(CSRCS)"
 	@echo "in run-env, debug by cyh VSRCS = $(VSRCS)"
 	@echo "in run-env, debug by cyh VERILATOR_CFLAGS = $(VERILATOR_CFLAGS)"
@@ -101,9 +59,18 @@ run-env: verilog $(VSRCS) $(CSRCS)
 	@echo "debug by cyh $$^ = $^"
 	@rm -rf $(OBJ_DIR)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
-		--top-module $(TOPNAME) $(VSRCS) $(CSRCS) \
+		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
+
+sim: run-env 
+	@echo "BIN = $(BIN)"
+	@echo "ARGS = $(ARGS)"
+	@echo "IMG = $(IMG)"
+	$(BIN) $(ARGS) $(IMG)
+# 	verilator -Wall --cc --exe --build --trace $(NPC_HOME)/csrc/main.cpp $(NPC_HOME)/vsrc/top.v
+	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+	cd ${NPC_HOME}/..; cscope -b -R;
 
 gdb: run-env
 	$(call git_commit, "gdb NEMU")
@@ -113,17 +80,19 @@ sdb: sim
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
+VERILOG_INCFLAGS = $(addprefix -I, $(VERILOG_INC_PATH))
+VERILATOR_CFLAGS += $(VERILOG_INCFLAGS)
 CFLAGS += $(INCFLAGS) -ggdb3 -O2 -Wall -Werror -DTOP_NAME="\"V$(TOPNAME)\"" 
 LDFLAGS += -lSDL2 -lSDL2_image -lreadline
 
 # build/top: 
-$(BIN): verilog $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
+$(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	echo "debug by cyh VSRCS = $(VSRCS)"
 	echo "debug by cyh CSRCS = $(CSRCS)"
 	echo "debug by cyh NVBOARD_ARCHIVE = $(NVBOARD_ARCHIVE)"
 	@rm -rf $(OBJ_DIR)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
-		--top-module $(TOPNAME) $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE) \
+		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
@@ -136,10 +105,8 @@ run: $(BIN)
 	@$^
 
 clean:
-	rm -rf $(BUILD_DIR) $(VSRC_DIR) ./out ./test_run_dir ./logs ./obj_dir
+	rm -rf ./logs ./obj_dir $(BUILD_DIR)
 
 .PHONY: clean sim gdb run-env sdb
 
-# Include rules for menuconfig
-include $(NPC_HOME)/scripts/config.mk
-
+include ../Makefile

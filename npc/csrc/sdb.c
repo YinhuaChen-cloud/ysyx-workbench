@@ -10,8 +10,6 @@
 #include "watchpoint.h"
 #include <debug.h>
 
-uint64_t pc_just_exec;
-
 static char* rl_gets() {
   static char *line_read = NULL;
 
@@ -29,7 +27,6 @@ static char* rl_gets() {
   return line_read;
 }
 
-#ifdef CONFIG_WATCHPOINTS
 static void check_all_watchpoints() {
   WP *p = get_wp_head();
   bool success = true;
@@ -46,33 +43,24 @@ static void check_all_watchpoints() {
     p = p->next;
   }
 }
-#endif
 
-void cpu_exec(uint32_t n) {
+static void cpu_exec(uint32_t n) {
 
-	pc_just_exec = 0xdeadbeef;
+	uint64_t prev_pc = 0;
 
 	while(n--) {
 
-		// NOTE: Already invoke sv_regs_to_c() in main.cpp when initialize difftest
+		prev_pc = cpu.pc;
 
-		pc_just_exec = cpu.pc;
-
-//		extern bool is_sdb_mode;
-//		if(is_sdb_mode) {
-//			printred("The pc of the instruction about to execute is 0x%lx\n", cpu.pc);
-//		}
-//
 		single_cycle();
 
-#ifdef CONFIG_DIFFTEST
-		sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
-		difftest_step();
-#endif
+		sv_regs_to_c();
 
-#ifdef CONFIG_WATCHPOINTS
 		check_all_watchpoints();
-#endif
+
+		difftest_step();
+
+		printred("The pc of the instruction just executed is 0x%lx\n", prev_pc);
 
 		if (npc_state.state != NPC_RUNNING) break;
 	}
@@ -189,9 +177,9 @@ static int cmd_w(char *args) {
 // assume args is in correct format, we did not check args
 static int cmd_x(char *args) {
   char *nstr = strtok(args, " ");
-  char *addresetr = nstr + strlen(nstr) + 1;
+  char *addrstr = nstr + strlen(nstr) + 1;
   uint32_t n = atoi(nstr);
-  uint64_t addr = strtol(addresetr, NULL, 16);
+  uint64_t addr = strtol(addrstr, NULL, 16);
   uint32_t val;
   uint32_t cnt = 0;
 
@@ -252,7 +240,7 @@ static struct {
 #define NR_CMD ARRLEN(cmd_table)
 //
 static int cmd_help(char *args) {
-  /* extract the fireset argument */
+  /* extract the first argument */
   char *arg = strtok(NULL, " ");
   int i;
 
@@ -278,7 +266,7 @@ void sdb_mainloop() {
   for (char *str; (str = rl_gets()) != NULL; ) {
     char *str_end = str + strlen(str);
 
-    /* extract the fireset token as the command */
+    /* extract the first token as the command */
     char *cmd = strtok(str, " ");
     if (cmd == NULL) { continue; }
 
@@ -298,8 +286,6 @@ void sdb_mainloop() {
       }
     }
 
-		if (npc_state.state != NPC_RUNNING && npc_state.state != NPC_STOP) break;
-
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
   }
 }
@@ -309,9 +295,7 @@ void init_sdb() {
   /* Compile the regular expressions. */
   init_regex();
 
-#ifdef CONFIG_WATCHPOINTS
   /* Initialize the watchpoint pool. */
   init_wp_pool();
-#endif
 }
 
