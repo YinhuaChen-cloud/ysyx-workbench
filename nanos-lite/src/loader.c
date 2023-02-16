@@ -40,18 +40,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 //	3. execute the program -- return the entry
 	printf("in loader, before reading ramdisk, filename = %s\n", filename);
 
-//	extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
-//	extern uint8_t ramdisk_start;
-//	extern uint8_t ramdisk_end;
-
 	int fd = fs_open(filename, 0, 0);
-//	fs_read(fp, tmpmem, );
-
-//	Elf_Ehdr file_elfheader;
-
-//	fs_read(fd, osmem, -1);
-//	Elf_Ehdr *elfheader = (Elf_Ehdr *)osmem; 
-//	Elf_Ehdr *elfheader = (Elf_Ehdr *)(&ramdisk_start + file_table[fp].disk_offset); 
 
 	Elf_Ehdr elfheader_entity;
 	Elf_Ehdr *elfheader = &elfheader_entity; 
@@ -65,19 +54,13 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 	Elf_Phdr *program_headers = &program_headers_entity;
 	fs_lseek(fd, elfheader->e_phoff, SEEK_SET);
 	fs_read(fd, (void *)program_headers, sizeof(Elf_Phdr));
-//	Elf_Phdr *program_headers = (Elf_Phdr *)((uint8_t *)elfheader + elfheader->e_phoff);
 
-//	for(Elf_Phdr *p = program_headers; p < program_headers + elfheader->e_phnum; p++){
 	for(int i = 1; i < elfheader->e_phnum; i++){
-//		if(p->p_type != PT_LOAD) {
 		if(program_headers->p_type != PT_LOAD) {
 			fs_lseek(fd, elfheader->e_phoff + i*elfheader->e_phentsize, SEEK_SET);
 			fs_read(fd, (void *)program_headers, sizeof(Elf_Phdr));
 			continue;
 		}
-//		fs_lseek(fd, p->p_offset, SEEK_SET);
-//		fs_read(fd, (void *)(p->p_vaddr), p->p_filesz);
-//		memset((uint8_t *)(p->p_vaddr) + p->p_filesz, 0, p->p_memsz - p->p_filesz ); // -- zero
 
 		fs_lseek(fd, program_headers->p_offset, SEEK_SET);
 		fs_read(fd, (void *)(program_headers->p_vaddr), program_headers->p_filesz);
@@ -91,7 +74,6 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
 	fs_close(fd);
   return elfheader->e_entry; // return entry of the program
-//  return (uintptr_t)(osmem + elfheader->e_entry); // return entry of the program
 
 }
 
