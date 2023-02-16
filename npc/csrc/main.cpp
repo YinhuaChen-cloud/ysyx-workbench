@@ -196,6 +196,8 @@ int main(int argc, char** argv, char** env) {
 
 	printf("============ after reset(10) =============\n");
 
+	printf("diff_so_file = %s\n", diff_so_file);
+
 #ifdef CONFIG_DIFFTEST
  	sv_regs_to_c();
  	init_difftest(diff_so_file, img_size, difftest_port);
