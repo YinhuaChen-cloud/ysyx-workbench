@@ -59,6 +59,7 @@ else
 	VERILATOR_CFLAGS += --noassert
 endif
 
+# WALL option about to deprecated
 ifeq ($(WALL), TRUE)
 	VERILATOR_CFLAGS += -Wall 
 endif
