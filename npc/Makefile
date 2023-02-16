@@ -65,8 +65,8 @@ ifeq ($(WALL), TRUE)
 endif
 
 ifeq ($(CONFIG_DIFFTEST), y)
+	override ARGS += --diff=$(NEMU_HOME)/tools/spike-diff/build/riscv64-spike-so
 	LDFLAGS += -ldl
-	ARGS += --diff=$(NEMU_HOME)/tools/spike-diff/build/riscv64-spike-so
 endif
 
 BUILD_DIR = ./build
@@ -92,9 +92,9 @@ ifeq ($(MAKECMDGOALS), run)
 	CSRCS += $(SRC_AUTO_BIND)
 endif
 
-ifeq ($(MAKECMDGOALS), sdb)
-	override ARGS += --sdb
-endif
+# ifeq ($(MAKECMDGOALS), sdb)
+#  override ARGS += --sdb
+# endif
 
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
