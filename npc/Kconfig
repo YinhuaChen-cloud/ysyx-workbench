@@ -1,5 +1,11 @@
 mainmenu "NPC Configuration Menu"
 
+menu "Config Options"
+config MSIZE
+  hex "The memory size"
+  default 0x4000000
+endmenu
+
 menu "Debug Options"
 config SDB
   bool "Enable sdb (dependency of watchpoint)"
@@ -16,6 +22,9 @@ config MTRACE
 	default 0
 config DIFFTEST
   bool "Enable difftest"
+	default 0
+config HDL_ASSERT
+  bool "Enable HDL assertion"
 	default 0
 endmenu
 

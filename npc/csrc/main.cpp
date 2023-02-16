@@ -115,7 +115,8 @@ static long load_img() {
   fseek(fp, 0, SEEK_END);
   long size = ftell(fp);
 
-  printf("The image is %s, size = %ld\n", img_file, size);
+  printf("The image is %s, size = %ld, MSIZE = %d\n", img_file, size, CONFIG_MSIZE);
+	assert(size <= CONFIG_MSIZE);
 
   fseek(fp, 0, SEEK_SET);
   int ret = fread(pmem, size, 1, fp);
@@ -194,6 +195,8 @@ int main(int argc, char** argv, char** env) {
 	// ------------- tell the user the status of debugging tools ----- end
 
 	printf("============ after reset(10) =============\n");
+
+	printf("diff_so_file = %s\n", diff_so_file);
 
 #ifdef CONFIG_DIFFTEST
  	sv_regs_to_c();
