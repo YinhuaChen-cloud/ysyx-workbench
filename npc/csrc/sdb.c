@@ -133,7 +133,7 @@ static int cmd_info(char *args) {
   }
 
   if(!strcmp(args, "r"))
-    isa_reg_display();
+    isa_reg_display(&cpu);
   else {
     print_watchpoints();
   }

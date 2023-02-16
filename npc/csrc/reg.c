@@ -31,12 +31,12 @@ const char *regs[] = {
 };
 
 // 输出RTL中通用寄存器的值
-void isa_reg_display() {
+void isa_reg_display(riscv64_CPU_state *cpu) {
   // format:  $(reg_name)\t$(hex_val)\t$(decimal_val)
   for(int i = 0; i < sizeof(regs)/sizeof(char *); i++) {
-    printf("%s\t0x%lx\t%ld\n", regs[i], cpu.gpr[i], cpu.gpr[i]);
+    printf("%s\t0x%lx\t%ld\n", regs[i], cpu->gpr[i], cpu->gpr[i]);
   }
-  printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, cpu.pc);
+  printf("%s\t0x%lx\t%ld\n", "pc", cpu->pc, cpu->pc);
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
