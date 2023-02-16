@@ -66,6 +66,7 @@ endif
 
 ifeq ($(CONFIG_DIFFTEST), y)
 	LDFLAGS += -ldl
+	ARGS += --diff=$(NEMU_HOME)/tools/spike-diff/build/riscv64-spike-so
 endif
 
 BUILD_DIR = ./build
