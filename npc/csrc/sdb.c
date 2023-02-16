@@ -84,7 +84,7 @@ void cpu_exec(uint32_t n) {
 
 #ifdef CONFIG_DIFFTEST
 		if (npc_state.state == NPC_ABORT)
-			printf("we should print regs here\n");
+			printf("ooooooooooooooooooooowe should print regs hereoooooooooooooooooooo\n");
 			// write saved_cpu into one file
 #endif
 
