@@ -53,7 +53,7 @@ VERILATOR_CFLAGS += -MMD --build -cc  \
 -include $(NPC_HOME)/include/config/auto.conf
 -include $(NPC_HOME)/include/config/auto.conf.cmd
 
-ifeq ($(MODE), ASSERT)
+ifeq ($(CONFIG_HDL_ASSERT), y)
 	VERILATOR_CFLAGS += --assert
 else
 	VERILATOR_CFLAGS += --noassert

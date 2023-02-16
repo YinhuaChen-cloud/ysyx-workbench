@@ -17,5 +17,8 @@ config MTRACE
 config DIFFTEST
   bool "Enable difftest"
 	default 0
+config HDL_ASSERT
+  bool "Enable HDL assertion"
+	default 0
 endmenu
 
