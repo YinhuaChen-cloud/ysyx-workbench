@@ -103,8 +103,8 @@ class EXU (implicit val conf: Configuration) extends Module {
   printf("alu_op1 = 0x%x\n", alu_op1)
   printf("alu_op2 = 0x%x\n", alu_op2)
 
-//  val alu_out_aux = Wire(UInt(conf.xlen.W))   
-  val alu_out_aux = MuxCase(
+  val alu_out_aux = Wire(UInt(conf.xlen.W))   
+  alu_out_aux := MuxCase(
     0.U, Array(
       (io.idu_to_exu.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
       (io.idu_to_exu.alu_op === ALU_SUB)    -> (alu_op1 - alu_op2).asUInt(),
