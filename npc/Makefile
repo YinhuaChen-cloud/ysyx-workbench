@@ -60,9 +60,9 @@ else
 endif
 
 # WALL option about to deprecated
-# ifeq ($(WALL), TRUE)
-VERILATOR_CFLAGS += -Wall 
-# endif
+ifeq ($(WALL), TRUE)
+	VERILATOR_CFLAGS += -Wall 
+endif
 
 ifeq ($(CONFIG_DIFFTEST), y)
 	override ARGS += --diff=$(NEMU_HOME)/tools/spike-diff/build/riscv64-spike-so
