@@ -107,7 +107,7 @@ run-env: verilog $(VSRCS) $(CSRCS)
 	@echo "debug by cyh $$^ = $^"
 	@rm -rf $(OBJ_DIR)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
-		--top-module $(TOPNAME) $(VSRCS) $(CSRCS) \
+		--top-module $(TOPNAME) $(VSRCS) config.vlt $(CSRCS) \
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
