@@ -107,6 +107,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   mdu.io.alu_op1 := alu_op1
   mdu.io.alu_op2 := alu_op2
   mdu.io.alu_op  := io.idu_to_exu.alu_op
+  mdu.io.alu_msk_type := io.idu_to_exu.alu_msk_type
 
   val alu_out_aux = Wire(UInt(conf.xlen.W))   
   alu_out_aux := MuxCase(
