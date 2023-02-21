@@ -16,7 +16,7 @@ class MDU_bundle (implicit val conf: Configuration) extends Bundle() {
 class MDU (implicit val conf: Configuration) extends Module {
   val io = IO(new MDU_bundle())
 
-  io.result = MuxCase(
+  io.result := MuxCase(
     0.U, Array(
       (io.alu_op === ALU_DIV && io.alu_msk_type =/= ALU_MSK_W)    -> (io.alu_op1.asSInt / io.alu_op2.asSInt).asUInt,
       (io.alu_op === ALU_DIV && io.alu_msk_type === ALU_MSK_W)    -> (io.alu_op1(31, 0).asSInt / io.alu_op2(31, 0).asSInt).asUInt,
