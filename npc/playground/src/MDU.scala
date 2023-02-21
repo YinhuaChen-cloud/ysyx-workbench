@@ -16,7 +16,7 @@ class MDU_bundle (implicit val conf: Configuration) extends Bundle() {
 class MDU (implicit val conf: Configuration) extends Module {
   val io = IO(new MDU_bundle())
 
-  val div_result = Wire(UInt(conf.xlen.W))
+  val div_result = Wire(SInt(conf.xlen.W))
   div_result := (io.alu_op1.asSInt / io.alu_op2.asSInt).asUInt
 
   val result_aux = MuxCase(
