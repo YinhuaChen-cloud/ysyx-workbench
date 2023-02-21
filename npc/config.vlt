@@ -1,2 +1,3 @@
 `verilator_config
-lint_off -rule WIDTH  -file "./vsrc/MDU.v"
+lint_off -rule WIDTH  -file "MDU.v"
+
