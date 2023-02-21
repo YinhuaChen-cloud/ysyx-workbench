@@ -103,7 +103,10 @@ class EXU (implicit val conf: Configuration) extends Module {
   printf("alu_op1 = 0x%x\n", alu_op1)
   printf("alu_op2 = 0x%x\n", alu_op2)
 
-//  val mdu = Module(new MDU)
+  val mdu = Module(new MDU)
+  mdu.io.alu_op1 := alu_op1
+  mdu.io.alu_op2 := alu_op2
+  mdu.io.alu_op  := alu_op
 
   val alu_out_aux = Wire(UInt(conf.xlen.W))   
   alu_out_aux := MuxCase(
@@ -111,7 +114,7 @@ class EXU (implicit val conf: Configuration) extends Module {
       (io.idu_to_exu.alu_op === ALU_ADD)    -> (alu_op1 + alu_op2).asUInt(),
       (io.idu_to_exu.alu_op === ALU_SUB)    -> (alu_op1 - alu_op2).asUInt(),
       (io.idu_to_exu.alu_op === ALU_MUX)    -> (alu_op1 * alu_op2).asUInt(),
-      (io.idu_to_exu.alu_op === ALU_DIV)    -> (alu_op1 / alu_op2).asUInt(),
+      (io.idu_to_exu.alu_op === ALU_DIV)    -> mdu.io.result,
 //      (io.idu_to_exu.alu_op === ALU_DIV && io.idu_to_exu.alu_msk_type =/= ALU_MSK_W)    -> (alu_op1.asSInt / alu_op2.asSInt).asUInt(),
 //      (io.idu_to_exu.alu_op === ALU_DIV && io.idu_to_exu.alu_msk_type === ALU_MSK_W)    -> (alu_op1(31, 0).asSInt / alu_op2(31, 0).asSInt).asUInt(),
       (io.idu_to_exu.alu_op === ALU_REM)    -> (alu_op1 % alu_op2).asUInt(),
