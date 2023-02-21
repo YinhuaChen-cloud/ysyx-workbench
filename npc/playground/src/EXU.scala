@@ -103,7 +103,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   printf("alu_op1 = 0x%x\n", alu_op1)
   printf("alu_op2 = 0x%x\n", alu_op2)
 
-  val mdu = Module(new MDU)
+//  val mdu = Module(new MDU)
 
   val alu_out_aux = Wire(UInt(conf.xlen.W))   
   alu_out_aux := MuxCase(
