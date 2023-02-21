@@ -1,6 +1,8 @@
 import chisel3._
 import chisel3.util._
 import Conf._
+import Macros._
+import Macros.Constants._
 
 class MDU_bundle (implicit val conf: Configuration) extends Bundle() {
   val alu_op1 = Input(UInt(conf.xlen.W))
