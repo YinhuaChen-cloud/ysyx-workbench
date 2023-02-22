@@ -1,5 +1,9 @@
+package top
+
 import chisel3._
 import Conf._
+
+import cyhcore._
 
 class top extends Module {
 
