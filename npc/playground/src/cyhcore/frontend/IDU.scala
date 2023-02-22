@@ -34,8 +34,8 @@ class IDU (implicit val conf: Configuration) extends Module {
 
   // The core of DecodeUnit
   val decoded_signals = ListLookup(
-    io.inst, DecodeDefault,
-    DecodeTable
+    io.inst, Instructions.DecodeDefault,
+    Instructions.DecodeTable
   )
 
   val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
