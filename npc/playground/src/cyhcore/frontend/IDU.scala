@@ -64,7 +64,7 @@ class IDU (implicit val conf: Configuration) extends Module {
   io.idu_to_exu.alu_op  := alu_op
   io.idu_to_exu.wb_sel  := wb_sel
   io.idu_to_exu.reg_wen := wreg
-  io.isEbreak := (io.inst === EBREAK)
+  io.isEbreak := (io.inst === Priviledged.EBREAK)
   io.inv_inst := ~valid_inst
   io.isWriteMem := wmem
   io.idu_to_exu.sign_op := sign_op
