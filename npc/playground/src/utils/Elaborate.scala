@@ -1,5 +1,7 @@
 import circt.stage._
 
+import system._
+
 object Elaborate extends App {
   def top = new top()
   val useMFC = false // use MLIR-based firrtl compiler
