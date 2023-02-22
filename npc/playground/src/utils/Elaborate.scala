@@ -1,6 +1,6 @@
-package system
-
 import circt.stage._
+
+import system._
 
 object Elaborate extends App {
   def top = new top()
