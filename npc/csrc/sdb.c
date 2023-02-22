@@ -52,9 +52,17 @@ void cpu_exec(uint32_t n) {
 
 	pc_just_exec = 0xdeadbeef;
 
+#ifdef CONFIG_DIFFTEST
+	riscv64_CPU_state saved_cpu = {};
+#endif
+
 	while(n--) {
 
 		// NOTE: Already invoke sv_regs_to_c() in main.cpp when initialize difftest
+		//
+#ifdef CONFIG_DIFFTEST
+		saved_cpu = cpu;
+#endif
 
 		pc_just_exec = cpu.pc;
 
@@ -72,6 +80,12 @@ void cpu_exec(uint32_t n) {
 
 #ifdef CONFIG_WATCHPOINTS
 		check_all_watchpoints();
+#endif
+
+#ifdef CONFIG_DIFFTEST
+		if (npc_state.state == NPC_ABORT)
+			isa_reg_display(&saved_cpu);
+			// write saved_cpu into one file
 #endif
 
 		if (npc_state.state != NPC_RUNNING) break;
@@ -119,7 +133,7 @@ static int cmd_info(char *args) {
   }
 
   if(!strcmp(args, "r"))
-    isa_reg_display();
+    isa_reg_display(&cpu);
   else {
     print_watchpoints();
   }

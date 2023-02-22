@@ -106,7 +106,7 @@ run-env: verilog $(VSRCS) $(CSRCS)
 	@echo "in run-env, debug by cyh NPCFLAGS = $(NPCFLAGS)"
 	@echo "debug by cyh $$^ = $^"
 	@rm -rf $(OBJ_DIR)
-	$(VERILATOR) $(VERILATOR_CFLAGS) \
+	$(VERILATOR) config.vlt $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $(VSRCS) $(CSRCS) \
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
@@ -128,7 +128,7 @@ $(BIN): verilog $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	echo "debug by cyh CSRCS = $(CSRCS)"
 	echo "debug by cyh NVBOARD_ARCHIVE = $(NVBOARD_ARCHIVE)"
 	@rm -rf $(OBJ_DIR)
-	$(VERILATOR) $(VERILATOR_CFLAGS) \
+	$(VERILATOR) config.vlt $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE) \
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))

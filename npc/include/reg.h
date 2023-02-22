@@ -14,8 +14,8 @@ extern const char *regs[GPR_NR];
 
 extern "C" void set_pc(const svOpenArrayHandle a);
 
-// 输出RTL中通用寄存器的值
-void isa_reg_display();
+// 输出cpu中寄存器的值
+void isa_reg_display(riscv64_CPU_state *cpu);
 
 void sv_regs_to_c();
 
