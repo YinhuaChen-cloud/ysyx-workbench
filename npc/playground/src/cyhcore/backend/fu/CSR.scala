@@ -26,17 +26,16 @@ trait HasCSRConst {
 //  val wenFix = Output(Bool())
 //}
 //
-class CSR(implicit val conf: Configuration) extends Module with HasCSRConst{
-//  val io = IO(new CSRIO)
+class CSR (implicit val conf: Configuration) extends Module with HasCSRConst{
+  //  val io = IO(new CSRIO)
 
- // Machine-Level CSRs
- val mtvec = RegInit(UInt(conf.xlen.W), 0.U)
- // CSR reg map
- val mapping = Map(
-  // Machine Trap Setup
-   MaskedRegMap(Mtvec, mtvec)
- ) 
-
+  // Machine-Level CSRs
+  val mtvec = RegInit(UInt(conf.xlen.W), 0.U)
+  // CSR reg map
+  val mapping = Map(
+    // Machine Trap Setup
+    MaskedRegMap(Mtvec, mtvec)
+  ) 
 }
 
 
