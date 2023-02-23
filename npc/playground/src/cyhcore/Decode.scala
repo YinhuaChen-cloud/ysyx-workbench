@@ -11,7 +11,7 @@ object Instructions {
   val DecodeDefault = List(N, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_X)
   def DecodeTable = RVIInstr.table ++ RVMInstr.table ++
     Priviledged.table
-    // RVZicsrInstr.table ++ RVZifenceiInstr.table
+    // RVZicsrInstr.table
 }
 
 object FuOpType {
