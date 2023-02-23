@@ -3,7 +3,6 @@ package cyhcore
 import chisel3._
 import chisel3.util._
 import utils._
-import Conf._
 
 trait HasCSRConst {
  // Machine Trap Setup
@@ -26,7 +25,7 @@ trait HasCSRConst {
 //  val wenFix = Output(Bool())
 //}
 //
-class CSR(implicit val conf: Configuration) extends Module with HasCSRConst{
+class CSR extends CyhCoreModule with HasCSRConst{
 //  val io = IO(new CSRIO)
 
  // Machine-Level CSRs
