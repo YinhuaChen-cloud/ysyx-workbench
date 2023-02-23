@@ -1,9 +1,9 @@
-package cyhcore
+package system
 
 import chisel3._
 import chisel3.util._
 
-trait HasNutCoreParameter {
+trait HasCyhCoreParameter {
   // General Parameter for NutShell
   val XLEN = 64
 }
