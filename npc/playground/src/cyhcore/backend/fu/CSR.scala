@@ -2,6 +2,7 @@ package cyhcore
 
 import chisel3._
 import chisel3.util._
+import utils._
 import Conf._
 
 trait HasCSRConst {
@@ -26,7 +27,7 @@ trait HasCSRConst {
 //}
 //
 class CSR(implicit val conf: Configuration) extends Module with HasCSRConst{
- val io = IO(new CSRIO)
+//  val io = IO(new CSRIO)
 
  // Machine-Level CSRs
  val mtvec = RegInit(UInt(conf.xlen.W), 0.U)
