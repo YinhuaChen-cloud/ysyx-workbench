@@ -24,19 +24,20 @@ trait HasCSRConst {
  val Mcause        = 0x342
 }
 
-//class CSRIO extends FunctionUnitIO {
-//  val cfIn = Flipped(new CtrlFlowIO)
-//  val redirect = new RedirectIO
-//  // for exception check
-//  val instrValid = Input(Bool())
-//  val isBackendException = Input(Bool())
-//  // for differential testing
-//  val intrNO = Output(UInt(XLEN.W))
-//  val wenFix = Output(Bool())
-//}
-//
+class CSRIO extends FunctionUnitIO {
+}
+
 class CSR extends CyhCoreModule with HasCSRConst{
-//  val io = IO(new CSRIO)
+  val io = IO(new CSRIO)
+
+  val (src1, src2, func) = (io.in.src1, io.in.src2, io.in.func) // 这里只是纯粹为了改名
+  // def access(valid: Bool, src1: UInt, src2: UInt, func: UInt): UInt = {
+    // this.valid := valid
+    // this.src1 := src1
+    // this.src2 := src2
+    // this.func := func
+    // io.out.bits
+  // }
 
  // Machine-Level CSRs
  val mtvec = RegInit(UInt(XLEN.W), 0.U)
@@ -45,6 +46,16 @@ class CSR extends CyhCoreModule with HasCSRConst{
   // Machine Trap Setup
    MaskedRegMap(Mtvec, mtvec)
  ) 
+
+  val wdata = OneHotTree(func, List(
+    CSROpType.wrt  -> src1,
+    // CSROpType.set  -> (rdata | src1),
+    // CSROpType.clr  -> (rdata & ~src1),
+    // CSROpType.wrti -> csri,//TODO: csri --> src2
+    // CSROpType.seti -> (rdata | csri),
+    // CSROpType.clri -> (rdata & ~csri)
+  ))
+
 
 }
 

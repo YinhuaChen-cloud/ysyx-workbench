@@ -9,4 +9,5 @@ trait HasCyhCoreParameter {
 }
 
 abstract class CyhCoreModule extends Module with HasCyhCoreParameter
+abstract class CyhCoreBundle extends Bundle with HasCyhCoreParameter
 
