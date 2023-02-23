@@ -14,3 +14,7 @@ object Instructions {
     // RVZicsrInstr.table ++ RVZifenceiInstr.table
 }
 
+object FuOpType {
+  def apply() = UInt(7.W)
+}
+
