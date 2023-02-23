@@ -31,13 +31,12 @@ class CSR extends CyhCoreModule with HasCSRConst{
   val io = IO(new CSRIO)
 
   val (src1, src2, func) = (io.in.src1, io.in.src2, io.in.func) // 这里只是纯粹为了改名
-  // def access(valid: Bool, src1: UInt, src2: UInt, func: UInt): UInt = {
-    // this.valid := valid
-    // this.src1 := src1
-    // this.src2 := src2
-    // this.func := func
-    // io.out.bits
-  // }
+  def access(src1: UInt, src2: UInt, func: UInt): UInt = {
+    this.src1 := src1
+    this.src2 := src2
+    this.func := func
+    io.out
+  }
 
  // Machine-Level CSRs
  val mtvec = RegInit(UInt(XLEN.W), 0.U)
