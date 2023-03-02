@@ -1,4 +1,4 @@
-package system
+package device
 
 import chisel3._
 import chisel3.util._

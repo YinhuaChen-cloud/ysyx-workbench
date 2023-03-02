@@ -4,7 +4,7 @@ import chisel3._
 import Conf._
 
 import cyhcore._
-// import device._
+import device._
 
 class top extends Module {
 
@@ -23,7 +23,7 @@ class top extends Module {
 	// submodule4: DPIC
   val dpic = Module(new DPIC)
 	// device: AXI4SRAM
-  val axi4sram = Module(new AXI4SRAM)
+  // val axi4sram = Module(new AXI4SRAM)
 
   ifu.io <> exu.io.ifu_to_exu
 
