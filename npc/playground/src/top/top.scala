@@ -4,8 +4,8 @@ import chisel3._
 import Conf._
 
 import cyhcore._
+import device._
 
-import utils.AXI
 class top extends Module {
 
   implicit val conf = Configuration()
@@ -21,7 +21,7 @@ class top extends Module {
 	// submodule3: EXU
   val exu = Module(new EXU)
 	// submodule4: DPIC
-  val dpic = Module(new AXI)
+  val dpic = Module(new DPIC)
 	// device: AXI4SRAM
   val axi4sram = Module(new AXI4SRAM)
 

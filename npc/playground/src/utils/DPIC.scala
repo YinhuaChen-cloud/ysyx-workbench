@@ -5,7 +5,7 @@ import chisel3.util._
 import chisel3.experimental._
 import Conf._
 
-class AXI (implicit val conf: Configuration) 
+class DPIC (implicit val conf: Configuration) 
 extends ExtModule(Map("XLEN" -> conf.xlen, "NR_REG" -> conf.nr_reg, "PC_LEN" -> conf.pc_len, "INST_LEN" -> conf.inst_len)) 
 with HasExtModuleInline {
   val io = IO(new Bundle {
