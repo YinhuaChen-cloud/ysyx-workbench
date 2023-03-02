@@ -21,9 +21,9 @@ with HasExtModuleInline {
     val mem_in = Output(UInt(conf.xlen.W))
   })
 
-  setInline("DPIC.v",
+  setInline("AXI4SRAM.v",
             s"""
-              |module DPIC #(XLEN=${conf.xlen}, NR_REG=${conf.nr_reg}, PC_LEN=${conf.pc_len}, INST_LEN=${conf.inst_len}) (
+              |module AXI4SRAM #(XLEN=${conf.xlen}, NR_REG=${conf.nr_reg}, PC_LEN=${conf.pc_len}, INST_LEN=${conf.inst_len}) (
               |           input io_clk,
               |           input io_rst,
               |           input [PC_LEN-1:0] io_pc,
