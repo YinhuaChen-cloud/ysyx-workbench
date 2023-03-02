@@ -20,7 +20,7 @@ class top extends Module {
 	// submodule3: EXU
   val exu = Module(new EXU)
 	// submodule4: DPIC
-  val dpic = Module(new DPIC)
+  val dpic = Module(new AXI)
 	// device: AXI4SRAM
   val axi4sram = Module(new AXI4SRAM)
 
