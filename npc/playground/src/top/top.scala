@@ -5,6 +5,7 @@ import Conf._
 
 import cyhcore._
 
+import utils.AXI
 class top extends Module {
 
   implicit val conf = Configuration()
