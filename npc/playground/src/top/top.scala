@@ -4,7 +4,7 @@ import chisel3._
 import Conf._
 
 import cyhcore._
-import device._
+// import device._
 
 class top extends Module {
 
