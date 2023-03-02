@@ -5,6 +5,7 @@ import Conf._
 
 import cyhcore._
 import device._
+import utils._
 
 class top extends Module {
 
