@@ -4,6 +4,7 @@ import chisel3._
 import Conf._
 
 import cyhcore._
+import device._
 
 class top extends Module {
 
@@ -21,28 +22,29 @@ class top extends Module {
   val exu = Module(new EXU)
 	// submodule4: DPIC
   val dpic = Module(new DPIC)
+	// device: AXI4SRAM
+  val axi4sram = Module(new AXI4SRAM)
 
   ifu.io <> exu.io.ifu_to_exu
 
 //  idu.io.inst    := io.inst // TODO: wait for being removed
 //  exu.io.inst    := io.inst
-  idu.io.inst    := dpic.io.inst // TODO: wait for being removed
-  exu.io.inst    := dpic.io.inst
+  idu.io.inst    := axi4sram.io.inst // TODO: wait for being removed
+  exu.io.inst    := axi4sram.io.inst
 
   idu.io.idu_to_exu <> exu.io.idu_to_exu
 
   dpic.io.clk := clock
   dpic.io.rst := reset
-  dpic.io.pc  := ifu.io.pc
   dpic.io.isEbreak := idu.io.isEbreak
   dpic.io.inv_inst := idu.io.inv_inst
   dpic.io.regfile  := exu.io.regfile_output
-  dpic.io.mem_addr := exu.io.mem_addr
-  dpic.io.isRead   := exu.io.isRead
-  dpic.io.isWriteMem := idu.io.isWriteMem
-  dpic.io.mem_write_data := exu.io.mem_write_data
-  dpic.io.mem_write_msk  := exu.io.mem_write_msk
+  axi4sram.io.mem_addr := exu.io.mem_addr
+  axi4sram.io.isRead   := exu.io.isRead
+  axi4sram.io.isWriteMem := idu.io.isWriteMem
+  axi4sram.io.mem_write_data := exu.io.mem_write_data
+  axi4sram.io.mem_write_msk  := exu.io.mem_write_msk
 
-  exu.io.mem_in   := dpic.io.mem_in
+  exu.io.mem_in   := axi4sram.io.mem_in
 }
 
