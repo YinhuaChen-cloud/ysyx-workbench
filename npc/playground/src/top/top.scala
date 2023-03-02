@@ -4,9 +4,7 @@ import chisel3._
 import Conf._
 
 import cyhcore._
-import device._
 
-import cyhcore.backend.seq.AXI4SRAM
 class top extends Module {
 
   implicit val conf = Configuration()
