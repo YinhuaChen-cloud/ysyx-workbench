@@ -2,6 +2,8 @@ package cyhcore
 
 import chisel3._
 import chisel3.util._
+import chisel3.experimental.ExtModule
+import chisel3.experimental.Param
 
 trait HasCyhCoreParameter {
   // General Parameter for NutShell
@@ -13,4 +15,5 @@ trait HasCyhCoreParameter {
 
 abstract class CyhCoreModule extends Module with HasCyhCoreParameter
 abstract class CyhCoreBundle extends Bundle with HasCyhCoreParameter
+abstract class CyhCoreExtModule (val params: Map[String, Param] = Map.empty[String, Param]) extends ExtModule(params) with HasCyhCoreParameter
 

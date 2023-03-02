@@ -4,9 +4,10 @@ import chisel3._
 import chisel3.util._
 import chisel3.experimental._
 import Conf._
+import cyhcore.CyhCoreExtModule
 
 class AXI4SRAM (implicit val conf: Configuration) 
-extends ExtModule(Map("XLEN" -> conf.xlen, "NR_REG" -> conf.nr_reg, "PC_LEN" -> conf.pc_len, "INST_LEN" -> conf.inst_len)) 
+extends CyhCoreExtModule (Map("XLEN" -> conf.xlen, "NR_REG" -> conf.nr_reg, "PC_LEN" -> conf.pc_len, "INST_LEN" -> conf.inst_len)) 
 with HasExtModuleInline {
   val io = IO(new Bundle {
     val clk = Input(Clock())
