@@ -40,6 +40,9 @@ class top extends Module {
   dpic.io.isEbreak := idu.io.isEbreak
   dpic.io.inv_inst := idu.io.inv_inst
   dpic.io.regfile  := exu.io.regfile_output
+  axi4sram.io.clk := clock
+  axi4sram.io.rst := reset
+  axi4sram.io.pc := ifu.io.pc
   axi4sram.io.mem_addr := exu.io.mem_addr
   axi4sram.io.isRead   := exu.io.isRead
   axi4sram.io.isWriteMem := idu.io.isWriteMem
