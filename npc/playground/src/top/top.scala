@@ -7,6 +7,7 @@ import cyhcore._
 import device._
 import utils._
 
+import device.AXI4SRAM
 class top extends Module {
 
   implicit val conf = Configuration()
