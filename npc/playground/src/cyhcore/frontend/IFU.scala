@@ -10,15 +10,15 @@ trait HasResetVector {
   val resetVector = Settings.getLong("ResetVector")
 }
 
-class IFU_to_EXU (implicit val conf: Configuration) extends Bundle() {
-  val pc_next = Input(UInt(conf.pc_len.W))
-  val pc      = Output(UInt(conf.pc_len.W))
+class IFU_to_EXU extends CyhCoreBundle() {
+  val pc_next = Input(UInt(PC_LEN.W))
+  val pc      = Output(UInt(PC_LEN.W))
 }
 
-class IFU (implicit val conf: Configuration) extends Module {
+class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new IFU_to_EXU())
 
-  val pc_reg = RegInit(conf.START_ADDR)
+  val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // 注意：果壳里，PC寄存器的长度是39
   pc_reg := io.pc_next
   io.pc  := pc_reg
 
