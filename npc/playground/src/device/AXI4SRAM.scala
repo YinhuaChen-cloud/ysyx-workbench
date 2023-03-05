@@ -2,7 +2,6 @@ package device
 
 import chisel3._
 import chisel3.util._
-import chisel3.experimental._
 import cyhcore.HasCyhCoreParameter
 
 class AXI4SRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {

@@ -2,7 +2,6 @@ package utils
 
 import chisel3._
 import chisel3.util._
-import chisel3.experimental._
 import cyhcore.HasCyhCoreParameter
 
 class DPIC extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {

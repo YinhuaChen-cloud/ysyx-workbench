@@ -43,7 +43,7 @@ class AXI4Lite extends Bundle {
   // val aw = Decoupled(new AXI4LiteBundleA)           // write address
   // val w  = Decoupled(new AXI4LiteBundleW)           // write data
   // val b  = Flipped(Decoupled(new AXI4LiteBundleB))  // wrtie response
-  // val ar = Decoupled(new AXI4LiteBundleA)           // read address
+  val ar = Decoupled(new AXI4LiteBundleA)           // read address
   // val r  = Flipped(Decoupled(new AXI4LiteBundleR))  // read data
 }
 
