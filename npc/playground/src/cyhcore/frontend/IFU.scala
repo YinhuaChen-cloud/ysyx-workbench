@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 import Conf._
 import top.Settings
+import bus.axi4.AXI4Lite
 
 trait HasResetVector {
   val resetVector = Settings.getLong("ResetVector")
@@ -22,6 +23,15 @@ class IFU (implicit val conf: Configuration) extends Module {
   io.pc  := pc_reg
 
 }
+
+// class IFUnew extends CyhCoreModule with HasResetVector {
+//   val io = IO(new AXI4Lite())
+
+//   val pc_reg = RegInit(resetVector.U(XLEN.W)) // TODO：果壳这里长度是39位
+//   pc_reg := io.pc_next
+//   io.pc  := pc_reg
+
+// }
 
 // ================================================
 // 将IFU的取指接口改造成AXI-Lite
