@@ -2,7 +2,6 @@ package cyhcore
 
 import chisel3._
 import chisel3.util._
-import Conf._
 import top.Settings
 import bus.axi4.AXI4Lite
 
