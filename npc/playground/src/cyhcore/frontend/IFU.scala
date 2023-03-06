@@ -37,6 +37,7 @@ class IFUnew extends CyhCoreModule with HasResetVector {
 
   val idle :: reading_request :: Nil = Enum(2)
   val state  = RegInit(idle)
+
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39, 我们这里使用 XLEN，即64
 
   // 1. 我们的取指级（IF）应该发出取指信号，包括读请求（valid）和读地址（pc），
@@ -44,6 +45,10 @@ class IFUnew extends CyhCoreModule with HasResetVector {
   io.ar.bits.addr  := pc_reg
   // 2. 这时AXI模块应该收到取指级的信号，如果AXI模块处于空闲状态, 则对本次读请求做出响应，AXI内部状态由空闲
   // 跳转到读请求状态，产生并发送读请求（ar-valid）、读地址（ar-addr）、
+  // when(state === idle) {
+  //   state := reading_request TODO: we are here
+  // } .otherwise {
+  // }
 
   // pc_reg := io.pc_next
   // io.pc  := pc_reg
