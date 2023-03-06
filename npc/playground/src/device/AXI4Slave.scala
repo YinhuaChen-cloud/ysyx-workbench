@@ -1,13 +1,19 @@
 package device
 
-// TODO: 这个暂时不能用
-
 import chisel3._
 import chisel3.util._
 
 import cyhcore._
 import bus.axi4._
 import utils._
+
+// 3. 当从机（slave）接收到读请求（ar-valid）且处于空闲状态则产生返还给主机（master）读准备(ar-ready)信号
+// 表明可以进行读取操作，这时就完成了一次读地址的握手，
+// 4. 从机（slave）开始准备需要返回的数据（r-data）、读返回请求（r-valid）、读完成（r-last），
+// 5. 主机此时也跳变到下一个读数据状态，产生并发出可以读取返回数据的状态读准备（r-ready），当主机的r-valid & r-ready
+// 完成握手，主机得到需要的数据（r-data），
+// 6. 当主机接收到读完成（r-last）则完成了一次读事务同时状态跳变到空闲状态，并且产生读完成信号（ready），
+// 将指令数据（inst）返还给取指模块（IF）。
 
 // 这里的中括号用于指定泛型类型参数。泛型类型参数是一种在类或方法定义中使用的占位符类型，它们可以让你在使用类或方法时指定具体的类型。
 // [T <: AXI4Lite] 表示 T是AXI4Lite类型、或其子类型
@@ -24,6 +30,7 @@ abstract class AXI4SlaveModule[T <: AXI4Lite, B <: Data](_type :T = new AXI4, _e
 
   val raddr = Wire(UInt()) // 读地址
   val ren = Wire(Bool()) // 读使能
+
 
   // 暂时不支持 rLast, AXI4Lite 没有 -- start
   // val (readBeatCnt, rLast) = in match {
