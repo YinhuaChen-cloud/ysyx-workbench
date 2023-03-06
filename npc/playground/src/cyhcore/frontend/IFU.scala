@@ -39,7 +39,7 @@ class IFUnew extends CyhCoreModule with HasResetVector {
   val state  = RegInit(idle)
 
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39, 我们这里使用 XLEN，即64
-  val inst // 用来装来自 AXI4SRAM 的指令的 
+  // val inst // 用来装来自 AXI4SRAM 的指令的 
 
   // 1. 我们的取指级（IF）应该发出取指信号，包括读请求（valid）和读地址（pc），
   io.ar.valid := true.B
