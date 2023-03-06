@@ -32,18 +32,15 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
+
+    val pc_valid = Input(Bool())
     val pc = Input(UInt(XLEN.W))
-    val mem_addr = Input(UInt(XLEN.W))
-    val isRead = Input(Bool())
-    val isWriteMem = Input(Bool())
-    val mem_write_data = Input(UInt(XLEN.W))
-    val mem_write_msk = Input(UInt(8.W))
+    val pc_ready = Output(Bool())
 
     val inst_valid = Output(Bool())
     val inst = Output(UInt(INST_LEN.W))
     val inst_ready = Input(Bool())
 
-    val mem_in = Output(UInt(XLEN.W))
   })
 
   setInline("AXI4SRAM.v",
@@ -74,54 +71,41 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
 // 6. 当主机接收到读完成（r-last）则完成了一次读事务同时状态跳变到空闲状态，并且产生读完成信号（ready），
 // 将指令数据（inst）返还给取指模块（IF）。
               |  // Define the state enumeration
-              |  typedef enum logic [1:0] {
-              |    IDLE,
-              |    BUSY
-              |  } state_t;
+              |  // typedef enum logic [1:0] {
+              |  //   IDLE,
+              |  //   BUSY
+              |  // } state_t;
               |  
               |  // Define the state variable
-              |  reg state;
+              |  // reg state;
+    // val clk = Input(Clock())
+    // val rst = Input(Bool())
+
+    // val pc_valid = Input(Bool())
+    // val pc = Input(UInt(XLEN.W))
+
+    // val inst_ready = Input(Bool())
+              |
+              |  reg [${XLEN}-1:0]	inst_aux;
               |
               |  // Define the state transition logic
               |  always @(posedge clk) begin
               |    if (rst) begin
-              |      state <= IDLE;
-              |    end else begin
-              |      case (state)
-              |        IDLE: begin
-              |          if(pc_valid) begin
-              |            pc_ready <= 1'b1;
-              |            state <= BUSY;
-              |          end
-              |          else
-              |            // do nothing, 
-              |        end
-              |        BUSY: begin
-              |          state <= IDLE;
-              |        end
-              |      endcase
-              |    end
-              |  end
-              |
-              |  // Define the output logic
-              |  always @(state) begin
-              |    case (state)
-              |      STATE_A: begin
-              |        state_out <= 1'b0;
-              |      end
-              |      STATE_B: begin
-              |        state_out <= 1'b1;
-              |      end
-              |    endcase
-              |  end
-              |  // -------------------------------------------------- old things
-              |  // for inst read from pmem 
-              |  reg [${XLEN}-1:0]	inst_aux;
-              |  always@(*) begin
-              |    if(~rst)
-              |      pmem_read(pc, inst_aux); 
-              |    else
+              |      pc_ready <= 1'b0;
+              |      inst_valid <= 1'b0;
               |      inst_aux = '0; 
+              |    end 
+              |    else begin
+              |      if(pc_valid) begin
+              |        pc_ready <= 1'b1;
+              |        inst_valid <= 1'b1;
+              |        pmem_read(pc, inst_aux); 
+              |      end
+              |      else begin
+              |        pc_ready <= 1'b0;
+              |        // do nothing, 
+              |      end
+              |    end
               |  end
               |  // inst selection	
               |  always@(*) 
@@ -130,6 +114,7 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |      3'h4: inst = inst_aux[${XLEN}-1:${INST_LEN}];
               |      default: begin inst = '0; assert(0); end
               |    endcase
+              |
               |  //  ------------------------------------ inst reading ---- end
               |
               |endmodule
