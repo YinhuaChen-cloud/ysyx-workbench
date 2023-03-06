@@ -152,6 +152,12 @@ class AXI4SRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
               |  // for mem_rw
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
               |  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
+              |  //  ------------------------------------ inst reading ---- start
+              |  // Define the state enumeration
+              |  typedef enum logic [1:0] {
+              |    IDLE,
+              |    BUSY
+              |  } state_t;
               |  // for inst read from pmem // TODO: the pmem_read implementation will be changed greatly after implement BUS
               |  reg [${XLEN}-1:0]	inst_aux;
               |  always@(*) begin
@@ -167,6 +173,7 @@ class AXI4SRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
               |      3'h4: inst = inst_aux[${XLEN}-1:${INST_LEN}];
               |      default: begin inst = '0; assert(0); end
               |    endcase
+              |  //  ------------------------------------ inst reading ---- end
               |  // for data reading from mem
               |  always@(*) begin
               |    if(isRead)
