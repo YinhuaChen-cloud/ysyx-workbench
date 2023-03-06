@@ -17,11 +17,20 @@ class IFU_to_EXU extends CyhCoreBundle() {
 class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new IFU_to_EXU())
 
-  val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // 注意：果壳里，PC寄存器的长度是39
+  val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
   pc_reg := io.pc_next
   io.pc  := pc_reg
 
 }
+
+// class IFUnew extends CyhCoreModule with HasResetVector { // 先写从机
+//   val io = IO(new AXI4Lite())
+
+//   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
+//   pc_reg := io.pc_next
+//   io.pc  := pc_reg
+
+// }
 
 // class IFUnew extends CyhCoreModule with HasResetVector {
 //   val io = IO(new AXI4Lite())
@@ -48,6 +57,8 @@ class IFU extends CyhCoreModule with HasResetVector {
 // 跳转到读请求状态，产生并发送读请求（ar-valid）、读地址（ar-addr）、读字节数（ar-size）、读个数（ar-len），
 
 // 本次总线支持的宽度是8 Byte，所以如果不是突发传输（burst），一次只能读写8 Byte。
+
+// 先写从机
 
 // 3. 当从机（slave）接收到读请求（ar-valid）且处于空闲状态则产生返还给主机（master）读准备(ar-ready)信号
 // 表明可以进行读取操作，这时就完成了一次读地址的握手，
