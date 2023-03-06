@@ -18,7 +18,7 @@ class IFU_to_EXU extends CyhCoreBundle() {
 object MaskExpand {
   // 假如 m 为 0x0f, 则 m.asBools = Vec(4x false, 4x true), m.asBools.map(Fill(8, _)) = Vec(8个0， 8个0, ..., 8个1， 8个1)。 加上reverse = Vec(8个1， 8个1, ..., 8个0， 8个0)
   // def apply(m: UInt) = Cat(m.asBools.map(Fill(8, _)))
-  def apply(m: UInt) = m.asBools
+  def apply(m: UInt) = Cat(m.asBools)
 }
 
 class IFU extends CyhCoreModule with HasResetVector {
