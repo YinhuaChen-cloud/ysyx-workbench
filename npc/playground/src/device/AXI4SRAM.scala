@@ -87,13 +87,13 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |           input clk,
               |           input rst,
               |           // AXI4-Lite ar channel
-              |           input [] pc_valid,
+              |           input pc_valid,
               |           input [${XLEN}-1:0] pc,
-              |           output reg [] pc_ready,
+              |           output reg pc_ready,
               |           // AXI4-Lite r channel
               |           output reg inst_valid,
               |           output reg [${INST_LEN} - 1:0] inst,
-              |           input  inst_ready);
+              |           input inst_ready);
               | 
               |  // expose pc to cpp simulation environment
               |  import "DPI-C" function void set_pc(input logic [${XLEN}-1:0] a []);
@@ -101,6 +101,30 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |
               |  // for mem_r
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
+              |
+              |  // ar 读地址握手
+              |  always@(posedge clk) begin
+              |    if(rst) begin
+              |      pc_ready <= 1'b0;
+              |    end
+              |    else begin
+              |      if(pc_valid) begin
+              |        pc_ready <= 1'b1; // 等对方 valid 后再拉高 ready, 则在对方 valid 后，延迟一周期 fire
+              |      end
+              |      else begin
+              |        pc_ready <= 1'b0;
+              |      end
+              |    end
+              |  end
+              |
+              |
+              |
+              |
+              |
+              |
+              |
+              |
+              |
               |
               |  reg [${XLEN}-1:0]	inst_aux;
               |
