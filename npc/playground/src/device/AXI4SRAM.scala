@@ -84,6 +84,40 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |    IDLE,
               |    BUSY
               |  } state_t;
+              |  
+              |  // Define the state variable
+              |  reg state;
+              |
+              |  // Define the state transition logic
+              |  always @(posedge clk) begin
+              |    if (rst) begin
+              |      state <= IDLE;
+              |    end else begin
+              |      case (state)
+              |        IDLE: begin
+              |          if(inst)
+              |          state <= BUSY;
+              |        end
+              |        BUSY: begin
+              |          state <= IDLE;
+              |        end
+              |      endcase
+              |    end
+              |  end
+              |  TODO:  ------------------------------------- we are here!!!!!
+              |
+              |  // Define the output logic
+              |  always @(state) begin
+              |    case (state)
+              |      STATE_A: begin
+              |        state_out <= 1'b0;
+              |      end
+              |      STATE_B: begin
+              |        state_out <= 1'b1;
+              |      end
+              |    endcase
+              |  end
+              |  
               |  // for inst read from pmem 
               |  reg [${XLEN}-1:0]	inst_aux;
               |  always@(*) begin
