@@ -16,9 +16,9 @@ class AXI4DRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
     val mem_in = Output(UInt(XLEN.W))
   })
 
-  setInline("AXI4SRAM.v",
+  setInline("AXI4DRAM.v",
             s"""
-              |module AXI4SRAM (
+              |module AXI4DRAM (
               |           input clk,
               |           input rst,
               |           input [${XLEN}-1:0] mem_addr,
