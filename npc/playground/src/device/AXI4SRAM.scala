@@ -3,7 +3,6 @@ package device
 import chisel3._
 import chisel3.util._
 import cyhcore.HasCyhCoreParameter
-import bus.axi4.AXI4Lite
 
 // class AXI4SRAMnew extends AXI4SlaveModule {
 //   val idle :: reading_data :: Nil = Enum(2)
@@ -47,8 +46,9 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
     val isWriteMem = Input(Bool())
     val mem_write_data = Input(UInt(XLEN.W))
     val mem_write_msk = Input(UInt(8.W))
-    val axi4lite_inst = Flipped(new AXI4Lite)
-    // val inst = Output(UInt(INST_LEN.W))
+    val inst_valid = Output(Bool())
+    val inst = Output(UInt(INST_LEN.W))
+    val inst_ready = Input(Bool())
     val mem_in = Output(UInt(XLEN.W))
   })
 
