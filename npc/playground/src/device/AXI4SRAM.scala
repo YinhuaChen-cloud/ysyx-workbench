@@ -78,6 +78,7 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |  
               |  // Define the state variable
               |  // reg state;
+
     // val clk = Input(Clock())
     // val rst = Input(Bool())
 
@@ -85,6 +86,7 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
     // val pc = Input(UInt(XLEN.W))
 
     // val inst_ready = Input(Bool())
+
               |
               |  reg [${XLEN}-1:0]	inst_aux;
               |
