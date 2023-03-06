@@ -27,7 +27,8 @@ class IFU extends CyhCoreModule with HasResetVector {
   pc_reg := io.pc_next
   io.pc  := pc_reg
 
-  printf("haqhahahaha\n")
+  val fullMask = MaskExpand(0x0f.U(8.W)) // 从小 strb 获取 fullMask
+  printf("fullMask = 0x%x\n", fullMask)
 
 }
 
