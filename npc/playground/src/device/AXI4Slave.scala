@@ -5,52 +5,31 @@
 // import chisel3._
 // import chisel3.util._
 
-// import cyhcore.HasCyhCoreParameter
+// import cyhcore._
 // import bus.axi4._
 // import utils._
 
+// // 这里的中括号用于指定泛型类型参数。泛型类型参数是一种在类或方法定义中使用的占位符类型，它们可以让你在使用类或方法时指定具体的类型。
+// // [T <: AXI4Lite] 表示 T是AXI4Lite类型、或其子类型
+// // [B <: AXI4Lite] 表示 T是Data类型、或其子类型
+// // AXI4SlaveModule 抽象类，所有作为总线Slave端的模块都要继承这个模块
 // abstract class AXI4SlaveModule[T <: AXI4Lite, B <: Data](_type :T = new AXI4, _extra: B = null)
-//   extends Module with HasCyhCoreParameter {
+//   extends CyhCoreModule {
 //   val io = IO(new Bundle{
-//     val in = Flipped(_type)
-//     val extra = if (_extra != null) Some(Flipped(Flipped(_extra))) else None
+//     val in = Flipped(_type) // AXI4 和 AXI4Lite 默认是用在主模块上的，这里我们要设计 Slave 端，所以要 Flipped
+//     val extra = if (_extra != null) Some(Flipped(Flipped(_extra))) else None // extra 用作除总线外的其它信号接口
+//     // 在Chisel中，Some类型常常用于描述需要在运行时确定的类型。 常用的方法为 getOrElse(xxx)，当Some类型中没有所需的内容时，返回xxx
 //   })
-//   val in = io.in
+//   val in = io.in // 给 io.in 一个简易命名 
 
-//   val fullMask = MaskExpand(in.w.bits.strb)
-//   def genWdata(originData: UInt) = (originData & ~fullMask) | (in.w.bits.data & fullMask)
-
-//   val raddr = Wire(UInt())
-//   val ren = Wire(Bool())
+//   val raddr = Wire(UInt()) // 读地址
+//   val ren = Wire(Bool()) // 读使能
 //   val (readBeatCnt, rLast) = in match {
 //     case axi4: AXI4 =>
-//       val c = Counter(256)
-//       val beatCnt = Counter(256)
-//       val len = HoldUnless(axi4.ar.bits.len, axi4.ar.fire())
-//       val burst = HoldUnless(axi4.ar.bits.burst, axi4.ar.fire())
-//       val wrapAddr = axi4.ar.bits.addr & ~(axi4.ar.bits.len.asTypeOf(UInt(PAddrBits.W)) << axi4.ar.bits.size)
-//       raddr := HoldUnless(wrapAddr, axi4.ar.fire())
-//       axi4.r.bits.last := (c.value === len)
-//       when (ren) {
-//         beatCnt.inc()
-//         when (burst === AXI4Parameters.BURST_WRAP && beatCnt.value === len) { beatCnt.value := 0.U }
-//       }
-//       when (axi4.r.fire()) {
-//         c.inc()
-//         when (axi4.r.bits.last) { c.value := 0.U }
-//       }
-//       when (axi4.ar.fire()) {
-//         beatCnt.value := (axi4.ar.bits.addr >> axi4.ar.bits.size) & axi4.ar.bits.len
-//         when (axi4.ar.bits.len =/= 0.U && axi4.ar.bits.burst === AXI4Parameters.BURST_WRAP) {
-//           assert(axi4.ar.bits.len === 1.U || axi4.ar.bits.len === 3.U ||
-//             axi4.ar.bits.len === 7.U || axi4.ar.bits.len === 15.U)
-//         }
-//       }
-//       (beatCnt.value, axi4.r.bits.last)
 
-//     case axi4lite: AXI4Lite =>
-//       raddr := axi4lite.ar.bits.addr
-//       (0.U, true.B)
+//     case axi4lite: AXI4Lite => // 当 io.in 为 AXI4Lite 类型时
+//       raddr := axi4lite.ar.bits.addr // 读地址就是 in 的 addr
+//       (0.U, true.B) // 此时，readBeatCnt 为 0.U， rLast 信号永远为 true.B （因为AxiLite每次只传输一个数据）
 //   }
 
 //   val r_busy = BoolStopWatch(in.ar.fire(), in.r.fire() && rLast, startHighPriority = true)
@@ -59,37 +38,6 @@
 //   ren := RegNext(in.ar.fire(), init=false.B) || (in.r.fire() && !rLast)
 //   in.r.valid := BoolStopWatch(ren && (in.ar.fire() || r_busy), in.r.fire(), startHighPriority = true)
 
-
-//   val waddr = Wire(UInt())
-//   val (writeBeatCnt, wLast) = in match {
-//     case axi4: AXI4 =>
-//       val c = Counter(256)
-//       waddr := HoldUnless(axi4.aw.bits.addr, axi4.aw.fire())
-//       when (axi4.w.fire()) {
-//         c.inc()
-//         when (axi4.w.bits.last) { c.value := 0.U }
-//       }
-//       (c.value, axi4.w.bits.last)
-
-//     case axi4lite: AXI4Lite =>
-//       waddr := axi4lite.aw.bits.addr
-//       (0.U, true.B)
-//   }
-
-//   val w_busy = BoolStopWatch(in.aw.fire(), in.b.fire(), startHighPriority = true)
-//   in.aw.ready := !w_busy
-//   in. w.ready := in.aw.valid || (w_busy)
-//   in.b.bits.resp := AXI4Parameters.RESP_OKAY
-//   in.b.valid := BoolStopWatch(in.w.fire() && wLast, in.b.fire(), startHighPriority = true)
-
-//   in match {
-//     case axi4: AXI4 =>
-//       axi4.b.bits.id   := RegEnable(axi4.aw.bits.id, axi4.aw.fire())
-//       axi4.b.bits.user := RegEnable(axi4.aw.bits.user, axi4.aw.fire())
-//       axi4.r.bits.id   := RegEnable(axi4.ar.bits.id, axi4.ar.fire())
-//       axi4.r.bits.user := RegEnable(axi4.ar.bits.user, axi4.ar.fire())
-//     case axi4lite: AXI4Lite =>
-//   }
 // }
 
 
