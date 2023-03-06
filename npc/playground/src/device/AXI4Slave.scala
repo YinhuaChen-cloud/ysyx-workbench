@@ -24,17 +24,20 @@
 
 //   val raddr = Wire(UInt()) // 读地址
 //   val ren = Wire(Bool()) // 读使能
-//   val (readBeatCnt, rLast) = in match {
-//     case axi4: AXI4 =>
 
-//     case axi4lite: AXI4Lite => // 当 io.in 为 AXI4Lite 类型时
-//       raddr := axi4lite.ar.bits.addr // 读地址就是 in 的 addr
-//       (0.U, true.B) // 此时，readBeatCnt 为 0.U， rLast 信号永远为 true.B （因为AxiLite每次只传输一个数据）
-//   }
+//   // 暂时不支持 rLast, AXI4Lite 没有 -- start
+//   // val (readBeatCnt, rLast) = in match {
+//   //   case axi4: AXI4 =>
+
+//   //   case axi4lite: AXI4Lite => // 当 io.in 为 AXI4Lite 类型时
+//   //     raddr := axi4lite.ar.bits.addr // 读地址就是 in 的 addr
+//   //     (0.U, true.B) // 此时，readBeatCnt 为 0.U， rLast 信号永远为 true.B （因为AxiLite每次只传输一个数据）
+//   // }
+//   // 暂时不支持 rLast, AXI4Lite 没有 -- end
 
 //   val r_busy = BoolStopWatch(in.ar.fire(), in.r.fire() && rLast, startHighPriority = true)
 //   in.ar.ready := in.r.ready || !r_busy
-//   in.r.bits.resp := AXI4Parameters.RESP_OKAY
+//   // in.r.bits.resp := AXI4Parameters.RESP_OKAY // -- 不支持
 //   ren := RegNext(in.ar.fire(), init=false.B) || (in.r.fire() && !rLast)
 //   in.r.valid := BoolStopWatch(ren && (in.ar.fire() || r_busy), in.r.fire(), startHighPriority = true)
 
