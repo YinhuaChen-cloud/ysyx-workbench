@@ -50,8 +50,8 @@ class AXI4LiteBundleB extends Bundle {
   val resp = Output(UInt(AXI4Parameters.respBits.W))
 }
 
-// class AXI4LiteBundleR(override val dataBits: Int = AXI4Parameters.dataBits) extends AXI4LiteBundleB with AXI4HasData -- 果壳版本
-class AXI4LiteBundleR(override val dataBits: Int = AXI4Parameters.dataBits) extends AXI4HasData // -- 我的
+class AXI4LiteBundleR(override val dataBits: Int = AXI4Parameters.dataBits) extends AXI4LiteBundleB with AXI4HasData -- 果壳版本
+// class AXI4LiteBundleR(override val dataBits: Int = AXI4Parameters.dataBits) extends AXI4HasData // -- 我的
 // resp 和 data 都是 Output
 // resp 用来传输总线错误，比如当读的内存地址非法，那么就要报错，简单核的实现可以不实现这个
 
