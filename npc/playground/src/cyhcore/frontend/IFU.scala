@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 import top.Settings
 import bus.axi4.AXI4Lite
+import bus.axi4.AXI4
 
 trait HasResetVector {
   val resetVector = Settings.getLong("ResetVector")
@@ -22,23 +23,31 @@ class IFU extends CyhCoreModule with HasResetVector {
   io.pc  := pc_reg
 }
 
-// class IFUnew extends CyhCoreModule with HasResetVector { // 先写从机
-//   val io = IO(new AXI4Lite())
+// 完成一次指令读取
+// 通过上面的资料学习，相信你已经对总线有一个大概的了解，现在我们来整理一次完整的指令读取的过程
+// （当然如果基础够好的同学可以直接实现AXI4的读写过程）。
+// 指令读取过程：
+// 1. 我们的取指级（IF）应该发出取指信号，包括读请求（valid）和读地址（pc），
+// 2. 这时AXI模块应该收到取指级的信号，如果AXI模块处于空闲状态, 则对本次读请求做出响应，AXI内部状态由空闲
+// 跳转到读请求状态，产生并发送读请求（ar-valid）、读地址（ar-addr）、
+// 读字节数（ar-size）、读个数（ar-len）， ------------------ 这两个不属于 AXILite，暂时不管
 
-//   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
-//   pc_reg := io.pc_next
-//   io.pc  := pc_reg
+class IFUnew extends CyhCoreModule with HasResetVector {
+  val io = IO(new AXI4Lite()) // AXI4Lite 默认接Master端
 
-// }
+  val idle :: reading_request :: Nil = Enum(2)
+  val state  = RegInit(idle)
+  val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39, 我们这里使用 XLEN，即64
 
-// class IFUnew extends CyhCoreModule with HasResetVector {
-//   val io = IO(new AXI4Lite())
+  // 1. 我们的取指级（IF）应该发出取指信号，包括读请求（valid）和读地址（pc），
+  io.ar.valid := true.B
+  io.ar.bits.addr  := pc_reg
+  // 2. 这时AXI模块应该收到取指级的信号，如果AXI模块处于空闲状态, 则对本次读请求做出响应，AXI内部状态由空闲
+  // 跳转到读请求状态，产生并发送读请求（ar-valid）、读地址（ar-addr）、
 
-//   val pc_reg = RegInit(resetVector.U(XLEN.W)) // TODO：果壳这里长度是39位
-//   pc_reg := io.pc_next
-//   io.pc  := pc_reg
-
-// }
+  // pc_reg := io.pc_next
+  // io.pc  := pc_reg
+}
 
 // ================================================
 // 将IFU的取指接口改造成AXI-Lite
@@ -53,7 +62,8 @@ class IFU extends CyhCoreModule with HasResetVector {
 // 指令读取过程：
 // 1. 我们的取指级（IF）应该发出取指信号，包括读请求（valid）和读地址（pc），
 // 2. 这时AXI模块应该收到取指级的信号，如果AXI模块处于空闲状态, 则对本次读请求做出响应，AXI内部状态由空闲
-// 跳转到读请求状态，产生并发送读请求（ar-valid）、读地址（ar-addr）、读字节数（ar-size）、读个数（ar-len），
+// 跳转到读请求状态，产生并发送读请求（ar-valid）、读地址（ar-addr）、
+// 读字节数（ar-size）、读个数（ar-len）， ------------------ 这两个不属于 AXILite，暂时不管
 
 // 本次总线支持的宽度是8 Byte，所以如果不是突发传输（burst），一次只能读写8 Byte。
 
