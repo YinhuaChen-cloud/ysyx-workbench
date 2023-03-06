@@ -60,7 +60,7 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               | 
               |           output reg inst_valid,
               |           output reg [${INST_LEN} - 1:0] inst,
-              |           input  reg inst_ready,  
+              |           input  inst_ready,  
               | 
               |           output [${XLEN}-1:0] mem_in);
               |

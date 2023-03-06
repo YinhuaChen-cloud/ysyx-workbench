@@ -26,7 +26,7 @@ class AXI4DRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
               |           input isWriteMem,
               |           input [${XLEN}-1:0] mem_write_data,
               |           input [7:0] mem_write_msk,
-              |           output [${XLEN}-1:0] mem_in);
+              |           output reg [${XLEN}-1:0] mem_in);
               |
               |  // for mem_rw
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
