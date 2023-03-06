@@ -28,14 +28,6 @@ import cyhcore.HasCyhCoreParameter
     // IFU每次取指都要等待一个周期, 才能取到指令交给IDU
 // ================================================
 
-// 3. 当从机（slave）接收到读请求（ar-valid）且处于空闲状态则产生返还给主机（master）读准备(ar-ready)信号
-// 表明可以进行读取操作，这时就完成了一次读地址的握手，
-// 4. 从机（slave）开始准备需要返回的数据（r-data）、读返回请求（r-valid）、读完成（r-last），
-// 5. 主机此时也跳变到下一个读数据状态，产生并发出可以读取返回数据的状态读准备（r-ready），当主机的r-valid & r-ready
-// 完成握手，主机得到需要的数据（r-data），
-// 6. 当主机接收到读完成（r-last）则完成了一次读事务同时状态跳变到空闲状态，并且产生读完成信号（ready），
-// 将指令数据（inst）返还给取指模块（IF）。
-
 class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
   val io = IO(new Bundle {
     val clk = Input(Clock())
@@ -46,11 +38,21 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
     val isWriteMem = Input(Bool())
     val mem_write_data = Input(UInt(XLEN.W))
     val mem_write_msk = Input(UInt(8.W))
+
     val inst_valid = Output(Bool())
     val inst = Output(UInt(INST_LEN.W))
     val inst_ready = Input(Bool())
+
     val mem_in = Output(UInt(XLEN.W))
   })
+
+// 3. 当从机（slave）接收到读请求（ar-valid）且处于空闲状态则产生返还给主机（master）读准备(ar-ready)信号
+// 表明可以进行读取操作，这时就完成了一次读地址的握手，
+// 4. 从机（slave）开始准备需要返回的数据（r-data）、读返回请求（r-valid）、读完成（r-last），
+// 5. 主机此时也跳变到下一个读数据状态，产生并发出可以读取返回数据的状态读准备（r-ready），当主机的r-valid & r-ready
+// 完成握手，主机得到需要的数据（r-data），
+// 6. 当主机接收到读完成（r-last）则完成了一次读事务同时状态跳变到空闲状态，并且产生读完成信号（ready），
+// 将指令数据（inst）返还给取指模块（IF）。
 
   setInline("AXI4SRAM.v",
             s"""
@@ -63,7 +65,11 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |           input isWriteMem,
               |           input [${XLEN}-1:0] mem_write_data,
               |           input [7:0] mem_write_msk,
+              | 
+              |           output reg inst_valid,
               |           output reg [${INST_LEN} - 1:0] inst,
+              |           input  reg inst_ready,  
+              | 
               |           output [${XLEN}-1:0] mem_in);
               |
               |  // expose pc to cpp simulation environment
