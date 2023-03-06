@@ -12,7 +12,6 @@ class top extends Module {
   implicit val conf = Configuration()
 
   val io = IO(new Bundle {
-//    val inst = Input(UInt(conf.inst_len.W))
   })
 
   // submodule1 IFU
@@ -30,8 +29,6 @@ class top extends Module {
 
   ifu.io <> exu.io.ifu_to_exu
 
-//  idu.io.inst    := io.inst // TODO: wait for being removed
-//  exu.io.inst    := io.inst
   // for sram
   axi4sram.io.clk := clock
   axi4sram.io.rst := reset
@@ -41,6 +38,7 @@ class top extends Module {
 
   idu.io.idu_to_exu <> exu.io.idu_to_exu
 
+  // for dpic
   dpic.io.clk := clock
   dpic.io.rst := reset
   dpic.io.isEbreak := idu.io.isEbreak

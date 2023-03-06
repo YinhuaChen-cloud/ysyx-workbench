@@ -51,34 +51,28 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |module AXI4SRAM (
               |           input clk,
               |           input rst,
+              |
+              |           input [] pc_valid,
               |           input [${XLEN}-1:0] pc,
-              |           input [${XLEN}-1:0] mem_addr,
-              |           input isRead,
-              |           input isWriteMem,
-              |           input [${XLEN}-1:0] mem_write_data,
-              |           input [7:0] mem_write_msk,
+              |           output reg [] pc_ready,
               | 
               |           output reg inst_valid,
               |           output reg [${INST_LEN} - 1:0] inst,
-              |           input  inst_ready,  
+              |           input  inst_ready);
               | 
-              |           output [${XLEN}-1:0] mem_in);
-              |
               |  // expose pc to cpp simulation environment
               |  import "DPI-C" function void set_pc(input logic [${XLEN}-1:0] a []);
               |  initial set_pc(pc);  
               |
-              |  // for mem_rw
+              |  // for mem_r
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
-              |  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
 // 3. 当从机（slave）接收到读请求（ar-valid）且处于空闲状态则产生返还给主机（master）读准备(ar-ready)信号
 // 表明可以进行读取操作，这时就完成了一次读地址的握手，
-// 4. 从机（slave）开始准备需要返回的数据（r-data）、读返回请求（r-valid）、读完成（r-last），
+// 4. 从机（slave）开始准备需要返回的数据（r-data）、读返回请求（r-valid）、(读完成（r-last），读完成不需要，AXILite没有) 
 // 5. 主机此时也跳变到下一个读数据状态，产生并发出可以读取返回数据的状态读准备（r-ready），当主机的r-valid & r-ready
 // 完成握手，主机得到需要的数据（r-data），
 // 6. 当主机接收到读完成（r-last）则完成了一次读事务同时状态跳变到空闲状态，并且产生读完成信号（ready），
 // 将指令数据（inst）返还给取指模块（IF）。
-              |  //  ------------------------------------ inst reading ---- start
               |  // Define the state enumeration
               |  typedef enum logic [1:0] {
               |    IDLE,
@@ -95,8 +89,12 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |    end else begin
               |      case (state)
               |        IDLE: begin
-              |          if(inst)
-              |          state <= BUSY;
+              |          if(pc_valid) begin
+              |            pc_ready <= 1'b1;
+              |            state <= BUSY;
+              |          end
+              |          else
+              |            // do nothing, 
               |        end
               |        BUSY: begin
               |          state <= IDLE;
@@ -104,7 +102,6 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |      endcase
               |    end
               |  end
-              |  TODO:  ------------------------------------- we are here!!!!!
               |
               |  // Define the output logic
               |  always @(state) begin
@@ -117,7 +114,7 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |      end
               |    endcase
               |  end
-              |  
+              |  // -------------------------------------------------- old things
               |  // for inst read from pmem 
               |  reg [${XLEN}-1:0]	inst_aux;
               |  always@(*) begin
@@ -134,17 +131,6 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |      default: begin inst = '0; assert(0); end
               |    endcase
               |  //  ------------------------------------ inst reading ---- end
-              |  // for data reading from mem
-              |  always@(*) begin
-              |    if(isRead)
-			        |      pmem_read(mem_addr, mem_in); 
-              |    else
-              |      mem_in = '0;
-              |  end
-              |  // for writing mem
-              |  always@(posedge clk) 
-              |    if(isWriteMem) 
-              |      pmem_write(mem_addr, mem_write_data, mem_write_msk);
               |
               |endmodule
             """.stripMargin)
