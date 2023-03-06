@@ -13,7 +13,6 @@ import cyhcore.HasCyhCoreParameter
               // |  // Define the state variable
               // |  // reg state;
               // |
-              // |  reg [${XLEN}-1:0]	inst_aux;
               // |
               // |  // Define the state transition logic
               // |  always @(posedge clk) begin
@@ -87,11 +86,11 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |module AXI4SRAM (
               |           input clk,
               |           input rst,
-              |
+              |           // AXI4-Lite ar channel
               |           input [] pc_valid,
               |           input [${XLEN}-1:0] pc,
               |           output reg [] pc_ready,
-              | 
+              |           // AXI4-Lite r channel
               |           output reg inst_valid,
               |           output reg [${INST_LEN} - 1:0] inst,
               |           input  inst_ready);
@@ -102,6 +101,9 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |
               |  // for mem_r
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
+              |
+              |  reg [${XLEN}-1:0]	inst_aux;
+              |
               |  // inst selection	
               |  always@(*) 
               |    case(pc[2:0])
