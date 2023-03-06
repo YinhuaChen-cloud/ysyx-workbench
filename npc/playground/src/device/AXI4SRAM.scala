@@ -158,6 +158,9 @@ class AXI4SRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
               |    IDLE,
               |    BUSY
               |  } state_t;
+              |  // Define the state variable
+              |  reg state;
+              |
               |  // for inst read from pmem // TODO: the pmem_read implementation will be changed greatly after implement BUS
               |  reg [${XLEN}-1:0]	inst_aux;
               |  always@(*) begin
