@@ -7,7 +7,6 @@ import cyhcore._
 import device._
 import utils._
 
-import device.AXI4SRAM
 class top extends Module {
 
   implicit val conf = Configuration()
@@ -24,13 +23,19 @@ class top extends Module {
   val exu = Module(new EXU)
 	// submodule4: DPIC
   val dpic = Module(new DPIC)
-	// device: AXI4SRAM
+	// device: AXI4SRAM -- for inst reading
   val axi4sram = Module(new AXI4SRAM)
+	// device: AXI4DRAM -- for sd, ld instructions
+  val axi4dram = Module(new AXI4DRAM)
 
   ifu.io <> exu.io.ifu_to_exu
 
 //  idu.io.inst    := io.inst // TODO: wait for being removed
 //  exu.io.inst    := io.inst
+  // for sram
+  axi4sram.io.clk := clock
+  axi4sram.io.rst := reset
+  axi4sram.io.pc := ifu.io.pc
   idu.io.inst    := axi4sram.io.inst // TODO: wait for being removed
   exu.io.inst    := axi4sram.io.inst
 
@@ -41,15 +46,15 @@ class top extends Module {
   dpic.io.isEbreak := idu.io.isEbreak
   dpic.io.inv_inst := idu.io.inv_inst
   dpic.io.regfile  := exu.io.regfile_output
-  axi4sram.io.clk := clock
-  axi4sram.io.rst := reset
-  axi4sram.io.pc := ifu.io.pc
-  axi4sram.io.mem_addr := exu.io.mem_addr
-  axi4sram.io.isRead   := exu.io.isRead
-  axi4sram.io.isWriteMem := idu.io.isWriteMem
-  axi4sram.io.mem_write_data := exu.io.mem_write_data
-  axi4sram.io.mem_write_msk  := exu.io.mem_write_msk
+  // for dram
+  axi4dram.io.clk := clock
+  axi4dram.io.rst := reset
+  axi4dram.io.mem_addr := exu.io.mem_addr
+  axi4dram.io.isRead   := exu.io.isRead
+  axi4dram.io.isWriteMem := idu.io.isWriteMem
+  axi4dram.io.mem_write_data := exu.io.mem_write_data
+  axi4dram.io.mem_write_msk  := exu.io.mem_write_msk
+  exu.io.mem_in   := axi4dram.io.mem_in
 
-  exu.io.mem_in   := axi4sram.io.mem_in
 }
 
