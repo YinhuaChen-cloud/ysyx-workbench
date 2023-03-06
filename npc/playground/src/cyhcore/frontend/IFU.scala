@@ -14,23 +14,12 @@ class IFU_to_EXU extends CyhCoreBundle() {
   val pc      = Output(UInt(PC_LEN.W))
 }
 
-// map函数中，参数为 _ 是什么意思？ 回答：通常用来表示对输入集合中每个元素的操作
-object MaskExpand {
-  // 假如 m 为 0x0f, 则 m.asBools = Vec(4x false, 4x true), m.asBools.map(Fill(8, _)) = Vec(8个0， 8个0, ..., 8个1， 8个1)。 加上reverse = Vec(8个1， 8个1, ..., 8个0， 8个0)
-  // def apply(m: UInt) = Cat(m.asBools.map(Fill(8, _)))
-  def apply(m: UInt) = Cat(m.asBools)
-}
-
 class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new IFU_to_EXU())
 
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
   pc_reg := io.pc_next
   io.pc  := pc_reg
-
-  val fullMask = MaskExpand(0x0f.U(8.W)) // 从小 strb 获取 fullMask
-  printf("fullMask = 0x%x\n", fullMask)
-
 }
 
 // class IFUnew extends CyhCoreModule with HasResetVector { // 先写从机
