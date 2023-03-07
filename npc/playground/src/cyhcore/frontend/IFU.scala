@@ -28,7 +28,7 @@ class IFU_to_AXI4SRAM extends CyhCoreBundle() { // TODO: 下一个步骤，让 I
   // val pc      = Output(Decoupled(UInt(PC_LEN.W)))
   // val inst_in =  Input(Decoupled(UInt(INST_LEN.W)))
   val pc      = Output(UInt(PC_LEN.W))
-  val inst_in =  (UInt(INST_LEN.W))
+  val inst_in = Input(UInt(INST_LEN.W))
 }
 
 class IFU_bundle extends CyhCoreBundle() {
