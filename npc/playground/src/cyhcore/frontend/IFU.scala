@@ -58,6 +58,7 @@ class IFUnew extends CyhCoreModule with HasResetVector {
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
   pc_reg := io.ifu_to_exu.pc_next
   io.ifu_to_exu.pc  := pc_reg
+  io.ifu_to_axi4sram.pc  := pc_reg
   io.ifu_to_exu.inst := io.ifu_to_axi4sram.inst_in
 }
 
