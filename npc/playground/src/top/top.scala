@@ -30,7 +30,7 @@ class top extends Module {
   // for AXI4Lite bus between IFU and AXI4SRAM
   ifu.io.ifu_to_axi4sram.inst_in.valid := axi4sram.io.inst_valid  
   ifu.io.ifu_to_axi4sram.inst_in.bits  := axi4sram.io.inst       
-  ifu.io.ifu_to_axi4sram.inst_in.ready := axi4sram.io.inst_ready
+  axi4sram.io.inst_ready               := ifu.io.ifu_to_axi4sram.inst_in.ready
 
   axi4sram.io.pc_valid            := ifu.io.ifu_to_axi4sram.pc.valid
   axi4sram.io.pc                  := ifu.io.ifu_to_axi4sram.pc.bits 
