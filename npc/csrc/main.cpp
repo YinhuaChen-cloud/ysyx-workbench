@@ -14,6 +14,10 @@
 #define _BSD_SOURCE
 #include <sys/time.h>
 
+#ifdef CONFIG_WAVEFORM
+#include "verilated_vcd_c.h"
+#endif
+
 struct timeval boot_time = {};
 
 static const uint32_t default_img [] = {
