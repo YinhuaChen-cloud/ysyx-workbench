@@ -2,7 +2,6 @@ package cyhcore
 
 import chisel3._
 import chisel3.util._
-import Conf._
 import Macros._
 import Macros.Constants._
 
