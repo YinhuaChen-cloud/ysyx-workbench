@@ -233,8 +233,7 @@ int main(int argc, char** argv, char** env) {
 	}
 	else {
 //		while (!contextp->gotFinish() && contextp->time() < 20) {
-		while (!contextp->gotFinish()) {
-			// contextp->timeInc(1); // necessary for wave gen
+		while (1) {
 //			printf("In while, *pc = 0x%lx\n", *pc);
 //			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
 //			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
@@ -246,6 +245,10 @@ int main(int argc, char** argv, char** env) {
 			if (npc_state.state != NPC_RUNNING) break;
 		}
 	}
+
+#ifdef CONFIG_WAVEFORM
+	tfp->close();
+#endif
 
 	npc_state.halt_pc = pc_just_exec;
 	npc_state.halt_ret = -1; 

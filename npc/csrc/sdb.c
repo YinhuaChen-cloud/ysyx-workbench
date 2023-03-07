@@ -58,6 +58,12 @@ void cpu_exec(uint32_t n) {
 
 	while(n--) {
 
+#ifdef CONFIG_WAVEFORM
+		if (contextp->gotFinish()) 
+      break;
+    contextp->timeInc(1); // necessary for wave gen
+#endif
+
 		// NOTE: Already invoke sv_regs_to_c() in main.cpp when initialize difftest
 		//
 #ifdef CONFIG_DIFFTEST
@@ -72,6 +78,10 @@ void cpu_exec(uint32_t n) {
 //		}
 //
 		single_cycle();
+
+#ifdef CONFIG_WAVEFORM
+		tfp->dump(contextp->time());
+#endif
 
 #ifdef CONFIG_DIFFTEST
 		sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
