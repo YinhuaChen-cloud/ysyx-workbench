@@ -40,9 +40,9 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |           input clk,
               |           input rst,
               |           // AXI4-Lite ar channel
-              |           input pc_valid,
+              |           input pc_valid, // always true
               |           input [${XLEN}-1:0] pc,
-              |           output reg pc_ready,
+              |           output reg pc_ready, 
               |           // AXI4-Lite r channel
               |           output reg inst_valid,
               |           output reg [${INST_LEN} - 1:0] inst,
@@ -70,7 +70,7 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |    end
               |  end
               |
-              |  logic [${XLEN}-1:0] axi_raddr; // 读地址寄存器，用来储存读地址
+              |  logic [${XLEN}-1:0] axi_raddr; // 读地址寄存器，用来储存读地址 --- 因为我们要先完成读地址传输，再开始读数据
               |  logic axi_need_read; // 表示需要读, 一个1位寄存器，也可以叫 flag
               |   
               |  // 处理"读地址"寄存器和"需要读"寄存器
@@ -93,9 +93,10 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |  // AXI read data section 读数据一节
               |  // 这里包括了读数据握手  也包括了读数据通道  --- TODO: 个人认为这里提到的方法要延迟两个周期，原因是 读地址ready 信号需要等待 读地址 valid 信号
               |  logic axi_wait_for_ready; // Read wait mode, waiting for master ready signal 等待来自Master的读ready信号
+              |  logic [${XLEN}-1:0] axi_data_to_read; // 要读的data，来自寄存器
               |  reg [${XLEN}-1:0]	inst_aux;
               |
-              |  always_ff @(posedge clk) begin
+              |  always @(posedge clk) begin
               |    if(rst) begin
               |      inst_valid <= 1'b0; // 重置时，读valid，读数据 都为0
               |      inst_aux <= {${XLEN}{1'b0}};
@@ -104,7 +105,7 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |    else begin
               |      if(axi_wait_for_ready) begin // 如果现在正在等待来自 Master 的 ready信号
               |        if(inst_ready) begin // 且接收到了 rready 信号
-              |          pmem_read(axi_raddr, inst_aux); // 那么就把要读的数据传给 rdata 信号
+              |          inst_aux <= axi_data_to_read; // 那么就把要读的数据传给 rdata 信号
               |          inst_valid <= 1'b1; // 同时，在下一周期置 rvalid 为有效
               |          axi_wait_for_ready <= 1'b0; // exit wait for read mode // 然后，退出正在等待模式
               |        end
@@ -112,7 +113,7 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |      end
               |      else begin  // 如果现在不是正在等待模式
               |        if(axi_need_read & inst_ready) begin // 如果现在需要读（读地址通道刚刚fire）信号和 主机的 rready 信号都为真
-              |          pmem_read(axi_raddr, inst_aux); // 那么就把要读的数据传给 rdata 信号
+              |          inst_aux <= axi_data_to_read; // 那么就把要读的数据传给 rdata 信号
               |          inst_valid <= 1'b1; // 同时，在下一个时钟上升沿，把rvalid置为1
               |        end
               |        else if(axi_need_read) begin // 如果需要读信号为1, 而 主机的 rready 信号为假 ---------------------------------------------------- <- 199行错了 应该是先拉高RVALID等待RREADY，不好意思。
@@ -125,6 +126,14 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |        end
               |      end
               |    end
+              |  end
+              |  
+              |  // AXI read
+              |  always @(*) begin
+              |    if(~rst) 
+              |      pmem_read(pc, axi_data_to_read);
+              |    else
+              |      axi_data_to_read = '0;
               |  end
               |
               |  // inst selection	

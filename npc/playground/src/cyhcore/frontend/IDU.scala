@@ -32,7 +32,7 @@ class IDU_bundle (implicit val conf: Configuration) extends Bundle() {
 class IDU (implicit val conf: Configuration) extends Module {
   val io = IO(new IDU_bundle())
 
-  // The core of DecodeUnit
+  // The core of DecodeUnit 几乎所有的指令都列在这里了
   val decoded_signals = ListLookup(
     io.inst, Instructions.DecodeDefault,
     Instructions.DecodeTable
@@ -72,18 +72,4 @@ class IDU (implicit val conf: Configuration) extends Module {
   io.idu_to_exu.alu_msk_type := alu_msk_type
   
 }
-
-
-//  io.src2 := MuxLookup(
-//    instType.asUInt, 0.U,
-//    ArraySeq.unsafeWrapArray(Array(
-//      Rtype.asUInt -> reg_stack(rs2),
-//      Itype.asUInt -> SEXT(xlen, unpacked.imm),
-//      Stype.asUInt -> reg_stack(rs2),
-//      Btype.asUInt -> reg_stack(rs2),
-//      Utype.asUInt -> 0.U, 
-//      Jtype.asUInt -> 0.U,
-//      Special.asUInt -> 0.U,
-//    ))
-//  )
 

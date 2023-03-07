@@ -23,13 +23,18 @@ class top extends Module {
 	// submodule4: DPIC
   val dpic = Module(new DPIC)
 	// device: AXI4SRAM -- for inst reading
-  val axi4sram = Module(new AXI4SRAM)
+  val axi4sram = Module(new AXI4SRAMnew)
 	// device: AXI4DRAM -- for sd, ld instructions
   val axi4dram = Module(new AXI4DRAM)
 
   // for AXI4Lite bus between IFU and AXI4SRAM
-  ifu.io.ifu_to_axi4sram.inst_in := axi4sram.io.inst
-  axi4sram.io.pc := ifu.io.ifu_to_axi4sram.pc
+  ifu.io.ifu_to_axi4sram.inst_in.valid := axi4sram.io.inst_valid  
+  ifu.io.ifu_to_axi4sram.inst_in.bits  := axi4sram.io.inst       
+  axi4sram.io.inst_ready               := ifu.io.ifu_to_axi4sram.inst_in.ready
+
+  axi4sram.io.pc_valid            := ifu.io.ifu_to_axi4sram.pc.valid
+  axi4sram.io.pc                  := ifu.io.ifu_to_axi4sram.pc.bits 
+  ifu.io.ifu_to_axi4sram.pc.ready := axi4sram.io.pc_ready 
 
   // for ifu
   ifu.io.ifu_to_exu <> exu.io.ifu_to_exu
