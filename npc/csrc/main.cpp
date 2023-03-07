@@ -16,7 +16,7 @@
 
 #ifdef CONFIG_WAVEFORM
 #include "verilated_vcd_c.h"
-VerilatedVcdC* tfp = NULL:
+VerilatedVcdC* tfp = NULL;
 #endif
 
 struct timeval boot_time = {};
