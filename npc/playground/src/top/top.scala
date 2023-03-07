@@ -28,7 +28,7 @@ class top extends Module {
   val axi4dram = Module(new AXI4DRAM)
 
   // ifu.io <> exu.io.ifu_to_exu --- flag: 注意，这里是备份，准备改 AXI4Lite IFU
-  ifu.io <> exu.io.ifu_to_exu
+  ifu.io.ifu_to_exu <> exu.io.ifu_to_exu
   ifu.io.inst_in := axi4sram.io.inst
 
   // for sram
