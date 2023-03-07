@@ -59,6 +59,7 @@ void cpu_exec(uint32_t n) {
 	while(n--) {
 
 #ifdef CONFIG_WAVEFORM
+//		while (!contextp->gotFinish() && contextp->time() < 20) {
 		if (contextp->gotFinish()) 
       break;
 #endif
