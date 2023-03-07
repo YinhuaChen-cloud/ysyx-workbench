@@ -34,9 +34,9 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
 
   })
 
-  setInline("AXI4SRAM.v",
+  setInline("AXI4SRAMnew.v",
             s"""
-              |module AXI4SRAM (
+              |module AXI4SRAMnew (
               |           input clk,
               |           input rst,
               |           // AXI4-Lite ar channel
