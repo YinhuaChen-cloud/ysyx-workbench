@@ -41,8 +41,10 @@ class IFU extends CyhCoreModule with HasResetVector {
 // --------------------------- 新旧分割线 ------------------------
 
 class IFU_to_AXI4SRAM extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
-  val pc      = Output(Decoupled(UInt(PC_LEN.W)))
-  val inst_in =  Input(Decoupled(UInt(INST_LEN.W)))
+  // val pc      = Output(Decoupled(UInt(PC_LEN.W)))
+  // val inst_in =  Input(Decoupled(UInt(INST_LEN.W)))
+  val pc      = Output(UInt(PC_LEN.W))
+  val inst_in =  Input(UInt(INST_LEN.W))
 }
 
 class IFU_bundlenew extends CyhCoreBundle() {
