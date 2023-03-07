@@ -141,9 +141,25 @@ static void reset(int n) {
 
 int main(int argc, char** argv, char** env) {
 
+#ifdef CONFIG_WAVEFORM
+	Verilated::mkdir("logs");
+#endif
+
 	contextp = new VerilatedContext;
+
+#ifdef CONFIG_WAVEFORM
+	Verilated::traceEverOn(true);
+	VerilatedVcdC* tfp = new VerilatedVcdC;
+#endif
+
 	contextp->commandArgs(argc, argv);
 	top = new Vtop{contextp};
+
+#ifdef CONFIG_WAVEFORM
+	top->trace(tfp, 99); // Trace 99 levels of hierarchy (or see below)
+	// tfp->dumpvars(1, "t"); // trace 1 level under "t"
+	tfp->open("./logs/simx.vcd");	
+#endif
 
 	parse_args(argc, argv);
 	init_pmem();
@@ -218,7 +234,7 @@ int main(int argc, char** argv, char** env) {
 	else {
 //		while (!contextp->gotFinish() && contextp->time() < 20) {
 		while (!contextp->gotFinish()) {
-			contextp->timeInc(1);
+			contextp->timeInc(1); // necessary for wave gen
 //			printf("In while, *pc = 0x%lx\n", *pc);
 //			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
 //			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
