@@ -23,7 +23,7 @@ class top extends Module {
 	// submodule4: DPIC
   val dpic = Module(new DPIC)
 	// device: AXI4SRAM -- for inst reading
-  val axi4sram = Module(new AXI4SRAMnew)
+  val axi4sram = Module(new AXI4SRAM)
 	// device: AXI4DRAM -- for sd, ld instructions
   val axi4dram = Module(new AXI4DRAM)
 
