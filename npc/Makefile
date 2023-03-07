@@ -50,7 +50,7 @@ VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc \
 				-O2 --x-assign fast --x-initial fast 
 
-ifeq ($(CONFIG_WAVEFORM), y)
+ifeq ($(CONFIG_WAVEFORM),y)
 	VERILATOR_CFLAGS += --trace
 endif
 
