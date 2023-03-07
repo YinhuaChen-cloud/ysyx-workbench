@@ -28,8 +28,8 @@ class top extends Module {
   val axi4dram = Module(new AXI4DRAM)
 
   // for AXI4Lite bus between IFU and AXI4SRAM
-  ifu.io.ifu_to_axi4sram.inst_in := axi4sram.io.inst
-  axi4sram.io.pc := ifu.io.ifu_to_axi4sram.pc
+  ifu.io.ifu_to_axi4sram.inst_in.bits := axi4sram.io.inst
+  axi4sram.io.pc := ifu.io.ifu_to_axi4sram.pc.bits
 
   // for ifu
   ifu.io.ifu_to_exu <> exu.io.ifu_to_exu
