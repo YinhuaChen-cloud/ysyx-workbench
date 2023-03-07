@@ -9,7 +9,7 @@ import Macros.Constants._
 
 class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val idu_to_exu = Flipped(new IDU_to_EXU())
-  val ifu_to_exu = Flipped(new IFU_to_EXUnew())
+  val ifu_to_exu = Flipped(new IFU_to_EXU())
   val mem_in = Input(UInt(conf.xlen.W))
   val regfile_output = Output(UInt((conf.nr_reg * conf.xlen).W))
   val mem_addr = Output(UInt(conf.xlen.W))

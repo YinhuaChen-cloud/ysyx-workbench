@@ -10,19 +10,6 @@ trait HasResetVector {
   val resetVector = Settings.getLong("ResetVector")
 }
 
-class IFU_to_EXU extends CyhCoreBundle() {
-  val pc_next = Input(UInt(PC_LEN.W))
-  val pc      = Output(UInt(PC_LEN.W))
-}
-
-class IFU extends CyhCoreModule with HasResetVector {
-  val io = IO(new IFU_to_EXU())
-
-  val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
-  pc_reg := io.pc_next
-  io.pc  := pc_reg
-}
-
               // |           // AXI4-Lite ar channel
               // |           input pc_valid,
               // |           input [${XLEN}-1:0] pc,
@@ -31,18 +18,18 @@ class IFU extends CyhCoreModule with HasResetVector {
               // |           output reg inst_valid,
               // |           output reg [${INST_LEN} - 1:0] inst,
               // |           input inst_ready);
-class IFU_to_EXUnew extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
+class IFU_to_EXU extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
   val pc_next  = Input(UInt(PC_LEN.W))
   val pc       = Output(UInt(PC_LEN.W))
   val inst = Output(UInt(INST_LEN.W))
 }
 
 class IFU_bundle extends CyhCoreBundle() {
-  val ifu_to_exu = new IFU_to_EXUnew()
+  val ifu_to_exu = new IFU_to_EXU()
   val inst_in = Input(UInt(INST_LEN.W))
 }
 
-class IFUnew extends CyhCoreModule with HasResetVector {
+class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new IFU_bundle())
 
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
