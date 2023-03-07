@@ -16,6 +16,7 @@
 
 #ifdef CONFIG_WAVEFORM
 #include "verilated_vcd_c.h"
+VerilatedVcdC* tfp = NULL:
 #endif
 
 struct timeval boot_time = {};
@@ -149,7 +150,7 @@ int main(int argc, char** argv, char** env) {
 
 #ifdef CONFIG_WAVEFORM
 	Verilated::traceEverOn(true);
-	VerilatedVcdC* tfp = new VerilatedVcdC;
+	tfp = new VerilatedVcdC;
 #endif
 
 	contextp->commandArgs(argc, argv);
