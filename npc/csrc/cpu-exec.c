@@ -21,6 +21,8 @@ void single_cycle() {
     first_flag = 1;
   }
 #endif
+  void dealWithExit();
+  dealWithExit();
 //   top->clock = 0; top->eval();
 // #ifdef CONFIG_WAVEFORM
 //   contextp->timeInc(1); // necessary for wave gen
