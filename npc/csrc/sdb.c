@@ -80,6 +80,7 @@ void cpu_exec(uint32_t n) {
 		single_cycle();
 
 #ifdef CONFIG_WAVEFORM
+    extern VerilatedVcdC *tfp;
 		tfp->dump(contextp->time());
 #endif
 
