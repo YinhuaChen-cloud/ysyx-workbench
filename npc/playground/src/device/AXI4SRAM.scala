@@ -70,7 +70,7 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |    end
               |  end
               |
-              |  logic [${XLEN}-1:0] axi_raddr; // 读地址寄存器，用来储存读地址
+              |  logic [${XLEN}-1:0] axi_raddr; // 读地址寄存器，用来储存读地址 --- 因为我们要先完成读地址传输，再开始读数据
               |  logic axi_need_read; // 表示需要读, 一个1位寄存器，也可以叫 flag
               |   
               |  // 处理"读地址"寄存器和"需要读"寄存器
