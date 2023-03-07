@@ -24,9 +24,18 @@ class IFU_to_EXU extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU �
   val inst = Output(UInt(INST_LEN.W))
 }
 
+// --------------------------- 新旧分割线 ------------------------
+
+class IFU_to_AXI4SRAM extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
+  // val pc      = Output(Decoupled(UInt(PC_LEN.W)))
+  // val inst_in =  Input(Decoupled(UInt(INST_LEN.W)))
+  val pc      = Output(UInt(PC_LEN.W))
+  val inst_in =  Input(UInt(INST_LEN.W))
+}
+
 class IFU_bundle extends CyhCoreBundle() {
   val ifu_to_exu = new IFU_to_EXU()
-  val inst_in = Input(UInt(INST_LEN.W))
+  val ifu_to_axi4sram = new IFU_to_AXI4SRAM()
 }
 
 class IFU extends CyhCoreModule with HasResetVector {
@@ -35,7 +44,8 @@ class IFU extends CyhCoreModule with HasResetVector {
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
   pc_reg := io.ifu_to_exu.pc_next
   io.ifu_to_exu.pc  := pc_reg
-  io.ifu_to_exu.inst := io.inst_in
+  io.ifu_to_axi4sram.pc  := pc_reg
+  io.ifu_to_exu.inst := io.ifu_to_axi4sram.inst_in
 }
 
   // 1. 我们的取指级（IF）应该发出取指信号，包括读请求（valid）和读地址（pc），
