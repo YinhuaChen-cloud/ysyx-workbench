@@ -21,16 +21,16 @@ void single_cycle() {
     first_flag = 1;
   }
 #endif
-  top->clock = 0; top->eval();
-#ifdef CONFIG_WAVEFORM
-  contextp->timeInc(1); // necessary for wave gen
-  tfp->dump(contextp->time());
-#endif
-  top->clock = 1; top->eval();
-#ifdef CONFIG_WAVEFORM
-  contextp->timeInc(1); // necessary for wave gen
-  tfp->dump(contextp->time());
-#endif
+//   top->clock = 0; top->eval();
+// #ifdef CONFIG_WAVEFORM
+//   contextp->timeInc(1); // necessary for wave gen
+//   tfp->dump(contextp->time());
+// #endif
+//   top->clock = 1; top->eval();
+// #ifdef CONFIG_WAVEFORM
+//   contextp->timeInc(1); // necessary for wave gen
+//   tfp->dump(contextp->time());
+// #endif
 }
 
 

@@ -24,8 +24,8 @@ class DPIC extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
               |
               |  // only cpp simulation environment can execute ebreak()
               |  import "DPI-C" function void ebreak();
-              |  always@(posedge clk) begin
-              |    if((~rst) & isEbreak)
+              |  always@(*) begin
+              |    if(isEbreak)
               |      ebreak();   
               |  end
               |

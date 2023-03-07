@@ -40,9 +40,9 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |           input clk,
               |           input rst,
               |           // AXI4-Lite ar channel
-              |           input pc_valid,
+              |           input pc_valid, // always true
               |           input [${XLEN}-1:0] pc,
-              |           output reg pc_ready,
+              |           output reg pc_ready, 
               |           // AXI4-Lite r channel
               |           output reg inst_valid,
               |           output reg [${INST_LEN} - 1:0] inst,
