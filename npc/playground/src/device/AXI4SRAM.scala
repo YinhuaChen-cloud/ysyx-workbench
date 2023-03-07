@@ -98,7 +98,7 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |  always_ff @(posedge clk) begin
               |    if(rst) begin
               |      inst_valid <= 1'b0; // 重置时，读valid，读数据 都为0
-              |      inst_aux <= {${XLEN}{'b0}};
+              |      inst_aux <= {${XLEN}{1'b0}};
               |      axi_wait_for_ready <= 1'b0; // 等待 ready 信号也为0
               |    end
               |    else begin
