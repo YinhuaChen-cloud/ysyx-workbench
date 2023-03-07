@@ -27,11 +27,13 @@ class top extends Module {
 	// device: AXI4DRAM -- for sd, ld instructions
   val axi4dram = Module(new AXI4DRAM)
 
+  // ifu.io <> exu.io.ifu_to_exu --- flag: 注意，这里是备份，准备改 AXI4Lite IFU
   ifu.io <> exu.io.ifu_to_exu
 
   // for sram
   axi4sram.io.clk := clock
   axi4sram.io.rst := reset
+  // axi4sram.io.pc := ifu.io.pc --- flag: 注意，这里需要改变，准备改 AXI4Lite IFU
   axi4sram.io.pc := ifu.io.pc
   idu.io.inst    := axi4sram.io.inst // TODO: wait for being removed
   exu.io.inst    := axi4sram.io.inst
