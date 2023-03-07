@@ -58,6 +58,11 @@ void cpu_exec(uint32_t n) {
 
 	while(n--) {
 
+#ifdef CONFIG_WAVEFORM
+		if (contextp->gotFinish()) 
+      break;
+#endif
+
 		// NOTE: Already invoke sv_regs_to_c() in main.cpp when initialize difftest
 		//
 #ifdef CONFIG_DIFFTEST

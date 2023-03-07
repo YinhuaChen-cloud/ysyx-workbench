@@ -14,6 +14,11 @@
 #define _BSD_SOURCE
 #include <sys/time.h>
 
+#ifdef CONFIG_WAVEFORM
+#include "verilated_vcd_c.h"
+VerilatedVcdC* tfp = NULL;
+#endif
+
 struct timeval boot_time = {};
 
 static const uint32_t default_img [] = {
@@ -137,9 +142,25 @@ static void reset(int n) {
 
 int main(int argc, char** argv, char** env) {
 
+#ifdef CONFIG_WAVEFORM
+	Verilated::mkdir("logs");
+#endif
+
 	contextp = new VerilatedContext;
+
+#ifdef CONFIG_WAVEFORM
+	Verilated::traceEverOn(true);
+	tfp = new VerilatedVcdC;
+#endif
+
 	contextp->commandArgs(argc, argv);
 	top = new Vtop{contextp};
+
+#ifdef CONFIG_WAVEFORM
+	top->trace(tfp, 99); // Trace 99 levels of hierarchy (or see below)
+	// tfp->dumpvars(1, "t"); // trace 1 level under "t"
+	tfp->open("./logs/simx.vcd");	
+#endif
 
 	parse_args(argc, argv);
 	init_pmem();
@@ -213,8 +234,7 @@ int main(int argc, char** argv, char** env) {
 	}
 	else {
 //		while (!contextp->gotFinish() && contextp->time() < 20) {
-		while (!contextp->gotFinish()) {
-			contextp->timeInc(1);
+		while (1) {
 //			printf("In while, *pc = 0x%lx\n", *pc);
 //			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
 //			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
@@ -226,6 +246,10 @@ int main(int argc, char** argv, char** env) {
 			if (npc_state.state != NPC_RUNNING) break;
 		}
 	}
+
+#ifdef CONFIG_WAVEFORM
+	tfp->close();
+#endif
 
 	npc_state.halt_pc = pc_just_exec;
 	npc_state.halt_ret = -1; 
