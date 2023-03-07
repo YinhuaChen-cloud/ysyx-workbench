@@ -131,9 +131,9 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |  // AXI read
               |  always @(*) begin
               |    if(~rst) 
-              |      pmem_read(pc, inst_aux);
+              |      pmem_read(pc, axi_data_to_read);
               |    else
-              |      inst_aux = '0;
+              |      axi_data_to_read = '0;
               |  end
               |
               |  // inst selection	
