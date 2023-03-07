@@ -10,6 +10,10 @@
 #include "watchpoint.h"
 #include <debug.h>
 
+#ifdef CONFIG_WAVEFORM
+#include "verilated_vcd_c.h"
+#endif
+
 uint64_t pc_just_exec;
 
 static char* rl_gets() {
