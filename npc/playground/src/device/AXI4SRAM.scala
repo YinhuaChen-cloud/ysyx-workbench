@@ -4,53 +4,6 @@ import chisel3._
 import chisel3.util._
 import cyhcore.HasCyhCoreParameter
 
-              // |  // Define the state enumeration
-              // |  // typedef enum logic [1:0] {
-              // |  //   IDLE,
-              // |  //   BUSY
-              // |  // } state_t;
-              // |  
-              // |  // Define the state variable
-              // |  // reg state;
-              // |
-              // |
-              // |  // Define the state transition logic
-              // |  always @(posedge clk) begin
-              // |    if (rst) begin
-              // |      pc_ready <= 1'b0;
-              // |      inst_valid <= 1'b0;
-              // |      inst_aux = '0; 
-              // |    end 
-              // |    else begin
-              // |      if(pc_valid) begin
-              // |        pc_ready <= 1'b1;
-              // |        inst_valid <= 1'b1;
-              // |        pmem_read(pc, inst_aux); 
-              // |      end
-              // |      else begin
-              // |        pc_ready <= 1'b0;
-              // |        // do nothing, 
-              // |      end
-              // |    end
-              // |  end
-
-// class AXI4SRAMnew extends AXI4SlaveModule {
-//   val idle :: reading_data :: Nil = Enum(2)
-//   val state  = RegInit(idle)
-
-//   // 3. 当从机（slave）接收到读请求（ar-valid）且处于空闲状态则产生返还给主机（master）读准备(ar-ready)信号
-//   // 表明可以进行读取操作，这时就完成了一次读地址的握手，
-//   when(state === idle && in.ar.valid) {
-//     in.ar.ready     := true.B 
-//     in.r.bits.data  := 
-//     in.r.bits.valid := true.B
-//     state           := reading_data
-//     // state := reading_request TODO: we are here
-//   } .otherwise {
-//   }
-
-// }
-
 // ================================================
 // 将IFU的取指接口改造成AXI-Lite
 // 1. 用RTL编写一个AXI-Lite的SRAM模块, 地址位宽为32bit, 数据位宽为64bit
@@ -117,16 +70,63 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |    end
               |  end
               |
+              |  logic [${XLEN}-1:0] axi_raddr; // 读地址寄存器，用来储存读地址
+              |  logic axi_need_read; // 表示需要读, 一个1位寄存器，也可以叫 flag
+              |   
+              |  // 处理"读地址"寄存器和"需要读"寄存器
+              |  always @(posedge clk) begin
+              |    if(rst) begin
+              |      axi_raddr <= '0;
+              |      axi_need_read <= 1'b0;
+              |    end
+              |    else begin
+              |      if(pc_valid & pc_ready) begin // 当 读地址 通道 fire 时，让 axi_raddr 储存读地址
+              |        axi_raddr <= pc;
+              |        axi_need_read <= 1'b1; // 同时，把 "需要读寄存器" 置为1
+              |      end
+              |      else begin
+              |        axi_need_read <= 1'b0; // 其它时候，读地址寄存器保持不变
+              |      end
+              |    end
+              |  end
               |
-              |
-              |
-              |
-              |
-              |
-              |
-              |
-              |
+              |  // AXI read data section 读数据一节
+              |  // 这里包括了读数据握手  也包括了读数据通道  --- TODO: 个人认为这里提到的方法要延迟两个周期，原因是 读地址ready 信号需要等待 读地址 valid 信号
+              |  logic axi_wait_for_ready; // Read wait mode, waiting for master ready signal 等待来自Master的读ready信号
+              |  logic [AXI_DATA_WIDTH-1:0] axi_data_to_read; // 要读的data，来自寄存器 --- TODO: 这里的 axi_data_to_read 等下要连接 inst
               |  reg [${XLEN}-1:0]	inst_aux;
+              |
+              |  always_ff @(posedge clk) begin
+              |    if(rst) begin
+              |      inst_valid <= 1'b0; // 重置时，读valid，读数据 都为0
+              |      inst_aux <= {${XLEN}{'b0}};
+              |      axi_wait_for_ready <= 1'b0; // 等待 ready 信号也为0
+              |    end
+              |    else begin
+              |      if(axi_wait_for_ready) begin // 如果现在正在等待来自 Master 的 ready信号
+              |        if(inst_ready) begin // 且接收到了 rready 信号
+              |          pmem_read(axi_raddr, inst_aux); // 那么就把要读的数据传给 rdata 信号
+              |          inst_valid <= 1'b1; // 同时，在下一周期置 rvalid 为有效
+              |          axi_wait_for_ready <= 1'b0; // exit wait for read mode // 然后，退出正在等待模式
+              |        end
+              |        // 如果还没有接收到 rready 信号，什么也不做
+              |      end
+              |      else begin  // 如果现在不是正在等待模式
+              |        if(axi_need_read & inst_ready) begin // 如果现在需要读（读地址通道刚刚fire）信号和 主机的 rready 信号都为真
+              |          pmem_read(axi_raddr, inst_aux); // 那么就把要读的数据传给 rdata 信号
+              |          inst_valid <= 1'b1; // 同时，在下一个时钟上升沿，把rvalid置为1
+              |        end
+              |        else if(axi_need_read) begin // 如果需要读信号为1, 而 主机的 rready 信号为假 ---------------------------------------------------- <- 199行错了 应该是先拉高RVALID等待RREADY，不好意思。
+              |          // wait ready signal for read
+              |          axi_wait_for_ready <= 1'b1;  // 那么进入 等待 ready 模式
+              |          inst_valid <= 1'b0; // 同时 rvalid 置为0
+              |        end
+              |        else begin
+              |          inst_valid <= 1'b0; // 其它情况，保持 rvalid 为0，因为我们没有把握这个时候 rdata 是正确的
+              |        end
+              |      end
+              |    end
+              |  end
               |
               |  // inst selection	
               |  always@(*) 
