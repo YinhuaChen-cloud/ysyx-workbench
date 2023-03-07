@@ -27,15 +27,17 @@ class top extends Module {
 	// device: AXI4DRAM -- for sd, ld instructions
   val axi4dram = Module(new AXI4DRAM)
 
+  // for AXI4Lite bus between IFU and AXI4SRAM
+  ifu.io.ifu_to_axi4sram.inst_in := axi4sram.io.inst
+  axi4sram.io.pc := ifu.io.ifu_to_axi4sram.pc
+
   // for ifu
   ifu.io.ifu_to_exu <> exu.io.ifu_to_exu
-  ifu.io.ifu_to_axi4sram.inst_in := axi4sram.io.inst
   idu.io.inst    := ifu.io.ifu_to_exu.inst
 
   // for sram
   axi4sram.io.clk := clock
   axi4sram.io.rst := reset
-  axi4sram.io.pc := ifu.io.ifu_to_exu.pc
 
   // idu and exu
   idu.io.idu_to_exu <> exu.io.idu_to_exu
