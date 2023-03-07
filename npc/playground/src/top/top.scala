@@ -15,7 +15,7 @@ class top extends Module {
   })
 
   // submodule1 IFU
-  val ifu = Module(new IFU)
+  val ifu = Module(new IFUnew)
 	// submodule2: IDU
   val idu = Module(new IDU)
 	// submodule3: EXU
