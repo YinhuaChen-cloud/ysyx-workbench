@@ -34,9 +34,7 @@ class IFU extends CyhCoreModule with HasResetVector {
 class IFU_to_EXUnew extends CyhCoreBundle() {
   val pc_next = Input(UInt(PC_LEN.W))
 
-  val pc_valid = Output(Bool())
   val pc       = Output(UInt(PC_LEN.W))
-  val pc_ready = Input(Bool())
 }
 
 class IFUnew extends CyhCoreModule with HasResetVector {
