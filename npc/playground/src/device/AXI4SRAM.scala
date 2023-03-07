@@ -93,7 +93,6 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |  // AXI read data section 读数据一节
               |  // 这里包括了读数据握手  也包括了读数据通道  --- TODO: 个人认为这里提到的方法要延迟两个周期，原因是 读地址ready 信号需要等待 读地址 valid 信号
               |  logic axi_wait_for_ready; // Read wait mode, waiting for master ready signal 等待来自Master的读ready信号
-              |  logic [AXI_DATA_WIDTH-1:0] axi_data_to_read; // 要读的data，来自寄存器 --- TODO: 这里的 axi_data_to_read 等下要连接 inst
               |  reg [${XLEN}-1:0]	inst_aux;
               |
               |  always_ff @(posedge clk) begin
