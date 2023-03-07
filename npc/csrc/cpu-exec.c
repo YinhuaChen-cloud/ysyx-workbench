@@ -18,13 +18,6 @@ void single_cycle() {
 #ifdef CONFIG_WAVEFORM
   if(!first_flag) { // 打印还没有 eval() 时的波形
     tfp->dump(contextp->time());
-
-    contextp->timeInc(1); // necessary for wave gen
-    tfp->dump(contextp->time());
-
-    contextp->timeInc(1); // necessary for wave gen
-    tfp->dump(contextp->time());
-
     first_flag = 1;
   }
 #endif
