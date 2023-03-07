@@ -16,6 +16,7 @@
 
 #ifdef CONFIG_WAVEFORM
 #include "verilated_vcd_c.h"
+#define VM_TRACE 1
 #endif
 
 struct timeval boot_time = {};
