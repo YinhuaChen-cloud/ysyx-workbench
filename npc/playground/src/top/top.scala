@@ -29,7 +29,7 @@ class top extends Module {
 
   // for ifu
   ifu.io.ifu_to_exu <> exu.io.ifu_to_exu
-  ifu.io.inst_in := axi4sram.io.inst
+  ifu.io.ifu_to_axi4sram.inst_in := axi4sram.io.inst
   idu.io.inst    := ifu.io.ifu_to_exu.inst
 
   // for sram
