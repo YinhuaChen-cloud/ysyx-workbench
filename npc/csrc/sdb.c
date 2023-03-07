@@ -10,10 +10,6 @@
 #include "watchpoint.h"
 #include <debug.h>
 
-#ifdef CONFIG_WAVEFORM
-#include "verilated_vcd_c.h"
-#endif
-
 uint64_t pc_just_exec;
 
 static char* rl_gets() {
@@ -65,7 +61,6 @@ void cpu_exec(uint32_t n) {
 #ifdef CONFIG_WAVEFORM
 		if (contextp->gotFinish()) 
       break;
-    contextp->timeInc(1); // necessary for wave gen
 #endif
 
 		// NOTE: Already invoke sv_regs_to_c() in main.cpp when initialize difftest
@@ -82,11 +77,6 @@ void cpu_exec(uint32_t n) {
 //		}
 //
 		single_cycle();
-
-#ifdef CONFIG_WAVEFORM
-    extern VerilatedVcdC *tfp;
-		tfp->dump(contextp->time());
-#endif
 
 #ifdef CONFIG_DIFFTEST
 		sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
