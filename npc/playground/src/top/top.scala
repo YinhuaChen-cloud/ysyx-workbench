@@ -29,14 +29,15 @@ class top extends Module {
 
   // ifu.io <> exu.io.ifu_to_exu --- flag: 注意，这里是备份，准备改 AXI4Lite IFU
   ifu.io <> exu.io.ifu_to_exu
+  ifu.io.inst_in := axi4sram.io.inst
 
   // for sram
   axi4sram.io.clk := clock
   axi4sram.io.rst := reset
   // axi4sram.io.pc := ifu.io.pc --- flag: 注意，这里需要改变，准备改 AXI4Lite IFU
-  axi4sram.io.pc := ifu.io.pc
-  idu.io.inst    := axi4sram.io.inst // TODO: wait for being removed
-  exu.io.inst    := axi4sram.io.inst
+  axi4sram.io.pc := ifu.io.ifu_to_exu.pc
+  idu.io.inst    := ifu.io.ifu_to_exu.inst // TODO: wait for being removed
+  // exu.io.inst    := axi4sram.io.inst -- 把inst放回IFU之前做的事情
 
   idu.io.idu_to_exu <> exu.io.idu_to_exu
 
