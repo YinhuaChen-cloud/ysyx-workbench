@@ -8,7 +8,6 @@ import Macros._
 import Macros.Constants._
 
 class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
-  val inst = Input(UInt(conf.inst_len.W))
   val idu_to_exu = Flipped(new IDU_to_EXU())
   val ifu_to_exu = Flipped(new IFU_to_EXUnew())
   val mem_in = Input(UInt(conf.xlen.W))
@@ -24,9 +23,9 @@ class EXU (implicit val conf: Configuration) extends Module {
 
   // submodule1 - register file
   // 1-1. reg addr
-  val rs1_addr = io.inst(RS1_MSB, RS1_LSB)
-  val rs2_addr = io.inst(RS2_MSB, RS2_LSB)
-  val rd_addr  = io.inst(RD_MSB,  RD_LSB) 
+  val rs1_addr = io.ifu_to_exu.inst(RS1_MSB, RS1_LSB)
+  val rs2_addr = io.ifu_to_exu.inst(RS2_MSB, RS2_LSB)
+  val rd_addr  = io.ifu_to_exu.inst(RD_MSB,  RD_LSB) 
   // 1-2. write back data
   val wb_data = Wire(UInt(conf.xlen.W)) // NOTE: data write back to reg or mem
   // 1-3. register file
@@ -56,15 +55,15 @@ class EXU (implicit val conf: Configuration) extends Module {
   // 2-2. calculate imm
   // r
   // i
-  val imm_i = io.inst(31, 20)
+  val imm_i = io.ifu_to_exu.inst(31, 20)
   // s
-  val imm_s = Cat(io.inst(31, 25), io.inst(11,7))
+  val imm_s = Cat(io.ifu_to_exu.inst(31, 25), io.ifu_to_exu.inst(11,7))
   // b
-  val imm_b = Cat(io.inst(31), io.inst(7), io.inst(30,25), io.inst(11,8))
+  val imm_b = Cat(io.ifu_to_exu.inst(31), io.ifu_to_exu.inst(7), io.ifu_to_exu.inst(30,25), io.ifu_to_exu.inst(11,8))
   // u
-  val imm_u = io.inst(31, 12)
+  val imm_u = io.ifu_to_exu.inst(31, 12)
   // j
-  val imm_j = Cat(io.inst(31), io.inst(19,12), io.inst(20), io.inst(30,21))
+  val imm_j = Cat(io.ifu_to_exu.inst(31), io.ifu_to_exu.inst(19,12), io.ifu_to_exu.inst(20), io.ifu_to_exu.inst(30,21))
   // r
   // i
   val imm_i_sext = Cat(Fill(conf.xlen - 12, imm_i(11)), imm_i)
