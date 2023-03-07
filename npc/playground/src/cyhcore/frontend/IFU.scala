@@ -15,6 +15,11 @@ class IFU_to_EXU extends CyhCoreBundle() {
   val pc      = Output(UInt(PC_LEN.W))
 }
 
+class IFU_to_EXUnew extends CyhCoreBundle() {
+  val pc_next = Input(UInt(PC_LEN.W))
+  val pc      = Output(UInt(PC_LEN.W))
+}
+
 class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new IFU_to_EXU())
 
@@ -32,7 +37,7 @@ class IFU extends CyhCoreModule with HasResetVector {
               // |           output reg [${INST_LEN} - 1:0] inst,
               // |           input inst_ready);
 class IFUnew extends CyhCoreModule with HasResetVector {
-  val io = IO(new IFU_to_EXU())
+  val io = IO(new IFU_to_EXUnew())
 
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
   pc_reg := io.pc_next
