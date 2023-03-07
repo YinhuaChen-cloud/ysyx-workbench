@@ -25,8 +25,8 @@ class IFU_to_EXU extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU �
 }
 
 class IFU_to_AXI4SRAM extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
-  val pc      =  Decoupled(UInt(PC_LEN.W))
-  val inst_in =  Flipped(Decoupled(UInt(INST_LEN.W)))
+  val pc      =  Decoupled(UInt(PC_LEN.W)) // 输出
+  val inst_in =  Flipped(Decoupled(UInt(INST_LEN.W))) // 输入
   // val pc      = Output(UInt(PC_LEN.W))
   // val inst_in = Input(UInt(INST_LEN.W))
 }
@@ -46,6 +46,8 @@ class IFU extends CyhCoreModule with HasResetVector {
 
   // for IFU-AXI4SRAM bus
   io.ifu_to_axi4sram.pc.bits  := pc_reg
+  io.ifu_to_axi4sram.pc.valid  := true.B
+  io.ifu_to_axi4sram.inst_in.ready := true.B
 }
 
   // 1. 我们的取指级（IF）应该发出取指信号，包括读请求（valid）和读地址（pc），
