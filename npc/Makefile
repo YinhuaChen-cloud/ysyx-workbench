@@ -47,7 +47,7 @@ NXDC_FILES = constr/top.nxdc
 INC_PATH ?= $(NPC_HOME)/include
 
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc --trace  \
+VERILATOR_CFLAGS += -MMD --build -cc \
 				-O2 --x-assign fast --x-initial fast 
 
 ifeq ($(CONFIG_WAVEFORM), y)
