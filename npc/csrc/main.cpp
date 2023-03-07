@@ -19,6 +19,8 @@
 VerilatedVcdC* tfp = NULL;
 #endif
 
+void dealWithExit();
+
 struct timeval boot_time = {};
 
 static const uint32_t default_img [] = {
@@ -78,24 +80,13 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 void ebreak() {
-//	printf("In main.cpp ebreak\n");  
 	npc_state.halt_pc = *pc;
-//  printf("omg, top->pc = 0x%x\n", top->pc);
-	printTrap();
-
-	close_mtrace();
-	
-	exit(is_exit_status_bad());
+	dealWithExit();
 }
 
 void invalid() { 
-//	printf("In main.cpp invalid\n");
 	invalid_inst(*pc); 
-	printTrap();
-
-	close_mtrace();
-	
-	exit(is_exit_status_bad());
+	dealWithExit();
 }
 
 typedef struct {
@@ -233,26 +224,27 @@ int main(int argc, char** argv, char** env) {
 		sdb_mainloop();
 	}
 	else {
-//		while (!contextp->gotFinish() && contextp->time() < 20) {
 		while (1) {
-//			printf("In while, *pc = 0x%lx\n", *pc);
-//			printf("In while, inst = 0x%x\n", *((uint32_t *)(pmem + *pc - 0x80000000)));
-//			top->io_inst = *((uint32_t *)(pmem + *pc - 0x80000000));
 
 			cpu_exec(-1);
-
-//			single_cycle();
 
 			if (npc_state.state != NPC_RUNNING) break;
 		}
 	}
 
+
+	npc_state.halt_pc = pc_just_exec;
+	npc_state.halt_ret = -1; 
+
+	dealWithExit();
+
+}
+
+void dealWithExit() {
 #ifdef CONFIG_WAVEFORM
 	tfp->close();
 #endif
 
-	npc_state.halt_pc = pc_just_exec;
-	npc_state.halt_ret = -1; 
 	printTrap();
 
 	delete top;
@@ -260,8 +252,6 @@ int main(int argc, char** argv, char** env) {
 	free(pmem);
 
 	close_mtrace();
-
-	// TODO: maybe need to be changed
-	return is_exit_status_bad();
+	exit(is_exit_status_bad());
 }
 
