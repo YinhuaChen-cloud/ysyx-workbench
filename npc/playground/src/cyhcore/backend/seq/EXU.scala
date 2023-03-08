@@ -88,7 +88,7 @@ class EXU (implicit val conf: Configuration) extends Module {
               (io.idu_to_exu.op2_sel === OP2_RS2) -> rs2_data,
               (io.idu_to_exu.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
-              (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
+              (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc_op,
               )).asUInt() & alu_msk
   
   val alu_shamt = Mux((io.idu_to_exu.alu_msk_type === ALU_MSK_W), alu_op2(4, 0), alu_op2(5, 0))

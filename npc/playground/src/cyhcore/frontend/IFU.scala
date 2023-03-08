@@ -20,7 +20,8 @@ trait HasResetVector {
               // |           input inst_ready);
 class IFU_to_EXU extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
   val pc_next  = Input(UInt(PC_LEN.W))
-  val pc       = Output(UInt(PC_LEN.W))
+  val pc_op    = Output(UInt(PC_LEN.W))  // 用来作为指令操作数的pc (比如 auipc 指令)
+  val pc       = Output(UInt(PC_LEN.W))  // 用来计算 next_pc 的pc (比如 beq 等指令)
   val inst = Output(UInt(INST_LEN.W))
 }
 
@@ -45,8 +46,9 @@ class IFU extends CyhCoreModule with HasResetVector {
   lastPC := Mux(io.ifu_to_axi4sram.pc.fire, pc_reg, lastPC) // lastPC 在 pc_reg 更新时(pc.fire)才会更新
 
   // IFU-to-EXU 相关连线
-  io.ifu_to_exu.pc  := lastPC
-  io.ifu_to_exu.inst := io.ifu_to_axi4sram.inst_in.bits
+  io.ifu_to_exu.pc    := pc_reg
+  io.ifu_to_exu.pc_op := lastPC
+  io.ifu_to_exu.inst  := io.ifu_to_axi4sram.inst_in.bits
 
   // for IFU-AXI4SRAM bus --- start
   // pc valid
