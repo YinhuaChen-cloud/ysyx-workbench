@@ -54,7 +54,7 @@ void cpu_exec(uint32_t n) {
 
 #ifdef CONFIG_DIFFTEST
 	riscv64_CPU_state saved_cpu = {};
-  int bus_count = -1;
+  int bus_count = -3;
 #endif
 
 	while(n--) {
