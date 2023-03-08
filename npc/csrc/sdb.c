@@ -83,7 +83,7 @@ void cpu_exec(uint32_t n) {
 #ifdef CONFIG_DIFFTEST
 		sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
     bus_count++;
-    if(bus_count == 4) { // 设想加了总线之后，每四周期执行一条指令
+    if(bus_count == 5) { // 设想加了总线之后，每四周期执行一条指令
       bus_count = 0;
       difftest_step();
     }
