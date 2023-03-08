@@ -31,6 +31,7 @@ class top extends Module {
   ifu.io.ifu_to_axi4sram.inst_in.valid := axi4sram.io.inst_valid  
   ifu.io.ifu_to_axi4sram.inst_in.bits  := axi4sram.io.inst       
   axi4sram.io.inst_ready               := ifu.io.ifu_to_axi4sram.inst_in.ready
+  axi4sram.io.pc_for_diff              := ifu.io.ifu_to_axi4sram.pc_op
 
   axi4sram.io.pc_valid            := ifu.io.ifu_to_axi4sram.pc.valid
   axi4sram.io.pc                  := ifu.io.ifu_to_axi4sram.pc.bits 
