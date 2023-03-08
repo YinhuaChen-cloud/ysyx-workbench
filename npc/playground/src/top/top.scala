@@ -72,12 +72,14 @@ class top extends Module {
   // val tick = Wire(Bool())
   // val number = UInt(4.W)
   val (number, tick) = counter
+  val trueTick = Wire(Bool())
+  trueTick := (number === 2.U)
   printf("number = %d\n", number)
   printf("tick = %d\n", tick)
   ifu.io.enable := DontCare
   idu.io.enable := DontCare
-  exu.io.enable := tick
-  axi4dram.io.enable := tick
+  exu.io.enable      := trueTick
+  axi4dram.io.enable := trueTick
 
 }
 
