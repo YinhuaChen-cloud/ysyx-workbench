@@ -32,7 +32,7 @@ class DPIC extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
               |  // used to report invalid inst error
               |  import "DPI-C" function void invalid();
               |    always@(posedge clk)
-              |      if (~rst && ~inv_inst)
+              |      if (~rst && inv_inst)
               |        invalid();
               |
               |  // expose regfile for difftest
