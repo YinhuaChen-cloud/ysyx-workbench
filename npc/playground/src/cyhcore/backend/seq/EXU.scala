@@ -143,9 +143,9 @@ class EXU (implicit val conf: Configuration) extends Module {
   val jr_target        = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
 
-  pc_plus4   := (io.ifu_to_exu.pc + 4.asUInt(conf.xlen.W))
-  br_target  := io.ifu_to_exu.pc + imm_b_sext 
-  jmp_target := io.ifu_to_exu.pc + imm_j_sext
+  pc_plus4   := (io.ifu_to_exu.pc_op + 4.asUInt(conf.xlen.W))
+  br_target  := io.ifu_to_exu.pc_op + imm_b_sext 
+  jmp_target := io.ifu_to_exu.pc_op + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
 
   io.ifu_to_exu.pc_next := MuxCase(pc_plus4, Array(
