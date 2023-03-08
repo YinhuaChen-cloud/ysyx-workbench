@@ -71,9 +71,9 @@ class top extends Module {
   val counter = Counter(true.B, cycles)
   // val tick = Wire(Bool())
   // val number = UInt(4.W)
-  val (tick, number) = counter
+  val (number, tick) = counter
   printf("number = %d\n", number)
-  printf(s"tick = ${tick}\n")
+  printf("tick = %d\n", tick)
   ifu.io.enable := DontCare
   idu.io.enable := DontCare
   exu.io.enable := tick
