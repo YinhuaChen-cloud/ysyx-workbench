@@ -216,7 +216,8 @@ class INST_READ extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |           input clk,
               |           input rst,
               |           input [${XLEN}-1:0] pc,
-              |           output reg [${INST_LEN} - 1:0] inst);
+              |           output reg [${INST_LEN} - 1:0] inst,
+              |           input [${XLEN}-1:0] pc_for_diff);
               |
               |  // expose pc to cpp simulation environment
               |  import "DPI-C" function void set_pc(input logic [${XLEN}-1:0] a []);
