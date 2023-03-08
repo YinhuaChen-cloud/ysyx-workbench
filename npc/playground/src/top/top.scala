@@ -1,6 +1,7 @@
 package system
 
 import chisel3._
+import chisel3.util.Counter
 import Conf._
 
 import cyhcore._
@@ -63,6 +64,17 @@ class top extends Module {
   axi4dram.io.mem_write_data := exu.io.mem_write_data
   axi4dram.io.mem_write_msk  := exu.io.mem_write_msk
   exu.io.mem_in   := axi4dram.io.mem_in
+
+  // 以下这个Counter只是为了在加流水线之前，让我的CPU能够通过测试用例
+  // 每个 4 个时钟中，tick 会有一个时钟周期为 true.B, 此时使能 寄存器写入和内存写入
+  val cycles = 4
+  val counter = Counter(cycles)
+  val tick = Wire(Bool())
+  tick := (counter.value === 3.U)
+  ifu.io.enable := DontCare
+  idu.io.enable := DontCare
+  exu.io.enable := tick
+  axi4dram.io.enable := tick
 
 }
 

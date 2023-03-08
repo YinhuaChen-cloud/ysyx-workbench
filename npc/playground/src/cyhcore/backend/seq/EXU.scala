@@ -16,6 +16,9 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val mem_write_data = Output(UInt(conf.xlen.W))
   val isRead = Output(Bool())
   val mem_write_msk = Output(UInt(8.W))
+
+  // 在加入流水线之前，用来适配 IFU-AXI4SRAM 总线
+  val enable = Input(Bool()) // 用来使能寄存器的写入
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
@@ -30,7 +33,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   val wb_data = Wire(UInt(conf.xlen.W)) // NOTE: data write back to reg or mem
   // 1-3. register file
   val regfile = RegInit(VecInit(Seq.fill(conf.nr_reg)(0.U(conf.xlen.W))))
-  regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen), wb_data, regfile(rd_addr))
+  regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen && io.enable), wb_data, regfile(rd_addr))
 
   val regfile_output_aux = Wire(Vec(conf.nr_reg * conf.xlen, Bool()))
   for(i <- 0 until conf.nr_reg) {

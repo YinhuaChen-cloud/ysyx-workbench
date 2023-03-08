@@ -36,6 +36,8 @@ class IFU_to_AXI4SRAM extends CyhCoreBundle() { // TODO: 下一个步骤，让 I
 class IFU_bundle extends CyhCoreBundle() {
   val ifu_to_exu = new IFU_to_EXU()
   val ifu_to_axi4sram = new IFU_to_AXI4SRAM()
+  // 在加入流水线之前，用来适配 IFU-AXI4SRAM 总线
+  val enable = Input(Bool()) // IFU 不需要，IFU 本来就每隔四个周期(fire) 才更新
 }
 
 class IFU extends CyhCoreModule with HasResetVector {

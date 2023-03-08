@@ -14,6 +14,9 @@ class AXI4DRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
     val mem_write_data = Input(UInt(XLEN.W))
     val mem_write_msk = Input(UInt(8.W))
     val mem_in = Output(UInt(XLEN.W))
+
+    // 在加入流水线之前，用来适配 IFU-AXI4SRAM 总线
+    val enable = Input(Bool()) // 用来使能寄存器的写入
   })
 
   setInline("AXI4DRAM.v",
@@ -26,7 +29,9 @@ class AXI4DRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
               |           input isWriteMem,
               |           input [${XLEN}-1:0] mem_write_data,
               |           input [7:0] mem_write_msk,
-              |           output reg [${XLEN}-1:0] mem_in);
+              |           output reg [${XLEN}-1:0] mem_in,
+              |           // 在加入流水线之前，用来适配 IFU-AXI4SRAM 总线
+              |           input enable); // 用来使能寄存器的写入
               |
               |  // for mem_rw
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
@@ -40,7 +45,7 @@ class AXI4DRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
               |  end
               |  // for writing mem
               |  always@(posedge clk) 
-              |    if(isWriteMem) 
+              |    if(isWriteMem & enable) 
               |      pmem_write(mem_addr, mem_write_data, mem_write_msk);
               |
               |endmodule
