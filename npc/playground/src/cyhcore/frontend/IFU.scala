@@ -40,13 +40,19 @@ class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new IFU_bundle())
 
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
-  pc_reg := io.ifu_to_exu.pc_next
   io.ifu_to_exu.pc  := pc_reg
   io.ifu_to_exu.inst := io.ifu_to_axi4sram.inst_in.bits
 
   // for IFU-AXI4SRAM bus
   io.ifu_to_axi4sram.pc.bits  := pc_reg
-  io.ifu_to_axi4sram.pc.valid  := true.B
+  pc_reg := io.ifu_to_exu.pc_next
+
+  // io.ifu_to_axi4sram.pc.valid
+  when(io.ifu_to_axi4sram.pc.ready === true.B) {
+    io.ifu_to_axi4sram.pc.valid  := false.B // 一个周期之后变成false
+  } .otherwise {
+    io.ifu_to_axi4sram.pc.valid  := true.B
+  }
   io.ifu_to_axi4sram.inst_in.ready := true.B
 }
 
