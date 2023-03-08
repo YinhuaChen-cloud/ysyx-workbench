@@ -27,6 +27,8 @@ class IDU_bundle (implicit val conf: Configuration) extends Bundle() {
   val isEbreak  = Output(Bool())
   val inv_inst  = Output(Bool())
   val isWriteMem = Output(Bool())
+  // 在加入流水线之前，用来适配 IFU-AXI4SRAM 总线
+  val enable = Input(Bool()) // IDU 好像没有什么可以写入的部件，也不需要
 } 
 
 class IDU (implicit val conf: Configuration) extends Module {

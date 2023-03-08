@@ -165,6 +165,7 @@ class AXI4SRAMnew extends CyhCoreModule {
     val inst = Output(UInt(INST_LEN.W))
     val inst_ready = Input(Bool())
 
+    val pc_for_diff  = Input(UInt(XLEN.W))
   })
 
   // for IFU-AXI4SRAM bus --- start
@@ -181,6 +182,7 @@ class AXI4SRAMnew extends CyhCoreModule {
   inst_read_module.io.clk := clock
   inst_read_module.io.rst := reset
   inst_read_module.io.pc  := io.pc
+  inst_read_module.io.pc_for_diff := io.pc_for_diff
   // inst
   val inst_reg = RegInit(0.U(INST_LEN.W))
   io.inst := inst_reg
@@ -202,8 +204,10 @@ class INST_READ extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
-    val pc = Input(UInt(XLEN.W))
+    val pc  = Input(UInt(XLEN.W))
     val inst = Output(UInt(INST_LEN.W))
+
+    val pc_for_diff  = Input(UInt(XLEN.W))
   })
 
   setInline("INST_READ.v",
@@ -212,11 +216,12 @@ class INST_READ extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |           input clk,
               |           input rst,
               |           input [${XLEN}-1:0] pc,
-              |           output reg [${INST_LEN} - 1:0] inst);
+              |           output reg [${INST_LEN} - 1:0] inst,
+              |           input [${XLEN}-1:0] pc_for_diff);
               |
               |  // expose pc to cpp simulation environment
               |  import "DPI-C" function void set_pc(input logic [${XLEN}-1:0] a []);
-              |  initial set_pc(pc);  
+              |  initial set_pc(pc_for_diff);  
               |
               |  // for mem_r
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);

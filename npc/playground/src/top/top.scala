@@ -1,6 +1,7 @@
 package system
 
 import chisel3._
+import chisel3.util.Counter
 import Conf._
 
 import cyhcore._
@@ -31,6 +32,7 @@ class top extends Module {
   ifu.io.ifu_to_axi4sram.inst_in.valid := axi4sram.io.inst_valid  
   ifu.io.ifu_to_axi4sram.inst_in.bits  := axi4sram.io.inst       
   axi4sram.io.inst_ready               := ifu.io.ifu_to_axi4sram.inst_in.ready
+  axi4sram.io.pc_for_diff              := ifu.io.ifu_to_axi4sram.pc_for_diff
 
   axi4sram.io.pc_valid            := ifu.io.ifu_to_axi4sram.pc.valid
   axi4sram.io.pc                  := ifu.io.ifu_to_axi4sram.pc.bits 
@@ -62,6 +64,22 @@ class top extends Module {
   axi4dram.io.mem_write_data := exu.io.mem_write_data
   axi4dram.io.mem_write_msk  := exu.io.mem_write_msk
   exu.io.mem_in   := axi4dram.io.mem_in
+
+  // 以下这个Counter只是为了在加流水线之前，让我的CPU能够通过测试用例
+  // 每个 4 个时钟中，tick 会有一个时钟周期为 true.B, 此时使能 寄存器写入和内存写入
+  val cycles = 8
+  val counter = Counter(true.B, cycles)
+  // val tick = Wire(Bool())
+  // val number = UInt(4.W)
+  val (number, tick) = counter
+  val trueTick = Wire(Bool())
+  trueTick := (number === 2.U)
+  printf("number = %d\n", number)
+  printf("tick = %d\n", tick)
+  ifu.io.enable := DontCare
+  idu.io.enable := DontCare
+  exu.io.enable      := trueTick
+  axi4dram.io.enable := trueTick
 
 }
 

@@ -57,6 +57,8 @@ static bool isa_difftest_checkregs(riscv64_CPU_state *ref_r) {
 			printred("------- regs differs, cpu.%s = 0x%lx, ref.%s = 0x%lx -------\n", regs[i], cpu.gpr[i], regs[i], ref_r->gpr[i]);
 		}
 	}
+  // 注意：在这里进行difftest的 pc 只是专门用来做 ALU op2 (比如auipc指令的操作数2) 的 pc
+  // 在多周期CPU中，真正的 pc 在取到当前正要执行的指令后，就立刻跳转、开始取下一条指令了
 	if(cpu.pc != ref_r->pc) { 
 		theSame = false;
 		printred("------- pc differs, cpu.pc = 0x%lx, ref.pc = 0x%lx -------\n", cpu.pc, ref_r->pc);

@@ -16,6 +16,9 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val mem_write_data = Output(UInt(conf.xlen.W))
   val isRead = Output(Bool())
   val mem_write_msk = Output(UInt(8.W))
+
+  // 在加入流水线之前，用来适配 IFU-AXI4SRAM 总线
+  val enable = Input(Bool()) // 用来使能寄存器的写入
 }
 
 class EXU (implicit val conf: Configuration) extends Module {
@@ -30,7 +33,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   val wb_data = Wire(UInt(conf.xlen.W)) // NOTE: data write back to reg or mem
   // 1-3. register file
   val regfile = RegInit(VecInit(Seq.fill(conf.nr_reg)(0.U(conf.xlen.W))))
-  regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen), wb_data, regfile(rd_addr))
+  regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen && io.enable), wb_data, regfile(rd_addr))
 
   val regfile_output_aux = Wire(Vec(conf.nr_reg * conf.xlen, Bool()))
   for(i <- 0 until conf.nr_reg) {
@@ -88,7 +91,7 @@ class EXU (implicit val conf: Configuration) extends Module {
               (io.idu_to_exu.op2_sel === OP2_RS2) -> rs2_data,
               (io.idu_to_exu.op2_sel === OP2_IMI) -> imm_i_sext,
               (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
-              (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
+              (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc_op,
               )).asUInt() & alu_msk
   
   val alu_shamt = Mux((io.idu_to_exu.alu_msk_type === ALU_MSK_W), alu_op2(4, 0), alu_op2(5, 0))
@@ -140,9 +143,9 @@ class EXU (implicit val conf: Configuration) extends Module {
   val jr_target        = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
 
-  pc_plus4   := (io.ifu_to_exu.pc + 4.asUInt(conf.xlen.W))
-  br_target  := io.ifu_to_exu.pc + imm_b_sext 
-  jmp_target := io.ifu_to_exu.pc + imm_j_sext
+  pc_plus4   := (io.ifu_to_exu.pc_op + 4.asUInt(conf.xlen.W)) // pc + 4 只能用现有的pc; beq，jmp 等指令才用 pc_op
+  br_target  := io.ifu_to_exu.pc_op + imm_b_sext 
+  jmp_target := io.ifu_to_exu.pc_op + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
 
   io.ifu_to_exu.pc_next := MuxCase(pc_plus4, Array(
