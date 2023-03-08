@@ -49,9 +49,11 @@ class IFU extends CyhCoreModule with HasResetVector {
   lastPC := Mux(io.ifu_to_axi4sram.pc.fire, pc_reg, lastPC) // lastPC 在 pc_reg 更新时(pc.fire)才会更新
 
   // IFU-to-EXU 相关连线
-  io.ifu_to_exu.pc    := pc_reg
-  io.ifu_to_exu.pc_op := lastPC
-  io.ifu_to_exu.inst  := io.ifu_to_axi4sram.inst_in.bits
+  io.ifu_to_exu.pc         := pc_reg
+  io.ifu_to_exu.pc_op      := lastPC
+  io.ifu_to_exu.inst       := io.ifu_to_axi4sram.inst_in.bits
+  // for diff
+  io.ifu_to_axi4sram.pc_op := lastPC
 
   // for IFU-AXI4SRAM bus --- start
   // pc valid
@@ -74,9 +76,6 @@ class IFU extends CyhCoreModule with HasResetVector {
     inst_ready := false.B
   }
   // for IFU-AXI4SRAM bus --- end
-
-  // for diff
-  io.ifu_to_axi4sram.pc_op := lastPC
 
 }
 
