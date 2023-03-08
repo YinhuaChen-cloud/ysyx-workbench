@@ -71,6 +71,7 @@ class top extends Module {
   val counter = Counter(cycles)
   val tick = Wire(Bool())
   tick := (counter.value === 1.U)
+  printf("counter.value = %d\n", counter.value)
   ifu.io.enable := DontCare
   idu.io.enable := DontCare
   exu.io.enable := tick
