@@ -43,10 +43,8 @@ class IFU extends CyhCoreModule with HasResetVector {
   io.ifu_to_exu.pc  := pc_reg
   io.ifu_to_exu.inst := io.ifu_to_axi4sram.inst_in.bits
 
-  // for IFU-AXI4SRAM bus
-  io.ifu_to_axi4sram.pc.bits  := pc_reg
-  pc_reg := io.ifu_to_exu.pc_next
-
+  // for IFU-AXI4SRAM bus --- start
+  // pc valid
   val pc_valid = RegInit(false.B)
   io.ifu_to_axi4sram.pc.valid := pc_valid
   when(io.ifu_to_axi4sram.pc.ready === true.B) {
@@ -54,8 +52,12 @@ class IFU extends CyhCoreModule with HasResetVector {
   } .otherwise {
     pc_valid  := true.B
   }
-
+  // pc
+  io.ifu_to_axi4sram.pc.bits  := pc_reg
+  pc_reg := Mux(io.ifu_to_axi4sram.pc.fire(), io.ifu_to_exu.pc_next, pc_reg)
+  // inst ready
   io.ifu_to_axi4sram.inst_in.ready := true.B
+  // for IFU-AXI4SRAM bus --- end
 }
 
   // 1. 我们的取指级（IF）应该发出取指信号，包括读请求（valid）和读地址（pc），
