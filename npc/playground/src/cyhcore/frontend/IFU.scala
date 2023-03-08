@@ -39,8 +39,13 @@ class IFU_bundle extends CyhCoreBundle() {
 class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new IFU_bundle())
 
-  val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
-  io.ifu_to_exu.pc  := pc_reg
+  // TODO：果壳里，PC寄存器的长度是39
+  val lastPC = RegInit(resetVector.U(PC_LEN.W)) // 用来给IDU/EXU当操作数（比如 auipc 指令）的PC
+  val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // 用来取指的PC
+  lastPC := Mux(io.ifu_to_axi4sram.pc.fire, pc_reg, lastPC) // lastPC 在 pc_reg 更新时(pc.fire)才会更新
+
+  // IFU-to-EXU 相关连线
+  io.ifu_to_exu.pc  := lastPC
   io.ifu_to_exu.inst := io.ifu_to_axi4sram.inst_in.bits
 
   // for IFU-AXI4SRAM bus --- start
