@@ -67,7 +67,7 @@ class top extends Module {
 
   // 以下这个Counter只是为了在加流水线之前，让我的CPU能够通过测试用例
   // 每个 4 个时钟中，tick 会有一个时钟周期为 true.B, 此时使能 寄存器写入和内存写入
-  val cycles = 4
+  val cycles = 8
   val counter = Counter(true.B, cycles)
   // val tick = Wire(Bool())
   // val number = UInt(4.W)
