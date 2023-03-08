@@ -47,12 +47,14 @@ class IFU extends CyhCoreModule with HasResetVector {
   io.ifu_to_axi4sram.pc.bits  := pc_reg
   pc_reg := io.ifu_to_exu.pc_next
 
-  // io.ifu_to_axi4sram.pc.valid
+  val pc_valid = RegInit(false.B)
+  io.ifu_to_axi4sram.pc.valid := pc_valid
   when(io.ifu_to_axi4sram.pc.ready === true.B) {
-    io.ifu_to_axi4sram.pc.valid  := false.B // 一个周期之后变成false
+    pc_valid  := false.B  // 一个周期之后变成false
   } .otherwise {
-    io.ifu_to_axi4sram.pc.valid  := true.B
+    pc_valid  := true.B
   }
+
   io.ifu_to_axi4sram.inst_in.ready := true.B
 }
 
