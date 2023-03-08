@@ -109,10 +109,10 @@ class AXI4SRAMnew extends BlackBox with HasBlackBoxInline with HasCyhCoreParamet
               |          inst_valid <= 1'b0; // 同时，在下一周期置 rvalid 为有效
               |          axi_wait_for_ready <= 1'b0; // exit wait for read mode // 然后，退出正在等待模式
               |        end
-              |      end
-              |      else begin
-              |        inst_valid <= 1'b1; 
-              |        // 如果还没有接收到 rready 信号，则 inst_valid 为 1
+              |        else begin
+              |          inst_valid <= 1'b1; 
+              |          // 如果还没有接收到 rready 信号，则 inst_valid 为 1
+              |        end
               |      end
               |      else begin  // 如果现在不是正在等待模式
               |        if(axi_need_read & inst_ready) begin // 如果现在需要读（读地址通道刚刚fire）信号和 主机的 rready 信号都为真
