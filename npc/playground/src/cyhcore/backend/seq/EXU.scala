@@ -143,7 +143,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   val jr_target        = Wire(UInt(32.W))
 //  val exception_target = Wire(UInt(32.W))
 
-  pc_plus4   := (io.ifu_to_exu.pc_op + 4.asUInt(conf.xlen.W))
+  pc_plus4   := (io.ifu_to_exu.pc + 4.asUInt(conf.xlen.W)) // pc + 4 只能用现有的pc; beq，jmp 等指令才用 pc_op
   br_target  := io.ifu_to_exu.pc_op + imm_b_sext 
   jmp_target := io.ifu_to_exu.pc_op + imm_j_sext
   jr_target  := rs1_data + imm_i_sext 
