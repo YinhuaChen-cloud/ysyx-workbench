@@ -53,7 +53,8 @@ class IFU extends CyhCoreModule with HasResetVector {
   io.ifu_to_exu.pc_op      := lastPC
   io.ifu_to_exu.inst       := io.ifu_to_axi4sram.inst_in.bits
   // for diff
-  io.ifu_to_axi4sram.pc_for_diff := io.ifu_to_exu.pc_reg
+  // io.ifu_to_axi4sram.pc_for_diff := io.ifu_to_exu.pc_op 
+  io.ifu_to_axi4sram.pc_for_diff := pc_reg
 
   // for IFU-AXI4SRAM bus --- start
   // pc valid
