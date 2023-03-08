@@ -40,14 +40,30 @@ class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new IFU_bundle())
 
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
-  pc_reg := io.ifu_to_exu.pc_next
   io.ifu_to_exu.pc  := pc_reg
   io.ifu_to_exu.inst := io.ifu_to_axi4sram.inst_in.bits
 
-  // for IFU-AXI4SRAM bus
+  // for IFU-AXI4SRAM bus --- start
+  // pc valid
+  val pc_valid = RegInit(false.B)
+  io.ifu_to_axi4sram.pc.valid := pc_valid
+  when(io.ifu_to_axi4sram.pc.ready === true.B) {
+    pc_valid  := false.B  // 一个周期之后变成false
+  } .otherwise {
+    pc_valid  := true.B
+  }
+  // pc
   io.ifu_to_axi4sram.pc.bits  := pc_reg
-  io.ifu_to_axi4sram.pc.valid  := true.B
-  io.ifu_to_axi4sram.inst_in.ready := true.B
+  pc_reg := Mux(io.ifu_to_axi4sram.pc.fire, io.ifu_to_exu.pc_next, pc_reg)
+  // inst ready
+  val inst_ready = RegInit(false.B)
+  io.ifu_to_axi4sram.inst_in.ready := inst_ready
+  when(io.ifu_to_axi4sram.inst_in.valid === true.B) {
+    inst_ready := true.B
+  } .otherwise {
+    inst_ready := false.B
+  }
+  // for IFU-AXI4SRAM bus --- end
 }
 
   // 1. 我们的取指级（IF）应该发出取指信号，包括读请求（valid）和读地址（pc），

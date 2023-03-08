@@ -40,9 +40,9 @@ class top extends Module {
   ifu.io.ifu_to_exu <> exu.io.ifu_to_exu
   idu.io.inst    := ifu.io.ifu_to_exu.inst
 
-  // for sram
-  axi4sram.io.clk := clock
-  axi4sram.io.rst := reset
+  // // for sram
+  // axi4sram.io.clk := clock
+  // axi4sram.io.rst := reset
 
   // idu and exu
   idu.io.idu_to_exu <> exu.io.idu_to_exu
