@@ -7,29 +7,39 @@ import Conf._
 import Macros._
 import Macros.Constants._
 
+    // // EXU -> AXI4DRAM
+    // val mem_in = Output(UInt(XLEN.W))
+    // val mem_addr = Input(UInt(XLEN.W))
+    // val mem_write_data = Input(UInt(XLEN.W))
+    // val isRead = Input(Bool())
+    // val mem_write_msk = Input(UInt(8.W))
+    // // IDU -> AXI4DRAM
+    // val isWriteMem = Input(Bool())
+
 class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val idu_to_exu = Flipped(new IDU_to_EXU())
   val ifu_to_exu = Flipped(new IFU_to_EXU())
-  val mem_in = Input(UInt(conf.xlen.W))
   val regfile_output = Output(UInt((conf.nr_reg * conf.xlen).W))
+  // 内存读写相关 --------------------------- start
+  val mem_in = Input(UInt(conf.xlen.W))
   val mem_addr = Output(UInt(conf.xlen.W))
   val mem_write_data = Output(UInt(conf.xlen.W))
   val isRead = Output(Bool())
   val mem_write_msk = Output(UInt(8.W))
 }
 
-class EXU (implicit val conf: Configuration) extends Module {
+class EXU (implicit val conf: Configuration) extends CyhCoreModule {
   val io = IO(new EXU_bundle())
 
   // submodule1 - register file
   // 1-1. reg addr
+  val regfile = RegInit(VecInit(Seq.fill(NR_GPRS)(0.U(XLEN.W))))
   val rs1_addr = io.ifu_to_exu.inst(RS1_MSB, RS1_LSB)
   val rs2_addr = io.ifu_to_exu.inst(RS2_MSB, RS2_LSB)
   val rd_addr  = io.ifu_to_exu.inst(RD_MSB,  RD_LSB) 
   // 1-2. write back data
   val wb_data = Wire(UInt(conf.xlen.W)) // NOTE: data write back to reg or mem
   // 1-3. register file
-  val regfile = RegInit(VecInit(Seq.fill(conf.nr_reg)(0.U(conf.xlen.W))))
   regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen), wb_data, regfile(rd_addr))
 
   val regfile_output_aux = Wire(Vec(conf.nr_reg * conf.xlen, Bool()))
@@ -38,7 +48,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   }
   io.regfile_output := regfile_output_aux.asUInt
 
-  // submodule1.5 - data msk
+  // submodule2 - data msk
   val alu_msk = MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
               (io.idu_to_exu.alu_msk_type === ALU_MSK_W) -> "hffff_ffff".U(conf.xlen.W),
               ))
