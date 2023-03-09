@@ -6,6 +6,12 @@ import Conf._
 import Macros._
 import Macros.Constants._
 
+  // def alu = 0.U(log2Up(num).W)
+  // def lsu = 1.U(log2Up(num).W)
+  // def mdu = 2.U(log2Up(num).W)
+  // def csr = 3.U(log2Up(num).W)
+  // def bru = alu
+
 class IDU_to_EXU (implicit val conf: Configuration) extends Bundle() {
   val br_eq     = Input(Bool())
   val br_lt     = Input(Bool())
