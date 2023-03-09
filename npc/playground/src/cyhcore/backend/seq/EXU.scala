@@ -23,7 +23,7 @@ class EXU (implicit val conf: Configuration) extends CyhCoreModule {
 
   // submodule1 - register file
   // 1-1. reg addr
-  val regfile = RegInit(VecInit(Seq.fill(NRReg)(0.U(XLEN.W))))
+  val regfile = RegInit(VecInit(Seq.fill(NR_GPRS)(0.U(XLEN.W))))
   val rs1_addr = io.ifu_to_exu.inst(RS1_MSB, RS1_LSB)
   val rs2_addr = io.ifu_to_exu.inst(RS2_MSB, RS2_LSB)
   val rd_addr  = io.ifu_to_exu.inst(RD_MSB,  RD_LSB) 
