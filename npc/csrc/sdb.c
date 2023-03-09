@@ -54,7 +54,6 @@ void cpu_exec(uint32_t n) {
 
 #ifdef CONFIG_DIFFTEST
 	riscv64_CPU_state saved_cpu = {};
-  int bus_count = -3;
 #endif
 
 	while(n--) {
@@ -82,11 +81,7 @@ void cpu_exec(uint32_t n) {
 
 #ifdef CONFIG_DIFFTEST
 		sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
-    bus_count++;
-    if(bus_count == 8) { // 设想加了总线之后，每四周期执行一条指令
-      bus_count = 0;
-      difftest_step();
-    }
+		difftest_step();
 #endif
 
 #ifdef CONFIG_WATCHPOINTS

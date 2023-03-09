@@ -27,14 +27,12 @@ class IDU_bundle (implicit val conf: Configuration) extends Bundle() {
   val isEbreak  = Output(Bool())
   val inv_inst  = Output(Bool())
   val isWriteMem = Output(Bool())
-  // 在加入流水线之前，用来适配 IFU-AXI4SRAM 总线
-  val enable = Input(Bool()) // IDU 好像没有什么可以写入的部件，也不需要
 } 
 
 class IDU (implicit val conf: Configuration) extends Module {
   val io = IO(new IDU_bundle())
 
-  // The core of DecodeUnit 几乎所有的指令都列在这里了
+  // The core of DecodeUnit
   val decoded_signals = ListLookup(
     io.inst, Instructions.DecodeDefault,
     Instructions.DecodeTable
@@ -74,4 +72,18 @@ class IDU (implicit val conf: Configuration) extends Module {
   io.idu_to_exu.alu_msk_type := alu_msk_type
   
 }
+
+
+//  io.src2 := MuxLookup(
+//    instType.asUInt, 0.U,
+//    ArraySeq.unsafeWrapArray(Array(
+//      Rtype.asUInt -> reg_stack(rs2),
+//      Itype.asUInt -> SEXT(xlen, unpacked.imm),
+//      Stype.asUInt -> reg_stack(rs2),
+//      Btype.asUInt -> reg_stack(rs2),
+//      Utype.asUInt -> 0.U, 
+//      Jtype.asUInt -> 0.U,
+//      Special.asUInt -> 0.U,
+//    ))
+//  )
 

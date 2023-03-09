@@ -5,7 +5,4 @@
  *
  */
 #define CONFIG_MSIZE 0x4000000
-#define CONFIG_WATCHPOINTS 1
 #define CONFIG_DIFFTEST 1
-#define CONFIG_SDB 1
-#define CONFIG_WAVEFORM 1

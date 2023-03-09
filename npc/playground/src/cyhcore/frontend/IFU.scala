@@ -20,64 +20,30 @@ trait HasResetVector {
               // |           input inst_ready);
 class IFU_to_EXU extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
   val pc_next  = Input(UInt(PC_LEN.W))
-  val pc_op    = Output(UInt(PC_LEN.W))  // 用来作为指令操作数的pc (比如 auipc 指令)
-  val pc       = Output(UInt(PC_LEN.W))  // 用来计算 next_pc 的pc (比如 beq 等指令)
+  val pc       = Output(UInt(PC_LEN.W))
   val inst = Output(UInt(INST_LEN.W))
 }
 
 class IFU_to_AXI4SRAM extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
-  val pc      =  Decoupled(UInt(PC_LEN.W)) // 输出
-  val inst_in =  Flipped(Decoupled(UInt(INST_LEN.W))) // 输入
-  val pc_for_diff   =  Output(UInt(PC_LEN.W)) // 输出
-  // val pc      = Output(UInt(PC_LEN.W))
-  // val inst_in = Input(UInt(INST_LEN.W))
+  // val pc      = Output(Decoupled(UInt(PC_LEN.W)))
+  // val inst_in =  Input(Decoupled(UInt(INST_LEN.W)))
+  val pc      = Output(UInt(PC_LEN.W))
+  val inst_in = Input(UInt(INST_LEN.W))
 }
 
 class IFU_bundle extends CyhCoreBundle() {
   val ifu_to_exu = new IFU_to_EXU()
   val ifu_to_axi4sram = new IFU_to_AXI4SRAM()
-  // 在加入流水线之前，用来适配 IFU-AXI4SRAM 总线
-  val enable = Input(Bool()) // IFU 不需要，IFU 本来就每隔四个周期(fire) 才更新
 }
 
 class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new IFU_bundle())
 
-  // TODO：果壳里，PC寄存器的长度是39
-  val lastPC = RegInit(resetVector.U(PC_LEN.W)) // 用来给IDU/EXU当操作数（比如 auipc 指令）的PC
-  val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // 用来取指的PC
-  lastPC := Mux(io.ifu_to_axi4sram.pc.fire, pc_reg, lastPC) // lastPC 在 pc_reg 更新时(pc.fire)才会更新
-
-  // IFU-to-EXU 相关连线
-  io.ifu_to_exu.pc         := pc_reg
-  io.ifu_to_exu.pc_op      := lastPC
-  io.ifu_to_exu.inst       := io.ifu_to_axi4sram.inst_in.bits
-  // for diff
-  // io.ifu_to_axi4sram.pc_for_diff := io.ifu_to_exu.pc_op 
-  io.ifu_to_axi4sram.pc_for_diff := pc_reg
-
-  // for IFU-AXI4SRAM bus --- start
-  // pc valid
-  val pc_valid = RegInit(false.B)
-  io.ifu_to_axi4sram.pc.valid := pc_valid
-  when(io.ifu_to_axi4sram.pc.ready === true.B) {
-    pc_valid  := false.B  // 一个周期之后变成false
-  } .otherwise {
-    pc_valid  := true.B
-  }
-  // pc
-  io.ifu_to_axi4sram.pc.bits  := pc_reg
-  pc_reg := Mux(io.ifu_to_axi4sram.pc.fire, io.ifu_to_exu.pc_next, pc_reg)
-  // inst ready
-  val inst_ready = RegInit(false.B)
-  io.ifu_to_axi4sram.inst_in.ready := inst_ready
-  when(io.ifu_to_axi4sram.inst_in.valid === true.B) {
-    inst_ready := true.B
-  } .otherwise {
-    inst_ready := false.B
-  }
-  // for IFU-AXI4SRAM bus --- end
-
+  val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
+  pc_reg := io.ifu_to_exu.pc_next
+  io.ifu_to_exu.pc  := pc_reg
+  io.ifu_to_axi4sram.pc  := pc_reg
+  io.ifu_to_exu.inst := io.ifu_to_axi4sram.inst_in
 }
 
   // 1. 我们的取指级（IF）应该发出取指信号，包括读请求（valid）和读地址（pc），
