@@ -8,8 +8,8 @@ import Macros.Constants._
 
 object FuType {
   def alu = 0.U(log2Up(num).W)
-  def lsu = 1.U(3.W)
-  def mdu = 2.U(3.W)
+  def lsu = 1.U(log2Up(num).W)
+  def mdu = 2.U(log2Up(num).W)
   // def csr = 3.U(3.W)
   // def mou = 4.U(3.W)
   // def bru = if(IndependentBru) "b101".U
