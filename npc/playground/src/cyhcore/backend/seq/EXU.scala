@@ -23,13 +23,13 @@ class EXU (implicit val conf: Configuration) extends Module {
 
   // submodule1 - register file
   // 1-1. reg addr
+  val regfile = RegInit(VecInit(Seq.fill(NRReg)(0.U(XLEN.W))))
   val rs1_addr = io.ifu_to_exu.inst(RS1_MSB, RS1_LSB)
   val rs2_addr = io.ifu_to_exu.inst(RS2_MSB, RS2_LSB)
   val rd_addr  = io.ifu_to_exu.inst(RD_MSB,  RD_LSB) 
   // 1-2. write back data
   val wb_data = Wire(UInt(conf.xlen.W)) // NOTE: data write back to reg or mem
   // 1-3. register file
-  val regfile = RegInit(VecInit(Seq.fill(conf.nr_reg)(0.U(conf.xlen.W))))
   regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen), wb_data, regfile(rd_addr))
 
   val regfile_output_aux = Wire(Vec(conf.nr_reg * conf.xlen, Bool()))
@@ -38,7 +38,7 @@ class EXU (implicit val conf: Configuration) extends Module {
   }
   io.regfile_output := regfile_output_aux.asUInt
 
-  // submodule1.5 - data msk
+  // submodule2 - data msk
   val alu_msk = MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
               (io.idu_to_exu.alu_msk_type === ALU_MSK_W) -> "hffff_ffff".U(conf.xlen.W),
               ))
