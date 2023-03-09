@@ -7,11 +7,21 @@ import Conf._
 import Macros._
 import Macros.Constants._
 
+    // // EXU -> AXI4DRAM
+    // val mem_in = Output(UInt(XLEN.W))
+    // val mem_addr = Input(UInt(XLEN.W))
+    // val mem_write_data = Input(UInt(XLEN.W))
+    // val isRead = Input(Bool())
+    // val mem_write_msk = Input(UInt(8.W))
+    // // IDU -> AXI4DRAM
+    // val isWriteMem = Input(Bool())
+
 class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val idu_to_exu = Flipped(new IDU_to_EXU())
   val ifu_to_exu = Flipped(new IFU_to_EXU())
-  val mem_in = Input(UInt(conf.xlen.W))
   val regfile_output = Output(UInt((conf.nr_reg * conf.xlen).W))
+  // 内存读写相关 --------------------------- start
+  val mem_in = Input(UInt(conf.xlen.W))
   val mem_addr = Output(UInt(conf.xlen.W))
   val mem_write_data = Output(UInt(conf.xlen.W))
   val isRead = Output(Bool())

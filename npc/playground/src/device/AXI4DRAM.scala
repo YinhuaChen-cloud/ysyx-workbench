@@ -8,6 +8,7 @@ class AXI4DRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
+
     val mem_addr = Input(UInt(XLEN.W))
     val isRead = Input(Bool())
     val isWriteMem = Input(Bool())
