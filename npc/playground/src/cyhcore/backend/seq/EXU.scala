@@ -18,7 +18,7 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val mem_write_msk = Output(UInt(8.W))
 }
 
-class EXU (implicit val conf: Configuration) extends Module {
+class EXU (implicit val conf: Configuration) extends CyhCoreModule {
   val io = IO(new EXU_bundle())
 
   // submodule1 - register file
