@@ -14,6 +14,6 @@ object RVZicsrInstr {
   // def CSRRCI  = BitPat("b????????????_?????_111_?????_1110011")
 
   val table = Array(
-    // CSRRW     -> List(Y, BR_N  , OP1_RS1, OP2_RS2, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y), // TODO: we are here! <-
+    // CSRRW     -> List(Y, BR_N  , OP1_RS1, OP2_RS2, ALU_ADD , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
   )
 }

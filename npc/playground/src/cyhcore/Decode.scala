@@ -17,7 +17,14 @@ trait HasInstrType {
   // def InstrA  = "b1110".U
   // def InstrSA = "b1111".U // Atom Inst: SC
 
-  // def isrfWen(instrType : UInt): Bool = instrType(2)
+  def isrfWen(instrType : UInt): Bool = instrType(2)
+}
+
+object SrcType {
+  def reg = false.B
+  def imm = true.B
+  def pc  = imm // TODO: 为什么 pc 操作数类型会和 imm 属同一类型？
+  def apply() = Bool()
 }
 
 object FuType {
@@ -40,7 +47,7 @@ object FuOpType {
 object Instructions extends HasInstrType {
   def NOP = 0x00000013.U
   // val DecodeDefault = List(N, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_X)
-  val DecodeDefault = List(InstrN, FuType.csr, CSROpType.jmp)
+  val DecodeDefault = List(InstrN, FuType.csr, CSROpType.jmp) 
   def DecodeTable = RVIInstr.table ++ RVMInstr.table ++
     Priviledged.table
     // RVZicsrInstr.table
