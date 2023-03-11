@@ -10,8 +10,8 @@ class CtrlSignalIO extends CyhCoreBundle {
   val fuOpType = Output(FuOpType())
   val rfSrc1 = Output(UInt(5.W))
   val rfSrc2 = Output(UInt(5.W))
-  // val rfWen = Output(Bool())
-  // val rfDest = Output(UInt(5.W))
+  val rfWen = Output(Bool())
+  val rfDest = Output(UInt(5.W))
   // val isNutCoreTrap = Output(Bool())
   // val isSrc1Forward = Output(Bool())
   // val isSrc2Forward = Output(Bool())
@@ -23,6 +23,13 @@ class DataSrcIO extends CyhCoreBundle {
   val src1 = Output(UInt(XLEN.W))
   val src2 = Output(UInt(XLEN.W))
   val imm  = Output(UInt(XLEN.W))
+}
+
+// 用来写回 PC，实现跳转指令
+class RedirectIO extends CyhCoreBundle {
+  val target = Output(UInt(PC_LEN.W))
+  // val rtype = Output(UInt(1.W)) // 1: branch mispredict: only need to flush frontend  0: others: flush the whole pipeline
+  // val valid = Output(Bool())
 }
 
 class FunctionUnitIO extends CyhCoreBundle {
@@ -40,7 +47,7 @@ class CtrlFlowIO extends CyhCoreBundle {
   val instr = Output(UInt(64.W))
   val pc = Output(UInt(VAddrBits.W))
   // val pnpc = Output(UInt(VAddrBits.W)) // predicted next pc
-  // val redirect = new RedirectIO
+  val redirect = new RedirectIO  // TODO: 我猜测这个应该是用来处理跳转指令的
   // val exceptionVec = Output(Vec(16, Bool()))
   // val intrVec = Output(Vec(12, Bool()))
   // val brIdx = Output(UInt(4.W))
@@ -53,5 +60,19 @@ class DecodeIO extends CyhCoreBundle {
   val ctrl = new CtrlSignalIO
   val data = new DataSrcIO
 }
+
+// 用来写回寄存器堆
+class WriteBackIO extends CyhCoreBundle { 
+  val rfWen = Output(Bool())
+  val rfDest = Output(UInt(5.W))
+  val rfData = Output(UInt(XLEN.W))
+}
+
+// EXU -> WBU 的模块
+class CommitIO extends CyhCoreBundle {
+  val decode = new DecodeIO
+  val commits = Output(Vec(FuType.num, UInt(XLEN.W))) // EXU 四个功能单元的输出都在这里，让 WBU 挑选
+}
+
 
 

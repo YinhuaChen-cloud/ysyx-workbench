@@ -3,12 +3,18 @@ package device
 import chisel3._
 import chisel3.util._
 import cyhcore.HasCyhCoreParameter
+import cyhcore.CyhCoreModule
+
+// 因为 SRAM 属于外设，不属于 core，不建议直接 extends CyhCoreModule
+class AXI4SRAM extends Module with HasCyhCoreParameter {
+
+}
 
 class AXI4SRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
-    val pc = Input(UInt(XLEN.W))
+    val pc = Input(UInt(XLEN.W)) // TODO: 这个后边换成 32 位的
     val inst = Output(UInt(INST_LEN.W))
   })
 

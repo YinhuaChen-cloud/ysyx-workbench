@@ -17,7 +17,7 @@ trait HasInstrType {
   // def InstrA  = "b1110".U
   // def InstrSA = "b1111".U // Atom Inst: SC
 
-  // def isrfWen(instrType : UInt): Bool = instrType(2)
+  def isrfWen(instrType : UInt): Bool = instrType(2)
 }
 
 object SrcType {
