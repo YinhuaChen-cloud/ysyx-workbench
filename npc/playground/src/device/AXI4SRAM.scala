@@ -7,6 +7,7 @@ import cyhcore.HasCyhCoreParameter
 import bus.simplebus._
 
 // 因为 SRAM 属于外设，不属于 core，不建议直接 extends CyhCoreModule
+// 注意：我认为 AXI4SRAM 和 READ_INST 模块之间的连接，不需要再用总线了
 class AXI4SRAM extends Module with HasCyhCoreParameter {
   val io = IO(new Bundle {
     val imem = Flipped(new SimpleBusUC)
@@ -15,20 +16,26 @@ class AXI4SRAM extends Module with HasCyhCoreParameter {
   // TODO: 等下试试 io 命名简化法
 
   val read_inst = Module(new READ_INST)
-  read_inst.io.clk := clock
-  read_inst.io.rst := reset
-  read_inst.io.pc  := io.imem.req.addr
+  read_inst.io.clk  := clock
+  read_inst.io.rst  := reset
+  read_inst.io.addr := io.imem.req.addr
 
   io.imem.resp.rdata := read_inst.io.inst // TODO: rdata 是 64 位，而inst是32位,这里后边可能要修改
 
 }
 
 class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
+
+  val V_MACRO_XLEN     = XLEN
+  val V_MACRO_PC_LEN   = PC_LEN
+  val V_MACRO_ADDR_LEN = PAddrBits
+  val V_MACRO_INST_LEN = INST_LEN
+
   val io = IO(new Bundle {
     val clk  = Input(Clock())
     val rst  = Input(Bool())
-    val pc = Input(UInt(XLEN.W)) // TODO: 这个后边换成 32 位的
-    val inst = Output(UInt(INST_LEN.W))
+    val addr = Input(UInt(V_MACRO_ADDR_LEN.W)) // TODO: 这个后边换成 32 位的
+    val inst = Output(UInt(V_MACRO_INST_LEN.W))
   })
 
   setInline("READ_INST.v",
@@ -36,37 +43,32 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |module READ_INST (
               |           input clk,
               |           input rst,
-              |           input [${XLEN}-1:0] pc,
-              |           output reg [${INST_LEN} - 1:0] inst);
+              |           input [${V_MACRO_ADDR_LEN}-1:0] addr,
+              |           output reg [${V_MACRO_INST_LEN}-1:0] inst);
+              |
+              |  wire [${V_MACRO_PC_LEN}-1:0] external_pc;
+              |  assign external_pc[${V_MACRO_ADDR_LEN}-1:0] = addr;
               |
               |  // expose pc to cpp simulation environment
-              |  import "DPI-C" function void set_pc(input logic [${XLEN}-1:0] a []);
-              |  initial set_pc(pc);  
+              |  import "DPI-C" function void set_pc(input logic [${V_MACRO_PC_LEN}-1:0] a []);
+              |  initial set_pc(external_pc);  
               |
               |  // for mem_r
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
               |  //  ------------------------------------ inst reading ---- start
-              |  // Define the state enumeration
-              |  typedef enum logic [1:0] {
-              |    IDLE,
-              |    BUSY
-              |  } state_t;
-              |  // Define the state variable
-              |  reg state;
-              |
               |  // for inst read from pmem // TODO: the pmem_read implementation will be changed greatly after implement BUS
-              |  reg [${XLEN}-1:0]	inst_aux;
+              |  reg [${V_MACRO_XLEN}-1:0]	inst_aux;
               |  always@(*) begin
               |    if(~rst)
-              |      pmem_read(pc, inst_aux); 
+              |      pmem_read(external_pc, inst_aux); 
               |    else
               |      inst_aux = '0; 
               |  end
               |  // inst selection	
               |  always@(*) 
-              |    case(pc[2:0])
-              |      3'h0: inst = inst_aux[${INST_LEN}-1:0];
-              |      3'h4: inst = inst_aux[${XLEN}-1:${INST_LEN}];
+              |    case(external_pc[2:0])
+              |      3'h0: inst = inst_aux[${V_MACRO_INST_LEN}-1:0];
+              |      3'h4: inst = inst_aux[${V_MACRO_XLEN}-1:${V_MACRO_INST_LEN}];
               |      default: begin inst = '0; assert(0); end
               |    endcase
               |  //  ------------------------------------ inst reading ---- end
