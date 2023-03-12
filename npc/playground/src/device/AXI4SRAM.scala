@@ -2,7 +2,6 @@ package device
 
 import chisel3._
 import chisel3.util._
-import chisel3.experimental._
 
 import cyhcore.HasCyhCoreParameter
 import bus.simplebus._
@@ -25,12 +24,14 @@ class AXI4SRAM extends Module with HasCyhCoreParameter {
 }
 
 class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
-  val MACRO_XLEN = 64
+  val V_MACRO_XLEN = XLEN
+  val V_MACRO_ADDR_LEN = XLEN
+  val V_MACRO_INST_LEN = INST_LEN
   val io = IO(new Bundle {
     val clk  = Input(Clock())
     val rst  = Input(Bool())
-    val pc = Input(UInt(MACRO_XLEN.W)) // TODO: 这个后边换成 32 位的
-    val inst = Output(UInt(INST_LEN.W))
+    val pc = Input(UInt(V_MACRO_ADDR_LEN.W)) // TODO: 这个后边换成 32 位的
+    val inst = Output(UInt(V_MACRO_INST_LEN.W))
   })
 
   setInline("READ_INST.v",
@@ -38,11 +39,11 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |module READ_INST (
               |           input clk,
               |           input rst,
-              |           input [${XLEN}-1:0] pc,
-              |           output reg [${INST_LEN} - 1:0] inst);
+              |           input [${V_MACRO_ADDR_LEN}-1:0] pc,
+              |           output reg [${V_MACRO_INST_LEN} - 1:0] inst);
               |
               |  // expose pc to cpp simulation environment
-              |  import "DPI-C" function void set_pc(input logic [${XLEN}-1:0] a []);
+              |  import "DPI-C" function void set_pc(input logic [${V_MACRO_ADDR_LEN}-1:0] a []);
               |  initial set_pc(pc);  
               |
               |  // for mem_r
@@ -57,7 +58,7 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |  reg state;
               |
               |  // for inst read from pmem // TODO: the pmem_read implementation will be changed greatly after implement BUS
-              |  reg [${XLEN}-1:0]	inst_aux;
+              |  reg [${V_MACRO_XLEN}-1:0]	inst_aux;
               |  always@(*) begin
               |    if(~rst)
               |      pmem_read(pc, inst_aux); 
@@ -67,8 +68,8 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |  // inst selection	
               |  always@(*) 
               |    case(pc[2:0])
-              |      3'h0: inst = inst_aux[${INST_LEN}-1:0];
-              |      3'h4: inst = inst_aux[${XLEN}-1:${INST_LEN}];
+              |      3'h0: inst = inst_aux[${V_MACRO_INST_LEN}-1:0];
+              |      3'h4: inst = inst_aux[${V_MACRO_XLEN}-1:${V_MACRO_INST_LEN}];
               |      default: begin inst = '0; assert(0); end
               |    endcase
               |  //  ------------------------------------ inst reading ---- end
