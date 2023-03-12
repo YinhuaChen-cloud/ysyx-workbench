@@ -63,13 +63,13 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |  reg [${V_MACRO_XLEN}-1:0]	inst_aux;
               |  always@(*) begin
               |    if(~rst)
-              |      pmem_read(pc, inst_aux); 
+              |      pmem_read(addr, inst_aux); 
               |    else
               |      inst_aux = '0; 
               |  end
               |  // inst selection	
               |  always@(*) 
-              |    case(pc[2:0])
+              |    case(addr[2:0])
               |      3'h0: inst = inst_aux[${V_MACRO_INST_LEN}-1:0];
               |      3'h4: inst = inst_aux[${V_MACRO_XLEN}-1:${V_MACRO_INST_LEN}];
               |      default: begin inst = '0; assert(0); end
