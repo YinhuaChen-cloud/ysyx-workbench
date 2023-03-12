@@ -15,22 +15,24 @@ class AXI4SRAM extends Module with HasCyhCoreParameter {
   // TODO: 等下试试 io 命名简化法
 
   val read_inst = Module(new READ_INST)
-  read_inst.io.clk := clock
-  read_inst.io.rst := reset
-  read_inst.io.pc  := io.imem.req.addr
+  read_inst.io.clk  := clock
+  read_inst.io.rst  := reset
+  read_inst.io.addr := io.imem.req.addr
 
   io.imem.resp.rdata := read_inst.io.inst // TODO: rdata 是 64 位，而inst是32位,这里后边可能要修改
 
 }
 
 class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
+
   val V_MACRO_XLEN = XLEN
   val V_MACRO_ADDR_LEN = XLEN
   val V_MACRO_INST_LEN = INST_LEN
+
   val io = IO(new Bundle {
     val clk  = Input(Clock())
     val rst  = Input(Bool())
-    val pc = Input(UInt(V_MACRO_ADDR_LEN.W)) // TODO: 这个后边换成 32 位的
+    val addr = Input(UInt(V_MACRO_ADDR_LEN.W)) // TODO: 这个后边换成 32 位的
     val inst = Output(UInt(V_MACRO_INST_LEN.W))
   })
 
@@ -39,7 +41,7 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |module READ_INST (
               |           input clk,
               |           input rst,
-              |           input [${V_MACRO_ADDR_LEN}-1:0] pc,
+              |           input [${V_MACRO_ADDR_LEN}-1:0] addr,
               |           output reg [${V_MACRO_INST_LEN} - 1:0] inst);
               |
               |  // expose pc to cpp simulation environment
