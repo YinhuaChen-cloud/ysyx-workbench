@@ -44,11 +44,14 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |           input clk,
               |           input rst,
               |           input [${V_MACRO_ADDR_LEN}-1:0] addr,
-              |           output reg [${V_MACRO_INST_LEN} - 1:0] inst);
+              |           output reg [${V_MACRO_INST_LEN}-1:0] inst);
+              |
+              |  wire [${V_MACRO_PC_LEN}-1:0] external_pc;
+              |  assign external_pc = addr;
               |
               |  // expose pc to cpp simulation environment
               |  import "DPI-C" function void set_pc(input logic [${V_MACRO_PC_LEN}-1:0] a []);
-              |  initial set_pc(addr);  
+              |  initial set_pc(external_pc);  
               |
               |  // for mem_r
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
@@ -57,13 +60,13 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |  reg [${V_MACRO_XLEN}-1:0]	inst_aux;
               |  always@(*) begin
               |    if(~rst)
-              |      pmem_read(addr, inst_aux); 
+              |      pmem_read(external_pc, inst_aux); 
               |    else
               |      inst_aux = '0; 
               |  end
               |  // inst selection	
               |  always@(*) 
-              |    case(addr[2:0])
+              |    case(external_pc[2:0])
               |      3'h0: inst = inst_aux[${V_MACRO_INST_LEN}-1:0];
               |      3'h4: inst = inst_aux[${V_MACRO_XLEN}-1:${V_MACRO_INST_LEN}];
               |      default: begin inst = '0; assert(0); end
