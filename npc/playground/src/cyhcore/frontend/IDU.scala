@@ -5,7 +5,7 @@ import chisel3.util._
 
 import utils._
 
-class IDU extends CyhCoreModule with HasInstrType {
+class Decoder extends CyhCoreModule with HasInstrType {
   val io = IO(new Bundle {
     val in  = Flipped(new CtrlFlowIO)
     val out = new DecodeIO
@@ -70,6 +70,24 @@ class IDU extends CyhCoreModule with HasInstrType {
   io.out.data := DontCare
   
 }
+
+class IDU extends CyhCoreModule with HasInstrType {
+  val io = IO(new Bundle {
+    val in = Vec(2, Flipped(Decoupled(new CtrlFlowIO)))
+    val out = Vec(2, Decoupled(new DecodeIO))
+  })
+  val decoder1  = Module(new Decoder)
+  // val decoder2  = Module(new Decoder) // TODO: 为啥果壳默认有两个译码器？是为了双发射吗？
+  decoder1.io.in <> io.in(0)
+  // io.in(1) := DontCare
+  // io.in(1) <> decoder2.io.in
+  io.out(0) <> decoder1.io.out
+  io.out(1) := DontCare
+  // io.out(1) <> decoder2.io.out
+
+}
+
+
 
   // // val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
   // // val alu_op :: wb_sel :: (wreg: Bool) :: (wmem: Bool) :: ds1 = ds0

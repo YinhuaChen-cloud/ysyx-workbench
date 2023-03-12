@@ -2,19 +2,38 @@ package device
 
 import chisel3._
 import chisel3.util._
-import cyhcore.HasCyhCoreParameter
 
-class AXI4SRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
+import cyhcore.HasCyhCoreParameter
+import bus.simplebus._
+
+// 因为 SRAM 属于外设，不属于 core，不建议直接 extends CyhCoreModule
+class AXI4SRAM extends Module with HasCyhCoreParameter {
   val io = IO(new Bundle {
-    val clk = Input(Clock())
-    val rst = Input(Bool())
-    val pc = Input(UInt(XLEN.W))
+    val imem = Flipped(new SimpleBusUC)
+  })
+
+  // TODO: 等下试试 io 命名简化法
+
+  val read_inst = Module(new READ_INST)
+  read_inst.io.clk := clock
+  read_inst.io.rst := reset
+  read_inst.io.pc  := io.imem.req.addr
+
+  io.imem.resp.rdata := read_inst.io.inst // TODO: rdata 是 64 位，而inst是32位,这里后边可能要修改
+
+}
+
+class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
+  val io = IO(new Bundle {
+    val clk  = Input(Clock())
+    val rst  = Input(Bool())
+    val pc = Input(UInt(XLEN.W)) // TODO: 这个后边换成 32 位的
     val inst = Output(UInt(INST_LEN.W))
   })
 
-  setInline("AXI4SRAM.v",
+  setInline("READ_INST.v",
             s"""
-              |module AXI4SRAM (
+              |module READ_INST (
               |           input clk,
               |           input rst,
               |           input [${XLEN}-1:0] pc,

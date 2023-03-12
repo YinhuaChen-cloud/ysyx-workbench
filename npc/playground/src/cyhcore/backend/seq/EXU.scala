@@ -28,7 +28,16 @@ class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
   val mem_write_msk = Output(UInt(8.W))
 }
 
-class EXU (implicit val conf: Configuration) extends CyhCoreModule {
+class EXU extends CyhCoreModule {
+  val io = IO(new Bundle {
+    val in = Flipped(new DecodeIO)
+    val out = Decoupled(new CommitIO) // 这个端口先用来正常输出信号，不实现commit等内容
+  })
+}
+
+
+
+class EXUold (implicit val conf: Configuration) extends CyhCoreModule {
   val io = IO(new EXU_bundle())
 
   // submodule1 - register file
