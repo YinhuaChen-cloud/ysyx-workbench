@@ -2,6 +2,7 @@ package device
 
 import chisel3._
 import chisel3.util._
+import chisel3.experimental._
 
 import cyhcore.HasCyhCoreParameter
 import bus.simplebus._
@@ -24,10 +25,11 @@ class AXI4SRAM extends Module with HasCyhCoreParameter {
 }
 
 class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
+  val MACRO_XLEN = 64
   val io = IO(new Bundle {
     val clk  = Input(Clock())
     val rst  = Input(Bool())
-    val pc = Input(UInt(XLEN.W)) // TODO: 这个后边换成 32 位的
+    val pc = Input(UInt(MACRO_XLEN.W)) // TODO: 这个后边换成 32 位的
     val inst = Output(UInt(INST_LEN.W))
   })
 
