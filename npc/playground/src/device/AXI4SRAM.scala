@@ -47,7 +47,7 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |           output reg [${V_MACRO_INST_LEN}-1:0] inst);
               |
               |  wire [${V_MACRO_PC_LEN}-1:0] external_pc;
-              |  assign external_pc = addr;
+              |  assign external_pc[${V_MACRO_ADDR_LEN}-1:0] = addr;
               |
               |  // expose pc to cpp simulation environment
               |  import "DPI-C" function void set_pc(input logic [${V_MACRO_PC_LEN}-1:0] a []);
