@@ -6,6 +6,9 @@ import cyhcore._
 import device._
 import utils._
 
+// 目前的设备有：
+// 1. SRAM
+// 2. DRAM
 class top extends Module {
 
   val io = IO(new Bundle {
@@ -16,16 +19,15 @@ class top extends Module {
 
 	// device: AXI4SRAM -- for inst reading
   val axi4sram = Module(new AXI4SRAM)
-  axi4sram.io.clk := clock
-  axi4sram.io.rst := reset
 	// device: AXI4DRAM -- for sd, ld instructions
-  val axi4dram = Module(new AXI4DRAM)
-  axi4dram.io.clk := clock
-  axi4dram.io.rst := reset
+  // val axi4dram = Module(new AXI4DRAM)
+  // axi4dram.io.clk := clock
+  // axi4dram.io.rst := reset
   // CyhSoC   SOC = Core + Cache + 总线 + 外设通信电路
   val cyhsoc   = Module(new CyhSoc)
 
   // SRAM -> SOC <-> DRAM
+  cyhsoc.io.imem <> axi4sram.io.imem
 
 
 

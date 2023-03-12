@@ -2,7 +2,8 @@ package cyhcore
 
 import chisel3._
 import chisel3.util._
-import scala.reflect.macros.FrontEnds
+
+import bus.simplebus._
 
 trait HasCyhCoreParameter {
   // General Parameter for NutShell
@@ -23,13 +24,17 @@ class CyhCore extends CyhCoreModule {
   // frontend 需要和 SRAM 通信读取指令
   // backend 需要和 DRAM 通信读写内存
   val io = IO(new Bundle {
-    val imem =  // 用来从 SRAM 读取指令的 TODO: we are here   接下来要接 SimpleBus
+    val imem = new SimpleBusUC // 用来从SRAM读指令的
   })
 
   // frontend = IFU + IDU
   val frontend = Module(new Frontend)
   // backend = EXU + WBU + RegFile
-  val backend  = Module(new Backend)
+  // val backend  = Module(new Backend)
+
+  io.imem <> frontend.io.imem
+
+
 
 }
 

@@ -34,7 +34,7 @@ object SimpleBusCmd {
 }
 
 class SimpleBusReqBundle extends SimpleBusBundle {
-  val cmd = Output(SimpleBusCmd())  // 总线接收到的来自主模块的命令
+  // val cmd = Output(SimpleBusCmd())  // 总线接收到的来自主模块的命令  TODO: 这个暂时先不用
   val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
 
   // // 下面这行东西用来打印 SimpleBusReqBundle 对象
@@ -45,11 +45,11 @@ class SimpleBusReqBundle extends SimpleBusBundle {
 
   def apply(addr: UInt, cmd: UInt) {
     this.addr := addr
-    this.cmd := cmd
+    // this.cmd := cmd
   }
 
-  def isRead() = !cmd(0) && !cmd(3)
-  def isWrite() = cmd(0)
+  // def isRead() = !cmd(0) && !cmd(3)
+  // def isWrite() = cmd(0)
 }
 
 class SimpleBusRespBundle extends SimpleBusBundle {
@@ -67,8 +67,8 @@ class SimpleBusUC extends SimpleBusBundle { // 默认是主模块端
 
   // def isWrite() = req.valid && req.bits.isWrite()
   // def isRead()  = req.valid && req.bits.isRead()
-  def isWrite() = req.isWrite()
-  def isRead()  = req.isRead()
+  // def isWrite() = req.isWrite()
+  // def isRead()  = req.isRead()
   // def toMemPort() = SimpleBus2MemPortConverter(this, new MemPortIo(32)) // TODO: 连接内存需要用到这个吗？
 
   // 这个 dump 函数看起来是用来 DEBUG 的
