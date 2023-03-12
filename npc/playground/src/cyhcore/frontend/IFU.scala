@@ -10,21 +10,21 @@ trait HasResetVector {
   val resetVector = Settings.getLong("ResetVector")
 }
 
-class IFU_to_EXU extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
-  val pc_next  = Input(UInt(PC_LEN.W))
-  val pc       = Output(UInt(PC_LEN.W))
-  val inst = Output(UInt(INST_LEN.W))
-}
+// class IFU_to_EXU extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
+//   val pc_next  = Input(UInt(PC_LEN.W))
+//   val pc       = Output(UInt(PC_LEN.W))
+//   val inst = Output(UInt(INST_LEN.W))
+// }
 
-class IFU_to_AXI4SRAM extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
-  val pc      = Output(UInt(PC_LEN.W))
-  val inst_in = Input(UInt(INST_LEN.W))
-}
+// class IFU_to_AXI4SRAM extends CyhCoreBundle() { // TODO: 下一个步骤，让 IFU 获得指令，再交给 IDU/EXU
+//   val pc      = Output(UInt(PC_LEN.W))
+//   val inst_in = Input(UInt(INST_LEN.W))
+// }
 
-class IFU_bundle extends CyhCoreBundle() {
-  // val ifu_to_exu = new IFU_to_EXU()
-  val ifu_to_axi4sram = new IFU_to_AXI4SRAM()
-}
+// class IFU_bundle extends CyhCoreBundle() {
+//   // val ifu_to_exu = new IFU_to_EXU()
+//   val ifu_to_axi4sram = new IFU_to_AXI4SRAM()
+// }
 
 class IFU extends CyhCoreModule with HasResetVector {
   // val io = IO(new IFU_bundle())
