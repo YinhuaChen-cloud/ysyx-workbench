@@ -16,7 +16,7 @@ import device._
 class CyhSoc extends Module  {
   val io = IO(new Bundle{
     val imem = new SimpleBusUC 
-    val mem  = new SimpleBusUC
+    // val mem  = new SimpleBusUC
   })
 
   val cyhcore  = Module(new CyhCore)  // Core
