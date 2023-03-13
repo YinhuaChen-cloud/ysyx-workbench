@@ -12,7 +12,7 @@ object Debug {
 
   def apply(pable: Printable) {
     if(debug)
-      printf("[Cycle: %ld]", CTimer())
+      // printf("[Cycle: %ld]", CTimer())
       printf(pable)
       printf("\n")
   }
