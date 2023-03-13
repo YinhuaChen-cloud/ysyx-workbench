@@ -47,7 +47,6 @@ class EXU extends CyhCoreModule {
   val lsuOut = lsu.access(src1 = src1, src2 = imm,  func = fuOpType)
 
 
-
 // out(CommitIO) ------------------------------------------ decode(DecodeIO)
   // val cf = new CtrlFlowIO
   // val ctrl = new CtrlSignalIO

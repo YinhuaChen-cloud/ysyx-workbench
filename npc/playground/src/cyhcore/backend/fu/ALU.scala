@@ -46,9 +46,9 @@ object ALUOpType {
 }
 
 class ALUIO extends FunctionUnitIO {
-  val cfIn = Flipped(new CtrlFlowIO)
-  val redirect = new RedirectIO
-  val offset = Input(UInt(XLEN.W))
+  // val cfIn = Flipped(new CtrlFlowIO)
+  // val redirect = new RedirectIO
+  // val offset = Input(UInt(XLEN.W))
 }
 
 class ALU extends CyhCoreModule {
