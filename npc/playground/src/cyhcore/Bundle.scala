@@ -19,12 +19,10 @@ class CtrlSignalIO extends CyhCoreBundle {
   // val isBlocked = Output(Bool())   // This inst requires pipeline to be blocked
 
   override def toPrintable: Printable = {
-    val char = p"Message:\n" +
+    val str = p"Message:\n" +
     p"  src1Type  : ${src1Type}\n" +
-    p"  src2Type  : ${src2Type}\n"
-    // p"  length : $length\n" +
-    // p"  data   : 0x${Hexadecimal(data)}\n"
-    char
+    p"  src2Type  : ${src2Type}\n" +
+    str
   }
 
 }
