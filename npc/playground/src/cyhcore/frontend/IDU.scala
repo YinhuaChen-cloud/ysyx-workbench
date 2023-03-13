@@ -68,6 +68,8 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val imm  = Output(UInt(XLEN.W))
 
   io.out.data := DontCare
+
+  printf("src1Type = %d, src2Type = %d, fuType = %d, fuOpType = %d\n", src1Type, src2Type, fuType, fuOpType)
   
 }
 
