@@ -7,6 +7,9 @@ object Debug {
 
   val debug = true // Scala Boolean
 
+  def apply(fmt: String, data: Bits*): Any = // 这行抄的（理直气壮）
+    apply(Printable.pack(fmt, data:_*))
+
   def apply(pable: Printable) {
     if(debug)
       printf(pable)

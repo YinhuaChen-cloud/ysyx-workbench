@@ -43,7 +43,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   io.imem.req.addr  := pc_reg
   pc_reg := pc_reg + 4.U
   // printf("The inst read is 0x%x\n", io.imem.resp.rdata)
-  Debug(p"In IFU, The inst read is 0x${io.imem.resp.rdata}")
+  Debug("In IFU, The inst read is 0x%x", io.imem.resp.rdata)
 
 // out(CtrlFlowIO) ------------------------------------------ 
   // val instr = Output(UInt(64.W))
