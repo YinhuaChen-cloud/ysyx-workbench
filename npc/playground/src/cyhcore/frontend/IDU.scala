@@ -69,7 +69,6 @@ class Decoder extends CyhCoreModule with HasInstrType {
 
   io.out.data := DontCare
 
-  // printf("src1Type = %d, src2Type = %d, fuType = %d, fuOpType = %d\n", src1Type, src2Type, fuType, fuOpType)
   Debug(p"In IDU-Decoder, ${io.out.ctrl}")
   
 }
