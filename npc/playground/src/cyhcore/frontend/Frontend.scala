@@ -13,9 +13,9 @@ class Frontend extends CyhCoreModule {
   })
 
   val ifu  = Module(new IFU)
-  // val idu  = Module(new IDU)
+  val idu  = Module(new IDU)
 
-  ifu.io.imem <> io.imem
+  io.imem <> ifu.io.imem
 
   // def PipelineConnect2[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T],
   //   isFlush: Bool, entries: Int = 4, pipe: Boolean = false) = {
@@ -25,6 +25,8 @@ class Frontend extends CyhCoreModule {
   // PipelineConnect2(ifu.io.out, ibf.io.in, ifu.io.flushVec(0))
   // PipelineConnect(ibf.io.out, idu.io.in(0), idu.io.out(0).fire(), ifu.io.flushVec(1))
   // idu.io.in(1) := DontCare // 在没有多发射时，in1不连接有效的东西
+
+  ifu.io.out <> idu.io.in
 
   // io.out <> idu.io.out
 
