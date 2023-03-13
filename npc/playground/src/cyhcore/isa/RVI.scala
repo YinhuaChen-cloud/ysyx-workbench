@@ -186,7 +186,8 @@ object RV64IInstr extends HasInstrType {
 }
 
 object RVIInstr {
-  val table = RV32I_ALUInstr.table ++ RV32I_BRUInstr.table ++ RV32I_LSUInstr.table ++
-    RV64IInstr.table
+  val table = RV32I_ALUInstr.table
+    // RV32I_BRUInstr.table ++ RV32I_LSUInstr.table ++
+    // RV64IInstr.table
 }
 
