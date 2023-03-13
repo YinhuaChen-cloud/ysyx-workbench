@@ -41,6 +41,10 @@ class IFU extends CyhCoreModule with HasResetVector {
 
   io.imem.req.addr  := pc_reg
   pc_reg := pc_reg + 4.U
-  printf("The inst read is 0x%x\n", io.imem.resp.rdata)
+  // printf("The inst read is 0x%x\n", io.imem.resp.rdata)
+
+  io.out       := DontCare
+  io.out.instr := io.imem.resp.rdata
+  io.out.pc    := pc_reg
 
 }
