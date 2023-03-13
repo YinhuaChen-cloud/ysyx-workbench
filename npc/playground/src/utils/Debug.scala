@@ -12,7 +12,7 @@ object Debug {
 
   def apply(pable: Printable) {
     if(debug)
-      printf("[Cycle: %d]", CTimer())
+      // printf("[Cycle: %d]", CTimer()) --- Both are right, do not use %ld
       printf(p"[Cycle: ${CTimer()}]")
       printf(pable)
       printf("\n")
