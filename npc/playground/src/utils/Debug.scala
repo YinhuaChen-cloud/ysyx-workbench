@@ -11,10 +11,11 @@ object Debug {
     apply(Printable.pack(fmt, data:_*))
 
   def apply(pable: Printable) {
-    if(debug)
+    if(debug) {
       // printf("[Cycle: %d]", CTimer()) --- Both are right, do not use %ld
       printf(p"[Cycle: ${CTimer()}]")
       printf(pable)
       printf("\n")
+    }
   }
 }
