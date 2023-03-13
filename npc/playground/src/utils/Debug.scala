@@ -5,7 +5,7 @@ import chisel3.util._
 
 object Debug {
 
-  val debug = true.B
+  val debug = true
 
   def apply(pable: Printable) {
     if(debug)
