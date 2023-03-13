@@ -21,7 +21,7 @@ class CtrlSignalIO extends CyhCoreBundle {
   override def toPrintable: Printable = {
     val str = p"Message:\n" +
     p"  src1Type  : ${src1Type}\n" +
-    p"  src2Type  : ${src2Type}\n" +
+    p"  src2Type  : ${src2Type}\n"
     str
   }
 
