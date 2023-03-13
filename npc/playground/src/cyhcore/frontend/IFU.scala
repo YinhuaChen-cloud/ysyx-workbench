@@ -30,6 +30,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // val io = IO(new IFU_bundle())
   val io = IO(new Bundle {
     val imem = new SimpleBusUC
+    val out  = new CtrlFlowIO
   })
 
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
