@@ -5,7 +5,7 @@ import chisel3.util._
 
 object Debug {
 
-  val debug = true
+  val debug = false // Scala Boolean
 
   def apply(pable: Printable) {
     if(debug)
