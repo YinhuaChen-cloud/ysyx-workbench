@@ -5,7 +5,7 @@ import chisel3.util._
 
 object Debug {
 
-  val debug = true // Scala Boolean
+  val debug = false // Scala Boolean
 
   def apply(fmt: String, data: Bits*): Any = // 这行抄的（理直气壮）
     apply(Printable.pack(fmt, data:_*))

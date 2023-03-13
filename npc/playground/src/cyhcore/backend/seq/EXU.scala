@@ -1,12 +1,12 @@
 // package cyhcore
-// 
+
 // import chisel3._
 // import chisel3.util._
 // import chisel3.stage.ChiselStage
 // import Conf._
 // import Macros._
 // import Macros.Constants._
-// 
+
 //     // // EXU -> AXI4DRAM
 //     // val mem_in = Output(UInt(XLEN.W))
 //     // val mem_addr = Input(UInt(XLEN.W))
@@ -15,7 +15,7 @@
 //     // val mem_write_msk = Input(UInt(8.W))
 //     // // IDU -> AXI4DRAM
 //     // val isWriteMem = Input(Bool())
-// 
+
 // class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
 //   val idu_to_exu = Flipped(new IDU_to_EXU())
 //   val ifu_to_exu = Flipped(new IFU_to_EXU())
@@ -27,19 +27,19 @@
 //   val isRead = Output(Bool())
 //   val mem_write_msk = Output(UInt(8.W))
 // }
-// 
+
 // class EXU extends CyhCoreModule {
 //   val io = IO(new Bundle {
 //     val in = Flipped(new DecodeIO)
 //     val out = Decoupled(new CommitIO) // 这个端口先用来正常输出信号，不实现commit等内容
 //   })
 // }
-// 
-// 
-// 
+
+
+
 // class EXUold (implicit val conf: Configuration) extends CyhCoreModule {
 //   val io = IO(new EXU_bundle())
-// 
+
 //   // submodule1 - register file
 //   // 1-1. reg addr
 //   val regfile = RegInit(VecInit(Seq.fill(NR_GPRS)(0.U(XLEN.W))))
@@ -50,24 +50,24 @@
 //   val wb_data = Wire(UInt(conf.xlen.W)) // NOTE: data write back to reg or mem
 //   // 1-3. register file
 //   regfile(rd_addr) := Mux((rd_addr =/= 0.U && io.idu_to_exu.reg_wen), wb_data, regfile(rd_addr))
-// 
+
 //   val regfile_output_aux = Wire(Vec(conf.nr_reg * conf.xlen, Bool()))
 //   for(i <- 0 until conf.nr_reg) {
 //     regfile_output_aux.slice(i * conf.xlen, (i+1) * conf.xlen).zip(regfile(i).asBools).foreach{case (a, b) => a := b}
 //   }
 //   io.regfile_output := regfile_output_aux.asUInt
-// 
+
 //   // submodule2 - data msk
 //   val alu_msk = MuxCase(Fill(conf.xlen, 1.U(1.W)), Array(
 //               (io.idu_to_exu.alu_msk_type === ALU_MSK_W) -> "hffff_ffff".U(conf.xlen.W),
 //               ))
-// 
+
 //   io.mem_write_msk := MuxCase("hff".U(8.W), Array(
 //          (io.idu_to_exu.mem_msk_type === MEM_MSK_W) -> "hf".U(8.W),
 //          (io.idu_to_exu.mem_msk_type === MEM_MSK_H) -> "h3".U(8.W),
 //          (io.idu_to_exu.mem_msk_type === MEM_MSK_B) -> "h1".U(8.W),
 //          ))
-// 
+
 //   // submodule2 - ALU
 //   val rs1_data = Mux((rs1_addr =/= 0.U), regfile(rs1_addr), 0.asUInt(conf.xlen.W))
 //   val rs2_data = Mux((rs2_addr =/= 0.U), regfile(rs2_addr), 0.asUInt(conf.xlen.W))
@@ -94,14 +94,14 @@
 //   val imm_u_sext = Cat(Fill(conf.xlen - 32, imm_u(19)), imm_u, Fill(12, 0.U))
 //   // j
 //   val imm_j_sext = Cat(Fill(conf.xlen - 21, imm_j(19)), imm_j, 0.U)
-//   
+  
 //   val alu_op1 = Wire(UInt(conf.xlen.W))   
 //   alu_op1 := MuxCase(0.U, Array(
 //               (io.idu_to_exu.op1_sel === OP1_RS1) -> rs1_data,
 //               (io.idu_to_exu.op1_sel === OP1_IMU) -> imm_u_sext,
 // //              (io.idu_to_exu.op1_sel === OP1_IMZ) -> imm_z
 //               )).asUInt() & alu_msk
-//  
+ 
 //   val alu_op2 = Wire(UInt(conf.xlen.W))   
 //   alu_op2 := MuxCase(0.U, Array(
 //               (io.idu_to_exu.op2_sel === OP2_RS2) -> rs2_data,
@@ -109,15 +109,15 @@
 //               (io.idu_to_exu.op2_sel === OP2_IMS) -> imm_s_sext,
 //               (io.idu_to_exu.op2_sel === OP2_PC)  -> io.ifu_to_exu.pc,
 //               )).asUInt() & alu_msk
-//   
+  
 //   val alu_shamt = Mux((io.idu_to_exu.alu_msk_type === ALU_MSK_W), alu_op2(4, 0), alu_op2(5, 0))
-// 
+
 //   val mdu = Module(new MDU)
 //   mdu.io.alu_op1 := alu_op1
 //   mdu.io.alu_op2 := alu_op2
 //   mdu.io.alu_op  := io.idu_to_exu.alu_op
 //   mdu.io.alu_msk_type := io.idu_to_exu.alu_msk_type
-// 
+
 //   val alu_out_aux = Wire(UInt(conf.xlen.W))   
 //   alu_out_aux := MuxCase(
 //     0.U, Array(
@@ -137,7 +137,7 @@
 //       (io.idu_to_exu.alu_op === ALU_XOR)    -> (alu_op1 ^ alu_op2).asUInt(),
 //     )
 //   )
-// 
+
 //   // NOTE: All ALU_MSK_W alu_inst needs signed_extension
 //   // TODO: we may need signed_alu_op
 //   val alu_out = Wire(UInt(conf.xlen.W))   
@@ -148,7 +148,7 @@
 // //      (io.idu_to_exu.msk_type === MSK_B)    -> (alu_op1 < alu_op2).asUInt(),
 //     )
 //   )
-// 
+
 //   // submodule3 - next pc
 //   io.idu_to_exu.br_eq  := (rs1_data === rs2_data) 
 //   io.idu_to_exu.br_lt  := (rs1_data.asSInt < rs2_data.asSInt) 
@@ -158,12 +158,12 @@
 //   val jmp_target       = Wire(UInt(32.W))
 //   val jr_target        = Wire(UInt(32.W))
 // //  val exception_target = Wire(UInt(32.W))
-// 
+
 //   pc_plus4   := (io.ifu_to_exu.pc + 4.asUInt(conf.xlen.W))
 //   br_target  := io.ifu_to_exu.pc + imm_b_sext 
 //   jmp_target := io.ifu_to_exu.pc + imm_j_sext
 //   jr_target  := rs1_data + imm_i_sext 
-// 
+
 //   io.ifu_to_exu.pc_next := MuxCase(pc_plus4, Array(
 //                (io.idu_to_exu.pc_sel === PC_4)   -> pc_plus4,
 //                (io.idu_to_exu.pc_sel === PC_BR)  -> br_target,
@@ -171,7 +171,7 @@
 //                (io.idu_to_exu.pc_sel === PC_JR)  -> jr_target,
 // //               (io.ctl.pc_sel === PC_EXC) -> exception_target
 //                ))
-// 
+
 //   // submodule4 - mem reading and writing
 //   io.isRead := (io.idu_to_exu.wb_sel === WB_MEM)
 //   io.mem_addr := alu_out
@@ -193,7 +193,7 @@
 //   )
 // //  // if the inst is lw, lh, lb. Need to do signed extension
 //   val mem_in_result = Wire(UInt(conf.xlen.W)) 
-// 
+
 //   mem_in_result := MuxCase(mem_in_sel, Array( // by default, mem_msk is -1.U(64.W)
 //     (io.idu_to_exu.mem_msk_type === MEM_MSK_W)  -> Cat(Fill(conf.xlen - 32, mem_in_sel(31)), mem_in_sel(31, 0)),
 //     (io.idu_to_exu.mem_msk_type === MEM_MSK_WU) -> Cat(Fill(conf.xlen - 32, false.B), mem_in_sel(31, 0)),
@@ -202,7 +202,7 @@
 //     (io.idu_to_exu.mem_msk_type === MEM_MSK_B)  -> Cat(Fill(conf.xlen - 8, mem_in_sel(7)), mem_in_sel(7, 0)),
 //     (io.idu_to_exu.mem_msk_type === MEM_MSK_BU) -> Cat(Fill(conf.xlen - 8, false.B), mem_in_sel(7, 0)),
 //   ))
-// 
+
 //   // submodule5 - wb_data
 //   wb_data := MuxCase(alu_out, Array(
 //                (io.idu_to_exu.wb_sel === WB_ALU) -> alu_out,
@@ -210,12 +210,12 @@
 //                (io.idu_to_exu.wb_sel === WB_PC4) -> pc_plus4,
 // //               (io.ctl.wb_sel === WB_CSR) -> csr.io.rw.rdata
 //                ))
-// 
+
 // }
-// 
-// 
-// 
-// 
-// 
-// 
-// 
+
+
+
+
+
+
+
