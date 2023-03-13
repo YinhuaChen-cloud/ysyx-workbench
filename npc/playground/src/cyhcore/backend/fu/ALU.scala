@@ -45,6 +45,24 @@ object ALUOpType {
   def isBranchInvert(func: UInt) = func(0)
 }
 
+class ALUIO extends FunctionUnitIO {
+  val cfIn = Flipped(new CtrlFlowIO)
+  val redirect = new RedirectIO
+  val offset = Input(UInt(XLEN.W))
+}
 
+class ALU extends CyhCoreModule {
+
+  val io = IO(new ALUIO)
+
+  val (src1, src2, func) = (io.in.src1, io.in.src2, io.in.func)
+  def access(src1: UInt, src2: UInt, func: UInt): UInt = {
+    this.src1 := src1
+    this.src2 := src2
+    this.func := func
+    io.out
+  }
+
+}
 
 

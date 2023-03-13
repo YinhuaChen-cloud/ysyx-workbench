@@ -1,20 +1,21 @@
-// package cyhcore
+package cyhcore
 
-// import chisel3._
-// import chisel3.util._
-// import chisel3.stage.ChiselStage
+import chisel3._
+import chisel3.util._
+import chisel3.stage.ChiselStage
+
 // import Conf._
 // import Macros._
 // import Macros.Constants._
 
-//     // // EXU -> AXI4DRAM
-//     // val mem_in = Output(UInt(XLEN.W))
-//     // val mem_addr = Input(UInt(XLEN.W))
-//     // val mem_write_data = Input(UInt(XLEN.W))
-//     // val isRead = Input(Bool())
-//     // val mem_write_msk = Input(UInt(8.W))
-//     // // IDU -> AXI4DRAM
-//     // val isWriteMem = Input(Bool())
+    // // EXU -> AXI4DRAM
+    // val mem_in = Output(UInt(XLEN.W))
+    // val mem_addr = Input(UInt(XLEN.W))
+    // val mem_write_data = Input(UInt(XLEN.W))
+    // val isRead = Input(Bool())
+    // val mem_write_msk = Input(UInt(8.W))
+    // // IDU -> AXI4DRAM
+    // val isWriteMem = Input(Bool())
 
 // class EXU_bundle (implicit val conf: Configuration) extends Bundle() {
 //   val idu_to_exu = Flipped(new IDU_to_EXU())
@@ -28,12 +29,40 @@
 //   val mem_write_msk = Output(UInt(8.W))
 // }
 
-// class EXU extends CyhCoreModule {
-//   val io = IO(new Bundle {
-//     val in = Flipped(new DecodeIO)
-//     val out = Decoupled(new CommitIO) // 这个端口先用来正常输出信号，不实现commit等内容
-//   })
-// }
+class EXU extends CyhCoreModule {
+  val io = IO(new Bundle {
+    val in = Flipped(new DecodeIO)
+    val out = new CommitIO  // TODO: 为什么叫做 Commit?
+  })
+
+  val src1 = io.in.data.src1(XLEN-1,0)
+  val src2 = io.in.data.src2(XLEN-1,0)
+  val (fuType, fuOpType) = (io.in.ctrl.fuType, io.in.ctrl.fuOpType)
+
+  val alu = Module(new ALU)
+  val aluOut = alu.access(src1 = src1, src2 = src2, func = fuOpType)
+
+// out(CommitIO) ------------------------------------------ decode(DecodeIO)
+  // val cf = new CtrlFlowIO
+  // val ctrl = new CtrlSignalIO
+  // val data = new DataSrcIO
+
+  // io.in.cf <> io.out.decode.cf  // TODO: 等下换成这种写法试试
+  // io.out.decode.cf.redirect := alu.io.redirect
+
+  io.out.decode.cf.pc := io.in.cf.pc
+  io.out.decode.cf.instr := io.in.cf.instr
+  io.out.decode.cf.redirect := alu.io.redirect
+
+// out(CommitIO) ------------------------------------------ commits( Output(Vec(FuType.num, UInt(XLEN.W))) )
+  // val commits = Output(Vec(FuType.num, UInt(XLEN.W))) // EXU 四个功能单元的输出都在这里，让 WBU 挑选
+
+  io.out.commits(FuType.alu) := aluOut
+  // io.out.commits(FuType.lsu) := lsuOut
+  // io.out.commits(FuType.csr) := csrOut
+  // io.out.commits(FuType.mdu) := mduOut
+  
+}
 
 
 
