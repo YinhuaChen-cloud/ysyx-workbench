@@ -69,7 +69,8 @@ class Decoder extends CyhCoreModule with HasInstrType {
 
   io.out.data := DontCare
 
-  printf("src1Type = %d, src2Type = %d, fuType = %d, fuOpType = %d\n", src1Type, src2Type, fuType, fuOpType)
+  // printf("src1Type = %d, src2Type = %d, fuType = %d, fuOpType = %d\n", src1Type, src2Type, fuType, fuOpType)
+  printf(p"${io.out.ctrl}")
   
 }
 
