@@ -24,6 +24,7 @@ class CtrlSignalIO extends CyhCoreBundle {
     p"  src2Type  : ${src2Type}\n"
     // p"  length : $length\n" +
     // p"  data   : 0x${Hexadecimal(data)}\n"
+    char
   }
 
 }
