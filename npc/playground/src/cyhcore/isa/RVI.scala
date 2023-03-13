@@ -46,29 +46,29 @@ object RV32I_ALUInstr extends HasInstrType {
     // AUIPC     -> List(Y, BR_N  , OP1_IMU, OP2_PC , ALU_ADD , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_N),
     // LUI       -> List(Y, BR_N  , OP1_IMU, OP2_X ,  ALU_ADD , WB_ALU, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_W, SIGN_N),
 
-    // ADDI           -> List(InstrI, FuType.alu, ALUOpType.add),
-    // SLLI           -> List(InstrI, FuType.alu, ALUOpType.sll),
-    // // SLTI           -> List(InstrI, FuType.alu, ALUOpType.slt),
-    // SLTIU          -> List(InstrI, FuType.alu, ALUOpType.sltu),
-    // XORI           -> List(InstrI, FuType.alu, ALUOpType.xor),
-    // SRLI           -> List(InstrI, FuType.alu, ALUOpType.srl),
-    // ORI            -> List(InstrI, FuType.alu, ALUOpType.or ),
-    // ANDI           -> List(InstrI, FuType.alu, ALUOpType.and),
-    // SRAI           -> List(InstrI, FuType.alu, ALUOpType.sra),
+    ADDI           -> List(InstrI, FuType.alu, ALUOpType.add),
+    SLLI           -> List(InstrI, FuType.alu, ALUOpType.sll),
+    // SLTI           -> List(InstrI, FuType.alu, ALUOpType.slt),
+    SLTIU          -> List(InstrI, FuType.alu, ALUOpType.sltu),
+    XORI           -> List(InstrI, FuType.alu, ALUOpType.xor),
+    SRLI           -> List(InstrI, FuType.alu, ALUOpType.srl),
+    ORI            -> List(InstrI, FuType.alu, ALUOpType.or ),
+    ANDI           -> List(InstrI, FuType.alu, ALUOpType.and),
+    SRAI           -> List(InstrI, FuType.alu, ALUOpType.sra),
 
-    // ADD            -> List(InstrR, FuType.alu, ALUOpType.add),
-    // SLL            -> List(InstrR, FuType.alu, ALUOpType.sll),
-    // SLT            -> List(InstrR, FuType.alu, ALUOpType.slt),
-    // SLTU           -> List(InstrR, FuType.alu, ALUOpType.sltu),
-    // XOR            -> List(InstrR, FuType.alu, ALUOpType.xor),
-    // // SRL            -> List(InstrR, FuType.alu, ALUOpType.srl),
-    // OR             -> List(InstrR, FuType.alu, ALUOpType.or ),
-    // AND            -> List(InstrR, FuType.alu, ALUOpType.and),
-    // SUB            -> List(InstrR, FuType.alu, ALUOpType.sub),
-    // // SRA            -> List(InstrR, FuType.alu, ALUOpType.sra),
+    ADD            -> List(InstrR, FuType.alu, ALUOpType.add),
+    SLL            -> List(InstrR, FuType.alu, ALUOpType.sll),
+    SLT            -> List(InstrR, FuType.alu, ALUOpType.slt),
+    SLTU           -> List(InstrR, FuType.alu, ALUOpType.sltu),
+    XOR            -> List(InstrR, FuType.alu, ALUOpType.xor),
+    // SRL            -> List(InstrR, FuType.alu, ALUOpType.srl),
+    OR             -> List(InstrR, FuType.alu, ALUOpType.or ),
+    AND            -> List(InstrR, FuType.alu, ALUOpType.and),
+    SUB            -> List(InstrR, FuType.alu, ALUOpType.sub),
+    // SRA            -> List(InstrR, FuType.alu, ALUOpType.sra),
 
-    // AUIPC          -> List(InstrU, FuType.alu, ALUOpType.add),
-    // LUI            -> List(InstrU, FuType.alu, ALUOpType.add)
+    AUIPC          -> List(InstrU, FuType.alu, ALUOpType.add),
+    LUI            -> List(InstrU, FuType.alu, ALUOpType.add)
   )
 }
 
@@ -96,15 +96,15 @@ object RV32I_BRUInstr extends HasInstrType {
 
     // TODO: 在没有独立 BRU 的情况下，使用 ALUOPType，那么在有独立的 BRU 时呢？
     // 独立的 BRU 似乎只出现在有 BPU (分支预测单元) 的情况下
-    // JAL            -> List(InstrJ, FuType.bru, ALUOpType.jal),
-    // JALR           -> List(InstrI, FuType.bru, ALUOpType.jalr),
+    JAL            -> List(InstrJ, FuType.bru, ALUOpType.jal),
+    JALR           -> List(InstrI, FuType.bru, ALUOpType.jalr),
 
-    // BEQ            -> List(InstrB, FuType.bru, ALUOpType.beq),
-    // BNE            -> List(InstrB, FuType.bru, ALUOpType.bne),
-    // BLT            -> List(InstrB, FuType.bru, ALUOpType.blt),
-    // BGE            -> List(InstrB, FuType.bru, ALUOpType.bge),
-    // BLTU           -> List(InstrB, FuType.bru, ALUOpType.bltu),
-    // BGEU           -> List(InstrB, FuType.bru, ALUOpType.bgeu)
+    BEQ            -> List(InstrB, FuType.bru, ALUOpType.beq),
+    BNE            -> List(InstrB, FuType.bru, ALUOpType.bne),
+    BLT            -> List(InstrB, FuType.bru, ALUOpType.blt),
+    BGE            -> List(InstrB, FuType.bru, ALUOpType.bge),
+    BLTU           -> List(InstrB, FuType.bru, ALUOpType.bltu),
+    BGEU           -> List(InstrB, FuType.bru, ALUOpType.bgeu)
   )
 }
 
@@ -128,14 +128,14 @@ object RV32I_LSUInstr extends HasInstrType {
     // SH        -> List(Y, BR_N  , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, WMEM_1, MEM_MSK_H , ALU_MSK_X, SIGN_X),
     // SW        -> List(Y, BR_N  , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, WMEM_1, MEM_MSK_W , ALU_MSK_X, SIGN_X),
 
-    // LB             -> List(InstrI, FuType.lsu, LSUOpType.lb ),
-    // LH             -> List(InstrI, FuType.lsu, LSUOpType.lh ),
-    // LW             -> List(InstrI, FuType.lsu, LSUOpType.lw ),
-    // LBU            -> List(InstrI, FuType.lsu, LSUOpType.lbu),
-    // LHU            -> List(InstrI, FuType.lsu, LSUOpType.lhu),
-    // SB             -> List(InstrS, FuType.lsu, LSUOpType.sb ),
-    // SH             -> List(InstrS, FuType.lsu, LSUOpType.sh ),
-    // SW             -> List(InstrS, FuType.lsu, LSUOpType.sw)
+    LB             -> List(InstrI, FuType.lsu, LSUOpType.lb ),
+    LH             -> List(InstrI, FuType.lsu, LSUOpType.lh ),
+    LW             -> List(InstrI, FuType.lsu, LSUOpType.lw ),
+    LBU            -> List(InstrI, FuType.lsu, LSUOpType.lbu),
+    LHU            -> List(InstrI, FuType.lsu, LSUOpType.lhu),
+    SB             -> List(InstrS, FuType.lsu, LSUOpType.sb ),
+    SH             -> List(InstrS, FuType.lsu, LSUOpType.sh ),
+    SW             -> List(InstrS, FuType.lsu, LSUOpType.sw)
   )
 }
 
@@ -169,25 +169,24 @@ object RV64IInstr extends HasInstrType {
     // LD        -> List(Y, BR_N  , OP1_RS1, OP2_IMI, ALU_ADD , WB_MEM, WREG_1, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_Y),
     // SD        -> List(Y, BR_N  , OP1_RS1, OP2_IMS, ALU_ADD , WB_X  , WREG_0, WMEM_1, MEM_MSK_X , ALU_MSK_X, SIGN_X),
 
-    // ADDIW          -> List(InstrI, FuType.alu, ALUOpType.addw),
-    // SLLIW          -> List(InstrI, FuType.alu, ALUOpType.sllw),
-    // SRLIW          -> List(InstrI, FuType.alu, ALUOpType.srlw),
-    // SRAIW          -> List(InstrI, FuType.alu, ALUOpType.sraw),
-    // SLLW           -> List(InstrR, FuType.alu, ALUOpType.sllw),
-    // SRLW           -> List(InstrR, FuType.alu, ALUOpType.srlw),
-    // SRAW           -> List(InstrR, FuType.alu, ALUOpType.sraw),
-    // ADDW           -> List(InstrR, FuType.alu, ALUOpType.addw),
-    // SUBW           -> List(InstrR, FuType.alu, ALUOpType.subw),
+    ADDIW          -> List(InstrI, FuType.alu, ALUOpType.addw),
+    SLLIW          -> List(InstrI, FuType.alu, ALUOpType.sllw),
+    SRLIW          -> List(InstrI, FuType.alu, ALUOpType.srlw),
+    SRAIW          -> List(InstrI, FuType.alu, ALUOpType.sraw),
+    SLLW           -> List(InstrR, FuType.alu, ALUOpType.sllw),
+    SRLW           -> List(InstrR, FuType.alu, ALUOpType.srlw),
+    SRAW           -> List(InstrR, FuType.alu, ALUOpType.sraw),
+    ADDW           -> List(InstrR, FuType.alu, ALUOpType.addw),
+    SUBW           -> List(InstrR, FuType.alu, ALUOpType.subw),
 
-    // LWU            -> List(InstrI, FuType.lsu, LSUOpType.lwu),
-    // LD             -> List(InstrI, FuType.lsu, LSUOpType.ld ),
-    // SD             -> List(InstrS, FuType.lsu, LSUOpType.sd)
+    LWU            -> List(InstrI, FuType.lsu, LSUOpType.lwu),
+    LD             -> List(InstrI, FuType.lsu, LSUOpType.ld ),
+    SD             -> List(InstrS, FuType.lsu, LSUOpType.sd)
   )
 }
 
 object RVIInstr {
-  val table = RV32I_ALUInstr.table
-    // RV32I_BRUInstr.table ++ RV32I_LSUInstr.table ++
-    // RV64IInstr.table
+  val table = RV32I_ALUInstr.table ++ RV32I_BRUInstr.table ++ RV32I_LSUInstr.table ++
+    RV64IInstr.table
 }
 
