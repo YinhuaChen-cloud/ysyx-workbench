@@ -37,10 +37,16 @@ class EXU extends CyhCoreModule {
 
   val src1 = io.in.data.src1(XLEN-1,0)
   val src2 = io.in.data.src2(XLEN-1,0)
+  val imm  = io.in.data.imm
   val (fuType, fuOpType) = (io.in.ctrl.fuType, io.in.ctrl.fuOpType)
 
   val alu = Module(new ALU)
   val aluOut = alu.access(src1 = src1, src2 = src2, func = fuOpType)
+
+  val lsu = Module(new LSU)
+  val lsuOut = lsu.access(src1 = src1, src2 = imm,  func = fuOpType)
+
+
 
 // out(CommitIO) ------------------------------------------ decode(DecodeIO)
   // val cf = new CtrlFlowIO
@@ -58,9 +64,9 @@ class EXU extends CyhCoreModule {
   // val commits = Output(Vec(FuType.num, UInt(XLEN.W))) // EXU 四个功能单元的输出都在这里，让 WBU 挑选
 
   io.out.commits(FuType.alu) := aluOut
-  // io.out.commits(FuType.lsu) := lsuOut
-  // io.out.commits(FuType.csr) := csrOut
+  io.out.commits(FuType.lsu) := lsuOut
   // io.out.commits(FuType.mdu) := mduOut
+  // io.out.commits(FuType.csr) := csrOut
   
 }
 
