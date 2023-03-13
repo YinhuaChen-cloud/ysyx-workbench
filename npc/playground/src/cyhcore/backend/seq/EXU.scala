@@ -57,7 +57,7 @@ class EXU extends CyhCoreModule {
 
   io.out.decode.cf.pc := io.in.cf.pc
   io.out.decode.cf.instr := io.in.cf.instr
-  io.out.decode.cf.redirect := alu.io.redirect
+  // io.out.decode.cf.redirect := alu.io.redirect
 
 // out(CommitIO) ------------------------------------------ commits( Output(Vec(FuType.num, UInt(XLEN.W))) )
   // val commits = Output(Vec(FuType.num, UInt(XLEN.W))) // EXU 四个功能单元的输出都在这里，让 WBU 挑选
