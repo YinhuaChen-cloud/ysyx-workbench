@@ -42,7 +42,7 @@ class CSR extends CyhCoreModule with HasCSRConst{
   val mtvec = RegInit(UInt(XLEN.W), 0.U)
   // CSR reg map
   val mapping = Map(
-  // Machine Trap Setup
+    // Machine Trap Setup
     MaskedRegMap(Mtvec, mtvec)
   ) 
 
