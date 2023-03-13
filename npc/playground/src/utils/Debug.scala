@@ -10,5 +10,6 @@ object Debug {
   def apply(pable: Printable) {
     if(debug)
       printf(pable)
+      printf("\n")
   }
 }
