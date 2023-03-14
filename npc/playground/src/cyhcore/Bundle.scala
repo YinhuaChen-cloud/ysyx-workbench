@@ -57,9 +57,9 @@ class FunctionUnitIO extends CyhCoreBundle {
 
   override def toPrintable: Printable = {
     val str = p"Message:\n" +
-    p"  src1  : ${src1}\n" +
-    p"  src2  : ${src2}\n" +
-    p"  func  : ${func}\n"   +
+    p"  src1  : ${in.src1}\n" +
+    p"  src2  : ${in.src2}\n" +
+    p"  func  : ${in.func}\n"   +
     p"  out   : ${out}\n"
     str
   }
