@@ -37,7 +37,7 @@ class CtrlSignalIO extends CyhCoreBundle {
 class DataSrcIO extends CyhCoreBundle { // TODO: 这个DataSrcIO Bundle会不会和 FunctionUnitIO 重合了？
   val src1 = Output(UInt(XLEN.W)) // 猜测：src1 由 ISU 进行计算、求出
   val src2 = Output(UInt(XLEN.W)) // 猜测：src2 由 ISU 进行计算、求出
-  val imm  = Output(UInt(XLEN.W)) // 猜测：imm 由 IDU 给出，连给后端
+  val imm  = Output(UInt(XLEN.W)) // 猜测：imm  由 IDU 给出，连给后端
 
   override def toPrintable: Printable = {
     val str = p"Message:\n" +
