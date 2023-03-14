@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 
 import utils._
+import sim.DiffTest
 
 class ISU extends CyhCoreModule with HasRegFileParameter {
   val io = IO(new Bundle {
@@ -13,6 +14,16 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   })
 
   val rf = new RegFile
+  // difftest ------------------- start TODO: 这个东西后面应该会被 remove 掉
+  val difftest = new DiffTest
+  difftest.io.clk := clock
+  difftest.io.rst := reset
+  val rf_aux = Wire(Vec(NRReg * XLEN, Bool()))
+  for(i <- 0 until NRReg) {
+    rf_aux.slice(i * XLEN, (i+1) * XLEN).zip(rf.rf(i).asBools).foreach{case (a, b) => a := b}
+  }
+  difftest.io.regfile := rf_aux.asUInt
+  // difftest ------------------- end
 
   // write rf
   when (io.wb.rfWen) { rf.write(io.wb.rfDest, io.wb.rfData) }
