@@ -74,7 +74,8 @@ class EXU extends CyhCoreModule {
   // io.out.commits(FuType.mdu) := mduOut
   // io.out.commits(FuType.csr) := csrOut
 
-  Debug(p"In EXU, ${io.in.ctrl}")
+  Debug(p"In EXU ctrl, ${io.in.ctrl}")
+  Debug(p"In EXU data, ${io.in.data}")
   
 }
 

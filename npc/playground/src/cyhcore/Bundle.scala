@@ -34,7 +34,7 @@ class CtrlSignalIO extends CyhCoreBundle {
 
 }
 
-class DataSrcIO extends CyhCoreBundle {
+class DataSrcIO extends CyhCoreBundle { // TODO: 这个DataSrcIO Bundle会不会和 FunctionUnitIO 重合了？
   val src1 = Output(UInt(XLEN.W))
   val src2 = Output(UInt(XLEN.W))
   val imm  = Output(UInt(XLEN.W))
