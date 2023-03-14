@@ -9,9 +9,10 @@ class Backend extends CyhCoreModule {
   })
 
   val exu = Module(new EXU)
-  // val wbu  = Module(new WBU)
+  val wbu  = Module(new WBU)
 
   io.in <> exu.io.in
+  exu.io.out <> wbu.io.in
 
   // PipelineConnect(isu.io.out, exu.io.in, exu.io.out.fire(), io.flush(0))
   // PipelineConnect(exu.io.out, wbu.io.in, true.B, io.flush(1))
