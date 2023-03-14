@@ -137,6 +137,8 @@ class ALU extends CyhCoreModule {
 // FunctionUnitIO ------------------------------------------ out(Output(UInt(XLEN.W)))
   io.out := aluRes
 
+  Debug(p"In ALU, ${io}")
+
 }
 
 

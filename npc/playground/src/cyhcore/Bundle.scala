@@ -54,6 +54,15 @@ class FunctionUnitIO extends CyhCoreBundle {
     val func = Output(FuOpType())
   })
   val out = Output(UInt(XLEN.W))
+
+  override def toPrintable: Printable = {
+    val str = p"Message:\n" +
+    p"  src1  : ${src1}\n" +
+    p"  src2  : ${src2}\n" +
+    p"  func  : ${func}\n"   +
+    p"  out   : ${out}\n"
+    str
+  }
 }
 
 // NOTE: 豪神在定义 Bundle 接口的时候似乎会把所有端口都定义成 Output
