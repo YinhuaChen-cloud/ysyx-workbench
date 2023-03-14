@@ -15,7 +15,8 @@ class Decoder extends CyhCoreModule with HasInstrType {
 // out(DecodeIO) ------------------------------------------ cf(CtrlFlowIO)
   // val instr = Output(UInt(64.W))
   // val pc = Output(UInt(VAddrBits.W))
-  io.out.cf <> io.in
+
+  io.in <> io.out.cf
 
 // out(DecodeIO) ------------------------------------------ ctrl(CtrlSignalIO)
   // val src1Type = Output(SrcType())
@@ -26,6 +27,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val rfSrc2 = Output(UInt(5.W))
   // val rfWen = Output(Bool())
   // val rfDest = Output(UInt(5.W))
+
   val instr = io.in.instr
   // 果壳这里的默认译码似乎不是 invalid，而是中断，可能在中断中再判断是否是invalid
   // NOTE: 对于现在的我来说，不需要支持较为复杂的异常处理，凡是 InstrN 都直接判断 invalid 就好了
