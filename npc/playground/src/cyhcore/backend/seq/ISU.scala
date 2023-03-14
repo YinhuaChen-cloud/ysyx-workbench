@@ -15,7 +15,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 
   val rf = new RegFile
   // difftest ------------------- start TODO: 这个东西后面应该会被 remove 掉
-  val difftest = new DiffTest
+  val difftest = Module(new DiffTest)
   difftest.io.clk := clock
   difftest.io.rst := reset
   val rf_aux = Wire(Vec(NRReg * XLEN, Bool()))
