@@ -16,6 +16,8 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 
   // write rf
   when (io.wb.rfWen) { rf.write(io.wb.rfDest, io.wb.rfData) }
+
+  io.out := DontCare
   
 }
 
