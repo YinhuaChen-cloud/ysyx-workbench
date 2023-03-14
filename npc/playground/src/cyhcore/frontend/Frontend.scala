@@ -9,13 +9,15 @@ import bus.simplebus._
 class Frontend extends CyhCoreModule {
   val io = IO(new Bundle {
     val imem  = new SimpleBusUC // 用来从 SRAM 读取指令的
-    // val out   = Vec(2, new DecodeIO) // 用来连接后端(EXU)的
+    val out   = new DecodeIO // 用来连接后端(EXU)的
   })
 
   val ifu  = Module(new IFU)
   val idu  = Module(new IDU)
 
   io.imem <> ifu.io.imem
+  ifu.io.out <> idu.io.in
+  io.out <> idu.io.out
 
   // def PipelineConnect2[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T],
   //   isFlush: Bool, entries: Int = 4, pipe: Boolean = false) = {
@@ -26,9 +28,6 @@ class Frontend extends CyhCoreModule {
   // PipelineConnect(ibf.io.out, idu.io.in(0), idu.io.out(0).fire(), ifu.io.flushVec(1))
   // idu.io.in(1) := DontCare // 在没有多发射时，in1不连接有效的东西
 
-  ifu.io.out <> idu.io.in
-
-  // io.out <> idu.io.out
 
 }
 

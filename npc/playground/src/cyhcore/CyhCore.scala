@@ -30,11 +30,10 @@ class CyhCore extends CyhCoreModule {
   // frontend = IFU + IDU
   val frontend = Module(new Frontend)
   // backend = EXU + WBU + RegFile
-  // val backend  = Module(new Backend)
+  val backend  = Module(new Backend)
 
   io.imem <> frontend.io.imem
-
-
+  frontend.io.out <> backend.io.in
 
 }
 

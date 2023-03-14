@@ -45,7 +45,8 @@ object Instructions extends HasInstrType {
   def NOP = 0x00000013.U
   // val DecodeDefault = List(N, BR_N , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_X)
   val DecodeDefault = List(InstrN, FuType.csr, CSROpType.jmp) 
-  def DecodeTable = RVIInstr.table ++ RVMInstr.table ++
+  def DecodeTable = RVIInstr.table ++
+    RVMInstr.table ++
     Priviledged.table
     // RVZicsrInstr.table
 }
