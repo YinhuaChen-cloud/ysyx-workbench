@@ -34,10 +34,18 @@ class CtrlSignalIO extends CyhCoreBundle {
 
 }
 
-class DataSrcIO extends CyhCoreBundle {
-  val src1 = Output(UInt(XLEN.W))
-  val src2 = Output(UInt(XLEN.W))
-  val imm  = Output(UInt(XLEN.W))
+class DataSrcIO extends CyhCoreBundle { // TODO: 这个DataSrcIO Bundle会不会和 FunctionUnitIO 重合了？
+  val src1 = Output(UInt(XLEN.W)) // 猜测：src1 由 ISU 进行计算、求出
+  val src2 = Output(UInt(XLEN.W)) // 猜测：src2 由 ISU 进行计算、求出
+  val imm  = Output(UInt(XLEN.W)) // 猜测：imm  由 IDU 给出，连给后端
+
+  override def toPrintable: Printable = {
+    val str = p"Message:\n" +
+    p"  src1  : ${src1}\t${Hexadecimal(src1)}\n" +
+    p"  src2  : ${src2}\t${Hexadecimal(src2)}\n" +
+    p"  imm   : ${imm}\t${Hexadecimal(imm)}\n"    
+    str
+  }
 }
 
 // 用来写回 PC，实现跳转指令
@@ -47,13 +55,23 @@ class RedirectIO extends CyhCoreBundle {
   // val valid = Output(Bool())
 }
 
+// 由 MDU, ALU 等功能单元使用的端口
 class FunctionUnitIO extends CyhCoreBundle {
   val in = Flipped(new Bundle {
-    val src1 = Output(UInt(XLEN.W))
-    val src2 = Output(UInt(XLEN.W))
+    val src1 = Output(UInt(XLEN.W)) // 可能来自 寄存器 和 pc
+    val src2 = Output(UInt(XLEN.W)) // 可能来自 寄存器 和 imm
     val func = Output(FuOpType())
   })
   val out = Output(UInt(XLEN.W))
+
+  override def toPrintable: Printable = {
+    val str = p"Message:\n" +
+    p"  src1  : ${in.src1}\t${Hexadecimal(in.src1)}\n" +
+    p"  src2  : ${in.src2}\t${Hexadecimal(in.src2)}\n" +
+    p"  func  : ${in.func}\t${Hexadecimal(in.func)}\n"    +
+    p"  out   : ${out}\t${Hexadecimal(out)}\n"
+    str
+  }
 }
 
 // NOTE: 豪神在定义 Bundle 接口的时候似乎会把所有端口都定义成 Output

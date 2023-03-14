@@ -3,6 +3,8 @@ package cyhcore
 import chisel3._
 import chisel3.util._
 
+import utils._
+
 class Backend extends CyhCoreModule {
   val io = IO(new Bundle {
     val in = Flipped(new DecodeIO)
@@ -24,6 +26,8 @@ class Backend extends CyhCoreModule {
   
   // PipelineConnect(isu.io.out, exu.io.in, exu.io.out.fire(), io.flush(0))
   // PipelineConnect(exu.io.out, wbu.io.in, true.B, io.flush(1))
+
+  Debug(p"In Backend data, ${io.in.data}")
 
 }
 

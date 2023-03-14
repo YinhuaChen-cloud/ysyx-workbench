@@ -4,6 +4,8 @@ import chisel3._
 import chisel3.util._
 import chisel3.stage.ChiselStage
 
+import utils._
+
 // import Conf._
 // import Macros._
 // import Macros.Constants._
@@ -71,6 +73,9 @@ class EXU extends CyhCoreModule {
   // io.out.commits(FuType.lsu) := lsuOut
   // io.out.commits(FuType.mdu) := mduOut
   // io.out.commits(FuType.csr) := csrOut
+
+  Debug(p"In EXU ctrl, ${io.in.ctrl}")
+  Debug(p"In EXU data, ${io.in.data}")
   
 }
 

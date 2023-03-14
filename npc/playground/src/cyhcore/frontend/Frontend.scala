@@ -17,7 +17,7 @@ class Frontend extends CyhCoreModule {
 
   io.imem <> ifu.io.imem
   ifu.io.out <> idu.io.in
-  io.out <> idu.io.out
+  idu.io.out <> io.out
 
   // def PipelineConnect2[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T],
   //   isFlush: Bool, entries: Int = 4, pipe: Boolean = false) = {
