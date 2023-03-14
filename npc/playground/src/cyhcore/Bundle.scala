@@ -57,10 +57,10 @@ class FunctionUnitIO extends CyhCoreBundle {
 
   override def toPrintable: Printable = {
     val str = p"Message:\n" +
-    p"  src1  : ${in.src1}\t${Hexadecimal(in.src1)}" +
-    p"  src2  : ${in.src2}\t${Hexadecimal(in.src2)}" +
-    p"  func  : ${in.func}\t${Hexadecimal(in.func)}"    +
-    p"  out   : ${out}\t${Hexadecimal(out)}"
+    p"  src1  : ${in.src1}\t${Hexadecimal(in.src1)}\n" +
+    p"  src2  : ${in.src2}\t${Hexadecimal(in.src2)}\n" +
+    p"  func  : ${in.func}\t${Hexadecimal(in.func)}\n"    +
+    p"  out   : ${out}\t${Hexadecimal(out)}\n"
     str
   }
 }
