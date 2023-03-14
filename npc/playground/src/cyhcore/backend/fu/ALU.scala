@@ -85,7 +85,7 @@ class ALU extends CyhCoreModule {
   // 比如 -1 - (-2) = 0xffff + 2 = 0x10001, 此时 XLEN-bit = 1, sltu = 0, 表示 -1 >= -2, 正确；-2 - (-1) = 0xfffe + 1 = 0xffff，此时XLEN-bit = 0, sltu = 1，表示 -2 < -1，正确
   // 若本来 src1 和 src2 一正一负, 那么此时在 sltu 指令中，明显负数更大
   // 比如 1 - (-1)  = 1 + 1 = 2 此时，XLEN-bit = 0, sltu = 1，表示 1 < -1，正确；比如 -1 - 1 = 0xffff + 0xffff = 0x1fffe, 此时 XLEN-bit = 1, sltu = 0,表示 -1 >= 1，正确
-  val sltu = !adderRes(XLEN)  // 三处要用 
+  val sltu = !adderRes(XLEN)  // 三处要用  // TODO：以后我们能看综合电路了，可以看看这种写法和直接写 “<” 有什么区别
   // 此时是有符号数的 src1 和 src2
 
   // 当 (src1 ^ src2)(XLEN-1, 0) = 1 时，说明 src1 和 src2 符号不同
@@ -100,10 +100,17 @@ class ALU extends CyhCoreModule {
   // 若此时 src1和src2都是负数, 当 sltu = 1时，说明无符号比较中，src1 < src2, 说明在有符号对比中 src1 < src2(注意：负数的无符号对比中，更大的负数，它的无符号对比也就越大), slt 应为1
   val slt = xorRes(XLEN-1) ^ sltu  // 两处要用
 
-
-  // ALU总最好只有一个加法器
+  val shsrc1 = MuxLookup(func, src1(XLEN-1,0), List(
+    // ALUOpType.sllw -> SignExt(src1(31,0), XLEN) // sllw 和 sll 的操作没有区别，所以不需要在这里开头做处理，只需要在结果做阶段
+    ALUOpType.srlw -> ZeroExt(src1(31,0), XLEN),   // 逻辑右移，做0位扩展
+    ALUOpType.sraw -> SignExt(src1(31,0), XLEN)    // 必须做有符号扩展，否则无法共享64位指令的算术右移
+  ))
+  val shamt = Mux(ALUOpType.isWordOp(func), src2(4, 0), src2(5, 0))
+  // ALU最好只有一个加法器
   // def add  = "b1000000".U
   // def sub  = "b0001000".U
+  // 在这里可以看到 ，res的值仅仅由 func(3,0) 决定，哪怕 BRANCH 指令中的 func(3,0) 和计算指令的 func(3,0) 有重叠
+  // TODO: 原因是 BRANCH 指令的结果放到 redirectIO，只需要 IDU 告诉 WBU 译码结果，WBU就能知道选择哪个信号，要写回哪里
   val res = MuxLookup(func(3, 0), adderRes, List(
   // def sll  = "b0000001".U
     ALUOpType.sll  -> ((shsrc1  << shamt)(XLEN-1, 0)), // 左移
@@ -123,7 +130,9 @@ class ALU extends CyhCoreModule {
     ALUOpType.sra  -> ((shsrc1.asSInt >> shamt).asUInt)  // 算数右移
   ))
   // 根据是否是 w 指令，来决定是否对结果做有符号扩展
-  val aluRes = Mux(ALUOpType.isWordOp(func), SignExt(res(31,0), 64), res)
+  // TODO: 为什么 addw, subw 不需要对 src1 和 src2 进行截断？
+  // 回答：也许在 64 位加法中，直接截取其32位的结果，这个结果和32位加法是一样的。
+  val aluRes = Mux(ALUOpType.isWordOp(func), SignExt(res(31,0), 64), res) // 如果是 w 算数指令，最后的结果都要做有符号扩展
 
 // FunctionUnitIO ------------------------------------------ out(Output(UInt(XLEN.W)))
   io.out := aluRes

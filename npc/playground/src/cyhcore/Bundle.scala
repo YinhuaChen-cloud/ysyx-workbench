@@ -8,10 +8,11 @@ class CtrlSignalIO extends CyhCoreBundle {
   val src2Type = Output(SrcType())
   val fuType = Output(FuType())
   val fuOpType = Output(FuOpType())
-  val rfSrc1 = Output(UInt(5.W))
-  val rfSrc2 = Output(UInt(5.W))
-  val rfWen = Output(Bool())
-  val rfDest = Output(UInt(5.W))
+  val rfSrc1 = Output(UInt(5.W))     // 来自 Decoder 的 rf1 addr
+  val rfSrc2 = Output(UInt(5.W))     // 来自 Decoder 的 rf2 addr
+  val rfWen = Output(Bool())         // 是否写入寄存器
+  val rfDest = Output(UInt(5.W))     // 写入的目标寄存器的 addr
+
   // val isNutCoreTrap = Output(Bool())
   // val isSrc1Forward = Output(Bool())
   // val isSrc2Forward = Output(Bool())
@@ -59,7 +60,7 @@ class FunctionUnitIO extends CyhCoreBundle {
 // 关于 Input 接口，就接一个 Flipped
 class CtrlFlowIO extends CyhCoreBundle { // IFU -> IDU
   val instr = Output(UInt(64.W))
-  val pc = Output(UInt(VAddrBits.W))
+  val pc = Output(UInt(VAddrBits.W)) // TODO: 这里的地址真的要弄成39位吗？
   // val pnpc = Output(UInt(VAddrBits.W)) // predicted next pc
   val redirect = new RedirectIO  // TODO: 我猜测这个应该是用来处理跳转指令的
   // val exceptionVec = Output(Vec(16, Bool()))

@@ -10,7 +10,6 @@
 //     val rst = Input(Bool())
 //     val isEbreak = Input(Bool())
 //     val inv_inst  = Input(Bool())
-//     val regfile = Input(UInt((NR_GPRS * XLEN).W))
 //   })
 // 
 //   setInline("DPIC.v",
@@ -35,6 +34,13 @@
 //               |      if (~rst && inv_inst)
 //               |        invalid();
 //               |
+//               |endmodule
+//             """.stripMargin)
+// 
+// }
+// 
+//     val regfile = Input(UInt((NR_GPRS * XLEN).W))
+//               这段代码已经迁移到了 Difftest.scala 中
 //               |  // expose regfile for difftest
 //               |  import "DPI-C" function void set_gpr_ptr(input logic [${XLEN}-1:0] a []);
 //               |  wire [${XLEN}-1:0] regs [${NR_GPRS}-1:0];
@@ -46,9 +52,3 @@
 //               |  endgenerate
 //               |  initial set_gpr_ptr(regs);
 //               |
-//               |endmodule
-//             """.stripMargin)
-// 
-// }
-// 
-// 
