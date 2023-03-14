@@ -35,9 +35,9 @@ class CtrlSignalIO extends CyhCoreBundle {
 }
 
 class DataSrcIO extends CyhCoreBundle { // TODO: 这个DataSrcIO Bundle会不会和 FunctionUnitIO 重合了？
-  val src1 = Output(UInt(XLEN.W))
-  val src2 = Output(UInt(XLEN.W))
-  val imm  = Output(UInt(XLEN.W))
+  val src1 = Output(UInt(XLEN.W)) // 猜测：src1 由 ISU 进行计算、求出
+  val src2 = Output(UInt(XLEN.W)) // 猜测：src2 由 ISU 进行计算、求出
+  val imm  = Output(UInt(XLEN.W)) // 猜测：imm 由 IDU 给出，连给后端
 
   override def toPrintable: Printable = {
     val str = p"Message:\n" +
@@ -55,10 +55,11 @@ class RedirectIO extends CyhCoreBundle {
   // val valid = Output(Bool())
 }
 
+// 由 MDU, ALU 等功能单元使用的端口
 class FunctionUnitIO extends CyhCoreBundle {
   val in = Flipped(new Bundle {
-    val src1 = Output(UInt(XLEN.W))
-    val src2 = Output(UInt(XLEN.W))
+    val src1 = Output(UInt(XLEN.W)) // 可能来自 寄存器 和 pc
+    val src2 = Output(UInt(XLEN.W)) // 可能来自 寄存器 和 imm
     val func = Output(FuOpType())
   })
   val out = Output(UInt(XLEN.W))
