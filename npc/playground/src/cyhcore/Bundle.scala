@@ -43,7 +43,7 @@ class DataSrcIO extends CyhCoreBundle {
     val str = p"Message:\n" +
     p"  src1  : ${src1}\t${Hexadecimal(src1)}\n" +
     p"  src2  : ${src2}\t${Hexadecimal(src2)}\n" +
-    p"  func  : ${imm}\t${Hexadecimal(imm)}\n"    
+    p"  imm   : ${imm}\t${Hexadecimal(imm)}\n"    
     str
   }
 }
