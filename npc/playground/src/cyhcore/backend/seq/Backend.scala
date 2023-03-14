@@ -3,6 +3,8 @@ package cyhcore
 import chisel3._
 import chisel3.util._
 
+import utils._
+
 class Backend extends CyhCoreModule {
   val io = IO(new Bundle {
     val in = Flipped(new DecodeIO)
