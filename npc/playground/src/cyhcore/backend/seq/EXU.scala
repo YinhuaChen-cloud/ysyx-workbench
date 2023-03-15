@@ -59,11 +59,15 @@ class EXU extends CyhCoreModule {
   // io.in.cf <> io.out.decode.cf  // TODO: 等下换成这种写法试试
   // io.out.decode.cf.redirect := alu.io.redirect
 
+  // Debug(p"---------------- In EXU, alu.io.redirect ${alu.io.redirect}")
+  // Debug(p"---------------- In EXU, alu.io.redirect ${alu.io.redirect}")
+
+  io.out.decode := DontCare
+
   io.out.decode.cf.pc := io.in.cf.pc
   io.out.decode.cf.instr := io.in.cf.instr
   io.out.decode.cf.redirect := alu.io.redirect
 
-  io.out.decode := DontCare
   io.out.decode.ctrl <> io.in.ctrl
 
 // out(CommitIO) ------------------------------------------ commits( Output(Vec(FuType.num, UInt(XLEN.W))) )
