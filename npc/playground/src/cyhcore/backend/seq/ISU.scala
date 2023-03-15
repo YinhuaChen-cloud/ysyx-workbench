@@ -74,5 +74,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 
   io.out.data.imm  := io.in.data.imm
 
+  Debug(io.out.data)
+
 }
 
