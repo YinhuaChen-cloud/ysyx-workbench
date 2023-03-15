@@ -12,7 +12,6 @@ class Decoder extends CyhCoreModule with HasInstrType {
     // val isWFI = Output(Bool()) // require NutCoreSim to advance mtime when wfi to reduce the idle time in Linux
   })
 
-
 // out(DecodeIO) ------------------------------------------ cf(CtrlFlowIO)
   // val instr = Output(UInt(64.W))
   // val pc = Output(UInt(VAddrBits.W))
