@@ -8,6 +8,8 @@ import utils._
 class Backend extends CyhCoreModule {
   val io = IO(new Bundle {
     val in = Flipped(new DecodeIO)
+    // 对 PC 寄存器进行写回 
+    val redirect = new RedirectIO // 用来支持 branch, jmp 等指令的
   })
 
   // 根据果壳的代码，后端单元顺序应该如下
@@ -23,11 +25,17 @@ class Backend extends CyhCoreModule {
   isu.io.out <> exu.io.in
   exu.io.out <> wbu.io.in
   wbu.io.wb  <> isu.io.wb
+
+  // 跳转指令支持(EXU决定跳转指令的target，随后连线到 WBU, WBU再决定跳转指令的写入时机(valid))
+  dontTouch(exu.io.out.decode.cf.redirect)
+  dontTouch(wbu.io.redirect)
+  wbu.io.redirect <> io.redirect
   
   // PipelineConnect(isu.io.out, exu.io.in, exu.io.out.fire(), io.flush(0))
   // PipelineConnect(exu.io.out, wbu.io.in, true.B, io.flush(1))
 
   Debug(p"In Backend data, ${io.in.data}")
+  Debug(p"In Backend ctrl, ${io.in.ctrl}")
 
 }
 

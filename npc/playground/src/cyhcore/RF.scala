@@ -10,7 +10,7 @@ trait HasRegFileParameter {
 class RegFile extends HasRegFileParameter with HasCyhCoreParameter {
   val rf = RegInit(VecInit(Seq.fill(NRReg)(0.U(XLEN.W))))
   def read(addr: UInt) : UInt = Mux(addr === 0.U, 0.U, rf(addr))
-  def write(addr: UInt, data: UInt) = { rf(addr) := data(XLEN-1,0) }
+  def write(addr: UInt, data: UInt) = { rf(addr) := Mux(addr === 0.U, rf(addr), data(XLEN-1,0)) }
 } 
 
 

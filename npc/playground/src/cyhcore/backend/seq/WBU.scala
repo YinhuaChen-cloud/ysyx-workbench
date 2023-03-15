@@ -25,8 +25,10 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
 // redirect(RedirectIO) ------------------------------------------
   // val target = Output(UInt(PC_LEN.W))
 
-  // io.redirect <> io.in.decode.cf.redirect
-  io.redirect := DontCare
+  dontTouch(io.redirect)
+  dontTouch(io.in.decode.cf.redirect)
+  io.in.decode.cf.redirect <> io.redirect
+  // io.redirect.valid := io.in.bits.decode.cf.redirect.valid && io.in.valid
   
 }
 

@@ -44,6 +44,8 @@ class EXU extends CyhCoreModule {
 
   val alu = Module(new ALU)
   val aluOut = alu.access(src1 = src1, src2 = src2, func = fuOpType)
+  alu.io.cfIn := io.in.cf
+  alu.io.offset := io.in.data.imm
 
   // val lsu = Module(new LSU)
   // val lsuOut = lsu.access(src1 = src1, src2 = imm,  func = fuOpType)
@@ -57,13 +59,16 @@ class EXU extends CyhCoreModule {
   // io.in.cf <> io.out.decode.cf  // TODO: 等下换成这种写法试试
   // io.out.decode.cf.redirect := alu.io.redirect
 
+  // Debug(p"---------------- In EXU, alu.io.redirect ${alu.io.redirect}")
+  // Debug(p"---------------- In EXU, alu.io.redirect ${alu.io.redirect}")
+
+  io.out.decode := DontCare
+
   io.out.decode.cf.pc := io.in.cf.pc
   io.out.decode.cf.instr := io.in.cf.instr
-  // io.out.decode.cf.redirect := alu.io.redirect
-  io.out.decode.cf.redirect := DontCare
+  io.out.decode.cf.redirect := alu.io.redirect
 
-  io.out.decode.ctrl := DontCare
-  io.out.decode.data := DontCare
+  io.out.decode.ctrl <> io.in.ctrl
 
 // out(CommitIO) ------------------------------------------ commits( Output(Vec(FuType.num, UInt(XLEN.W))) )
   // val commits = Output(Vec(FuType.num, UInt(XLEN.W))) // EXU 四个功能单元的输出都在这里，让 WBU 挑选

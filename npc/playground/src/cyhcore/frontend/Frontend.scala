@@ -10,14 +10,20 @@ class Frontend extends CyhCoreModule {
   val io = IO(new Bundle {
     val imem  = new SimpleBusUC // 用来从 SRAM 读取指令的
     val out   = new DecodeIO // 用来连接后端(EXU)的
+
+    val redirect = Flipped(new RedirectIO) // 用来支持 branch, jmp 等指令的
   })
 
   val ifu  = Module(new IFU)
   val idu  = Module(new IDU)
 
+  // 普通指令数据流 frontend -> backend
   io.imem <> ifu.io.imem
   ifu.io.out <> idu.io.in
   idu.io.out <> io.out
+
+  // 跳转指令支持 backend -> frontend
+  io.redirect <> ifu.io.redirect
 
   // def PipelineConnect2[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T],
   //   isFlush: Bool, entries: Int = 4, pipe: Boolean = false) = {

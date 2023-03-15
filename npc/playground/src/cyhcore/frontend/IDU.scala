@@ -12,6 +12,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
     // val isWFI = Output(Bool()) // require NutCoreSim to advance mtime when wfi to reduce the idle time in Linux
   })
 
+
 // out(DecodeIO) ------------------------------------------ cf(CtrlFlowIO)
   // val instr = Output(UInt(64.W))
   // val pc = Output(UInt(VAddrBits.W))
@@ -69,9 +70,28 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val src2 = Output(UInt(XLEN.W))
   // val imm  = Output(UInt(XLEN.W))
 
+  // TODO: 目前来看，src1 和 src2 由于位于 ISU 内的 寄存器堆 赋值, imm 则在译码阶段给出
   io.out.data := DontCare
+  val imm = OneHotTree(instrType, List(
+    InstrI  -> SignExt(instr(31, 20), XLEN),
+    InstrS  -> SignExt(Cat(instr(31, 25), instr(11, 7)), XLEN),
+    InstrB  -> SignExt(Cat(instr(31), instr(7), instr(30, 25), instr(11, 8), 0.U(1.W)), XLEN),
+    InstrU  -> SignExt(Cat(instr(31, 12), 0.U(12.W)), XLEN), //fixed
+    InstrJ  -> SignExt(Cat(instr(31), instr(19, 12), instr(20), instr(30, 21), 0.U(1.W)), XLEN)
+  ))
+  io.out.data.imm := imm
 
   Debug(p"In IDU-Decoder, ${io.out.ctrl}")
+
+// ---------------- judge whether instr is EBREAK --------------- start
+  val isEbreak = (io.in.instr === Priviledged.EBREAK)
+  val inv_inst = (instrType === InstrN)
+  val dpic = Module(new DPIC)
+  dpic.io.clk := clock
+  dpic.io.rst := reset
+  dpic.io.isEbreak := isEbreak 
+  dpic.io.inv_inst := inv_inst
+// ---------------- judge whether instr is EBREAK --------------- end
   
 }
 

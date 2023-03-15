@@ -32,16 +32,27 @@ class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new Bundle {
     val imem = new SimpleBusUC
     val out  = new CtrlFlowIO
+
+    val redirect = Flipped(new RedirectIO) // 用来支持 branch, jmp 等指令的
   })
 
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
+  // val pcUpdate = io.redirect.valid // TODO: 谁 drive 这个信号？
+  // val snpc = pc_reg + 4.U // static next pc
   // pc_reg := io.ifu_to_exu.pc_next
   // io.ifu_to_exu.pc  := pc_reg
   // io.ifu_to_axi4sram.pc  := pc_reg
   // io.ifu_to_exu.inst := io.ifu_to_axi4sram.inst_in
+  // val dnpc = Mux(io.redirect.valid, io.redirect.target, snpc) // dynamic next pc
+
+  dontTouch(io.redirect.target)
+  dontTouch(io.redirect.valid)
+  pc_reg := Mux(io.redirect.valid, io.redirect.target, pc_reg)
+
+// imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
+  // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
 
   io.imem.req.addr  := pc_reg
-  pc_reg := pc_reg + 4.U
 
 // out(CtrlFlowIO) ------------------------------------------ 
   // val instr = Output(UInt(64.W))
