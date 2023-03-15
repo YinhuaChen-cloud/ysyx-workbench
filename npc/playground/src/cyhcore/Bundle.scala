@@ -50,9 +50,9 @@ class DataSrcIO extends CyhCoreBundle { // TODO: 这个DataSrcIO Bundle会不会
 
 // 用来写回 PC，实现跳转指令
 class RedirectIO extends CyhCoreBundle {
-  val target = Output(UInt(PC_LEN.W))
+  val target = Output(UInt(PC_LEN.W)) // 目标跳转地址
   // val rtype = Output(UInt(1.W)) // 1: branch mispredict: only need to flush frontend  0: others: flush the whole pipeline
-  // val valid = Output(Bool())
+  val valid = Output(Bool())  // TODO: 猜测：当前指令为 branch/jmp 指令时，valid = true.B ?
 }
 
 // 由 MDU, ALU 等功能单元使用的端口

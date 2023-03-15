@@ -44,6 +44,8 @@ class EXU extends CyhCoreModule {
 
   val alu = Module(new ALU)
   val aluOut = alu.access(src1 = src1, src2 = src2, func = fuOpType)
+  alu.io.cfIn := io.in.cf
+  alu.io.offset := io.in.data.imm
 
   // val lsu = Module(new LSU)
   // val lsuOut = lsu.access(src1 = src1, src2 = imm,  func = fuOpType)
@@ -59,8 +61,7 @@ class EXU extends CyhCoreModule {
 
   io.out.decode.cf.pc := io.in.cf.pc
   io.out.decode.cf.instr := io.in.cf.instr
-  // io.out.decode.cf.redirect := alu.io.redirect
-  io.out.decode.cf.redirect := DontCare
+  io.out.decode.cf.redirect := alu.io.redirect
 
   io.out.decode := DontCare
   io.out.decode.ctrl <> io.in.ctrl

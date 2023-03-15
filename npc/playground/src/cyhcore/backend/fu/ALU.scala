@@ -46,17 +46,17 @@ object ALUOpType {
 
   def isAdd(func: UInt) = func(6)
   def pcPlus2(func: UInt) = func(5)
-  def isBru(func: UInt) = func(4)
+  def isBru(func: UInt) = func(4) // 这个东西可以用来判断是否是跳转指令
   def isBranch(func: UInt) = !func(3) // TODO: 我觉得这里应该是 isBru(func) && !func(3)
   def isJump(func: UInt) = isBru(func) && !isBranch(func)
-  def getBranchType(func: UInt) = func(2, 1)
-  def isBranchInvert(func: UInt) = func(0)
+  def getBranchType(func: UInt) = func(2, 1) // 用来在 beq blt bltu 三种类型中选择
+  def isBranchInvert(func: UInt) = func(0) // 判断是否是 bne, bge, bgeu
 }
 
 class ALUIO extends FunctionUnitIO {
-  // val cfIn = Flipped(new CtrlFlowIO)
-  // val redirect = new RedirectIO
-  // val offset = Input(UInt(XLEN.W))
+  val cfIn = Flipped(new CtrlFlowIO) // pc 在这个端口里，用于做 跳转指令 计算
+  val redirect = new RedirectIO
+  val offset = Input(UInt(XLEN.W)) // branch 指令的 offset 由这个端口传入
 }
 
 class ALU extends CyhCoreModule {
@@ -135,9 +135,43 @@ class ALU extends CyhCoreModule {
   val aluRes = Mux(ALUOpType.isWordOp(func), SignExt(res(31,0), 64), res) // 如果是 w 算数指令，最后的结果都要做有符号扩展
 
 // FunctionUnitIO ------------------------------------------ out(Output(UInt(XLEN.W)))
-  io.out := aluRes
+  // io.out := aluRes
+  // 关于 io.out，看 redirect 这节的最后
 
   Debug(p"In ALU, ${io}")
+
+// redirect(RedirectIO) -------------------------------------
+  // val target = Output(UInt(PC_LEN.W)) // 目标跳转地址
+  // val valid = Output(Bool())  // TODO: 猜测：当前指令为 branch/jmp 指令时，valid = true.B ?
+
+  // TODO: 为什么 branch 指令的判断可以和 ALU 指令的判断重叠？
+  // 回答：因为 跳转指令 的结果是 redirectIO 端口，计算指令的结果是 out 端口
+  // 两个端口不同，所以各自做计算，判断重叠了也没关系
+  // 等到了WBU，再根据 IDU 的结果综合判断采用哪个结果
+
+  // 这里的代码主要用于处理 branch 指令和 jmp 指令的相关计算
+
+  // 所有的 branch 指令可以分为三种操作： beq, blt, bltu, 其它三个操作可以通过取反得到
+  // 这里使用了上面的 计算电路，从而节省面积
+  val branchOpTable = List(
+    ALUOpType.getBranchType(ALUOpType.beq)  -> !xorRes.orR,  // 	.orR: OR reduction
+    ALUOpType.getBranchType(ALUOpType.blt)  -> slt, // slt 的结果
+    ALUOpType.getBranchType(ALUOpType.bltu) -> sltu // sltu 的结果
+  )
+
+  val isBranch = ALUOpType.isBranch(func) // 判断目前指令是否是 branch 指令
+  val isBru = ALUOpType.isBru(func) // 判断当前指令是否是 跳转指令
+  // taken 指的是 branch 指令的判断结果，当 taken = true.B，说明应该跳转, 当 taken = false.B，说明不能跳转
+  val taken = OneHotTree(ALUOpType.getBranchType(func), branchOpTable) ^ ALUOpType.isBranchInvert(func)
+  // 如果是 branch 指令，那么跳转的地方是 pc + offset(branch指令的跳转目标地址都在指令里，可以译码得到)
+  // 否则，是jmp指令，使用 adderRes(其实aluRes也行(已经过验证), 但是用 adderRes 会让时延更短)
+  val target = Mux(isBranch, io.cfIn.pc + io.offset, adderRes)(VAddrBits-1,0)
+
+  io.redirect.target := Mux(!taken && isBranch, io.cfIn.pc + 4.U, target)
+  io.redirect.valid  := true.B
+
+  // this is actually for jal and jalr to write pc + 4 to rd
+  io.out := Mux(isBru, SignExt(io.cfIn.pc, PC_LEN) + 4.U, aluRes)
 
 }
 

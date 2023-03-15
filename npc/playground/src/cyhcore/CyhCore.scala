@@ -32,8 +32,12 @@ class CyhCore extends CyhCoreModule {
   // backend = ISU(RegFile) + EXU + WBU
   val backend  = Module(new Backend)
 
+  // 普通指令数据流
   io.imem <> frontend.io.imem
   frontend.io.out <> backend.io.in
+
+  // 跳转指令支持
+  frontend.io.redirect <> backend.io.redirect
 
 }
 
