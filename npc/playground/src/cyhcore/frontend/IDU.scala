@@ -12,6 +12,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
     // val isWFI = Output(Bool()) // require NutCoreSim to advance mtime when wfi to reduce the idle time in Linux
   })
 
+
 // out(DecodeIO) ------------------------------------------ cf(CtrlFlowIO)
   // val instr = Output(UInt(64.W))
   // val pc = Output(UInt(VAddrBits.W))
@@ -81,6 +82,16 @@ class Decoder extends CyhCoreModule with HasInstrType {
   io.out.data.imm := imm
 
   Debug(p"In IDU-Decoder, ${io.out.ctrl}")
+
+// ---------------- judge whether instr is EBREAK --------------- start
+  val isEbreak = (io.in.instr === Priviledged.EBREAK)
+  val inv_inst = (instrType === InstrN)
+  val dpic = Module(new DPIC)
+  dpic.io.clk := clock
+  dpic.io.rst := reset
+  dpic.io.isEbreak := isEbreak 
+  dpic.io.inv_inst := inv_inst
+// ---------------- judge whether instr is EBREAK --------------- end
   
 }
 
