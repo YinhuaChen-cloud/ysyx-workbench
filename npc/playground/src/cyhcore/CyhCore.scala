@@ -37,7 +37,7 @@ class CyhCore extends CyhCoreModule {
   frontend.io.out <> backend.io.in
 
   // 跳转指令支持
-  frontend.io.redirect <> backend.io.redirect
+  backend.io.redirect <> frontend.io.redirect
 
 }
 
