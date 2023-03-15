@@ -71,14 +71,14 @@ class Decoder extends CyhCoreModule with HasInstrType {
 
   // TODO: 目前来看，src1 和 src2 由于位于 ISU 内的 寄存器堆 赋值, imm 则在译码阶段给出
   io.out.data := DontCare
-  val imm = MuxLookup(instrType, List(
+  val imm = OneHotTree(instrType, List(
     InstrI  -> SignExt(instr(31, 20), XLEN),
     InstrS  -> SignExt(Cat(instr(31, 25), instr(11, 7)), XLEN),
     InstrB  -> SignExt(Cat(instr(31), instr(7), instr(30, 25), instr(11, 8), 0.U(1.W)), XLEN),
     InstrU  -> SignExt(Cat(instr(31, 12), 0.U(12.W)), XLEN),//fixed
     InstrJ  -> SignExt(Cat(instr(31), instr(19, 12), instr(20), instr(30, 21), 0.U(1.W)), XLEN)
   ))
-
+  io.out.data.imm := imm
 
   Debug(p"In IDU-Decoder, ${io.out.ctrl}")
   
