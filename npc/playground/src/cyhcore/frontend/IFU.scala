@@ -45,6 +45,8 @@ class IFU extends CyhCoreModule with HasResetVector {
   // io.ifu_to_exu.inst := io.ifu_to_axi4sram.inst_in
   // val dnpc = Mux(io.redirect.valid, io.redirect.target, snpc) // dynamic next pc
 
+  dontTouch(io.redirect.target)
+  dontTouch(io.redirect.valid)
   pc_reg := Mux(io.redirect.valid, io.redirect.target, pc_reg)
 
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
