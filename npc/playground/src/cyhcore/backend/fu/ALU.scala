@@ -167,6 +167,8 @@ class ALU extends CyhCoreModule {
   // 否则，是jmp指令，使用 adderRes(其实aluRes也行(已经过验证), 但是用 adderRes 会让时延更短)
   val target = Mux(isBranch, io.cfIn.pc + io.offset, adderRes)(VAddrBits-1,0)
 
+  dontTouch(io.redirect.target)
+  dontTouch(io.redirect.valid)
   io.redirect.target := Mux(!taken && isBranch, io.cfIn.pc + 4.U, target)
   io.redirect.valid  := true.B
 
