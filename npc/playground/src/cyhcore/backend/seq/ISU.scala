@@ -76,6 +76,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 
   Debug(p"In ISU data, ${io.out.data}")
   Debug(p"In ISU wb, ${io.wb}")
+  Debug(p"In ISU ctrl, ${io.out.ctrl}")
 
 }
 
