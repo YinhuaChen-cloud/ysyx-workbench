@@ -47,8 +47,8 @@ class EXU extends CyhCoreModule {
   alu.io.cfIn := io.in.cf
   alu.io.offset := io.in.data.imm
 
-  val lsu = Module(new LSU) // TODO: we are here
-  val lsuOut = lsu.access(src1 = src1, src2 = imm,  func = fuOpType)
+  // val lsu = Module(new LSU) // TODO: we are here
+  // val lsuOut = lsu.access(src1 = src1, src2 = imm,  func = fuOpType)
 
 
 // out(CommitIO) ------------------------------------------ decode(DecodeIO)
