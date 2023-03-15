@@ -75,7 +75,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
     InstrI  -> SignExt(instr(31, 20), XLEN),
     InstrS  -> SignExt(Cat(instr(31, 25), instr(11, 7)), XLEN),
     InstrB  -> SignExt(Cat(instr(31), instr(7), instr(30, 25), instr(11, 8), 0.U(1.W)), XLEN),
-    InstrU  -> SignExt(Cat(instr(31, 12), 0.U(12.W)), XLEN),//fixed
+    InstrU  -> SignExt(Cat(instr(31, 12), 0.U(12.W)), XLEN), //fixed
     InstrJ  -> SignExt(Cat(instr(31), instr(19, 12), instr(20), instr(30, 21), 0.U(1.W)), XLEN)
   ))
   io.out.data.imm := imm

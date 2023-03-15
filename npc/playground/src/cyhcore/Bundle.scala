@@ -99,6 +99,14 @@ class WriteBackIO extends CyhCoreBundle {
   val rfWen = Output(Bool())
   val rfDest = Output(UInt(5.W))
   val rfData = Output(UInt(XLEN.W))
+
+  override def toPrintable: Printable = {
+    val str = p"Message:\n" +
+    p"  rfWen  : ${rfWen}\t${Hexadecimal(rfWen)}\n" +
+    p"  rfDest : ${rfDest}\t${Hexadecimal(rfDest)}\n" +
+    p"  rfData : ${rfData}\t${Hexadecimal(rfData)}\n"
+    str
+  }
 }
 
 // EXU -> WBU 的模块
