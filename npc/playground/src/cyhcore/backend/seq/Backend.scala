@@ -28,6 +28,7 @@ class Backend extends CyhCoreModule {
   // PipelineConnect(exu.io.out, wbu.io.in, true.B, io.flush(1))
 
   Debug(p"In Backend data, ${io.in.data}")
+  Debug(p"In Backend ctrl, ${io.in.ctrl}")
 
 }
 
