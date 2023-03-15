@@ -1,5 +1,3 @@
-#include "paddr.h"
-#include "debug.h"
 #include <common.h>
 #include <diff.h>
 #include <sdb.h>
