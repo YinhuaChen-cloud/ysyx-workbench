@@ -30,6 +30,9 @@ object SimpleBusCmd {
   // def probeHit       = "b1100".U
   // def probeMiss      = "b1000".U
 
+  // 在不实现握手信号的时候，作为 disable 内存读写的 cmd
+  def disable        = "b0010".U 
+
   def apply() = UInt(4.W)
 }
 
@@ -53,8 +56,9 @@ class SimpleBusReqBundle extends SimpleBusBundle {
     // this.cmd := cmd
   }
 
-  def isRead() = !cmd(0) && !cmd(3)
-  def isWrite() = cmd(0)
+  def isDisable() = cmd(1)
+  def isRead()    = isDisable() && !cmd(0) && !cmd(3)
+  def isWrite()   = isDisable() && cmd(0)
 }
 
 class SimpleBusRespBundle extends SimpleBusBundle {
