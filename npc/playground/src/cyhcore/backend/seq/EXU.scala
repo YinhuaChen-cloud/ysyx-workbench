@@ -60,6 +60,10 @@ class EXU extends CyhCoreModule {
   lsu.io.wdata := src2
   io.dmem <> lsu.io.dmem
 
+  // val mdu = Module(new MDU)
+  // val mduOut = mdu.access(valid = fuValids(FuType.mdu), src1 = src1, src2 = src2, func = fuOpType)
+  // mdu.io.out.ready := true.B
+
 // out(CommitIO) ------------------------------------------ decode(DecodeIO)
   // val cf = new CtrlFlowIO
   // val ctrl = new CtrlSignalIO
