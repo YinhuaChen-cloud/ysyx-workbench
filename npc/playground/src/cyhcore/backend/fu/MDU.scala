@@ -115,9 +115,9 @@ class MDU extends CyhCoreModule {
   val mulRes = mul.io.out(XLEN-1,0)   // mul 把XLEN*XLEN后，只取XLEN位宽的结果
 
   val div = Module(new Divider(XLEN)) // 除法器的结果位宽是2*XLEN，低XLEN位放商，高XLEN位放余
-  mul.io.in(0) := src1
-  mul.io.in(1) := src2
-  mul.io.sign  := isDivRemSign // NOTE: 其实乘法不需要判断符号
+  div.io.in(0) := src1
+  div.io.in(1) := src2
+  div.io.sign  := isDivRemSign // NOTE: 其实乘法不需要判断符号
   val divRes = Mux(isRem, div.io.out(2*XLEN-1,XLEN), div.io.out(XLEN-1,0)) // 除法的商放在低XLEN位，余数放在高XLEN位
 
   val res = Mux(isDivRem, divRes, mulRes)
