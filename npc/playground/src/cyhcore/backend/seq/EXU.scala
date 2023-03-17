@@ -60,9 +60,8 @@ class EXU extends CyhCoreModule {
   lsu.io.wdata := src2
   io.dmem <> lsu.io.dmem
 
-  // val mdu = Module(new MDU)
-  // val mduOut = mdu.access(valid = fuValids(FuType.mdu), src1 = src1, src2 = src2, func = fuOpType)
-  // mdu.io.out.ready := true.B
+  val mdu = Module(new MDU)
+  val mduOut = mdu.access(src1 = src1, src2 = src2, func = fuOpType)
 
 // out(CommitIO) ------------------------------------------ decode(DecodeIO)
   // val cf = new CtrlFlowIO
@@ -89,7 +88,7 @@ class EXU extends CyhCoreModule {
   io.out.commits := DontCare
   io.out.commits(FuType.alu) := aluOut
   io.out.commits(FuType.lsu) := lsuOut
-  // io.out.commits(FuType.mdu) := mduOut
+  io.out.commits(FuType.mdu) := mduOut
   // io.out.commits(FuType.csr) := csrOut
 
   Debug(p"In EXU ctrl, ${io.in.ctrl}")
