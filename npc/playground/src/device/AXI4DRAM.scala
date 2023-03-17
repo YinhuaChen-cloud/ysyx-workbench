@@ -65,13 +65,13 @@ class RWMEM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
               |  // for data reading from mem
               |  always@(*) begin
               |    if(isRead)
-			        |      pmem_read(mem_addr, mem_in); 
+			        |      pmem_read(mem_addr, rdata); 
               |    else
-              |      mem_in = '0;
+              |      rdata = '0;
               |  end
               |  // for writing mem
               |  always@(posedge clk) 
-              |    if(isWriteMem) 
+              |    if(isWrite) 
               |      pmem_write(mem_addr, mem_write_data, mem_write_msk);
               |
               |endmodule
