@@ -64,14 +64,14 @@ class RWMEM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
               |  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
               |  // for data reading from mem
               |  always@(*) begin
-              |    if(isRead)
+              |    if(~rst && isRead)
 			        |      pmem_read(mem_addr, rdata); 
               |    else
               |      rdata = '0;
               |  end
               |  // for writing mem
               |  always@(posedge clk) 
-              |    if(isWrite) 
+              |    if(~rst && isWrite) 
               |      pmem_write(mem_addr, mem_write_data, mem_write_msk);
               |
               |endmodule
