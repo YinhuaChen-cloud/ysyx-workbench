@@ -51,18 +51,21 @@ object LSUOpType { //TODO: refactor LSU fuop
 // 保持 src1+src2 这个运算和ld一致，可以省去一些运算逻辑
 
 class LSUIO extends FunctionUnitIO {
-  val wdata = Input(UInt(XLEN.W)) // SOLVED: 这个东西用来装sd等指令的写数据
-  val dmem = new SimpleBusUC
+  val wdata  = Input(UInt(XLEN.W)) // SOLVED: 这个东西用来装sd等指令的写数据
+  val valid  = Input(Bool()) // 是否 enable 这个模块
+  val dmem   = new SimpleBusUC
 }
 
 class LSU extends CyhCoreModule {
   val io = IO(new LSUIO)
   // 下面这两行是为了缩短端口名，方便维护和增强可读性。实例化LSU的代码使用access进行连线即可
-  val (src1, src2, func) = (io.in.src1, io.in.src2, io.in.func)
-  def access(src1: UInt, src2: UInt, func: UInt): UInt = {
-    this.src1 := src1
-    this.src2 := src2
-    this.func := func
+  // 这里的 valid 指的是，"是否 enable LSU"
+  val (valid, src1, src2, func) = (io.valid, io.in.src1, io.in.src2, io.in.func)
+  def access(valid: Bool, src1: UInt, src2: UInt, func: UInt): UInt = {
+    this.valid := valid
+    this.src1  := src1
+    this.src2  := src2
+    this.func  := func
     io.out
   }
 
@@ -74,7 +77,7 @@ class LSU extends CyhCoreModule {
   val isPartialLoad = !isStore && (func =/= LSUOpType.ld) // 如果不是 Store　指令，同时又不是load指令
 
   // 总线的请求端设置
-  io.dmem.req.cmd   := Mux(isStore, SimpleBusCmd.write, SimpleBusCmd.read)
+  io.dmem.req.cmd   := Mux(valid, SimpleBusCmd.disable, Mux(isStore, SimpleBusCmd.write, SimpleBusCmd.read))
   io.dmem.req.addr  := addr
   io.dmem.req.wdata := io.wdata
   // 为什么使用 func(1,0)? 原因：LSUOpType 的位宽是由 bit0 和 bit1 决定的

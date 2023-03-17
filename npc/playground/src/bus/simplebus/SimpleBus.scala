@@ -57,8 +57,8 @@ class SimpleBusReqBundle extends SimpleBusBundle {
   }
 
   def isDisable() = cmd(1)
-  def isRead()    = isDisable() && !cmd(0) && !cmd(3)
-  def isWrite()   = isDisable() && cmd(0)
+  def isRead()    = !isDisable() && !cmd(0) && !cmd(3)
+  def isWrite()   = !isDisable() && cmd(0)
 }
 
 class SimpleBusRespBundle extends SimpleBusBundle {
