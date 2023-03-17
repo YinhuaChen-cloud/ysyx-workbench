@@ -20,7 +20,7 @@ class top extends Module {
 	// device: AXI4SRAM -- for inst reading
   val axi4sram = Module(new AXI4SRAM)
 	// device: AXI4DRAM -- for sd, ld instructions
-  // val axi4dram = Module(new AXI4DRAM)
+  val axi4dram = Module(new AXI4DRAM)
   // axi4dram.io.clk := clock
   // axi4dram.io.rst := reset
   // CyhSoC   SOC = Core + Cache + 总线 + 外设通信电路
@@ -28,12 +28,7 @@ class top extends Module {
 
   // SRAM -> SOC <-> DRAM
   cyhsoc.io.imem <> axi4sram.io.imem
-
-
-
-
-
-
+  cyhsoc.io.dmem <> axi4dram.io.dmem
 
   // // submodule1 IFU
   // val ifu = Module(new IFU)

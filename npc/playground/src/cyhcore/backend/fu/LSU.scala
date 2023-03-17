@@ -7,6 +7,7 @@ import bus.simplebus._
 import utils._
 
 object LSUOpType { //TODO: refactor LSU fuop
+  // 注意看：load 和 store 的位宽是由 bit0 和 bit1 决定的
   def lb   = "b0000000".U
   def lh   = "b0000001".U
   def lw   = "b0000010".U
@@ -24,11 +25,6 @@ object LSUOpType { //TODO: refactor LSU fuop
 
   def needMemRead(func: UInt): Bool = isLoad(func) 
   def needMemWrite(func: UInt): Bool = isStore(func)
-}
-
-class LSUIO extends FunctionUnitIO {
-  val wdata = Input(UInt(XLEN.W)) // SOLVED: 这个东西用来装sd等指令的写数据
-  val dmem = new SimpleBusUC
 }
 
 // ld : InstrI  R[rd] = (R[rs1] + imm)
@@ -54,7 +50,11 @@ class LSUIO extends FunctionUnitIO {
 // 还差了一个 imm，因此，多加一个 wdata端口，在EXU那一层，src1=src1, src2=imm, wdata=src2
 // 保持 src1+src2 这个运算和ld一致，可以省去一些运算逻辑
 
-// Unit implementing Load/Store
+class LSUIO extends FunctionUnitIO {
+  val wdata = Input(UInt(XLEN.W)) // SOLVED: 这个东西用来装sd等指令的写数据
+  val dmem = new SimpleBusUC
+}
+
 class LSU extends CyhCoreModule {
   val io = IO(new LSUIO)
   // 下面这两行是为了缩短端口名，方便维护和增强可读性。实例化LSU的代码使用access进行连线即可
@@ -68,11 +68,25 @@ class LSU extends CyhCoreModule {
 
   // 判断是 store 还是 load
   val isStore = LSUOpType.isStore(func)
-  // 根据是 load 还是 store，计算读写的地址
-  val addr = io.in.src1
-  // 判断是 load 8 字节还是 load 部分
-  val partialLoad = !isStore && (func =/= LSUOpType.ld) // 如果不是 Store　指令，同时又不是load指令
-  // ld, lw...
+  // 由于在 EXU 和 LSU 的连线处已经做过处理，这里读写的地址都由 src1 + src2 计算得到
+  val addr = io.in.src1 + io.in.src2
+  // 判断是不是 部分load
+  val isPartialLoad = !isStore && (func =/= LSUOpType.ld) // 如果不是 Store　指令，同时又不是load指令
+
+  // 总线的请求端设置
+  io.dmem.req.cmd   := Mux(isStore, SimpleBusCmd.write, SimpleBusCmd.read)
+  io.dmem.req.addr  := addr
+  io.dmem.req.wdata := io.wdata
+  // 为什么使用 func(1,0)? 原因：LSUOpType 的位宽是由 bit0 和 bit1 决定的
+  io.dmem.req.wmask := OneHotTree(func(1, 0), List(
+      "b00".U -> 0x1.U, //0001 << addr(2:0)
+      "b01".U -> 0x3.U, //0011
+      "b10".U -> 0xf.U, //1111
+      "b11".U -> 0xff.U //11111111
+  ))
+
+  // 总线的接收端设置
+  // ld, lw...的接收处理
   val rdata    = io.dmem.resp.rdata // 从 simplebus 传来的读数据, 注意：rdata默认是对齐8字节读取内存
   // 在没有发生非对齐访存的前提下，以下代码的逻辑是没有问题的
   val rdataSel = OneHotTree(addr(2, 0), List(
@@ -94,8 +108,10 @@ class LSU extends CyhCoreModule {
       LSUOpType.lhu  -> ZeroExt(rdataSel(15, 0), XLEN),
       LSUOpType.lwu  -> ZeroExt(rdataSel(31, 0), XLEN)
   ))
+  // 把接收到的数据经过处理传给 out
+  io.out := Mux(isPartialLoad, rdataPartialLoad, rdata)
 
-  // sd, sw...
+  // sd, sw...的接收处理 ---- 暂无
 
 }
 

@@ -3,6 +3,7 @@ package cyhcore
 import chisel3._
 import chisel3.util._
 
+import bus.simplebus._
 import utils._
 
 class Backend extends CyhCoreModule {
@@ -10,6 +11,7 @@ class Backend extends CyhCoreModule {
     val in = Flipped(new DecodeIO)
     // 对 PC 寄存器进行写回 
     val redirect = new RedirectIO // 用来支持 branch, jmp 等指令的
+    val dmem = new SimpleBusUC
   })
 
   // 根据果壳的代码，后端单元顺序应该如下
@@ -21,15 +23,18 @@ class Backend extends CyhCoreModule {
   //               ^             |
   //               |             |
   //               |-------------|
-  io.in <> isu.io.in
-  isu.io.out <> exu.io.in
-  exu.io.out <> wbu.io.in
-  wbu.io.wb  <> isu.io.wb
+  isu.io.in <> io.in
+  exu.io.in <> isu.io.out 
+  wbu.io.in <> exu.io.out 
+  isu.io.wb <> wbu.io.wb  
 
   // 跳转指令支持(EXU决定跳转指令的target，随后连线到 WBU, WBU再决定跳转指令的写入时机(valid))
   dontTouch(exu.io.out.decode.cf.redirect)
   dontTouch(wbu.io.redirect)
-  wbu.io.redirect <> io.redirect
+  io.redirect <> wbu.io.redirect
+
+  // 内存读写支持（使用总线）
+  io.dmem <> exu.io.dmem
   
   // PipelineConnect(isu.io.out, exu.io.in, exu.io.out.fire(), io.flush(0))
   // PipelineConnect(exu.io.out, wbu.io.in, true.B, io.flush(1))

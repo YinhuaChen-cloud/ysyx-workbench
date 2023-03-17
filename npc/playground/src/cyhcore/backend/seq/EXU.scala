@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 import chisel3.stage.ChiselStage
 
+import bus.simplebus._
 import utils._
 
 // import Conf._
@@ -35,6 +36,7 @@ class EXU extends CyhCoreModule {
   val io = IO(new Bundle {
     val in = Flipped(new DecodeIO)
     val out = new CommitIO  // TODO: 为什么叫做 Commit?
+    val dmem = new SimpleBusUC
   })
 
   val src1 = io.in.data.src1(XLEN-1,0)
@@ -49,6 +51,8 @@ class EXU extends CyhCoreModule {
 
   val lsu = Module(new LSU) 
   val lsuOut = lsu.access(src1 = src1, src2 = imm,  func = fuOpType)
+  lsu.io.wdata := src2
+  io.dmem <> lsu.io.dmem
 
 // out(CommitIO) ------------------------------------------ decode(DecodeIO)
   // val cf = new CtrlFlowIO
