@@ -47,7 +47,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
   )
   val src1Type = OneHotTree(instrType, SrcTypeTable.map(p => (p._1, p._2._1))) // 根据 SrcTypeTable 和 instrType 查 src1 的类型
   val src2Type = OneHotTree(instrType, SrcTypeTable.map(p => (p._1, p._2._2))) // 根据 SrcTypeTable 和 instrType 查 src2 的类型
-  // fix LUI
+  // 如果指令是 Lui，那么之前对 src1Type 的赋值是错的，下面这行需要纠正之前的错误
   io.out.ctrl.src1Type := Mux(instr(6,0) === "b0110111".U, SrcType.reg, src1Type) // 如果是lui指令，那么src1类型就是reg
   io.out.ctrl.src2Type := src2Type
 
@@ -115,42 +115,4 @@ class IDU extends CyhCoreModule with HasInstrType {
   decoder1.io.out <> io.out 
 
 }
-
-
-
-  // // val (valid_inst: Bool) :: br_type :: op1_sel :: op2_sel :: ds0 = decoded_signals
-  // // val alu_op :: wb_sel :: (wreg: Bool) :: (wmem: Bool) :: ds1 = ds0
-  // // val mem_msk_type :: alu_msk_type :: (sign_op: Bool) :: Nil = ds1
-
-  // println(s"In IDU, io.inst = ${io.inst}, and valid_inst = ${valid_inst}")
-
-  // io.idu_to_exu.pc_sel  := MuxLookup(
-  //   br_type, PC_EXC,
-  //   Array(
-  //     BR_N   -> PC_4 , 
-  //     BR_J   -> PC_J , 
-  //     BR_JR  -> PC_JR, 
-  //     BR_EQ  -> Mux(io.idu_to_exu.br_eq , PC_BR, PC_4),
-  //     BR_NE  -> Mux(!io.idu_to_exu.br_eq, PC_BR, PC_4),
-  //     BR_GE  -> Mux(!io.idu_to_exu.br_lt, PC_BR, PC_4),
-  //     BR_GEU -> Mux(!io.idu_to_exu.br_ltu, PC_BR, PC_4),
-  //     BR_LT  -> Mux(io.idu_to_exu.br_lt, PC_BR, PC_4),
-  //     BR_LTU -> Mux(io.idu_to_exu.br_ltu, PC_BR, PC_4),
-  //   )
-  // )
-
-  // io.idu_to_exu.op1_sel := op1_sel
-  // io.idu_to_exu.op2_sel := op2_sel
-  // io.idu_to_exu.alu_op  := alu_op
-  // io.idu_to_exu.wb_sel  := wb_sel
-  // io.idu_to_exu.reg_wen := wreg
-  // io.isEbreak := (io.inst === Priviledged.EBREAK)
-  // io.inv_inst := ~valid_inst
-  // io.isWriteMem := wmem
-  // io.idu_to_exu.sign_op := sign_op
-  // io.idu_to_exu.mem_msk_type := mem_msk_type
-  // io.idu_to_exu.alu_msk_type := alu_msk_type
-
-
-
 

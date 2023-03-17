@@ -2,9 +2,6 @@ package cyhcore
 
 import chisel3._
 import chisel3.util._
-// import Conf._
-// import Macros._
-// import Macros.Constants._
 
 import utils._
 
@@ -35,14 +32,6 @@ object MDUOpType {
   def isW(op: UInt) = op(3)
 }
 
-// class MDU_bundle (implicit val conf: Configuration) extends Bundle() {
-//   val alu_op1 = Input(UInt(conf.xlen.W))
-//   val alu_op2 = Input(UInt(conf.xlen.W))
-//   val alu_op  = Input(UInt(ALU_X.getWidth.W))
-//   val alu_msk_type = Input(UInt(ALU_MSK_X.getWidth.W))
-//   val result  = Output(UInt(conf.xlen.W))
-// }
-
 class MulDivIO(val len: Int) extends Bundle {
   val in = Flipped(Vec(2, Output(UInt(len.W)))) // 两个输入
   val sign = Input(Bool()) // 是否有符号
@@ -60,26 +49,12 @@ class Divider(len: Int) extends CyhCoreModule {
   val io = IO(new MulDivIO(len))
 
   val (sign, src1, src2) = (io.sign, io.in(0), io.in(1))
-  // def abs(a: UInt, sign: Bool): (Bool, UInt) = {
-  //   val s = a(len - 1) && sign
-  //   (s, Mux(s, -a, a))
-  // }
 
   val resQ = Wire(UInt(len.W))
   resQ := Mux(sign, (src1.asSInt / src2.asSInt).asUInt, src1.asUInt / src2.asUInt)
   val resR = Wire(UInt(len.W))
   resR := Mux(sign, (src1.asSInt % src2.asSInt).asUInt, src1.asUInt % src2.asUInt)
   io.out := Cat(resR, resQ)
-
-  // io.result := MuxCase(
-  //   0.U, Array(
-  //     (io.alu_op === ALU_DIV && io.alu_msk_type =/= ALU_MSK_W)    -> (io.alu_op1.asSInt / io.alu_op2.asSInt).asUInt,
-  //     (io.alu_op === ALU_DIV && io.alu_msk_type === ALU_MSK_W)    -> (io.alu_op1(31, 0).asSInt / io.alu_op2(31, 0).asSInt).asUInt,
-  //     (io.alu_op === ALU_REM && io.alu_msk_type =/= ALU_MSK_W)    -> (io.alu_op1.asSInt % io.alu_op2.asSInt).asUInt(),
-  //     (io.alu_op === ALU_REM && io.alu_msk_type === ALU_MSK_W)    -> (io.alu_op1(31, 0).asSInt % io.alu_op2(31, 0).asSInt).asUInt,
-  //   )
-  // )
-
 }
 
 class MDUIO extends FunctionUnitIO {
@@ -123,12 +98,6 @@ class MDU extends CyhCoreModule {
   val res = Mux(isDivRem, divRes, mulRes)
 
   io.out := Mux(isW, SignExt(res(31,0),XLEN), res)  // 根据数学公式证明，mulw 直接取 mul 结果的低32位即可
-
 }
-
-
-
-
-
 
 
