@@ -43,7 +43,7 @@ class RWMEM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
 
   setInline("RWMEM.v",
             s"""
-              |module AXI4DRAM (
+              |module RWMEM (
               |           input clk,
               |           input rst,
               |
