@@ -16,14 +16,16 @@ import device._
 class CyhSoc extends Module  {
   val io = IO(new Bundle{
     val imem = new SimpleBusUC 
-    // val mem  = new SimpleBusUC
+    val dmem = new SimpleBusUC
   })
 
   val cyhcore  = Module(new CyhCore)  // Core
 
+  // 读入指令
   io.imem <> cyhcore.io.imem // TODO: 这里可能会有 bug? 
-  // io.imem.req := cyhcore.imem.req
-  // cyhcore.imem.resp := io.imem.resp
+
+  // 读写内存
+  io.dmem <> cyhcore.io.dmem
 
 }
 

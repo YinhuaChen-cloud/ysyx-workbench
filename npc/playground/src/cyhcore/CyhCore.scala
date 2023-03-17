@@ -25,6 +25,7 @@ class CyhCore extends CyhCoreModule {
   // backend 需要和 DRAM 通信读写内存
   val io = IO(new Bundle {
     val imem = new SimpleBusUC // 用来从SRAM读指令的
+    val dmem = new SimpleBusUC
   })
 
   // frontend = IFU + IDU
@@ -33,11 +34,14 @@ class CyhCore extends CyhCoreModule {
   val backend  = Module(new Backend)
 
   // 普通指令数据流
-  io.imem <> frontend.io.imem
-  frontend.io.out <> backend.io.in
+  frontend.io.imem <> io.imem 
+  backend.io.in <> frontend.io.out
 
   // 跳转指令支持
-  backend.io.redirect <> frontend.io.redirect
+  frontend.io.redirect <> backend.io.redirect
+
+  // 读写内存支持
+  io.dmem <> backend.io.dmem
 
 }
 

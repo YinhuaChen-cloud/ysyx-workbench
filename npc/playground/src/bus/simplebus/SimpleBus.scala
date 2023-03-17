@@ -30,12 +30,20 @@ object SimpleBusCmd {
   // def probeHit       = "b1100".U
   // def probeMiss      = "b1000".U
 
+  // 在不实现握手信号的时候，作为 disable 内存读写的 cmd
+  def disable        = "b0010".U 
+
   def apply() = UInt(4.W)
 }
 
 class SimpleBusReqBundle extends SimpleBusBundle {
-  // val cmd = Output(SimpleBusCmd())  // 总线接收到的来自主模块的命令  TODO: 这个暂时先不用
+  val cmd = Output(SimpleBusCmd())  // 总线接收到的来自主模块的命令  比如：读 和 写
+
   val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
+
+  val wmask = Output(UInt((DataBits / 8).W))  // 内存写掩码  64/8 = 8 即8个bit, 表示8个字节
+  val wdata = Output(UInt(DataBits.W)) // 内存写数据（位宽与体系结构实现相关）  , 默认 XLEN
+  // val size = Output(UInt(3.W)) // 访存大小（访存Byte = 2^(req.size)） 默认为 8, 分为 8, 4, 2, 1 TODO: 这个我们暂时不用
 
   // // 下面这行东西用来打印 SimpleBusReqBundle 对象
   // override def toPrintable: Printable = {
@@ -48,8 +56,9 @@ class SimpleBusReqBundle extends SimpleBusBundle {
     // this.cmd := cmd
   }
 
-  // def isRead() = !cmd(0) && !cmd(3)
-  // def isWrite() = cmd(0)
+  def isDisable() = cmd(1)
+  def isRead()    = !isDisable() && !cmd(0) && !cmd(3)
+  def isWrite()   = !isDisable() && cmd(0)
 }
 
 class SimpleBusRespBundle extends SimpleBusBundle {

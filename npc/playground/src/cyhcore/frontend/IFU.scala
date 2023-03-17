@@ -52,7 +52,9 @@ class IFU extends CyhCoreModule with HasResetVector {
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
   // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
 
+  io.imem.req       := DontCare
   io.imem.req.addr  := pc_reg
+  io.imem.req.cmd   := SimpleBusCmd.read
 
 // out(CtrlFlowIO) ------------------------------------------ 
   // val instr = Output(UInt(64.W))
