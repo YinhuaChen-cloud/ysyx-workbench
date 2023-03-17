@@ -66,6 +66,7 @@ extern "C" void pmem_read(long long raddr, long long *rdata) {
 #ifdef CONFIG_MTRACE
 	if(raddr == *pc) // filter out inst reading
 		return;
+	assert(0);
 	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx\n", cpu.pc, "Read", raddr, *rdata); 
 	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
 	fflush(mtrace_fp);
@@ -96,6 +97,7 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
 	*(uint64_t *)(cpu_to_sim(waddr & ~0x7ull) + offest) |= wdata & mymask;
 
 #ifdef CONFIG_MTRACE
+	assert(0);
 	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx mymask:0x%8lx\n", cpu.pc, "Write", waddr, wdata, mymask); 
 	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
 	fflush(mtrace_fp);
