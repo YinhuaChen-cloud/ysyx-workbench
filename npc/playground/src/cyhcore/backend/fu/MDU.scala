@@ -66,9 +66,9 @@ class Divider(len: Int) extends CyhCoreModule {
   // }
 
   val resQ = Wire(UInt(len.W))
-  resQ := Mux(sign, src1.asSInt / src2.asSInt, src1.asUInt / src2.asUInt)
+  resQ := Mux(sign, (src1.asSInt / src2.asSInt).asUInt, src1.asUInt / src2.asUInt)
   val resR = Wire(UInt(len.W))
-  resR := Mux(sign, src1.asSInt % src2.asSInt, src1.asUInt % src2.asUInt)
+  resR := Mux(sign, (src1.asSInt % src2.asSInt).asUInt, src1.asUInt % src2.asUInt)
   io.out := Cat(resR, resQ)
 
   // io.result := MuxCase(
