@@ -77,7 +77,7 @@ class LSU extends CyhCoreModule {
   val isPartialLoad = !isStore && (func =/= LSUOpType.ld) // 如果不是 Store　指令，同时又不是load指令
 
   // 总线的请求端设置
-  io.dmem.req.cmd   := Mux(valid, SimpleBusCmd.disable, Mux(isStore, SimpleBusCmd.write, SimpleBusCmd.read))
+  io.dmem.req.cmd   := Mux(!valid, SimpleBusCmd.disable, Mux(isStore, SimpleBusCmd.write, SimpleBusCmd.read))
   io.dmem.req.addr  := addr
   io.dmem.req.wdata := io.wdata
   // 为什么使用 func(1,0)? 原因：LSUOpType 的位宽是由 bit0 和 bit1 决定的
