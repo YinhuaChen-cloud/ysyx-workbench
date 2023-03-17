@@ -22,7 +22,7 @@ class CyhSoc extends Module  {
   val cyhcore  = Module(new CyhCore)  // Core
 
   // 读入指令
-  io.imem <> cyhcore.io.imem // TODO: 这里可能会有 bug? 
+  io.imem <> cyhcore.io.imem 
 
   // 读写内存
   io.dmem <> cyhcore.io.dmem
