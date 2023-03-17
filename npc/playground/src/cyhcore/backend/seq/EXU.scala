@@ -78,7 +78,7 @@ class EXU extends CyhCoreModule {
 
   io.out.commits := DontCare
   io.out.commits(FuType.alu) := aluOut
-  // io.out.commits(FuType.lsu) := lsuOut
+  io.out.commits(FuType.lsu) := lsuOut
   // io.out.commits(FuType.mdu) := mduOut
   // io.out.commits(FuType.csr) := csrOut
 
