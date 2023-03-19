@@ -14,7 +14,7 @@ trait HasResetVector {
 class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new Bundle {
     val imem = new SimpleBusUC
-    val out  = new CtrlFlowIO
+    val out  = Decoupled(new CtrlFlowIO)
 
     val redirect = Flipped(new RedirectIO) // 用来支持 branch, jmp 等指令的
   })
@@ -37,9 +37,13 @@ class IFU extends CyhCoreModule with HasResetVector {
   // val pc = Output(UInt(VAddrBits.W))
   // val redirect = new RedirectIO  
 
-  io.out       := DontCare
-  io.out.instr := io.imem.resp.rdata
-  io.out.pc    := pc_reg
+  io.out.bits       := DontCare
+  io.out.bits.instr := io.imem.resp.rdata
+  io.out.bits.pc    := pc_reg
+
+// handshake ------------------------------------------ 
+
+  io.out.valid := io.out.ready
 
   Debug("In IFU, The inst read is 0x%x", io.imem.resp.rdata)
 

@@ -7,7 +7,8 @@ import utils._
 
 class Decoder extends CyhCoreModule with HasInstrType {
   val io = IO(new Bundle {
-    val in  = Flipped(new CtrlFlowIO)
+    val in  = Flipped(Decoupled(new CtrlFlowIO))
+    // val out = Decoupled(new DecodeIO)
     val out = new DecodeIO
     // val isWFI = Output(Bool()) // require NutCoreSim to advance mtime when wfi to reduce the idle time in Linux
   })
@@ -16,7 +17,8 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val instr = Output(UInt(64.W))
   // val pc = Output(UInt(VAddrBits.W))
 
-  io.in <> io.out.cf
+  // io.out.bits.cf <> io.in.bits
+  io.out.cf <> io.in.bits
 
 // out(DecodeIO) ------------------------------------------ ctrl(CtrlSignalIO)
   // val src1Type = Output(SrcType())
@@ -28,7 +30,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val rfWen = Output(Bool())
   // val rfDest = Output(UInt(5.W))
 
-  val instr = io.in.instr
+  val instr = io.in.bits.instr
   // 果壳这里的默认译码似乎不是 invalid，而是中断，可能在中断中再判断是否是invalid
   // NOTE: 对于现在的我来说，不需要支持较为复杂的异常处理，凡是 InstrN 都直接判断 invalid 就好了
   val decodeList = ListLookup(instr, Instructions.DecodeDefault, Instructions.DecodeTable)
@@ -80,11 +82,21 @@ class Decoder extends CyhCoreModule with HasInstrType {
   ))
   io.out.data.imm := imm
 
+// handshake ------------------------------------------ 
+
+  // 译码单元属于组合电路，因此可以在一拍内做完计算给出结果，输出的valid直接等于输入的valid就好
+  // io.out.valid := io.in.valid
+  // io.out.fire: 当 io.out.valid 和 io.out.ready 都为 1 的时候，叫做 fire
+  // 1. 当 io.in.valid 为 0 时，由于译码单元在一拍内可以给出结果，可以确定这周期不会再有任何有效计算，因此此时把ready拉高即可
+  // 2. 当 io.out 已经确定被下一个模块接收的时候，可以接收输入
+  // io.in.ready  := !io.in.valid || io.out.fire()
+  io.in.ready  := !io.in.valid 
+
   Debug(p"In IDU-Decoder, ${io.out.ctrl}")
 
 // ---------------- judge whether instr is EBREAK --------------- start
-  val isEbreak = (io.in.instr === Priviledged.EBREAK)
-  val inv_inst = (instrType === InstrN)
+  val isEbreak = (io.in.bits.instr === Priviledged.EBREAK) & io.in.valid
+  val inv_inst = (instrType === InstrN) & io.in.valid
   val dpic = Module(new DPIC)
   dpic.io.clk := clock
   dpic.io.rst := reset
@@ -97,8 +109,9 @@ class Decoder extends CyhCoreModule with HasInstrType {
 class IDU extends CyhCoreModule with HasInstrType {
   val io = IO(new Bundle {
     // val in = Vec(2, Flipped(Decoupled(new CtrlFlowIO)))
-    val in = Flipped(new CtrlFlowIO)
+    val in = Flipped(Decoupled(new CtrlFlowIO))
     // val out = Vec(2, Decoupled(new DecodeIO))
+    // val out = Decoupled(new DecodeIO)
     val out = new DecodeIO
   })
   val decoder1  = Module(new Decoder)
@@ -106,13 +119,13 @@ class IDU extends CyhCoreModule with HasInstrType {
   // decoder1.io.in <> io.in(0)
   // io.in(1) := DontCare
   // io.in(1) <> decoder2.io.in
-  io.in <> decoder1.io.in
+  decoder1.io.in <> io.in
   // io.out(0) <> decoder1.io.out
   // io.out(0) <> decoder1.io.out
   // io.out(1) := DontCare
   // io.out(1) <> decoder2.io.out
 
-  decoder1.io.out <> io.out 
+  io.out <> decoder1.io.out
 
 }
 
