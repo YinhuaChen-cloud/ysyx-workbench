@@ -115,13 +115,13 @@ class IDU extends CyhCoreModule with HasInstrType {
   // decoder1.io.in <> io.in(0)
   // io.in(1) := DontCare
   // io.in(1) <> decoder2.io.in
-  decoder1.io.in := io.in
+  decoder1.io.in <> io.in
   // io.out(0) <> decoder1.io.out
   // io.out(0) <> decoder1.io.out
   // io.out(1) := DontCare
   // io.out(1) <> decoder2.io.out
 
-  io.out := decoder1.io.out
+  io.out <> decoder1.io.out
 
 }
 
