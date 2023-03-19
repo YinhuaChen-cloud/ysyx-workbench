@@ -122,14 +122,10 @@ static long load_img() {
   return size;
 }
 
-int cyhcount = 0;
 static void reset(int n) {
-	cyhcount++;
-	printf("In reset, cyhcount = %d\n", cyhcount);
   top->reset = 1;
   while (n -- > 0) single_cycle();
   top->reset = 0;
-	printf("In reset, cyhcount = %d\n", cyhcount);
 //	printf("In reset, *pc = 0x%lx\n", *pc);
 //	printf("In reset, *(uint32_t *)(*pc) = 0x%lx\n", *(uint32_t *)(*pc));
 }

@@ -14,7 +14,10 @@ Vtop* top;
 int first_flag = 0;
 #endif
 
+int cyhcount = 0;
 void single_cycle() {
+	cyhcount++;
+	printf("In single_cycle, cyhcount = %d\n", cyhcount);
 #ifdef CONFIG_WAVEFORM
   if(!first_flag) { // 打印还没有 eval() 时的波形
     tfp->dump(contextp->time());
@@ -31,6 +34,7 @@ void single_cycle() {
   contextp->timeInc(1); // necessary for wave gen
   tfp->dump(contextp->time());
 #endif
+	printf("In single_cycle, cyhcount = %d\n", cyhcount);
 }
 
 
