@@ -7,7 +7,7 @@ import utils._
 
 class Decoder extends CyhCoreModule with HasInstrType {
   val io = IO(new Bundle {
-    val in  = Flipped(new CtrlFlowIO)
+    val in  = Flipped(Decoupled(new CtrlFlowIO))
     val out = new DecodeIO
     // val isWFI = Output(Bool()) // require NutCoreSim to advance mtime when wfi to reduce the idle time in Linux
   })
@@ -16,7 +16,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val instr = Output(UInt(64.W))
   // val pc = Output(UInt(VAddrBits.W))
 
-  io.in <> io.out.cf
+  io.in.bits <> io.out.cf
 
 // out(DecodeIO) ------------------------------------------ ctrl(CtrlSignalIO)
   // val src1Type = Output(SrcType())
@@ -28,7 +28,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val rfWen = Output(Bool())
   // val rfDest = Output(UInt(5.W))
 
-  val instr = io.in.instr
+  val instr = io.in.bits.instr
   // 果壳这里的默认译码似乎不是 invalid，而是中断，可能在中断中再判断是否是invalid
   // NOTE: 对于现在的我来说，不需要支持较为复杂的异常处理，凡是 InstrN 都直接判断 invalid 就好了
   val decodeList = ListLookup(instr, Instructions.DecodeDefault, Instructions.DecodeTable)
@@ -80,11 +80,15 @@ class Decoder extends CyhCoreModule with HasInstrType {
   ))
   io.out.data.imm := imm
 
+// handshake ------------------------------------------ 
+  
+  io.in.ready := DontCare
+
   Debug(p"In IDU-Decoder, ${io.out.ctrl}")
 
 // ---------------- judge whether instr is EBREAK --------------- start
-  val isEbreak = (io.in.instr === Priviledged.EBREAK)
-  val inv_inst = (instrType === InstrN)
+  val isEbreak = (io.in.bits.instr === Priviledged.EBREAK) & io.in.valid
+  val inv_inst = (instrType === InstrN) & io.in.valid
   val dpic = Module(new DPIC)
   dpic.io.clk := clock
   dpic.io.rst := reset
@@ -97,7 +101,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
 class IDU extends CyhCoreModule with HasInstrType {
   val io = IO(new Bundle {
     // val in = Vec(2, Flipped(Decoupled(new CtrlFlowIO)))
-    val in = Flipped(new CtrlFlowIO)
+    val in = Flipped(Decoupled(new CtrlFlowIO))
     // val out = Vec(2, Decoupled(new DecodeIO))
     val out = new DecodeIO
   })
