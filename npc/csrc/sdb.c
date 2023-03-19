@@ -52,6 +52,10 @@ void cpu_exec(uint32_t n) {
 
 	pc_just_exec = 0xdeadbeef;
 
+// 暂时的支持 多周期 difftest -- start
+  int count = 0;
+// 暂时的支持 多周期 difftest -- end
+
 #ifdef CONFIG_DIFFTEST
 	riscv64_CPU_state saved_cpu = {};
 #endif
@@ -80,8 +84,14 @@ void cpu_exec(uint32_t n) {
 		single_cycle();
 
 #ifdef CONFIG_DIFFTEST
-		sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
-		difftest_step();
+// 暂时的支持 多周期 difftest -- start
+    count++;
+    if(count == 2) {
+      sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
+      difftest_step();
+      count = 0; 
+    }
+// 暂时的支持 多周期 difftest -- end
 #endif
 
 #ifdef CONFIG_WATCHPOINTS
