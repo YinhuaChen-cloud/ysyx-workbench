@@ -4,7 +4,6 @@ import chisel3._
 import chisel3.util._
 
 import bus.simplebus._
-import utils._
 
 // frontend = IFU + IDU
 class Frontend extends CyhCoreModule {
@@ -20,8 +19,7 @@ class Frontend extends CyhCoreModule {
 
   // 普通指令数据流 frontend -> backend
   io.imem <> ifu.io.imem
-  PipelineConnect(ifu.io.out, idu.io.in)
-  // ifu.io.out <> idu.io.in
+  ifu.io.out <> idu.io.in
   idu.io.out <> io.out
 
   // 跳转指令支持 backend -> frontend

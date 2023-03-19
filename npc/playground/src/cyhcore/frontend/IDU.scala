@@ -7,8 +7,8 @@ import utils._
 
 class Decoder extends CyhCoreModule with HasInstrType {
   val io = IO(new Bundle {
-    val in  = Flipped(Decoupled(new CtrlFlowIO))
-    val out = Decoupled(new DecodeIO)
+    val in  = Flipped(new CtrlFlowIO)
+    val out = new DecodeIO
     // val isWFI = Output(Bool()) // require NutCoreSim to advance mtime when wfi to reduce the idle time in Linux
   })
 
@@ -16,7 +16,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val instr = Output(UInt(64.W))
   // val pc = Output(UInt(VAddrBits.W))
 
-  io.out.bits.cf <> io.in.bits
+  io.in <> io.out.cf
 
 // out(DecodeIO) ------------------------------------------ ctrl(CtrlSignalIO)
   // val src1Type = Output(SrcType())
@@ -28,7 +28,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val rfWen = Output(Bool())
   // val rfDest = Output(UInt(5.W))
 
-  val instr = io.in.bits.instr
+  val instr = io.in.instr
   // 果壳这里的默认译码似乎不是 invalid，而是中断，可能在中断中再判断是否是invalid
   // NOTE: 对于现在的我来说，不需要支持较为复杂的异常处理，凡是 InstrN 都直接判断 invalid 就好了
   val decodeList = ListLookup(instr, Instructions.DecodeDefault, Instructions.DecodeTable)
@@ -48,21 +48,21 @@ class Decoder extends CyhCoreModule with HasInstrType {
   val src1Type = OneHotTree(instrType, SrcTypeTable.map(p => (p._1, p._2._1))) // 根据 SrcTypeTable 和 instrType 查 src1 的类型
   val src2Type = OneHotTree(instrType, SrcTypeTable.map(p => (p._1, p._2._2))) // 根据 SrcTypeTable 和 instrType 查 src2 的类型
   // 如果指令是 Lui，那么之前对 src1Type 的赋值是错的，下面这行需要纠正之前的错误
-  io.out.bits.ctrl.src1Type := Mux(instr(6,0) === "b0110111".U, SrcType.reg, src1Type) // 如果是lui指令，那么src1类型就是reg
-  io.out.bits.ctrl.src2Type := src2Type
+  io.out.ctrl.src1Type := Mux(instr(6,0) === "b0110111".U, SrcType.reg, src1Type) // 如果是lui指令，那么src1类型就是reg
+  io.out.ctrl.src2Type := src2Type
 
-  io.out.bits.ctrl.fuType   := fuType
-  io.out.bits.ctrl.fuOpType := fuOpType
+  io.out.ctrl.fuType   := fuType
+  io.out.ctrl.fuOpType := fuOpType
 
   val (rs, rt, rd) = (instr(19, 15), instr(24, 20), instr(11, 7))
   val rfSrc1 = rs
   val rfSrc2 = rt
   val rfDest = rd
 
-  io.out.bits.ctrl.rfSrc1 := Mux(src1Type === SrcType.pc, 0.U, rfSrc1) // TODO: 有没有可能和 src1 统合成一个信号？还是为了支持乱序、多发射、流水等才分开？
-  io.out.bits.ctrl.rfSrc2 := Mux(src2Type === SrcType.reg, rfSrc2, 0.U)
-  io.out.bits.ctrl.rfWen  := isrfWen(instrType)
-  io.out.bits.ctrl.rfDest := Mux(isrfWen(instrType), rfDest, 0.U) 
+  io.out.ctrl.rfSrc1 := Mux(src1Type === SrcType.pc, 0.U, rfSrc1) // TODO: 有没有可能和 src1 统合成一个信号？还是为了支持乱序、多发射、流水等才分开？
+  io.out.ctrl.rfSrc2 := Mux(src2Type === SrcType.reg, rfSrc2, 0.U)
+  io.out.ctrl.rfWen  := isrfWen(instrType)
+  io.out.ctrl.rfDest := Mux(isrfWen(instrType), rfDest, 0.U) 
 
 // out(DecodeIO) ------------------------------------------ data(DataSrcIO)
   // val src1 = Output(UInt(XLEN.W))
@@ -70,7 +70,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val imm  = Output(UInt(XLEN.W))
 
   // TODO: 目前来看，src1 和 src2 由于位于 ISU 内的 寄存器堆 赋值, imm 则在译码阶段给出
-  io.out.bits.data := DontCare
+  io.out.data := DontCare
   val imm = OneHotTree(instrType, List(
     InstrI  -> SignExt(instr(31, 20), XLEN),
     InstrS  -> SignExt(Cat(instr(31, 25), instr(11, 7)), XLEN),
@@ -78,22 +78,13 @@ class Decoder extends CyhCoreModule with HasInstrType {
     InstrU  -> SignExt(Cat(instr(31, 12), 0.U(12.W)), XLEN), //fixed
     InstrJ  -> SignExt(Cat(instr(31), instr(19, 12), instr(20), instr(30, 21), 0.U(1.W)), XLEN)
   ))
-  io.out.bits.data.imm := imm
+  io.out.data.imm := imm
 
-// handshake ------------------------------------------ 
-
-  // 译码单元属于组合电路，因此可以在一拍内做完计算给出结果，输出的valid直接等于输入的valid就好
-  io.out.valid := io.in.valid
-  // io.out.fire: 当 io.out.valid 和 io.out.ready 都为 1 的时候，叫做 fire
-  // 1. 当 io.in.valid 为 0 时，由于译码单元在一拍内可以给出结果，可以确定这周期不会再有任何有效计算，因此此时把ready拉高即可
-  // 2. 当 io.out 已经确定被下一个模块接收的时候，可以接收输入
-  io.in.ready  := !io.in.valid || io.out.fire()
-
-  Debug(p"In IDU-Decoder, ${io.out.bits.ctrl}")
+  Debug(p"In IDU-Decoder, ${io.out.ctrl}")
 
 // ---------------- judge whether instr is EBREAK --------------- start
-  val isEbreak = (io.in.bits.instr === Priviledged.EBREAK) & io.out.valid
-  val inv_inst = (instrType === InstrN) & io.out.valid
+  val isEbreak = (io.in.instr === Priviledged.EBREAK)
+  val inv_inst = (instrType === InstrN)
   val dpic = Module(new DPIC)
   dpic.io.clk := clock
   dpic.io.rst := reset
@@ -106,22 +97,22 @@ class Decoder extends CyhCoreModule with HasInstrType {
 class IDU extends CyhCoreModule with HasInstrType {
   val io = IO(new Bundle {
     // val in = Vec(2, Flipped(Decoupled(new CtrlFlowIO)))
-    val in = Flipped(Decoupled(new CtrlFlowIO))
+    val in = Flipped(new CtrlFlowIO)
     // val out = Vec(2, Decoupled(new DecodeIO))
-    val out = Decoupled(new DecodeIO)
+    val out = new DecodeIO
   })
   val decoder1  = Module(new Decoder)
   // val decoder2  = Module(new Decoder) // TODO: 为啥果壳默认有两个译码器？是为了双发射吗？
   // decoder1.io.in <> io.in(0)
   // io.in(1) := DontCare
   // io.in(1) <> decoder2.io.in
-  decoder1.io.in <> io.in
+  io.in <> decoder1.io.in
   // io.out(0) <> decoder1.io.out
   // io.out(0) <> decoder1.io.out
   // io.out(1) := DontCare
   // io.out(1) <> decoder2.io.out
 
-  io.out <> decoder1.io.out
+  decoder1.io.out <> io.out 
 
 }
 
