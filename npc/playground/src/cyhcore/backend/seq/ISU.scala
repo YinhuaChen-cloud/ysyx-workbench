@@ -61,7 +61,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   val rfDest = io.in.bits.ctrl.rfDest
 
   io.out.data.src1 := Mux1H(List(
-    (io.in.bits.ctrl.src1Type === SrcType.pc)                                            -> SignExt(io.in.cf.pc, PC_LEN), // TODO: 为什么用 pc 作为src1要进行有符号扩展？ 为什么不是无符号扩展？
+    (io.in.bits.ctrl.src1Type === SrcType.pc)                                            -> SignExt(io.in.bits.cf.pc, PC_LEN), // TODO: 为什么用 pc 作为src1要进行有符号扩展？ 为什么不是无符号扩展？
     // src1ForwardNextCycle                                                            -> io.forward.wb.rfData, //io.forward.wb.rfData,
     // (src1Forward && !src1ForwardNextCycle)                                          -> io.wb.rfData, //io.wb.rfData,
     // ((io.in.bits.ctrl.src1Type =/= SrcType.pc) && !src1ForwardNextCycle && !src1Forward) -> rf.read(rfSrc1)
@@ -69,7 +69,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   ))
 
   io.out.data.src2 := Mux1H(List(
-    (io.in.bits.ctrl.src2Type =/= SrcType.reg)                                           -> io.in.data.imm, // TODO: 为什么我们仍然需要 io.out.data.imm 端口？
+    (io.in.bits.ctrl.src2Type =/= SrcType.reg)                                           -> io.in.bits.data.imm, // TODO: 为什么我们仍然需要 io.out.data.imm 端口？
     // src2ForwardNextCycle                                                             -> io.forward.wb.rfData, //io.forward.wb.rfData,
     // (src2Forward && !src2ForwardNextCycle)                                           -> io.wb.rfData, //io.wb.rfData,
     // ((io.in.bits.ctrl.src2Type === SrcType.reg) && !src2ForwardNextCycle && !src2Forward) -> rf.read(rfSrc2)
