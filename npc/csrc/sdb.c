@@ -52,10 +52,9 @@ void cpu_exec(uint32_t n) {
 
 	pc_just_exec = 0xdeadbeef;
 
-// 暂时的支持 多周期 difftest -- start
-  // int count = 0;
+#ifdef CONFIG_DIFFTEST
   int difftest_first = 1;
-// 暂时的支持 多周期 difftest -- end
+#endif
 
 #ifdef CONFIG_DIFFTEST
 	riscv64_CPU_state saved_cpu = {};
@@ -69,8 +68,6 @@ void cpu_exec(uint32_t n) {
       break;
 #endif
 
-		// NOTE: Already invoke sv_regs_to_c() in main.cpp when initialize difftest
-		//
 #ifdef CONFIG_DIFFTEST
 		saved_cpu = cpu;
 #endif
@@ -78,21 +75,14 @@ void cpu_exec(uint32_t n) {
 		pc_just_exec = cpu.pc;
     printf("pc_just_exec = 0x%lx\n", pc_just_exec);
 
-//		extern bool is_sdb_mode;
-//		if(is_sdb_mode) {
-//			printred("The pc of the instruction about to execute is 0x%lx\n", cpu.pc);
-//		}
-//
 		single_cycle();
 
 #ifdef CONFIG_DIFFTEST
-// 暂时的支持 多周期 difftest -- start
-    // count++;
-    // if(count == 2) {
-    // printf("In C, difftest_valid = %ld\n", *difftest_valid);
+    // 调试用的 -- start
     int ref_step = 0;
     int dut_step = 1;
     printf("dut_step = %d, ref_step = %d, pc = 0x%lx\n", dut_step, ref_step, *pc);
+    // 调试用的 -- end
     if(*difftest_valid) {
       if(difftest_first) {
         extern char *diff_so_file;
@@ -112,9 +102,6 @@ void cpu_exec(uint32_t n) {
       // 当 difftest_valid不为1时，不能做difftest，也不能让 ref 执行
       // do nothing
     }
-    //   count = 0; 
-    // }
-// 暂时的支持 多周期 difftest -- end
 #endif
 
 #ifdef CONFIG_WATCHPOINTS
