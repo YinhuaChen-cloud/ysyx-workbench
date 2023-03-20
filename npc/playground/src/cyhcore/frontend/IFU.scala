@@ -23,8 +23,8 @@ class IFU extends CyhCoreModule with HasResetVector {
 
   dontTouch(io.redirect.target)
   dontTouch(io.redirect.valid)
-  // pc_reg := Mux(io.redirect.valid, io.redirect.target, pc_reg)
-  pc_reg := pc_reg + 4.U // TODO: 先不考虑跳转指令
+  pc_reg := Mux(io.redirect.valid, io.redirect.target, pc_reg)
+  // pc_reg := pc_reg + 4.U // TODO: 先不考虑跳转指令
 
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
   // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
