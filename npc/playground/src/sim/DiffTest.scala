@@ -17,12 +17,12 @@ class DiffTest extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
               |module DiffTest (
               |           input clk,
               |           input rst,
-              |           input pc,
+              |           input [${PC_LEN}-1:0] pc,
               |           input [${NR_GPRS} * ${XLEN} - 1:0] regfile);
               |
               |  // expose pc to cpp simulation environment
               |  import "DPI-C" function void set_pc(input logic [${PC_LEN}-1:0] a []);
-              |  initial set_pc(external_pc);  
+              |  initial set_pc(pc);  
               |
               |  // expose regfile for difftest
               |  import "DPI-C" function void set_gpr_ptr(input logic [${XLEN}-1:0] a []);
