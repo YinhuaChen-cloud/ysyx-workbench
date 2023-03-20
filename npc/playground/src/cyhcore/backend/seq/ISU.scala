@@ -14,13 +14,12 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   })
 
   val rf = new RegFile
-  // TODO: C语言的difftest里可能要延迟几个周期再开始运作
   // difftest ------------------- start TODO: 这个东西后面应该会被 remove 掉
   // 当 io.in.valid 为 true 时，说明目前的信号会在下一个时钟上升沿起效果（写入寄存器、写入内存）
+  // 因此 difftest 也要在下一个时钟上升沿去做
   val difftest_valid = RegNext(io.in.valid) // 告诉仿真环境可以做difftest了
-  // val difftest_valid = io.in.valid // 告诉仿真环境可以做difftest了
-  printf("In ISU, io.in.valid = %d\n", io.in.valid)
-  printf("In ISU, difftest_valid = %d\n", difftest_valid)
+  // printf("In ISU, io.in.valid = %d\n", io.in.valid)
+  // printf("In ISU, difftest_valid = %d\n", difftest_valid)
   val difftest = Module(new DiffTest)
   difftest.io.clk   := clock
   difftest.io.rst   := reset
