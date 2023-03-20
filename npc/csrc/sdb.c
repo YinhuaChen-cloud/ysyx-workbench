@@ -145,7 +145,7 @@ static int cmd_c(char *args) {
 	return -1;
 //	return 0;
 }
-//
+
 static int cmd_q(char *args) {
   npc_state.state = NPC_QUIT;
   return -1;
