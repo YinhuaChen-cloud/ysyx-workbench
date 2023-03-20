@@ -24,7 +24,6 @@ class DiffTest extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
               |
               |  wire [${XLEN}-1:0] valid_expose;
               |  assign valid_expose[0] = valid;
-              |  assign valid_expose[${XLEN-1}:1] = '0;
               |
               |  // expose valid to cpp simulation environment, tell when pc & regs are valid
               |  import "DPI-C" function void set_valid(input logic [${PC_LEN}-1:0] a []);
