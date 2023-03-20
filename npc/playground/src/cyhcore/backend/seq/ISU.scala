@@ -18,6 +18,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   val difftest = Module(new DiffTest)
   difftest.io.clk := clock
   difftest.io.rst := reset
+  difftest.io.pc  := io.in.cf.pc
   val rf_aux = Wire(Vec(NRReg * XLEN, Bool()))
   for(i <- 0 until NRReg) {
     rf_aux.slice(i * XLEN, (i+1) * XLEN).zip(rf.rf(i).asBools).foreach{case (a, b) => a := b}
