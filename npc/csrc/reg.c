@@ -19,7 +19,7 @@ extern "C" void set_pc(const svOpenArrayHandle a) {
 // TODO: 也许有只暴露 1 bit 的方法？（要求能够实时暴露）
 // 用来告诉difftest环境，pc和regs什么时候有效
 extern "C" void set_valid(const svOpenArrayHandle a) {
-  assert(0);
+	printf("In set_valid, *difftest_valid = %lx\n", *difftest_valid);
   difftest_valid = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
 	printf("In set_valid, *difftest_valid = %lx\n", *difftest_valid);
 }
