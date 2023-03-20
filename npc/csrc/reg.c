@@ -20,6 +20,7 @@ extern "C" void set_pc(const svOpenArrayHandle a) {
 // 用来告诉difftest环境，pc和regs什么时候有效
 extern "C" void set_valid(const svOpenArrayHandle a) {
   difftest_valid = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
+	printf("In set_valid, *difftest_valid = %lx\n", *difftest_valid);
 }
 
 void sv_regs_to_c() {
