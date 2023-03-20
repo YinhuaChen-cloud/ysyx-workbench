@@ -90,6 +90,9 @@ void cpu_exec(uint32_t n) {
     // printf("In C, difftest_valid = %ld\n", *difftest_valid);
     int ref_step = 0;
     int dut_step = 1;
+    for(int i = 0; i < 5; i++) {
+      ref_difftest_exec(1);
+    }
     printf("dut_step = %d, ref_step = %d\n", dut_step, ref_step);
     if(*difftest_valid) {
       dut_step++;
