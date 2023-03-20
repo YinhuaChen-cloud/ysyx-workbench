@@ -92,6 +92,9 @@ void cpu_exec(uint32_t n) {
       sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
       difftest_step();
     }
+    else {
+      ref_difftest_exec(1); // 即便不做difftest，也需要让 ref 执行一个周期
+    }
     //   count = 0; 
     // }
 // 暂时的支持 多周期 difftest -- end
