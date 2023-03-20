@@ -87,14 +87,14 @@ void cpu_exec(uint32_t n) {
 // 暂时的支持 多周期 difftest -- start
     // count++;
     // if(count == 2) {
-    printf("In C, difftest_valid = %ld\n", *difftest_valid);
-    if(*difftest_valid) {
+    // printf("In C, difftest_valid = %ld\n", *difftest_valid);
+    // if(*difftest_valid) {
       sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
       difftest_step();
-    }
-    else {
+    // }
+    // else {
       ref_difftest_exec(1); // 即便不做difftest，也需要让 ref 执行一个周期
-    }
+    // }
     //   count = 0; 
     // }
 // 暂时的支持 多周期 difftest -- end
