@@ -92,7 +92,7 @@ void cpu_exec(uint32_t n) {
     // printf("In C, difftest_valid = %ld\n", *difftest_valid);
     int ref_step = 0;
     int dut_step = 1;
-    printf("dut_step = %d, ref_step = %d\n", dut_step, ref_step);
+    printf("dut_step = %d, ref_step = %d, pc = 0x%lx\n", dut_step, ref_step, *pc);
     if(*difftest_valid) {
       if(difftest_first) {
         extern char *diff_so_file;
