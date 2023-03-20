@@ -105,7 +105,7 @@ class IDU extends CyhCoreModule with HasInstrType {
     // val in = Vec(2, Flipped(Decoupled(new CtrlFlowIO)))
     val in = Flipped(Decoupled(new CtrlFlowIO))
     // val out = Vec(2, Decoupled(new DecodeIO))
-    val out = new DecodeIO
+    val out = Decoupled(new DecodeIO)
   })
   val decoder1  = Module(new Decoder)
   // val decoder2  = Module(new Decoder) // TODO: 为啥果壳默认有两个译码器？是为了双发射吗？
