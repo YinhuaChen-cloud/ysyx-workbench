@@ -94,6 +94,9 @@ void cpu_exec(uint32_t n) {
     printf("dut_step = %d, ref_step = %d\n", dut_step, ref_step);
     if(*difftest_valid) {
       if(difftest_first) {
+        extern char *diff_so_file;
+        extern long img_size;
+        extern int difftest_port;
         sv_regs_to_c();
         init_difftest(diff_so_file, img_size, difftest_port);
         // 如果是第一次进入 difftest_valid, 要对 difftest 进行初始化
