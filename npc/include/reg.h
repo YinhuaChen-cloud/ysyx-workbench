@@ -8,7 +8,6 @@
 
 extern uint64_t *cpu_gpr;
 extern uint64_t *pc;
-extern uint64_t *difftest_valid;
 
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r);
 extern const char *regs[GPR_NR];

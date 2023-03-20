@@ -2,76 +2,45 @@ package device
 
 import chisel3._
 import chisel3.util._
+import cyhcore.HasCyhCoreParameter
 
-import cyhcore._
-import bus.simplebus._
-
-class AXI4DRAM extends CyhCoreModule {
-  val io = IO(new Bundle {
-    val dmem = Flipped(new SimpleBusUC)  // DRAM 属于从模块，因此要 Flipped
-  })
-
-  val rwmem = Module(new RWMEM)
-  rwmem.io.clk  := clock
-  rwmem.io.rst  := reset
-
-  rwmem.io.isRead    := io.dmem.req.isRead()
-  io.dmem.resp.rdata := rwmem.io.rdata
-
-  rwmem.io.addr  := io.dmem.req.addr
-
-  rwmem.io.isWrite := io.dmem.req.isWrite()
-  rwmem.io.mem_write_data := io.dmem.req.wdata
-  rwmem.io.mem_write_msk  := io.dmem.req.wmask
-
-}
-
-class RWMEM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
+class AXI4DRAM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
-    // read
+    val mem_addr = Input(UInt(XLEN.W))
     val isRead = Input(Bool())
-    val rdata = Output(UInt(XLEN.W))
-    // addr for r/w
-    val addr = Input(UInt(PAddrBits.W))
-    // write
-    val isWrite = Input(Bool())
+    val isWriteMem = Input(Bool())
     val mem_write_data = Input(UInt(XLEN.W))
     val mem_write_msk = Input(UInt(8.W))
+    val mem_in = Output(UInt(XLEN.W))
   })
 
-  setInline("RWMEM.v",
+  setInline("AXI4DRAM.v",
             s"""
-              |module RWMEM (
+              |module AXI4DRAM (
               |           input clk,
               |           input rst,
-              |
+              |           input [${XLEN}-1:0] mem_addr,
               |           input isRead,
-              |           output reg [${XLEN}-1:0] rdata,
-              |
-              |           input [${PAddrBits}-1:0] addr,
-              |
-              |           input isWrite,
+              |           input isWriteMem,
               |           input [${XLEN}-1:0] mem_write_data,
-              |           input [7:0] mem_write_msk);
-              |
-              |  wire [${XLEN}-1:0] mem_addr;
-              |  assign mem_addr[${PAddrBits}-1:0] = addr;
+              |           input [7:0] mem_write_msk,
+              |           output reg [${XLEN}-1:0] mem_in);
               |
               |  // for mem_rw
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
               |  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
               |  // for data reading from mem
               |  always@(*) begin
-              |    if(~rst && isRead)
-			        |      pmem_read(mem_addr, rdata); 
+              |    if(isRead)
+			        |      pmem_read(mem_addr, mem_in); 
               |    else
-              |      rdata = '0;
+              |      mem_in = '0;
               |  end
               |  // for writing mem
               |  always@(posedge clk) 
-              |    if(~rst && isWrite) 
+              |    if(isWriteMem) 
               |      pmem_write(mem_addr, mem_write_data, mem_write_msk);
               |
               |endmodule

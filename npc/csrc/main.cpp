@@ -32,10 +32,9 @@ static const uint32_t default_img [] = {
 };
 
 static char *log_file = NULL;
-char *diff_so_file = NULL;
+static char *diff_so_file = NULL;
 static char *img_file = NULL;
-long img_size;
-int difftest_port = 1234;
+static int difftest_port = 1234;
 bool is_sdb_mode = false;
 char *itrace_file;
 extern char *mtrace_file;
@@ -127,6 +126,7 @@ static void reset(int n) {
   top->reset = 1;
   while (n -- > 0) single_cycle();
   top->reset = 0;
+//	printf("In reset, pc = 0x%p\n", pc);
 //	printf("In reset, *pc = 0x%lx\n", *pc);
 //	printf("In reset, *(uint32_t *)(*pc) = 0x%lx\n", *(uint32_t *)(*pc));
 }
@@ -155,7 +155,7 @@ int main(int argc, char** argv, char** env) {
 
 	parse_args(argc, argv);
 	init_pmem();
-	img_size = load_img();
+	long img_size = load_img();
 
 	printf("============ before reset(10) =============\n");
 
@@ -211,8 +211,8 @@ int main(int argc, char** argv, char** env) {
 	printf("diff_so_file = %s\n", diff_so_file);
 
 #ifdef CONFIG_DIFFTEST
- 	// sv_regs_to_c();
- 	// init_difftest(diff_so_file, img_size, difftest_port);
+ 	sv_regs_to_c();
+ 	init_difftest(diff_so_file, img_size, difftest_port);
 #endif
 
 	npc_state.state = NPC_RUNNING;

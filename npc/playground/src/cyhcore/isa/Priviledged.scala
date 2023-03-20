@@ -3,7 +3,10 @@ package cyhcore
 import chisel3._
 import chisel3.util._
 
-object Priviledged extends HasInstrType {
+import Macros._
+import Macros.Constants._
+
+object Priviledged {
   // def ECALL   = BitPat("b000000000000_00000_000_00000_1110011")
   def EBREAK  = BitPat("b000000000001_00000_000_00000_1110011")
   // def MRET    = BitPat("b001100000010_00000_000_00000_1110011")
@@ -19,8 +22,7 @@ object Priviledged extends HasInstrType {
 
   val table = Array(
     // ECALL          -> List(InstrI, FuType.csr, CSROpType.jmp),
-    // EBREAK    -> List(Y, BR_N  , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_X),
-    EBREAK         -> List(InstrI, FuType.csr, CSROpType.jmp),
+    EBREAK    -> List(Y, BR_N  , OP1_X  , OP2_X  , ALU_X   , WB_X  , WREG_0, WMEM_0, MEM_MSK_X , ALU_MSK_X, SIGN_X),
   )
   //   MRET           -> List(InstrI, FuType.csr, CSROpType.jmp),
   //   FENCE          -> List(InstrS, FuType.mou, MOUOpType.fence), // nop    InstrS -> !wen

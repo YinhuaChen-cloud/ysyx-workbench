@@ -5,13 +5,13 @@ import chisel3.util._
 import utils._
 
 object CSROpType {
-  def jmp  = "b000".U
+  // def jmp  = "b000".U
   def wrt  = "b001".U
-  def set  = "b010".U
-  def clr  = "b011".U
-  def wrti = "b101".U
-  def seti = "b110".U
-  def clri = "b111".U
+  // def set  = "b010".U
+  // def clr  = "b011".U
+  // def wrti = "b101".U
+  // def seti = "b110".U
+  // def clri = "b111".U
 }
 
 trait HasCSRConst {
@@ -42,7 +42,7 @@ class CSR extends CyhCoreModule with HasCSRConst{
   val mtvec = RegInit(UInt(XLEN.W), 0.U)
   // CSR reg map
   val mapping = Map(
-    // Machine Trap Setup
+  // Machine Trap Setup
     MaskedRegMap(Mtvec, mtvec)
   ) 
 
