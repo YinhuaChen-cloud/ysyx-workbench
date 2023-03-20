@@ -10,7 +10,7 @@ import utils._
 class Frontend extends CyhCoreModule {
   val io = IO(new Bundle {
     val imem  = new SimpleBusUC // 用来从 SRAM 读取指令的
-    val out   = new DecodeIO // 用来连接后端(EXU)的
+    val out   = Decoupled(new DecodeIO) // 用来连接后端(EXU)的
 
     val redirect = Flipped(new RedirectIO) // 用来支持 branch, jmp 等指令的
   })
@@ -24,6 +24,7 @@ class Frontend extends CyhCoreModule {
   val rst = Wire(Bool())
   rst := reset
   PipelineConnect(ifu.io.out, idu.io.in, !rst) 
+
   idu.io.out <> io.out
 
   // 跳转指令支持 backend -> frontend

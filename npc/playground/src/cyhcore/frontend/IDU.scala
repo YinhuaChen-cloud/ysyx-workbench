@@ -8,7 +8,7 @@ import utils._
 class Decoder extends CyhCoreModule with HasInstrType {
   val io = IO(new Bundle {
     val in  = Flipped(Decoupled(new CtrlFlowIO))
-    val out = new DecodeIO
+    val out = Decoupled(new DecodeIO)
     // val isWFI = Output(Bool()) // require NutCoreSim to advance mtime when wfi to reduce the idle time in Linux
   })
 
@@ -16,7 +16,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val instr = Output(UInt(64.W))
   // val pc = Output(UInt(VAddrBits.W))
 
-  io.in.bits <> io.out.cf
+  io.in.bits <> io.out.bits.cf
 
 // out(DecodeIO) ------------------------------------------ ctrl(CtrlSignalIO)
   // val src1Type = Output(SrcType())
@@ -48,21 +48,21 @@ class Decoder extends CyhCoreModule with HasInstrType {
   val src1Type = OneHotTree(instrType, SrcTypeTable.map(p => (p._1, p._2._1))) // 根据 SrcTypeTable 和 instrType 查 src1 的类型
   val src2Type = OneHotTree(instrType, SrcTypeTable.map(p => (p._1, p._2._2))) // 根据 SrcTypeTable 和 instrType 查 src2 的类型
   // 如果指令是 Lui，那么之前对 src1Type 的赋值是错的，下面这行需要纠正之前的错误
-  io.out.ctrl.src1Type := Mux(instr(6,0) === "b0110111".U, SrcType.reg, src1Type) // 如果是lui指令，那么src1类型就是reg
-  io.out.ctrl.src2Type := src2Type
+  io.out.bits.ctrl.src1Type := Mux(instr(6,0) === "b0110111".U, SrcType.reg, src1Type) // 如果是lui指令，那么src1类型就是reg
+  io.out.bits.ctrl.src2Type := src2Type
 
-  io.out.ctrl.fuType   := fuType
-  io.out.ctrl.fuOpType := fuOpType
+  io.out.bits.ctrl.fuType   := fuType
+  io.out.bits.ctrl.fuOpType := fuOpType
 
   val (rs, rt, rd) = (instr(19, 15), instr(24, 20), instr(11, 7))
   val rfSrc1 = rs
   val rfSrc2 = rt
   val rfDest = rd
 
-  io.out.ctrl.rfSrc1 := Mux(src1Type === SrcType.pc, 0.U, rfSrc1) // TODO: 有没有可能和 src1 统合成一个信号？还是为了支持乱序、多发射、流水等才分开？
-  io.out.ctrl.rfSrc2 := Mux(src2Type === SrcType.reg, rfSrc2, 0.U)
-  io.out.ctrl.rfWen  := isrfWen(instrType)
-  io.out.ctrl.rfDest := Mux(isrfWen(instrType), rfDest, 0.U) 
+  io.out.bits.ctrl.rfSrc1 := Mux(src1Type === SrcType.pc, 0.U, rfSrc1) // TODO: 有没有可能和 src1 统合成一个信号？还是为了支持乱序、多发射、流水等才分开？
+  io.out.bits.ctrl.rfSrc2 := Mux(src2Type === SrcType.reg, rfSrc2, 0.U)
+  io.out.bits.ctrl.rfWen  := isrfWen(instrType)
+  io.out.bits.ctrl.rfDest := Mux(isrfWen(instrType), rfDest, 0.U) 
 
 // out(DecodeIO) ------------------------------------------ data(DataSrcIO)
   // val src1 = Output(UInt(XLEN.W))
@@ -70,7 +70,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // val imm  = Output(UInt(XLEN.W))
 
   // TODO: 目前来看，src1 和 src2 由于位于 ISU 内的 寄存器堆 赋值, imm 则在译码阶段给出
-  io.out.data := DontCare
+  io.out.bits.data := DontCare
   val imm = OneHotTree(instrType, List(
     InstrI  -> SignExt(instr(31, 20), XLEN),
     InstrS  -> SignExt(Cat(instr(31, 25), instr(11, 7)), XLEN),
@@ -78,13 +78,15 @@ class Decoder extends CyhCoreModule with HasInstrType {
     InstrU  -> SignExt(Cat(instr(31, 12), 0.U(12.W)), XLEN), //fixed
     InstrJ  -> SignExt(Cat(instr(31), instr(19, 12), instr(20), instr(30, 21), 0.U(1.W)), XLEN)
   ))
-  io.out.data.imm := imm
+  io.out.bits.data.imm := imm
 
 // handshake ------------------------------------------ 
   
-  io.in.ready := DontCare
+  io.in.ready  := DontCare
+  // 由于假设IDU的运算能在一拍内完成，当 in 为 valid 时，就可以让 out 为 valid
+  io.out.valid := io.in.valid
 
-  Debug(p"In IDU-Decoder, ${io.out.ctrl}")
+  Debug(p"In IDU-Decoder, ${io.out.bits.ctrl}")
 
 // ---------------- judge whether instr is EBREAK --------------- start
   val isEbreak = (io.in.bits.instr === Priviledged.EBREAK) & io.in.valid

@@ -8,7 +8,7 @@ import utils._
 
 class Backend extends CyhCoreModule {
   val io = IO(new Bundle {
-    val in = Flipped(new DecodeIO)
+    val in = Flipped(Decoupled(new DecodeIO))
     val redirect = new RedirectIO // 用来支持 branch, jmp 等指令的
     val dmem = new SimpleBusUC
   })

@@ -87,8 +87,10 @@ void cpu_exec(uint32_t n) {
 // 暂时的支持 多周期 difftest -- start
     // count++;
     // if(count == 2) {
+    if(*difftest_valid) {
       sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
       difftest_step();
+    }
     //   count = 0; 
     // }
 // 暂时的支持 多周期 difftest -- end
