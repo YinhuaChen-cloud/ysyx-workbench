@@ -53,7 +53,7 @@ void cpu_exec(uint32_t n) {
 	pc_just_exec = 0xdeadbeef;
 
 // 暂时的支持 多周期 difftest -- start
-  int count = 0;
+  // int count = 0;
 // 暂时的支持 多周期 difftest -- end
 
 #ifdef CONFIG_DIFFTEST
@@ -85,12 +85,12 @@ void cpu_exec(uint32_t n) {
 
 #ifdef CONFIG_DIFFTEST
 // 暂时的支持 多周期 difftest -- start
-    count++;
-    if(count == 2) {
+    // count++;
+    // if(count == 2) {
       sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
       difftest_step();
-      count = 0; 
-    }
+    //   count = 0; 
+    // }
 // 暂时的支持 多周期 difftest -- end
 #endif
 
