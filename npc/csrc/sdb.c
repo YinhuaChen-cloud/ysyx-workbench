@@ -88,13 +88,19 @@ void cpu_exec(uint32_t n) {
     // count++;
     // if(count == 2) {
     // printf("In C, difftest_valid = %ld\n", *difftest_valid);
+    int ref_step = 0;
+    int dut_step = 1;
+    printf("dut_step = %d, ref_step = %d\n", dut_step, ref_step);
     if(*difftest_valid) {
+      dut_step++;
+      ref_step++;
       sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
       difftest_step();
     }
     else {
+      dut_step++;
+      ref_step++;
       ref_difftest_exec(1); // 即便不做difftest，也需要让 ref 执行一个周期
-      printf("ref one step\n");
     }
     //   count = 0; 
     // }
