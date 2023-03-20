@@ -76,6 +76,7 @@ void cpu_exec(uint32_t n) {
 #endif
 
 		pc_just_exec = cpu.pc;
+    printf("pc_just_exec = 0x%lx\n", pc_just_exec);
 
 //		extern bool is_sdb_mode;
 //		if(is_sdb_mode) {
