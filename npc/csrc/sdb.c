@@ -54,6 +54,7 @@ void cpu_exec(uint32_t n) {
 
 // 暂时的支持 多周期 difftest -- start
   // int count = 0;
+  int difftest_first = 1;
 // 暂时的支持 多周期 difftest -- end
 
 #ifdef CONFIG_DIFFTEST
@@ -90,11 +91,14 @@ void cpu_exec(uint32_t n) {
     // printf("In C, difftest_valid = %ld\n", *difftest_valid);
     int ref_step = 0;
     int dut_step = 1;
-    for(int i = 0; i < 5; i++) {
-      ref_difftest_exec(1);
-    }
     printf("dut_step = %d, ref_step = %d\n", dut_step, ref_step);
     if(*difftest_valid) {
+      if(difftest_first) {
+        sv_regs_to_c();
+        init_difftest(diff_so_file, img_size, difftest_port);
+        // 如果是第一次进入 difftest_valid, 要对 difftest 进行初始化
+        difftest_first = 0;
+      }
       dut_step++;
       ref_step++;
       sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
