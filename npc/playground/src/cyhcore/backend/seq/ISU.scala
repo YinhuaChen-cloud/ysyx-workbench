@@ -17,6 +17,8 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   // TODO: C语言的difftest里可能要延迟几个周期再开始运作
   // difftest ------------------- start TODO: 这个东西后面应该会被 remove 掉
   val difftest_valid = io.in.valid // 当这个值为 true时，告诉仿真环境可以做difftest了
+  printf("In ISU, io.in.valid = %d\n", io.in.valid)
+  printf("In ISU, difftest_valid = %d\n", difftest_valid)
   val difftest = Module(new DiffTest)
   difftest.io.clk   := clock
   difftest.io.rst   := reset
