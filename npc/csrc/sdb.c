@@ -109,6 +109,7 @@ void cpu_exec(uint32_t n) {
       difftest_step();
     }
     else {
+      assert(0);
       // 当 difftest_valid不为1时，不能做difftest，也不能让 ref 执行
       // do nothing
     }
