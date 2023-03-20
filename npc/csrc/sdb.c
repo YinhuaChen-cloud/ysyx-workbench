@@ -109,11 +109,8 @@ void cpu_exec(uint32_t n) {
       difftest_step();
     }
     else {
-      if(!difftest_first) {  // 只有在difftest已经初始化之后，才能执行下面的代码
-        dut_step++;
-        ref_step++;
-        ref_difftest_exec(1); // 即便不做difftest，也需要让 ref 执行一个周期
-      }
+      // 当 difftest_valid不为1时，不能做difftest，也不能让 ref 执行
+      // do nothing
     }
     //   count = 0; 
     // }
