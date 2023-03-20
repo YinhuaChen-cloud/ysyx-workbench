@@ -8,6 +8,8 @@ class DiffTest extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
+    val valid   = Input(Bool())
+    val pc      = Input(UInt(PC_LEN.W)) 
     val regfile = Input(UInt((NR_GPRS * XLEN).W))
   })
 
@@ -16,7 +18,20 @@ class DiffTest extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
               |module DiffTest (
               |           input clk,
               |           input rst,
+              |           input valid,
+              |           input [${PC_LEN}-1:0] pc,
               |           input [${NR_GPRS} * ${XLEN} - 1:0] regfile);
+              |
+              |  wire [${XLEN}-1:0] valid_expose;
+              |  assign valid_expose[0] = valid;
+              |
+              |  // expose valid to cpp simulation environment, tell when pc & regs are valid
+              |  import "DPI-C" function void set_valid(input logic [${PC_LEN}-1:0] a []);
+              |  initial set_valid(valid_expose);  
+              |
+              |  // expose pc to cpp simulation environment
+              |  import "DPI-C" function void set_pc(input logic [${PC_LEN}-1:0] a []);
+              |  initial set_pc(pc);  
               |
               |  // expose regfile for difftest
               |  import "DPI-C" function void set_gpr_ptr(input logic [${XLEN}-1:0] a []);

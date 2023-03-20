@@ -1,20 +1,22 @@
-// package utils
+package utils
 
-// import chisel3._
-// import chisel3.util._
+import chisel3._
+import chisel3.util._
 
-// // 当前假设：划分的每一个阶段，都能在一拍内完成自己的功能
-// object PipelineConnect {
-//   def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
+// 当前假设：划分的每一个阶段，都能在一拍内完成自己的功能
+// IFU -> IDU reg -> IDU -> EXU reg -> EXU -> WBU reg -> WBU (不考虑跳转指令)
+object PipelineConnect {
+  def apply[T <: Data](left: T, right: DecoupledIO[T], valid_cond: Bool) = {
+    // 每一回合都有新数据写入，每一回合数据都有效
 
-//     // 在left有效位set 1后，右边还没有 ready 时，流水线的valid寄存器应该一直为1
-//     val valid = RegInit(false.B)
-//     valid := 
+    // 这里 valid 和 regs 有一个约定: 下一拍大家一起有效
+    val valid = RegInit(false.B)
+    valid := valid_cond
 
-//     // 这是一堆寄存器，left写进来，延迟一个周期才能读
-//     val regs = RegEnable(left.bits, left.valid) // 
+    val regs = RegEnable(left, valid_cond)
 
-//     right := regs
+    right.bits := regs
+    right.valid := valid
 
-//   }
-// }
+  }
+}

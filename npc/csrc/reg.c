@@ -3,6 +3,7 @@
 
 uint64_t *cpu_gpr = NULL;
 uint64_t *pc = NULL;
+uint64_t *difftest_valid = NULL;
 
 riscv64_CPU_state cpu = {};
 
@@ -13,6 +14,12 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
 extern "C" void set_pc(const svOpenArrayHandle a) {
   pc = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
 //	printf("In set_pc, *pc = %lx\n", *pc);
+}
+
+// TODO: 也许有只暴露 1 bit 的方法？（要求能够实时暴露）
+// 用来告诉difftest环境，pc和regs什么时候有效
+extern "C" void set_valid(const svOpenArrayHandle a) {
+  difftest_valid = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
 }
 
 void sv_regs_to_c() {

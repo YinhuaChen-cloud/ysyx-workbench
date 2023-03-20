@@ -8,7 +8,7 @@ import utils._
 
 class Backend extends CyhCoreModule {
   val io = IO(new Bundle {
-    val in = Flipped(new DecodeIO)
+    val in = Flipped(Decoupled(new DecodeIO))
     val redirect = new RedirectIO // 用来支持 branch, jmp 等指令的
     val dmem = new SimpleBusUC
   })
@@ -38,8 +38,8 @@ class Backend extends CyhCoreModule {
   // PipelineConnect(isu.io.out, exu.io.in, exu.io.out.fire(), io.flush(0))
   // PipelineConnect(exu.io.out, wbu.io.in, true.B, io.flush(1))
 
-  Debug(p"In Backend data, ${io.in.data}")
-  Debug(p"In Backend ctrl, ${io.in.ctrl}")
+  Debug(p"In Backend data, ${io.in.bits.data}")
+  Debug(p"In Backend ctrl, ${io.in.bits.ctrl}")
 
 }
 
