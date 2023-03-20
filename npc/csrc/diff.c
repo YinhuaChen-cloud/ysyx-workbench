@@ -48,7 +48,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   // 初始化CPU, 直接默认 pc = 0x8000_0000
   riscv64_CPU_state init_cpu = {};
   init_cpu.pc = 0x80000000;
-  ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+  ref_difftest_regcpy(&init_cpu, DIFFTEST_TO_REF);
 #endif
 }
 
