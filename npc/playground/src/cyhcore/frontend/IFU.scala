@@ -21,7 +21,7 @@ class IFU extends CyhCoreModule with HasResetVector {
 
   // pc
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
-  val bpu = Module(new BPU)
+  // val bpu = Module(new BPU)
 
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
