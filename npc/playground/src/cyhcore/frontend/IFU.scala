@@ -22,7 +22,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // pc
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
   val bpu = Module(new BPU)
-  bpu.io.instr := io.imem.resp.rdata // io.imem.resp.rdata 刚刚读入的指令
+  bpu.io.instr := io.imem.resp.rdata(INST_LEN-1, 0) // io.imem.resp.rdata 刚刚读入的指令
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
   // 思路：实现一个小译码，判断当前读到的指令（发送给下一级的指令）是否是branch指令（jmp属于无条件跳转指令）
@@ -46,7 +46,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // val redirect = new RedirectIO  
 
   io.out       := DontCare
-  io.out.instr := Mux(bpu.io.isBranchJmp, Instructions.NOP, io.imem.resp.rdata)
+  io.out.instr := Mux(bpu.io.isBranchJmp, Instructions.NOP, io.imem.resp.rdata)(INST_LEN-1, 0)
   io.out.pc    := pc_reg
 
   Debug("In IFU, The inst read is 0x%x", io.imem.resp.rdata)
