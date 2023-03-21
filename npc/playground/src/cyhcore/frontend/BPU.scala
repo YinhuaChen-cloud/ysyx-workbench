@@ -25,6 +25,9 @@ class BPU extends CyhCoreModule with HasInstrType {
     BGEU           -> List(true.B)
   )
 
+  // NOTE: 经过试验，只有ListLookup能够以index的形式判断io.instr和BitPat之间的关系
+  // 使用MuxLookup的时候会报错
+  // 使用 MuxCase 则需要自己手动打 === 
   val res = ListLookup(io.instr, List(false.B), table)
 
   val isBranchJmp :: Nil = res
