@@ -21,16 +21,17 @@ class IFU extends CyhCoreModule with HasResetVector {
 
   // pc
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
-  // val bpu = Module(new BPU)
-
+  val bpu = Module(new BPU)
+  bpu.io.instr := io.out.instr
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
   // 思路：实现一个小译码，判断当前读到的指令（发送给下一级的指令）是否是branch指令（jmp属于无条件跳转指令）
   // 如果是branch，则阻塞流水线，直到io.redirect.valid为true，并且取用io.redirect.target
   // 如果是jmp，也是阻塞流水线，...... TODO：无条件跳转指令应该能进一步优化
   // 如果不是，就 PC + 4
+  pc_reg := Mux(bpu.io.isBranchJmp, Mux(io.redirect.valid, io.redirect.target, pc_reg), pc_reg + 4.U) 
   // pc_reg := Mux(io.redirect.valid, io.redirect.target, pc_reg) 
-  pc_reg := pc_reg + 4.U // TODO: 先不考虑跳转指令
+  // pc_reg := pc_reg + 4.U // TODO: 先不考虑跳转指令
 
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
   // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
@@ -45,7 +46,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // val redirect = new RedirectIO  
 
   io.out       := DontCare
-  io.out.instr := io.imem.resp.rdata
+  io.out.instr := Mux(bpu.io.isBranchJmp, Instructions.NOP, io.imem.resp.rdata)
   io.out.pc    := pc_reg
 
   Debug("In IFU, The inst read is 0x%x", io.imem.resp.rdata)
