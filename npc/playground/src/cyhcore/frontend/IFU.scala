@@ -39,8 +39,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // val redirect = new RedirectIO  
 
   io.out       := DontCare
-  // io.out.instr := io.imem.resp.rdata
-  io.out.instr := Instructions.NOP
+  io.out.instr := io.imem.resp.rdata
   io.out.pc    := pc_reg
 
   Debug("In IFU, The inst read is 0x%x", io.imem.resp.rdata)
