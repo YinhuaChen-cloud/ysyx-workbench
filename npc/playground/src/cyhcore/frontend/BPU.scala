@@ -13,18 +13,30 @@ class BPU extends CyhCoreModule with HasInstrType {
     val isBranchJmp = Output(Bool())
   })
 
-  val table = Array(
-    JAL            -> List(InstrJ, FuType.bru, ALUOpType.jal),
-    JALR           -> List(InstrI, FuType.bru, ALUOpType.jalr),
+  // val table = Array(
+  //   JAL            -> true.B,
+  //   JALR           -> true.B,
 
-    BEQ            -> List(InstrB, FuType.bru, ALUOpType.beq),
-    BNE            -> List(InstrB, FuType.bru, ALUOpType.bne),
-    BLT            -> List(InstrB, FuType.bru, ALUOpType.blt),
-    BGE            -> List(InstrB, FuType.bru, ALUOpType.bge),
-    BLTU           -> List(InstrB, FuType.bru, ALUOpType.bltu),
-    BGEU           -> List(InstrB, FuType.bru, ALUOpType.bgeu)
-  )
+  //   BEQ            -> true.B,
+  //   BNE            -> true.B,
+  //   BLT            -> true.B,
+  //   BGE            -> true.B,
+  //   BLTU           -> true.B,
+  //   BGEU           -> true.B
+  // )
 
-  io.isBranchJmp := true.B
+  // val res = MuxLookup(io.instr, false.B, table)
 
 }
+
+  // val table = Array(
+  //   JAL            -> List(InstrJ, FuType.bru, ALUOpType.jal),
+  //   JALR           -> List(InstrI, FuType.bru, ALUOpType.jalr),
+
+  //   BEQ            -> List(InstrB, FuType.bru, ALUOpType.beq),
+  //   BNE            -> List(InstrB, FuType.bru, ALUOpType.bne),
+  //   BLT            -> List(InstrB, FuType.bru, ALUOpType.blt),
+  //   BGE            -> List(InstrB, FuType.bru, ALUOpType.bge),
+  //   BLTU           -> List(InstrB, FuType.bru, ALUOpType.bltu),
+  //   BGEU           -> List(InstrB, FuType.bru, ALUOpType.bgeu)
+  // )

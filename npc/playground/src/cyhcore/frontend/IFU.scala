@@ -29,8 +29,8 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 如果是branch，则阻塞流水线，直到io.redirect.valid为true，并且取用io.redirect.target
   // 如果是jmp，也是阻塞流水线，...... TODO：无条件跳转指令应该能进一步优化
   // 如果不是，就 PC + 4
-  pc_reg := Mux(io.redirect.valid, io.redirect.target, pc_reg) 
-  // pc_reg := pc_reg + 4.U // TODO: 先不考虑跳转指令
+  // pc_reg := Mux(io.redirect.valid, io.redirect.target, pc_reg) 
+  pc_reg := pc_reg + 4.U // TODO: 先不考虑跳转指令
 
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
   // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
