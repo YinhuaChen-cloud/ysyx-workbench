@@ -77,7 +77,7 @@ class FunctionUnitIO extends CyhCoreBundle {
 // NOTE: 豪神在定义 Bundle 接口的时候似乎会把所有端口都定义成 Output
 // 关于 Input 接口，就接一个 Flipped
 class CtrlFlowIO extends CyhCoreBundle { // IFU -> IDU
-  val instr = Output(UInt(64.W))
+  val instr = Output(UInt(64.W)) // TODO: 指令的长度不是32位吗？
   val pc = Output(UInt(VAddrBits.W)) // TODO: 这里的地址真的要弄成39位吗？
   // val pnpc = Output(UInt(VAddrBits.W)) // predicted next pc
   val redirect = new RedirectIO  // TODO: 我猜测这个应该是用来处理跳转指令的
