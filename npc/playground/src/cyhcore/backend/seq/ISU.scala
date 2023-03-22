@@ -5,6 +5,7 @@ import chisel3.util._
 
 import utils._
 import sim.DiffTest
+import chisel3.util.experimental.BoringUtils
 
 class ISU extends CyhCoreModule with HasRegFileParameter {
   val io = IO(new Bundle {
@@ -14,24 +15,6 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   })
 
   val rf = new RegFile
-  // difftest ------------------- start TODO: 这个东西后面应该会被 remove 掉
-  // 当 io.in.valid 为 true 时，说明目前的信号会在下一个时钟上升沿起效果（写入寄存器、写入内存）
-  // 因此 difftest 也要在下一个时钟上升沿去做
-  // 一个例外：当接收到的指令为NOP时，下一个时钟上升沿不能做difftest
-  val difftest_valid = RegNext(io.in.valid & (io.in.bits.cf.instr =/= Instructions.NOP)) // 告诉仿真环境可以做difftest了
-  // printf("In ISU, io.in.valid = %d\n", io.in.valid)
-  // printf("In ISU, difftest_valid = %d\n", difftest_valid)
-  val difftest = Module(new DiffTest)
-  difftest.io.clk   := clock
-  difftest.io.rst   := reset
-  difftest.io.valid := difftest_valid 
-  difftest.io.pc    := io.in.bits.cf.pc
-  val rf_aux = Wire(Vec(NRReg * XLEN, Bool()))
-  for(i <- 0 until NRReg) {
-    rf_aux.slice(i * XLEN, (i+1) * XLEN).zip(rf.rf(i).asBools).foreach{case (a, b) => a := b}
-  }
-  difftest.io.regfile := rf_aux.asUInt
-  // difftest ------------------- end
 
   // write rf
   when (io.wb.rfWen) { rf.write(io.wb.rfDest, io.wb.rfData) }
@@ -86,6 +69,9 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   
   io.in.ready  := DontCare
 
+// for difftest ---------------------------------------
+
+  BoringUtils.addSource(VecInit((0 to NRReg-1).map(i => rf.read(i.U))), "difftestRegs")
 
   Debug(p"In ISU data, ${io.out.data}")
   Debug(p"In ISU wb, ${io.wb}")
