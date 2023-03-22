@@ -1,4 +1,5 @@
 # ==================== mill project template --- start
+TOP = TopMain
 VSRC_DIR = ./vsrc
 CONFIG ?= DefaultConfig
 
@@ -10,11 +11,11 @@ test:
 verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(VSRC_DIR)
-	mill -i __.test.runMain TopMain -td $(VSRC_DIR) -e verilog
-	# mill -i __.test.runMain TopMain -td $(VSRC_DIR) # useMFC
+	mill -i __.test.runMain top.$(TOP) -td $(VSRC_DIR) -e verilog
+	# mill -i __.test.runMain top.$(TOP) -td $(VSRC_DIR) # useMFC
 
 help:
-	mill -i __.test.runMain TopMain --help
+	mill -i __.test.runMain top.$(TOP) --help
 
 compile:
 	mill -i __.compile
