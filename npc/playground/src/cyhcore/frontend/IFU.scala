@@ -23,10 +23,10 @@ class IFU extends CyhCoreModule with HasResetVector {
   // pc
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
   val bpu = Module(new BPU)
-  bpu.io.instr := io.out.instr(INST_LEN-1, 0) // io.imem.resp.rdata 刚刚读入的指令
+  bpu.io.instr := io.imem.resp.rdata(INST_LEN-1, 0) // imem.resp.rdata 是从 imem 中读取的真正的指令
   // 表示下一条指令是否是NOP
   val isNOP = RegInit(false.B)
-  // 如果当前取到的指令是 branch/jmp，那么isNOP置 1，表示下一条指令是NOP
+  // 如果当前取到的指令是 branch/jmp，那么isNOP置 1，它会在下一周期为1，表示下一条指令是NOP
   isNOP := Mux(bpu.io.isBranchJmp, true.B, false.B)
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
@@ -34,7 +34,8 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 如果是branch，则阻塞流水线(pc不变，下一周期发送NOP)，直到io.redirect.valid为true，并且取用io.redirect.target
   // 如果是jmp，也是阻塞流水线(pc不变，下一周期发送NOP)，...... TODO：无条件跳转指令应该能进一步优化
   // 如果不是，就 PC + 4
-  pc_reg := Mux(isNOP, pc_reg, Mux(bpu.io.isBranchJmp, Mux(io.redirect.valid, io.redirect.target, pc_reg), pc_reg + 4.U))
+  // 如果这一周期 bpu.io.isBranchJmp 为真，说明下一周期不需要取指令（发出NOP）, 等待ALU计算redirect结果，再更新
+  pc_reg := Mux(bpu.io.isBranchJmp, Mux(io.redirect.valid, io.redirect.target, pc_reg), pc_reg + 4.U)
   // pc_reg := Mux(io.redirect.valid, io.redirect.target, pc_reg) 
   // pc_reg := pc_reg + 4.U // TODO: 先不考虑跳转指令
 

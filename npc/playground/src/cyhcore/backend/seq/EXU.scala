@@ -26,7 +26,7 @@ class EXU extends CyhCoreModule {
   (0 until FuType.num).map (i => fuValids(i) := (fuType === i.U))
 
   val alu = Module(new ALU)
-  val aluOut = alu.access(src1 = src1, src2 = src2, func = fuOpType)
+  val aluOut = alu.access(valid = fuValids(FuType.alu), src1 = src1, src2 = src2, func = fuOpType)
   alu.io.cfIn := io.in.cf
   alu.io.offset := io.in.data.imm
 
