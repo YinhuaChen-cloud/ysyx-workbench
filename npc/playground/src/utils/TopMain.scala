@@ -1,5 +1,3 @@
-package utils
-
 import circt.stage._
 
 import system._
