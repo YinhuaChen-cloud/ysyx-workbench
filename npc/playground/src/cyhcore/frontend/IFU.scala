@@ -23,7 +23,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // pc
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
   val bpu = Module(new BPU)
-  bpu.io.instr := io.imem.resp.rdata(INST_LEN-1, 0) // io.imem.resp.rdata 刚刚读入的指令
+  bpu.io.instr := io.out.instr(INST_LEN-1, 0) // io.imem.resp.rdata 刚刚读入的指令
   // 表示下一条指令是否是NOP
   val isNOP = RegInit(false.B)
   // 如果当前取到的指令是 branch/jmp，那么isNOP置 1，表示下一条指令是NOP
