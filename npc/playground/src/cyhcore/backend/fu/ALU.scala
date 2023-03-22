@@ -157,7 +157,7 @@ class ALU extends CyhCoreModule {
   // 这里使用了上面的 计算电路，从而节省面积
 
   val real_inst = Wire(UInt(INST_LEN.W)) 
-  BoringUtils.addSink(real_inst, "real_inst")
+  BoringUtils.addSink(real_inst, "real_inst2")
 
   val branchOpTable = List(
     ALUOpType.getBranchType(ALUOpType.beq)  -> !xorRes.orR,  // 	.orR: OR reduction
