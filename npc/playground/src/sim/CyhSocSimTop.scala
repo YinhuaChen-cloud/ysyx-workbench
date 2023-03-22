@@ -1,15 +1,16 @@
-package system
+package sim
 
 import chisel3._
 
 import cyhcore._
 import device._
 import utils._
+import system._
 
 // 目前的设备有：
 // 1. SRAM
 // 2. DRAM
-class top extends Module {
+class CyhSocSimTop extends Module {
 
   val io = IO(new Bundle {
   })

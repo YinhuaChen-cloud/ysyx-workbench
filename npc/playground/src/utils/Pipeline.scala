@@ -20,3 +20,19 @@ object PipelineConnect {
 
   }
 }
+
+// object PipelineConnect_noDecouple {
+//   def apply[T <: Data](left: T, right: T, valid_cond: Bool) = {
+//     // 每一回合都有新数据写入，每一回合数据都有效
+
+//     // 这里 valid 和 regs 有一个约定: 下一拍大家一起有效
+//     val valid = RegInit(false.B)
+//     valid := valid_cond
+
+//     val regs = RegEnable(left, valid_cond)
+
+//     right.bits := regs
+//     right.valid := valid
+
+//   }
+// }

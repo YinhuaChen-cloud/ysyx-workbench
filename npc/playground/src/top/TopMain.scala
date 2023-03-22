@@ -1,9 +1,13 @@
+package top
+
 import circt.stage._
 
 import system._
+import sim._
 
-object Elaborate extends App {
-  def top = new top()
+import sim.CyhSocSimTop
+object TopMain extends App {
+  def top = new CyhSocSimTop()
   val useMFC = false // use MLIR-based firrtl compiler
   val generator = Seq(chisel3.stage.ChiselGeneratorAnnotation(() => top))
   if (useMFC) {
