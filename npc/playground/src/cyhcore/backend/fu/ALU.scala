@@ -156,10 +156,6 @@ class ALU extends CyhCoreModule {
   // 所有的 branch 指令可以分为三种操作： beq, blt, bltu, 其它三个操作可以通过取反得到
   // 这里使用了上面的 计算电路，从而节省面积
 
-  val real_inst = WireInit(0.U(INST_LEN.W)) 
-  BoringUtils.addSink(real_inst, "real_inst")
-  dontTouch(real_inst)
-
   val branchOpTable = List(
     ALUOpType.getBranchType(ALUOpType.beq)  -> !xorRes.orR,  // 	.orR: OR reduction
     ALUOpType.getBranchType(ALUOpType.blt)  -> slt, // slt 的结果

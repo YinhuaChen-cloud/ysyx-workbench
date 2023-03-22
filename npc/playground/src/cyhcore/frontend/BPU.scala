@@ -2,7 +2,6 @@ package cyhcore
 
 import chisel3._
 import chisel3.util._
-import utils.OneHotTree
 
 import RV32I_BRUInstr._
 
@@ -10,10 +9,21 @@ import RV32I_BRUInstr._
 class BPU extends CyhCoreModule with HasInstrType {
   val io = IO(new Bundle {
     val instr = Input(UInt(INST_LEN.W))
+    val fuOpType = Output(FuOpType()) // 告诉ALU计算redirect的部分选择哪个操作
     val isBranchJmp = Output(Bool())
   })
 
-  val table = Array(
+// fuOpType(FuOpType) -----------------------------------------------------
+
+  val fuOpres = ListLookup(io.instr, Instructions.DecodeDefault, table)
+
+  val instrType :: fuType :: fuOpType :: Nil = fuOpres
+
+  io.fuOpType := fuOpType
+
+// isBranchJmp(Bool) ------------------------------------------------------
+
+  val TFtable = Array(
     JAL            -> List(true.B),
     JALR           -> List(true.B),
 
@@ -28,9 +38,9 @@ class BPU extends CyhCoreModule with HasInstrType {
   // NOTE: 经过试验，只有ListLookup能够以index的形式判断io.instr和BitPat之间的关系
   // 使用MuxLookup的时候会报错
   // 使用 MuxCase 则需要自己手动打 === 
-  val res = ListLookup(io.instr, List(false.B), table)
+  val tfres = ListLookup(io.instr, List(false.B), TFtable)
 
-  val isBranchJmp :: Nil = res
+  val isBranchJmp :: Nil = tfres
 
   io.isBranchJmp := isBranchJmp
 
