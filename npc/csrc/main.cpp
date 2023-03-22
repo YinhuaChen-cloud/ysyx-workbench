@@ -1,7 +1,6 @@
 #include "emu.h"
 #include "verilated.h"
 #include "svdpi.h"
-#include "Vtop__Dpi.h"
 #include <getopt.h>
 #include "diff.h"
 #include "common.h"
