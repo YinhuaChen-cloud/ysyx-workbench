@@ -41,8 +41,8 @@ class CyhSocSimTop extends CyhCoreModule with HasRegFileParameter {
   val difftest = Module(new DiffTest)
   difftest.io.clk   := clock
   difftest.io.rst   := reset
-  difftest.io.commit := true.B
-  // BoringUtils.addSink(difftest.io.commit, "difftestCommit")
+  // difftest.io.commit := true.B
+  BoringUtils.addSink(difftest.io.commit, "difftestCommit")
   difftest.io.pc    := DontCare // 现在先不对比 pc
 
   // val difftest_valid = RegNext(io.in.valid & (io.in.bits.cf.instr =/= Instructions.NOP)) // 告诉仿真环境可以做difftest了
