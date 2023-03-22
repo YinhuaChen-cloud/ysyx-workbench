@@ -27,7 +27,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 表示下一条指令是否是NOP
   val isNOP = RegInit(false.B)
   // 如果当前取到的指令是 branch/jmp，那么isNOP置 1，它会在下一周期为1，表示下一条指令是NOP
-  isNOP := Mux(bpu.io.isBranchJmp, true.B, false.B)
+  isNOP := Mux(bpu.io.isBranchJmp & !isNOP, true.B, false.B)
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
   // 思路：实现一个小译码，判断当前读到的指令（发送给下一级的指令）是否是branch指令（jmp属于无条件跳转指令）
