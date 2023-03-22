@@ -24,7 +24,7 @@ class Backend extends CyhCoreModule {
   //               |-------------|
   isu.io.in <> io.in
   exu.io.in <> isu.io.out 
-  wbu.io.in <> exu.io.out 
+  // wbu.io.in <> exu.io.out 
   isu.io.wb <> wbu.io.wb  
 
   PipelineConnect(exu.io.out, wbu.io.in, io.in.valid)
