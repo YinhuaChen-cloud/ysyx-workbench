@@ -6,6 +6,7 @@ import chisel3.util._
 import top.Settings
 import bus.simplebus._
 import utils._
+import chisel3.util.experimental.BoringUtils
 
 trait HasResetVector {
   val resetVector = Settings.getLong("ResetVector")
@@ -48,6 +49,10 @@ class IFU extends CyhCoreModule with HasResetVector {
   io.out       := DontCare
   io.out.instr := Mux(bpu.io.isBranchJmp, Instructions.NOP, io.imem.resp.rdata)(INST_LEN-1, 0)
   io.out.pc    := pc_reg
+
+// --- Jump wire of inst to ALU, for calculating next_pc in time ---
+
+  BoringUtils.addSource(io.imem.resp.rdata, "real_inst")
 
   Debug("In IFU, The inst read is 0x%x", io.imem.resp.rdata)
 

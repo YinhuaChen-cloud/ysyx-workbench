@@ -140,6 +140,7 @@ class ALU extends CyhCoreModule {
 
   Debug(p"In ALU, ${io}")
 
+// NOTE: ------------ 下面这部分 redirect 的端口更新使用飞线，为了及时更新IFU---------------
 // redirect(RedirectIO) -------------------------------------
   // val target = Output(UInt(PC_LEN.W)) // 目标跳转地址
   // val valid = Output(Bool())  // TODO: 猜测：当前指令为 branch/jmp 指令时，valid = true.B ?
