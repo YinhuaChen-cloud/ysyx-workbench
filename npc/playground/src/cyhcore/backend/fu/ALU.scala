@@ -158,6 +158,7 @@ class ALU extends CyhCoreModule {
 
   val real_inst = WireInit(0.U(INST_LEN.W)) 
   BoringUtils.addSink(real_inst, "real_inst")
+  dontTouch(real_inst)
 
   val branchOpTable = List(
     ALUOpType.getBranchType(ALUOpType.beq)  -> !xorRes.orR,  // 	.orR: OR reduction
