@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 
 import utils._
+import chisel3.util.experimental.BoringUtils
 
 object ALUOpType {
   // 可以依靠 func(3, 0) 进行区分 -- start
@@ -54,6 +55,7 @@ object ALUOpType {
 }
 
 class ALUIO extends FunctionUnitIO {
+  val valid = Input(Bool()) // 是否 enable 这个模块
   val cfIn = Flipped(new CtrlFlowIO) // pc 在这个端口里，用于做 跳转指令 计算
   val redirect = new RedirectIO
   val offset = Input(UInt(XLEN.W)) // branch 指令的 offset 由这个端口传入
@@ -63,8 +65,9 @@ class ALU extends CyhCoreModule {
 
   val io = IO(new ALUIO)
 
-  val (src1, src2, func) = (io.in.src1, io.in.src2, io.in.func)
-  def access(src1: UInt, src2: UInt, func: UInt): UInt = {
+  val (valid, src1, src2, func) = (io.valid, io.in.src1, io.in.src2, io.in.func)
+  def access(valid: Bool, src1: UInt, src2: UInt, func: UInt): UInt = {
+    this.valid := valid
     this.src1 := src1
     this.src2 := src2
     this.func := func
@@ -153,6 +156,7 @@ class ALU extends CyhCoreModule {
 
   // 所有的 branch 指令可以分为三种操作： beq, blt, bltu, 其它三个操作可以通过取反得到
   // 这里使用了上面的 计算电路，从而节省面积
+
   val branchOpTable = List(
     ALUOpType.getBranchType(ALUOpType.beq)  -> !xorRes.orR,  // 	.orR: OR reduction
     ALUOpType.getBranchType(ALUOpType.blt)  -> slt, // slt 的结果
@@ -171,7 +175,7 @@ class ALU extends CyhCoreModule {
   dontTouch(io.redirect.target)
   dontTouch(io.redirect.valid)
   io.redirect.target := Mux((isBranch && taken) || isJump, target, io.cfIn.pc + 4.U)
-  io.redirect.valid  := true.B
+  io.redirect.valid  := valid & isBru
 
   // this is actually for jal and jalr to write pc + 4 to rd
   io.out := Mux(isBru, SignExt(io.cfIn.pc, PC_LEN) + 4.U, aluRes)
@@ -179,3 +183,5 @@ class ALU extends CyhCoreModule {
 }
 
 
+
+// NOTE: ------------ 下面这部分 redirect 的端口更新使用飞线，为了及时更新IFU---------------

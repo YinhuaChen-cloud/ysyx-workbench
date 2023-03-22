@@ -27,6 +27,9 @@ class Backend extends CyhCoreModule {
   wbu.io.in <> exu.io.out 
   isu.io.wb <> wbu.io.wb  
 
+  // PipelineConnect(isu.io.out, exu.io.in, exu.io.out.fire(), io.flush(0))
+  // PipelineConnect(exu.io.out, wbu.io.in, true.B, io.flush(1))
+
   // 跳转指令支持(EXU决定跳转指令的target，随后连线到 WBU, WBU再决定跳转指令的写入时机(valid))
   dontTouch(exu.io.out.decode.cf.redirect)
   dontTouch(wbu.io.redirect)
@@ -35,9 +38,6 @@ class Backend extends CyhCoreModule {
   // 内存读写支持（使用总线）
   io.dmem <> exu.io.dmem
   
-  // PipelineConnect(isu.io.out, exu.io.in, exu.io.out.fire(), io.flush(0))
-  // PipelineConnect(exu.io.out, wbu.io.in, true.B, io.flush(1))
-
   Debug(p"In Backend data, ${io.in.bits.data}")
   Debug(p"In Backend ctrl, ${io.in.bits.ctrl}")
 
