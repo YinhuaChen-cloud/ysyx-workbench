@@ -2,7 +2,7 @@ import circt.stage._
 
 import system._
 
-object Elaborate extends App {
+object TopMain extends App {
   def top = new top()
   val useMFC = false // use MLIR-based firrtl compiler
   val generator = Seq(chisel3.stage.ChiselGeneratorAnnotation(() => top))

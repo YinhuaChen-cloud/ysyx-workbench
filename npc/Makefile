@@ -10,11 +10,11 @@ test:
 verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(VSRC_DIR)
-	mill -i __.test.runMain Elaborate -td $(VSRC_DIR) -e verilog
-	# mill -i __.test.runMain Elaborate -td $(VSRC_DIR) # useMFC
+	mill -i __.test.runMain TopMain -td $(VSRC_DIR) -e verilog
+	# mill -i __.test.runMain TopMain -td $(VSRC_DIR) # useMFC
 
 help:
-	mill -i __.test.runMain Elaborate --help
+	mill -i __.test.runMain TopMain --help
 
 compile:
 	mill -i __.compile
