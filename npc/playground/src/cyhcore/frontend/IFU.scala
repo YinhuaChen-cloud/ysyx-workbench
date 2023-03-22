@@ -52,7 +52,7 @@ class IFU extends CyhCoreModule with HasResetVector {
 
 // --- Jump wire of inst to ALU, for calculating next_pc in time ---
 
-  BoringUtils.addSource(io.imem.resp.rdata, "real_inst2")
+  BoringUtils.addSource(io.imem.resp.rdata, "real_inst")
 
   Debug("In IFU, The inst read is 0x%x", io.imem.resp.rdata)
 
