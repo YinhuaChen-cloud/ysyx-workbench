@@ -12,6 +12,8 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
     val in = Flipped(new CommitIO)
     val wb = new WriteBackIO // 写回寄存器用的端口
     val redirect = new RedirectIO
+    
+    val valid = Input(Bool())
   })
 
 // wb(WriteBackIO) ------------------------------------------
@@ -40,7 +42,7 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // 当 io.in.valid 为 true 时，说明下一周期寄存器堆就会被写入（WBU和ISU之间没有流水线）
   // 所以，可以在下一个时钟上升沿启用 difftest
   // TODO: 上板的时候这个应该得去掉(果壳去掉了)
-  // BoringUtils.addSource(RegNext(io.in.valid), "difftestCommit")
+  BoringUtils.addSource(RegNext(io.valid), "difftestCommit")
   // 用于difftest的PC应该是上一周期的（相对于被写入的寄存器）
   BoringUtils.addSource(SignExt(io.in.decode.cf.pc, PC_LEN), "difftestThisPC")
 
