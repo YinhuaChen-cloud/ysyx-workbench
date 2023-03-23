@@ -9,8 +9,8 @@ import system._
 import chisel3.util.experimental.BoringUtils
 
 // TODO: 这个暂时用不上，除了工作量啥都没
-class DiffTestIO extends CyhCoreBundle {
-  val regfile = Input(UInt((NR_GPRS * XLEN).W))
+class DiffTestIO extends CyhCoreBundle with HasRegFileParameter {
+  val regfile = Input(Vec(NRReg, UInt(XLEN.W)))
   val thisPC = Output(UInt(PC_LEN.W))
   val commit = Output(Bool())
 }
