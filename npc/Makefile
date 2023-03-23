@@ -43,7 +43,7 @@ sim: run-env
 include ../Makefile
 
 # ==================== mill project template --- end
-TOPNAME = top
+TOPNAME = CyhSocSimTop
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?= $(NPC_HOME)/include
 

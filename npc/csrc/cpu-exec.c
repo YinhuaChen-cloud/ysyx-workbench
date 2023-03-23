@@ -1,5 +1,5 @@
 #include <common.h>
-#include "Vtop.h"
+#include "emu.h"
 #include "verilated.h"
 
 #ifdef CONFIG_WAVEFORM
