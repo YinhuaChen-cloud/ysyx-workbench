@@ -41,6 +41,8 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // 所以，可以在下一个时钟上升沿启用 difftest
   // TODO: 上板的时候这个应该得去掉(果壳去掉了)
   // BoringUtils.addSource(RegNext(io.in.valid), "difftestCommit")
+  // 用于difftest的PC应该是上一周期的（相对于被写入的寄存器）
+  BoringUtils.addSource(SignExt(io.in.decode.cf.pc, PC_LEN), "difftestThisPC")
 
 }
 

@@ -9,11 +9,11 @@ import system._
 import chisel3.util.experimental.BoringUtils
 
 // TODO: 这个暂时用不上，除了工作量啥都没
-// class DiffTestIO extends CyhCoreBundle {
-//   val regfile = Input(UInt((NR_GPRS * XLEN).W))
-//   val thisPC = Output(UInt(PC_LEN.W))
-//   val commit = Output(Bool())
-// }
+class DiffTestIO extends CyhCoreBundle {
+  val regfile = Input(UInt((NR_GPRS * XLEN).W))
+  val thisPC = Output(UInt(PC_LEN.W))
+  val commit = Output(Bool())
+}
 
 // 目前的设备有：
 // 1. SRAM
@@ -34,18 +34,20 @@ class CyhSocSimTop extends CyhCoreModule with HasRegFileParameter {
   cyhsoc.io.imem <> axi4sram.io.imem
   cyhsoc.io.dmem <> axi4dram.io.dmem
 
-  // // difftest ------------------- start 
-  // // 当 io.in.valid 为 true 时，说明目前的信号会在下一个时钟上升沿起效果（写入寄存器、写入内存）
-  // // 因此 difftest 也要在下一个时钟上升沿去做
-  // // 一个例外：当接收到的指令为NOP时，下一个时钟上升沿不能做difftest
-  // val difftestCommit = WireInit(false.B)
-  // BoringUtils.addSink(difftestCommit, "difftestCommit")
+  // difftest ------------------- start 
+  // 当 io.in.valid 为 true 时，说明目前的信号会在下一个时钟上升沿起效果（写入寄存器、写入内存）
+  // 因此 difftest 也要在下一个时钟上升沿去做
+  // 一个例外：当接收到的指令为NOP时，下一个时钟上升沿不能做difftest
+  val difftestIO = WireInit(0.U.asTypeOf(new DiffTestIO))
+  BoringUtils.addSink(difftestIO.regfile, "difftestRegs")
+  BoringUtils.addSink(difftestIO.thisPC , "difftestThisPC")
+  BoringUtils.addSink(difftestIO.commit , "difftestCommit")
 
-  // val difftest = Module(new DiffTest)
-  // difftest.io.clk    := clock
-  // difftest.io.rst    := reset
+  val difftest = Module(new DiffTest)
+  difftest.io.clk    := clock
+  difftest.io.rst    := reset
+  difftest.io.pc     := DontCare // 现在先不对比 pc
   // difftest.io.commit := difftestCommit
-  // difftest.io.pc     := DontCare // 现在先不对比 pc
 
   // // val difftest_valid = RegNext(io.in.valid & (io.in.bits.cf.instr =/= Instructions.NOP)) // 告诉仿真环境可以做difftest了
   // val rf = WireInit(VecInit(Seq.fill(NRReg)(0.U(XLEN.W))))

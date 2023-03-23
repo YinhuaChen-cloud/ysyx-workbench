@@ -71,7 +71,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 
 // for difftest ---------------------------------------
 
-  // BoringUtils.addSource(VecInit((0 to NRReg-1).map(i => rf.read(i.U))), "difftestRegs")
+  BoringUtils.addSource(VecInit((0 to NRReg-1).map(i => rf.read(i.U))), "difftestRegs")
 
   Debug(p"In ISU data, ${io.out.data}")
   Debug(p"In ISU wb, ${io.wb}")
