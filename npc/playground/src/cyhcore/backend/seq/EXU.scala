@@ -67,6 +67,7 @@ class EXU extends CyhCoreModule {
 
 // handshake ------------------------------------------ 
   
+  dontTouch(io.in.ready)
   io.in.ready  := true.B // DontCare
   io.out.valid := io.in.valid
 
