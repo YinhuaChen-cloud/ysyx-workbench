@@ -9,15 +9,21 @@ import chisel3.util.experimental.BoringUtils
 
 class ISU extends CyhCoreModule with HasRegFileParameter {
   val io = IO(new Bundle {
-    val in = Flipped(Decoupled(new DecodeIO)) // make in-order backend compatible with high performance frontend  TODO: how? (make in-order backend compatible with high performance frontend)  
-    val wb = Flipped(new WriteBackIO)
-    val out = new DecodeIO
+    val in  = Flipped(Decoupled(new DecodeIO)) // make in-order backend compatible with high performance frontend  TODO: how? (make in-order backend compatible with high performance frontend)  
+    val wb  = Flipped(new WriteBackIO)
+    val out = Decoupled(new DecodeIO)
   })
 
+  // 寄存器堆，
   val rf = new RegFile
 
   // write rf
   when (io.wb.rfWen) { rf.write(io.wb.rfDest, io.wb.rfData) }
+
+  // 计分板，用来处理数据冒险
+  val sb = new ScoreBoard
+  val src1Ready = !sb.isBusy(rfSrc1)
+  val src2Ready = !sb.isBusy(rfSrc2)
 
 // out(DecodeIO) -------------------------------------- cf(CtrlFlowIO)
 //   val instr = Output(UInt(64.W))
@@ -68,6 +74,8 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 // handshake ------------------------------------------ 
   
   io.in.ready  := DontCare
+  // 默认ISU可以在一拍内完成工作，所以io.out.valid仅在 in.valid 且 src1 src2 都准备好时，才 valid
+  io.out.valid := io.in(0).valid && src1Ready && src2Ready 
 
 // for difftest ---------------------------------------
 

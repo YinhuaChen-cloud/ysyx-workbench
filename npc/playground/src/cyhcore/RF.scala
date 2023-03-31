@@ -13,6 +13,21 @@ class RegFile extends HasRegFileParameter with HasCyhCoreParameter {
   def write(addr: UInt, data: UInt) = { rf(addr) := Mux(addr === 0.U, rf(addr), data(XLEN-1,0)) }
 } 
 
+// 计分板
+// 用来处理RAW(写后读)数据冒险
+// 当IDU发现要写入某个寄存器时，把 busy(x) = 1
+// 当WBU完成写入某个寄存器时，把 busy(x) = 0
+// 在IDU阶段，若需要读出寄存器x，而此时 busy(x) = 1，说明发生了RAW
+class ScoreBoard extends HasRegFileParameter {
+
+  val busy = RegInit(0.U(NRReg.W))
+
+  def isBusy(idx: UInt): Bool = busy(idx) 
+
+  def update = {
+    // busy := ... ?
+  }
+}
 
 
 
