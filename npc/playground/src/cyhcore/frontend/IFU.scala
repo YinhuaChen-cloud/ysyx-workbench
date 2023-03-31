@@ -31,7 +31,9 @@ class IFU extends CyhCoreModule with HasResetVector {
   // val (counterValue, counterWrap) = Counter(isNOP, 2)
   // 如果当前取到的指令是 branch/jmp，那么isNOP置 1
   // isNOP := Mux(bpu.io.isBranchJmp , true.B, false.B)
-  isNOP := bpu.io.isBranchJmp
+  // 如果预译码发现当前指令是 branch/jmp，说明下一周期开始要产生气泡指令，因此置 isNOP reg 为 1
+  // 例外：当 io.redirect.valid 为 true 时，说明下一周期 pc_reg 会跳转到正确的指令地址上，因此下一周期不需要再产生气泡指令
+  isNOP := bpu.io.isBranchJmp && !io.redirect.valid
   // dontTouch(counterWrap)
 
 
