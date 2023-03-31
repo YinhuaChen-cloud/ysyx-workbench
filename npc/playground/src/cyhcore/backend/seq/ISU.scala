@@ -27,17 +27,17 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 
   // 计分板（处理数据冒险如RAW）
   val sb = new ScoreBoard
-  // 光有 busy 是不够的，因为有可能当前指令和上一条指令要写入同一个寄存器，这会导致连续busy，
-  // src1Ready连续为false(哪怕上一条指令已经成功将结果写入寄存器)
-  // 所以，当idSetMask和wbClearMask都有效且相同时，也是操作数Ready的时候
-  val src1Ready = !sb.isBusy(rfSrc1) || (idSetMask === wbClearMask && idSetMask =/= 0.U)
-  val src2Ready = !sb.isBusy(rfSrc2) || (idSetMask === wbClearMask && idSetMask =/= 0.U)
   // 当IDU发现要写入某个寄存器时，把 busy(x) = 1
   val idSetMask   = Mux(io.in.valid & rfWen, sb.mask(rfDest), 0.U)
   // 当WBU完成写入某个寄存器时，把 busy(x) = 0
   val wbClearMask = Mux(io.wb.rfWen, sb.mask(io.wb.rfDest), 0.U(NRReg.W))
   // 每周期更新一遍busy数组(关于enable/disable，已经暗含在 idSetMask 和 wbClearMask里了)
   sb.update(idSetMask, wbClearMask)
+  // 光有 busy 是不够的，因为有可能当前指令和上一条指令要写入同一个寄存器，这会导致连续busy，
+  // src1Ready连续为false(哪怕上一条指令已经成功将结果写入寄存器)
+  // 所以，当idSetMask和wbClearMask都有效且相同时，也是操作数Ready的时候
+  val src1Ready = !sb.isBusy(rfSrc1) || (idSetMask === wbClearMask && idSetMask =/= 0.U)
+  val src2Ready = !sb.isBusy(rfSrc2) || (idSetMask === wbClearMask && idSetMask =/= 0.U)
 
 // out(DecodeIO) -------------------------------------- cf(CtrlFlowIO)
 //   val instr = Output(UInt(64.W))
