@@ -43,9 +43,6 @@ class Backend extends CyhCoreModule {
   // 内存读写支持（使用总线）
   io.dmem <> exu.io.dmem
 
-  // 临时valid
-  wbu.io.valid := exu.io.in.valid
-  
   Debug(p"In Backend data, ${io.in.bits.data}")
   Debug(p"In Backend ctrl, ${io.in.bits.ctrl}")
 

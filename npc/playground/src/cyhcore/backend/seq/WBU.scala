@@ -12,8 +12,6 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
     val in = Flipped(Decoupled(new CommitIO))
     val wb = new WriteBackIO // 写回寄存器用的端口
     val redirect = new RedirectIO
-    
-    val valid = Input(Bool())
   })
 
 // wb(WriteBackIO) ------------------------------------------
@@ -42,7 +40,7 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // 所以，可以在下一个时钟上升沿启用 difftest
   // TODO: 上板的时候这个应该得去掉(果壳去掉了)
   // 注意：在传入的指令为 NOP 时，由于spike并不执行NOP指令，所以不应该启动difftest
-  BoringUtils.addSource(RegNext(io.valid & (io.in.bits.decode.cf.instr =/= Instructions.NOP)), "difftestCommit")
+  BoringUtils.addSource(RegNext(io.in.valid & (io.in.bits.decode.cf.instr =/= Instructions.NOP)), "difftestCommit")
   // 用于difftest的PC应该是上一周期的（相对于被写入的寄存器）
   BoringUtils.addSource(SignExt(io.in.bits.decode.cf.pc, PC_LEN), "difftestThisPC")
 
