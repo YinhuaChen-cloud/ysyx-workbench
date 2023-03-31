@@ -24,18 +24,11 @@ class IFU extends CyhCoreModule with HasResetVector {
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
   val bpu = Module(new BPU)
   bpu.io.instr := io.imem.resp.rdata(INST_LEN-1, 0) // imem.resp.rdata 是从 imem 中读取的真正的指令
-  // 当isNOP为 1，表示要从下一周期开始生成至少一个气泡
+  // 当isNOP为 1，表示当前周期要产生气泡指令
   val isNOP = RegInit(false.B)
-  // 每次遇到控制冒险，需要生成两个气泡，使用计数器来计气泡的数量
-  // 当 isNOP 为 true 时，开始计数
-  // val (counterValue, counterWrap) = Counter(isNOP, 2)
-  // 如果当前取到的指令是 branch/jmp，那么isNOP置 1
-  // isNOP := Mux(bpu.io.isBranchJmp , true.B, false.B)
   // 如果预译码发现当前指令是 branch/jmp，说明下一周期开始要产生气泡指令，因此置 isNOP reg 为 1
   // 例外：当 io.redirect.valid 为 true 时，说明下一周期 pc_reg 会跳转到正确的指令地址上，因此下一周期不需要再产生气泡指令
   isNOP := bpu.io.isBranchJmp && !io.redirect.valid
-  // dontTouch(counterWrap)
-
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
   // 思路：实现一个小译码，判断当前读到的指令（发送给下一级的指令）是否是branch指令（jmp属于无条件跳转指令）
@@ -44,8 +37,6 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 如果不是，就 PC + 4
   // 如果这一周期 bpu.io.isBranchJmp 为真，说明下一周期不需要取指令（发出NOP）, 等待ALU计算redirect结果，再更新
   pc_reg := Mux(bpu.io.isBranchJmp, Mux(io.redirect.valid, io.redirect.target, pc_reg), pc_reg + 4.U)
-  // pc_reg := Mux(io.redirect.valid, io.redirect.target, pc_reg) 
-  // pc_reg := pc_reg + 4.U // TODO: 先不考虑跳转指令
 
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
   // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
