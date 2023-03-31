@@ -14,10 +14,27 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
     val out = Decoupled(new DecodeIO)
   })
 
-  val rf = new RegFile
+  // 简化命名(都是in，不是out)
+  val rfSrc1 = io.in.bits.ctrl.rfSrc1 
+  val rfSrc2 = io.in.bits.ctrl.rfSrc2
+  val rfDest = io.in.bits.ctrl.rfDest
+  val rfWen  = io.in.bits.ctrl.rfWen
 
+  // 寄存器堆
+  val rf = new RegFile
   // write rf
   when (io.wb.rfWen) { rf.write(io.wb.rfDest, io.wb.rfData) }
+
+  // 计分板（处理数据冒险如RAW）
+  val sb = new ScoreBoard
+  val src1Ready = !sb.isBusy(rfSrc1)
+  val src2Ready = !sb.isBusy(rfSrc2)
+  // 当IDU发现要写入某个寄存器时，把 busy(x) = 1
+  val idSetMask   = Mux(io.in.valid & rfWen, sb.mask(rfDest), 0.U)
+  // 当WBU完成写入某个寄存器时，把 busy(x) = 0
+  val wbClearMask = Mux(io.wb.rfWen, sb.mask(io.wb.rfDest), 0.U(NRReg.W))
+  // 每周期更新一遍busy数组(关于enable/disable，已经暗含在 idSetMask 和 wbClearMask里了)
+  sb.update(idSetMask, wbClearMask)
 
 // out(DecodeIO) -------------------------------------- cf(CtrlFlowIO)
 //   val instr = Output(UInt(64.W))
@@ -43,10 +60,6 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 //   val src2 = Output(UInt(XLEN.W))
 //   val imm  = Output(UInt(XLEN.W))
 
-  val rfSrc1 = io.in.bits.ctrl.rfSrc1
-  val rfSrc2 = io.in.bits.ctrl.rfSrc2
-  val rfDest = io.in.bits.ctrl.rfDest
-
   io.out.bits.data.src1 := Mux1H(List(
     (io.in.bits.ctrl.src1Type === SrcType.pc)                                            -> SignExt(io.in.bits.cf.pc, PC_LEN), // TODO: 为什么用 pc 作为src1要进行有符号扩展？ 为什么不是无符号扩展？
     // src1ForwardNextCycle                                                            -> io.forward.wb.rfData, //io.forward.wb.rfData,
@@ -68,7 +81,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 // handshake ------------------------------------------ 
   
   io.in.ready  := DontCare
-  io.out.valid := io.in.valid // TODO: 在加入计分板之前，大概就是这样吧
+  io.out.valid := io.in.valid && src1Ready && src2Ready
 
 // for difftest ---------------------------------------
 

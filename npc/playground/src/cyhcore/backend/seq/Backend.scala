@@ -14,7 +14,7 @@ class Backend extends CyhCoreModule {
   })
 
   // 根据果壳的代码，后端单元顺序应该如下
-  val isu = Module(new ISU) // 发射队列，目前只是用于存放 regfile，以及负责regfile的读写
+  val isu = Module(new ISU) // 用于存放 regfile，以及负责regfile的读写，还有判断操作数是否准备完毕(处理数据冒险如RAW)
   val exu = Module(new EXU)
   val wbu = Module(new WBU)
 
