@@ -27,19 +27,24 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 
   // 计分板（处理数据冒险如RAW）
   val sb = new ScoreBoard
+  val src1Ready = !sb.isBusy(rfSrc1)
+  val src2Ready = !sb.isBusy(rfSrc2)
   // 当IDU发现要写入某个寄存器时，把 busy(x) = 1
-  val idSetMask   = Mux(io.in.valid & rfWen, sb.mask(rfDest), 0.U)
+  val idSetMask   = Mux(io.in.valid & rfWen & src1Ready & src2Ready, sb.mask(rfDest), 0.U)
   // 当WBU完成写入某个寄存器时，把 busy(x) = 0
   val wbClearMask = Mux(io.wb.rfWen, sb.mask(io.wb.rfDest), 0.U(NRReg.W))
   // 每周期更新一遍busy数组(关于enable/disable，已经暗含在 idSetMask 和 wbClearMask里了)
   sb.update(idSetMask, wbClearMask)
   // 光有 busy 是不够的，因为有可能当前指令和上一条指令要写入同一个寄存器，这会导致连续busy，
   // src1Ready连续为false(哪怕上一条指令已经成功将结果写入寄存器)
-  // 所以，当idSetMask和wbClearMask都有效且相同时，也是操作数Ready的时候
+  // 但是我们知道，只要等待一个周期，就一定能等到寄存器被写入
+  // 使用一个标记寄存器wati_a_cycle，当它为false的时候，表示无需等待，src1/2操作数都没有冲突
+  // 当它为true时，表示正在等待一个周期，因为src1/src2操作数有冲突
+  // val wait_a_cycle = RegInit(false.B)
+  // wait_a_cycle := Mux(wait_a_cycle, false.B, sb.isBusy(rfSrc1) || sb.isBusy(rfSrc2)) // 等待一个周期，就能等到寄存器被写入
   // val src1Ready = !sb.isBusy(rfSrc1) || (idSetMask === wbClearMask && idSetMask =/= 0.U)
   // val src2Ready = !sb.isBusy(rfSrc2) || (idSetMask === wbClearMask && idSetMask =/= 0.U)
-  val src1Ready = !sb.isBusy(rfSrc1)
-  val src2Ready = !sb.isBusy(rfSrc2)
+
 
 // out(DecodeIO) -------------------------------------- cf(CtrlFlowIO)
 //   val instr = Output(UInt(64.W))
