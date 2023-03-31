@@ -69,7 +69,6 @@ class EXU extends CyhCoreModule {
   
   io.in.ready  := DontCare
 
-
   Debug(p"In EXU ctrl, ${io.in.bits.ctrl}")
   Debug(p"In EXU data, ${io.in.bits.data}")
   
