@@ -25,8 +25,8 @@ class Backend extends CyhCoreModule {
   isu.io.in <> io.in
   exu.io.in <> isu.io.out 
 
-  PipelineConnect(exu.io.out, wbu.io.in, io.in.valid)
-  // wbu.io.in <> exu.io.out 
+  // PipelineConnect(exu.io.out, wbu.io.in, io.in.valid)
+  wbu.io.in <> exu.io.out 
 
   isu.io.wb <> wbu.io.wb  
 
@@ -41,6 +41,9 @@ class Backend extends CyhCoreModule {
   // 内存读写支持（使用总线）
   io.dmem <> exu.io.dmem
 
+  // 临时valid
+  wbu.io.valid := io.in.valid
+  
   Debug(p"In Backend data, ${io.in.bits.data}")
   Debug(p"In Backend ctrl, ${io.in.bits.ctrl}")
 
