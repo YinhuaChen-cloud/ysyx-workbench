@@ -15,7 +15,7 @@ trait HasResetVector {
 class IFU extends CyhCoreModule with HasResetVector {
   val io = IO(new Bundle {
     val imem = new SimpleBusUC
-    val out  = new CtrlFlowIO
+    val out  = Decoupled(new CtrlFlowIO)
 
     val redirect = Flipped(new RedirectIO) // 用来支持 branch, jmp 等指令的
   })
@@ -53,8 +53,14 @@ class IFU extends CyhCoreModule with HasResetVector {
 
   io.out       := DontCare
   // 如果发现 isNOP = true.B，说明这一回合应该发送气泡指令，而非真正的指令，真正的指令需要保留一回合
-  io.out.instr := Mux(isNOP, Instructions.NOP, io.imem.resp.rdata)(INST_LEN-1, 0)
-  io.out.pc    := pc_reg
+  io.out.bits.instr := Mux(isNOP, Instructions.NOP, io.imem.resp.rdata)(INST_LEN-1, 0)
+  io.out.bits.pc    := pc_reg
+
+// handshake ------------------------------------------------
+
+  val rst = Wire(Bool())
+  rst := reset
+  io.out.valid := !rst // 目前，IFU只要不是reset，它的输出结果就是有效的
 
 // --- Jump wire of inst to ALU, for calculating next_pc in time ---
 

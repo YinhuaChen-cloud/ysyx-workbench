@@ -21,9 +21,7 @@ class Frontend extends CyhCoreModule {
   // 普通指令数据流 frontend -> backend
   io.imem <> ifu.io.imem
   // ifu.io.out <> idu.io.in
-  val rst = Wire(Bool())
-  rst := reset
-  PipelineConnect(ifu.io.out, idu.io.in, !rst) 
+  PipelineConnect(ifu.io.out, idu.io.in) 
 
   idu.io.out <> io.out
 
