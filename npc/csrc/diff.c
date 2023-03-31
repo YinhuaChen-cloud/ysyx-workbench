@@ -90,6 +90,7 @@ void difftest_step(uint64_t *pc_just_exec) {
     return;
   }
 
+  ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
   *pc_just_exec = ref_r.pc; // 将要执行的指令的pc
 
   ref_difftest_exec(1);
