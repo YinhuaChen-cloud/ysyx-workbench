@@ -50,7 +50,7 @@ static void check_all_watchpoints() {
 
 void cpu_exec(uint32_t n) {
 
-	pc_just_exec = 0xdeadbeef;
+	pc_just_exec = 0xdeadbeef; // 表示 ref 还没有执行指令
 
 #ifdef CONFIG_DIFFTEST
   int difftest_first = 1;
@@ -72,17 +72,17 @@ void cpu_exec(uint32_t n) {
 		saved_cpu = cpu;
 #endif
 
-		pc_just_exec = cpu.pc;
-    printf("pc_just_exec = 0x%lx\n", pc_just_exec);
+		// pc_just_exec = cpu.pc;
+    // printf("pc_just_exec = 0x%lx\n", pc_just_exec);
 
 		single_cycle();
 
 #ifdef CONFIG_DIFFTEST
-    // 调试用的 -- start
-    int ref_step = 0;
-    int dut_step = 1;
-    printf("dut_step = %d, ref_step = %d, pc = 0x%lx\n", dut_step, ref_step, *pc);
-    // 调试用的 -- end
+    // // 调试用的 -- start
+    // int ref_step = 0;
+    // int dut_step = 1;
+    // printf("dut_step = %d, ref_step = %d, pc = 0x%lx\n", dut_step, ref_step, *pc);
+    // // 调试用的 -- end
     if(*difftest_valid) {
       if(difftest_first) {
         extern char *diff_so_file;
@@ -93,10 +93,12 @@ void cpu_exec(uint32_t n) {
         // 如果是第一次进入 difftest_valid, 要对 difftest 进行初始化
         difftest_first = 0;
       }
-      dut_step++;
-      ref_step++;
+      // // 调试用的 -- start
+      // dut_step++;
+      // ref_step++;
+      // // 调试用的 -- end
       sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
-      difftest_step();
+      difftest_step(&pc_just_exec);
     }
     else {
       // 当 difftest_valid不为1时，不能做difftest，也不能让 ref 执行

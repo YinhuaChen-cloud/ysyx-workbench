@@ -78,7 +78,9 @@ static void checkregs(riscv64_CPU_state *ref) {
   }
 }
 
-void difftest_step() {
+
+void difftest_step(uint64_t *pc_just_exec) { 
+
 	riscv64_CPU_state ref_r;
 
   if (is_skip_ref) {
@@ -87,6 +89,9 @@ void difftest_step() {
     is_skip_ref = false;
     return;
   }
+
+  ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
+  *pc_just_exec = ref_r.pc; // 将要执行的指令的pc
 
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
