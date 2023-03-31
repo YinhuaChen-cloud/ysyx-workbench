@@ -51,7 +51,7 @@ class CyhSocSimTop extends CyhCoreModule with HasRegFileParameter {
 
   // val difftest_valid = RegNext(io.in.valid & (io.in.bits.cf.instr =/= Instructions.NOP)) // 告诉仿真环境可以做difftest了
   val rf = difftestIO.regfile
-  BoringUtils.addSink(rf, "difftestRegs")
+  // BoringUtils.addSink(rf, "difftestRegs")
   val rf_aux = Wire(Vec(NRReg * XLEN, Bool()))
   for(i <- 0 until NRReg) {
     rf_aux.slice(i * XLEN, (i+1) * XLEN).zip(rf(i).asBools).foreach{case (a, b) => a := b}
