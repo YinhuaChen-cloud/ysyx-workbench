@@ -17,6 +17,9 @@ object PipelineConnect {
     right.bits := regs
     right.valid := valid
 
+    // ready 暂时不care
+    left.ready := right.ready
+
   }
 }
 
