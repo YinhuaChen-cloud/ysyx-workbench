@@ -12,7 +12,7 @@ object PipelineConnect {
     val valid = RegInit(false.B)
     valid := left.valid
 
-    val regs = RegEnable(left, left.valid)
+    val regs = RegEnable(left.bits, left.valid)
 
     right.bits := regs
     right.valid := valid
