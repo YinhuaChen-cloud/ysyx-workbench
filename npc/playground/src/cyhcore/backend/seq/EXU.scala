@@ -10,7 +10,7 @@ import utils._
 class EXU extends CyhCoreModule {
   val io = IO(new Bundle {
     val in = Flipped(Decoupled(new DecodeIO))
-    val out = new CommitIO  // TODO: 为什么叫做 Commit? 猜测：应该是EXU把执行结果交给WBU的过程叫做 Commit
+    val out = new CommitIO  // EXU把执行结果交给WBU的过程叫做 Commit
     val dmem = new SimpleBusUC
   })
 
