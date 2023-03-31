@@ -50,7 +50,7 @@ static void check_all_watchpoints() {
 
 void cpu_exec(uint32_t n) {
 
-	pc_just_exec = 0xdeadbeef;
+	pc_just_exec = 0xdeadbeef; // 表示 ref 还没有执行指令
 
 #ifdef CONFIG_DIFFTEST
   int difftest_first = 1;
@@ -72,8 +72,8 @@ void cpu_exec(uint32_t n) {
 		saved_cpu = cpu;
 #endif
 
-		pc_just_exec = cpu.pc;
-    printf("pc_just_exec = 0x%lx\n", pc_just_exec);
+		// pc_just_exec = cpu.pc;
+    // printf("pc_just_exec = 0x%lx\n", pc_just_exec);
 
 		single_cycle();
 
@@ -96,7 +96,7 @@ void cpu_exec(uint32_t n) {
       dut_step++;
       ref_step++;
       sv_regs_to_c(); // TODO: Maybe we need this statement outside difftest?
-      difftest_step();
+      difftest_step(&pc_just_exec);
     }
     else {
       // 当 difftest_valid不为1时，不能做difftest，也不能让 ref 执行
