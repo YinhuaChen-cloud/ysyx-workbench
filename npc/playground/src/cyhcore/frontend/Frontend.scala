@@ -23,7 +23,7 @@ class Frontend extends CyhCoreModule {
   // ifu.io.out <> idu.io.in
   PipelineConnect(ifu.io.out, idu.io.in) 
 
-  idu.io.out <> io.out
+  idu.io.out <> io.out // 注意, io.out不用处理握手信号，idu内部已经处理了
 
   // 跳转指令支持 backend -> frontend
   io.redirect <> ifu.io.redirect
