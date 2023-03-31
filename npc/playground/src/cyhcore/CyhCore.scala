@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 
 import bus.simplebus._
+import utils._
 
 trait HasCyhCoreParameter {
   // General Parameter for NutShell
@@ -35,7 +36,8 @@ class CyhCore extends CyhCoreModule {
 
   // 普通指令数据流
   frontend.io.imem <> io.imem 
-  backend.io.in <> frontend.io.out
+  // backend.io.in <> frontend.io.out
+  PipelineConnect(frontend.io.out, backend.io.in) 
 
   // 跳转指令支持
   frontend.io.redirect <> backend.io.redirect
