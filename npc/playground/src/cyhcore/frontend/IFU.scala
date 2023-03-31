@@ -26,7 +26,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   bpu.io.instr := io.imem.resp.rdata(INST_LEN-1, 0) // imem.resp.rdata 是从 imem 中读取的真正的指令
   // 每次遇到控制冒险，需要生成两个气泡，使用计数器来计气泡的数量
   val (counterValue, whatever) = Counter(true.B, 2)
-  doutTouch(whatever)
+  dontTouch(whatever)
   val isNOP = RegInit(false.B)
   // 如果当前取到的指令是 branch/jmp，那么isNOP置 1，它会在下一周期为1，表示下一条指令是NOP
   isNOP := Mux(bpu.io.isBranchJmp & !isNOP, true.B, false.B)
