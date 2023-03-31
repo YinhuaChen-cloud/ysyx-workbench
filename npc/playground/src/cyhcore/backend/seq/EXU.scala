@@ -67,7 +67,7 @@ class EXU extends CyhCoreModule {
 
 // handshake ------------------------------------------ 
   
-  io.in.ready  := DontCare
+  io.in.ready  := true.B // DontCare
   io.out.valid := io.in.valid
 
   Debug(p"In EXU ctrl, ${io.in.bits.ctrl}")

@@ -80,7 +80,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 
 // handshake ------------------------------------------ 
   
-  io.in.ready  := DontCare
+  io.in.ready  := io.out.fire
   io.out.valid := io.in.valid && src1Ready && src2Ready
 
 // for difftest ---------------------------------------
@@ -92,4 +92,13 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   Debug(p"In ISU ctrl, ${io.out.bits.ctrl}")
 
 }
+
+// 在检测到流水线存在指令相关性冲突后，我们要如何解决这个问题呢？答案是流水线阻塞。这里介绍一个流水线阻塞的实现思路。
+// 假设我们要阻塞执行级，也是说执行级、译码级和取指级“停住”，访存级和写回级可以继续“流动”。要实现这个效果需要：
+
+// MEM reg的valid的输入为false，其他级的流水线寄存器的valid的输入为上一级的流水线寄存器的valid的输出。
+// ID reg和EXE reg的enable置为false，MEM reg和WB reg的enable置为true。
+
+// 如果你对此感到疑惑，你可以通过打草稿的方式来进行验证。回到最开始的问题，我们如何解决指令相关性冲突？
+// 答案是当检测到存在指令相关性冲突时我们需要阻塞译码级直到相关性冲突消失。
 
