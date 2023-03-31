@@ -82,7 +82,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
 
 // handshake ------------------------------------------ 
   
-  io.in.ready  := DontCare
+  io.in.ready  := !io.in.valid || io.out.fire
   // 由于假设IDU的运算能在一拍内完成，当 in 为 valid 时，就可以让 out 为 valid
   io.out.valid := io.in.valid
 

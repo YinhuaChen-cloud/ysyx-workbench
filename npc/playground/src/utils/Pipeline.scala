@@ -8,16 +8,17 @@ import chisel3.util._
 object PipelineConnect {
   def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
 
-    // 这里 valid 和 regs 有一个约定: 下一拍大家一起有效
-    val valid = RegInit(false.B)
-    valid := left.valid
+    val valid = RegInit(false.B) 
+    valid := left.valid && right.ready
 
-    val regs = RegEnable(left.bits, left.valid)
+    // 流水级寄存器就是就是下一级的输入
+    // 只有在下一级已经把当前的流水级寄存器使用完毕，流水级寄存器才能被修改
+    // 什么时候使用完毕呢？一个保守的方式是：当下一级的ready为高时
+    // 此外，只有在left.valid = true时，修改流水级寄存器才有效  TODO: 这行存疑
+    val regs = RegEnable(left.bits, left.valid && right.ready)  // TODO: 感觉这里还可以优化，都有握手信号了，为什么还要流水级寄存器？也许我们可以去掉流水级寄存器
 
     right.bits := regs
     right.valid := valid
-
-    // ready 暂时不care
     left.ready := right.ready
 
   }

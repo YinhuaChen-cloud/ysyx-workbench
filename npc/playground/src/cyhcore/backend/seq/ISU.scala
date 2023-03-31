@@ -80,7 +80,10 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 
 // handshake ------------------------------------------ 
   
-  io.in.ready  := io.out.fire
+  // ready什么时候为false? 当 ISU 并没有处理好当下的数据，无法接收新数据的时候
+  // 当 io.in.valid = true && !io.out.fire 时，就是没有处理好当下数据的时候
+  // 把上面这个表达式取反，就是ready取true的时候，即 (!io.in.valid) || io.out.fire
+  io.in.ready  := !io.in.valid || io.out.fire
   io.out.valid := io.in.valid && src1Ready && src2Ready
 
 // for difftest ---------------------------------------
