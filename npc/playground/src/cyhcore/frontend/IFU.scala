@@ -36,7 +36,9 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 如果是jmp，也是阻塞流水线(pc不变，下一周期发送NOP)，...... TODO：无条件跳转指令应该能进一步优化
   // 如果不是，就 PC + 4
   // 如果这一周期 bpu.io.isBranchJmp 为真，说明下一周期不需要取指令（发出NOP）, 等待ALU计算redirect结果，再更新
-  pc_reg := Mux(bpu.io.isBranchJmp, Mux(io.redirect.valid, io.redirect.target, pc_reg), pc_reg + 4.U)
+  // pc_reg := Mux(bpu.io.isBranchJmp, Mux(io.redirect.valid, io.redirect.target, pc_reg), pc_reg + 4.U)
+  pc_reg := Mux(bpu.io.isBranchJmp, 
+    Mux(io.redirect.valid, io.redirect.target, pc_reg), pc_reg + 4.U)
 
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
   // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
@@ -56,6 +58,11 @@ class IFU extends CyhCoreModule with HasResetVector {
   io.out.bits.pc    := pc_reg
 
 // handshake ------------------------------------------------
+  // 一个前提：所有时序电路，最早也是在下个时钟上升沿才会读取我们的输出
+  // 因此，输出只要能在下个时钟上升沿之前准备好，就可以在下个时钟上升沿之前拉高valid（哪怕早于“数据真的准备好了”）
+  // 目前，我们的指令内存读取可以在当时周期内完成，且输入并没有valid，输入不关心
+  // 输出部分，当输出的ready不为真，我们的pc不能改变
+  // 在输出部分的ready为真后，valid拉高一周期，随后我们pc改变
 
   val rst = Wire(Bool())
   rst := reset
