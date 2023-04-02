@@ -33,7 +33,8 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
 
 // handshake ------------------------------------------ 
   
-  io.in.ready  := DontCare
+  // 一拍内处理完输出，ready永远为true
+  io.in.ready := true.B
 
 // for difftest ---------------------------------------
   // 当 io.in.valid 为 true 时，说明下一周期寄存器堆就会被写入（WBU和ISU之间没有流水线）

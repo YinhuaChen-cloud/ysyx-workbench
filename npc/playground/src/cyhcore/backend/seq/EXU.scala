@@ -66,6 +66,13 @@ class EXU extends CyhCoreModule {
   // io.out.commits(FuType.csr) := csrOut
 
 // handshake ------------------------------------------ 
+  // 一个前提：所有时序电路，最早也是在下个时钟上升沿才会读取我们的输出
+  // 因此，输出只要能在下个时钟上升沿之前准备好，就可以在下个时钟上升沿之前拉高valid（哪怕早于“数据真的准备好了”）
+
+  // 执行单元与内存无关的操作可以在当拍弄完
+  // (目前)读内存可以在valid为true的当时周期内把信号处理好，准备好输出
+  // 写内存也可以在下一个时钟上升沿的时候写完，不妨碍下一次读内存（读内存也是在执行单元）
+  // 所以，执行单元的 ready 永远为 true，valid则和输入的valid同步
   
   dontTouch(io.in.ready)
   io.in.ready  := true.B // DontCare
