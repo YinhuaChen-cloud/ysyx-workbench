@@ -66,19 +66,33 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 目前，我们的指令内存读取可以在当时周期内完成，且输入并没有valid，输入不关心
   // 输出部分，当输出的ready不为真，我们的pc不能改变
 
-  val READY = false.B
-  val WAIT  = true.B
-  val state = RegInit(READY)  // 初始状态为 ready   扮演 valid
-
   val rst = Wire(Bool())
   rst := reset
-  // reset 时候，输出不能为有效
-  // 在pc_reg等待控制冒险的时候（isbranchjmp & !redirect_valid），valid不能为有效, 输出不能为有效
-  // 取反，就是能有效的时候
-  // 不过，要延迟两个周期拉低 valid，以便把指令传出去
-  val oneCycleDelay = RegNext(bpu.io.isBranchJmp)
-  val twoCycleDelay = RegNext(oneCycleDelay)
-  io.out.valid := !rst && (!twoCycleDelay || io.redirect.valid)
+
+  val RST  = "b00".U // 等待 !rst
+  val WAIT = "b01".U // 等待 redirect
+  val SEND = "b10".U // 发射
+  val state = RegInit(RST)  // 由于当拍能够读到指令，所以状态一开始是WAIT
+
+  when (state === RST) {
+    when(!rst) {
+      state := SEND // 发射指令
+    }
+  } .elsewhen (state === SEND) { 
+    when(bpu.io.isBranchJmp) {
+      state := WAIT  // 进入等待 redirect状态
+    } .otherwise {
+      state := SEND  // 维持 send 状态
+    }
+  } .otherwise { // 等待 redirect
+    when(io.redirect.valid) {
+      state := SEND // 可以发射指令了
+    } .otherwise {
+      state := WAIT // 等待 
+    }
+  }
+
+  io.out.valid := (state === SEND)
 
 // Debug info --------------------------------------------------
 
