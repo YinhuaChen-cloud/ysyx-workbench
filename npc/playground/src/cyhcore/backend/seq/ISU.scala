@@ -14,6 +14,8 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
     val out = Decoupled(new DecodeIO)
   })
 
+  dontTouch(io.in.bits.cf.instr)
+
   // 简化命名(都是in，不是out)
   val rfSrc1 = io.in.bits.ctrl.rfSrc1 
   val rfSrc2 = io.in.bits.ctrl.rfSrc2

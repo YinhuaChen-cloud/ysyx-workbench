@@ -14,6 +14,8 @@ class EXU extends CyhCoreModule {
     val dmem = new SimpleBusUC
   })
 
+  dontTouch(io.in.bits.cf.instr)
+
   // 给从前端传来的 DataSrcIO 简短的别名，还有 CtrlSignalIO 简短的别名
   val src1 = io.in.bits.data.src1(XLEN-1,0)
   val src2 = io.in.bits.data.src2(XLEN-1,0)
