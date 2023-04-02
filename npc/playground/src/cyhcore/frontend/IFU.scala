@@ -37,8 +37,9 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 如果不是，就 PC + 4
   // 如果这一周期 bpu.io.isBranchJmp 为真，说明下一周期不需要取指令（发出NOP）, 等待ALU计算redirect结果，再更新
   // pc_reg := Mux(bpu.io.isBranchJmp, Mux(io.redirect.valid, io.redirect.target, pc_reg), pc_reg + 4.U)
-  pc_reg := Mux(!bpu.io.isBranchJmp, pc_reg + 4.U, 
-    Mux(io.redirect.valid, io.redirect.target, pc_reg))
+  pc_reg := 
+    Mux(!bpu.io.isBranchJmp, pc_reg + 4.U, 
+    Mux(!io.redirect.valid, pc_reg, io.redirect.target))
 
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
   // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
