@@ -25,10 +25,10 @@ class IFU extends CyhCoreModule with HasResetVector {
   val bpu = Module(new BPU)
   bpu.io.instr := io.imem.resp.rdata(INST_LEN-1, 0) // imem.resp.rdata 是从 imem 中读取的真正的指令
   // 当isNOP为 1，表示当前周期要产生气泡指令
-  val isNOP = RegInit(false.B)
+  // val isNOP = RegInit(false.B)
   // 如果预译码发现当前指令是 branch/jmp，说明下一周期开始要产生气泡指令，因此置 isNOP reg 为 1
   // 例外：当 io.redirect.valid 为 true 时，说明下一周期 pc_reg 会跳转到正确的指令地址上，因此下一周期不需要再产生气泡指令
-  isNOP := bpu.io.isBranchJmp && !io.redirect.valid
+  // isNOP := bpu.io.isBranchJmp && !io.redirect.valid
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
   // 思路：实现一个小译码，判断当前读到的指令（发送给下一级的指令）是否是branch指令（jmp属于无条件跳转指令）
@@ -55,7 +55,8 @@ class IFU extends CyhCoreModule with HasResetVector {
 
   io.out       := DontCare
   // 如果发现 isNOP = true.B，说明这一回合应该发送气泡指令，而非真正的指令，真正的指令需要保留一回合
-  io.out.bits.instr := Mux(isNOP, Instructions.NOP, io.imem.resp.rdata)(INST_LEN-1, 0)
+  // io.out.bits.instr := Mux(isNOP, Instructions.NOP, io.imem.resp.rdata)(INST_LEN-1, 0)
+  io.out.bits.instr := (io.imem.resp.rdata)(INST_LEN-1, 0)
   io.out.bits.pc    := pc_reg
 
 // handshake ------------------------------------------------
