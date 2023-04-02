@@ -66,6 +66,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 目前，我们的指令内存读取可以在当时周期内完成，且输入并没有valid，输入不关心
   // 输出部分，当输出的ready不为真，我们的pc不能改变
 
+
   val rst = Wire(Bool())
   rst := reset
   // reset 时候，输出不能为有效

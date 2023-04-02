@@ -107,8 +107,8 @@ object PipelineConnect {
       }
     }
 
-    left.ready  := !pipeline_state
-    right.valid := pipeline_state
+    left.ready  := (pipeline_state === READY)
+    right.valid := (pipeline_state === WAIT)
     right.bits  := pipeline_regs
 
   }
