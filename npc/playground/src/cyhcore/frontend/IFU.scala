@@ -72,7 +72,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   val RST  = "b00".U // 等待 !rst
   val WAIT = "b01".U // 等待 redirect
   val SEND = "b10".U // 发射
-  val state = RegInit(RST)  // 由于当拍能够读到指令，所以状态一开始是WAIT
+  val state = RegInit(RST)  
 
   when (state === RST) {
     when(!rst) {
