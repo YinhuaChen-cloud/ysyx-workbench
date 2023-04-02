@@ -91,19 +91,11 @@ object PipelineConnect {
       when(left.valid) {
         pipeline_regs  := left.bits
         pipeline_state := WAIT
-      } .otherwise {
-        // pipeline_regs  := DontCare
-        // pipeline_state := READY // 不变
       }
     } .otherwise { // WAIT时，在等待右边的ready信号
-      // 不关心 valid
       when(right.ready) { 
         // pipeline_regs  := DontCare 
         pipeline_state := READY
-      } .otherwise {
-        // pipeline_regs  := pipeline_regs 保持
-        // pipeline_valid := true.B  保持即可
-        // pipeline_state := WAIT // 不变
       }
     }
 
