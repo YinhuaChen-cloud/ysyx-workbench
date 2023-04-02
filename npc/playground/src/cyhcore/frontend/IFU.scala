@@ -65,17 +65,15 @@ class IFU extends CyhCoreModule with HasResetVector {
 
   // 目前，我们的指令内存读取可以在当时周期内完成，且输入并没有valid，输入不关心
   // 输出部分，当输出的ready不为真，我们的pc不能改变
-  // 关于输出部分的valid，由于我们能在当前周期内读取到指令，所以永远为true, 除了 reset
-  // 但是，当
 
   val rst = Wire(Bool())
   rst := reset
   // reset 时候，输出不能为有效
-  // 在pc_reg进入阻塞状态（isbranchjmp & !redirect_valid）时候，valid不能为有效, 输出不能为有效
+  // 在pc_reg等待控制冒险的时候（isbranchjmp & !redirect_valid），valid不能为有效, 输出不能为有效
   // 取反，就是能有效的时候
   io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
 
-// --- Jump wire of inst to ALU, for calculating next_pc in time ---
+// Debug info --------------------------------------------------
 
   Debug("In IFU, The inst read is 0x%x", io.imem.resp.rdata)
 
