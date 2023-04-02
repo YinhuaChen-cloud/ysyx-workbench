@@ -11,7 +11,7 @@ object PipelineConnect {
     // 流水级寄存器的 valid 应该和它的寄存器在同一个时钟上升沿有效
     // 也许你会有疑问，使用  left.valid && right.ready  的做法，会不会让流水级寄存器有效的时候，实际上valid 为false
     // 答案是不会的，下一级的ready为高，说明下一级能够在当前拍内读取流水级寄存器的数据
-    val pipeline_valid = RegInit(false.B) 
+    val pipeline_valid = RegInit(false.B)  // 一开始是无效的
     pipeline_valid := left.valid && right.ready
 
     // 流水级寄存器就是就是下一级的输入
