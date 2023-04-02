@@ -87,7 +87,7 @@ class Decoder extends CyhCoreModule with HasInstrType {
   // 译码单元可以在valid为true的当时周期内把信号处理好，准备好输出(valid可拉高)
   // 所以，译码单元的 ready 永远为 true，valid则和输入的valid同步
 
-  io.in.ready  := io.out.ready // 下一级准备好了，我才能准备好了
+  io.in.ready  := io.out.ready 
   io.out.valid := io.in.valid && io.in.ready
 
   Debug(p"In IDU-Decoder, ${io.out.bits.ctrl}")
