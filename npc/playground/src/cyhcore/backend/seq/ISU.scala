@@ -26,10 +26,14 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   when (io.wb.rfWen) { rf.write(io.wb.rfDest, io.wb.rfData) }
 
   // 计分板（处理数据冒险如RAW）
+  // 考虑这两条连续的指令
+  // auipc   sp,0x9
+  // addi    sp,sp,-4 # 80009000 <_end>
   val sb = new ScoreBoard
   val src1Ready = !sb.isBusy(rfSrc1)
   val src2Ready = !sb.isBusy(rfSrc2)
   // 当IDU发现要写入某个寄存器时，把 busy(x) = 1
+  // 为了处理上述连续两条指令的情景，在给 busy(x) 置位为1之前还要等待 src1Ready 和 src2Ready 为1，放置目标寄存器和源寄存器是同一个
   val idSetMask   = Mux(io.in.valid & rfWen & src1Ready & src2Ready, sb.mask(rfDest), 0.U)
   // 当WBU完成写入某个寄存器时，把 busy(x) = 0
   val wbClearMask = Mux(io.wb.rfWen, sb.mask(io.wb.rfDest), 0.U(NRReg.W))
