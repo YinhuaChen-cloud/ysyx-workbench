@@ -8,6 +8,7 @@ import chisel3.util._
 object PipelineConnect {
   def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
 
+    // valid和regs同时有效
     val pipeline_valid = RegInit(false.B) 
     pipeline_valid := left.valid && right.ready
 
