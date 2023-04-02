@@ -8,19 +8,20 @@ import chisel3.util._
 object PipelineConnect {
   def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
 
-    // valid和regs同时有效
+    // 流水级寄存器的 valid 应该和它的寄存器在同一个时钟上升沿有效
+    // 也许你会有疑问，使用  left.valid && right.ready  的做法，会不会让流水级寄存器有效的时候，实际上valid 为false
+    // 答案是不会的，下一级的ready为高，说明下一级能够在当前拍内读取流水级寄存器的数据
     val pipeline_valid = RegInit(false.B) 
     pipeline_valid := left.valid && right.ready
 
     // 流水级寄存器就是就是下一级的输入
-    // 只有在下一级已经把当前的流水级寄存器使用完毕，流水级寄存器才能被修改
-    // 什么时候使用完毕呢？一个保守的方式是：当下一级的ready为高时
-    // 此外，只有在left.valid = true时，修改流水级寄存器才有效  TODO: 这行存疑
+    // 只有在上一级的数据确实被下一级接收之后，流水线寄存器才能被修改
+    // 而这种时候，就是在fire的下一个时钟上升沿，即 left.valid && right.ready 之后的时钟上升沿
     val pipeline_regs = RegEnable(left.bits, left.valid && right.ready)  // TODO: 感觉这里还可以优化，都有握手信号了，为什么还要流水级寄存器？也许我们可以去掉流水级寄存器
 
-    right.bits := pipeline_regs
-    right.valid := pipeline_valid
     left.ready := right.ready
+    right.valid := pipeline_valid
+    right.bits := pipeline_regs
 
   }
 }
