@@ -71,8 +71,9 @@ class IFU extends CyhCoreModule with HasResetVector {
   val rst = Wire(Bool())
   rst := reset
   // reset 时候，输出不能为有效
-  // 在pc_reg进入阻塞状态（isbranchjmp & !redirect_valid）时候，valid不能为有效
-  io.out.valid := !rst || (bpu.io.isBranchJmp && !io.redirect.valid)
+  // 在pc_reg进入阻塞状态（isbranchjmp & !redirect_valid）时候，valid不能为有效, 输出不能为有效
+  // 取反，就是能有效的时候
+  io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
 
 // --- Jump wire of inst to ALU, for calculating next_pc in time ---
 
