@@ -42,7 +42,7 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // 所以，可以在下一个时钟上升沿启用 difftest
   // TODO: 上板的时候这个应该得去掉(果壳去掉了)
   // 注意：在传入的指令为 NOP 时，由于spike并不执行NOP指令，所以不应该启动difftest
-  BoringUtils.addSource(RegNext(io.in.fire), "difftestCommit")
+  BoringUtils.addSource(RegNext(io.in.valid), "difftestCommit")
   // 用于difftest的PC应该是上一周期的（相对于被写入的寄存器）
   BoringUtils.addSource(SignExt(io.in.bits.decode.cf.pc, PC_LEN), "difftestThisPC")
 

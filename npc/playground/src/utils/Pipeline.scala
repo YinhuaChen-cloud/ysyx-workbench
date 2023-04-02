@@ -27,7 +27,7 @@ object PipelineConnect2 {
   }
 }
 
-object PipelineConnect {
+object PipelineConnect3 {
   def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
 
     // 流水级寄存器的 valid 应该和它的寄存器在同一个时钟上升沿有效
@@ -75,18 +75,41 @@ object PipelineConnect {
   }
 }
 
-// object PipelineConnect_noDecouple {
-//   def apply[T <: Data](left: T, right: T, valid_cond: Bool) = {
-//     // 每一回合都有新数据写入，每一回合数据都有效
 
-//     // 这里 valid 和 regs 有一个约定: 下一拍大家一起有效
-//     val valid = RegInit(false.B)
-//     valid := valid_cond
+object PipelineConnect {
+  def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
 
-//     val regs = RegEnable(left, valid_cond)
+    val pipeline_regs = RegInit(left.bits) // 流水级寄存器
+    // 流水级寄存器的状态，分为
+    // 1. READY, 准备好接收来自上一级的数据  false.B
+    // 1. WAIT, 等待下一级接收来自流水级的数据  true.B
+    val READY = false.B
+    val WAIT  = true.B
+    val pipeline_state = RegInit(READY)  // 初始状态为 ready   扮演 valid
 
-//     right.bits := regs
-//     right.valid := valid
+    when(pipeline_state === READY) {
+      when(left.valid) {
+        pipeline_regs  := left.bits
+        pipeline_state := WAIT
+      } .otherwise {
+        // pipeline_regs  := DontCare
+        // pipeline_state := READY // 不变
+      }
+    } .otherwise { // WAIT时，在等待右边的ready信号
+      // 不关心 valid
+      when(right.ready) { 
+        // pipeline_regs  := DontCare 
+        pipeline_state := READY
+      } .otherwise {
+        // pipeline_regs  := pipeline_regs 保持
+        // pipeline_valid := true.B  保持即可
+        // pipeline_state := WAIT // 不变
+      }
+    }
 
-//   }
-// }
+    left.ready  := !pipeline_state
+    right.valid := pipeline_state
+    right.bits  := pipeline_regs
+
+  }
+}
