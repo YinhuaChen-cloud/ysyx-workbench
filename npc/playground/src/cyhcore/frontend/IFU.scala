@@ -71,9 +71,10 @@ class IFU extends CyhCoreModule with HasResetVector {
   // reset 时候，输出不能为有效
   // 在pc_reg等待控制冒险的时候（isbranchjmp & !redirect_valid），valid不能为有效, 输出不能为有效
   // 取反，就是能有效的时候
-  // 不过，要延迟一个周期拉低 valid，以便把指令传出去
+  // 不过，要延迟两个周期拉低 valid，以便把指令传出去
   val oneCycleDelay = RegNext(bpu.io.isBranchJmp)
-  io.out.valid := !rst && (!oneCycleDelay || io.redirect.valid)
+  val twoCycleDelay = RegNext(oneCycleDelay)
+  io.out.valid := !rst && (!twocycleDelay || io.redirect.valid)
 
 // Debug info --------------------------------------------------
 
