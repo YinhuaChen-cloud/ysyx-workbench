@@ -95,12 +95,12 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 // handshake ------------------------------------------ 
   // 一个前提：所有时序电路，最早也是在下个时钟上升沿才会读取我们的输出
   // 因此，输出只要能在下个时钟上升沿之前准备好，就可以在下个时钟上升沿之前拉高valid（哪怕早于“数据真的准备好了”）
-  // 考虑 RAW，valid在 src1ready & src2ready 的当拍内能弄完
-  // ready做相反考虑
-  // ready什么时候为false? 当 ISU 并没有处理好当下的数据，无法接收新数据的时候
-  // 当 io.in.valid = true && !io.out.fire 时，就是没有处理好当下数据的时候
-  // io.in.ready  := true.B
-  io.in.ready  := !io.in.valid || io.out.fire
+  // 考虑 RAW，ISU在 in.valid & src1ready & src2ready 的当拍内能弄完
+  // 那么 ready 呢？ 
+  // 做相反考虑，什么时候绝对不能ready?
+  // 在 in.valid & (!src1ready || !src2ready) 的时候，绝对不能ready
+  // 取反，就是 !in.valid | !(...) = !in.valid | (src1ready & src2ready)
+  io.in.ready  := !io.in.valid || (src1Ready && src2Ready)
   io.out.valid := io.in.valid && src1Ready && src2Ready
 
   // 把上面这个表达式取反，就是ready取true的时候，即 (!io.in.valid) || io.out.fire
