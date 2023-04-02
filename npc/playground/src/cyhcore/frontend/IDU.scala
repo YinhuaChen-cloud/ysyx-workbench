@@ -82,8 +82,11 @@ class Decoder extends CyhCoreModule with HasInstrType {
 
 // handshake ------------------------------------------ 
   
-  io.in.ready  := !io.in.valid || io.out.fire
-  // 由于假设IDU的运算能在一拍内完成，当 in 为 valid 时，就可以让 out 为 valid
+  // 一个前提：所有时序电路，最早也是在下个时钟上升沿才会读取我们的输出
+  // 因此，输出只要能在下个时钟上升沿之前准备好，就可以在下个时钟上升沿之前拉高valid（哪怕早于“数据真的准备好了”）
+  // 译码单元可以在valid为true的当时周期内把信号处理好，准备好输出(valid可拉高)
+  // 所以，译码单元的 ready 永远为 true，valid则和输入的valid同步
+  io.in.ready  := true.B
   io.out.valid := io.in.valid
 
   Debug(p"In IDU-Decoder, ${io.out.bits.ctrl}")
