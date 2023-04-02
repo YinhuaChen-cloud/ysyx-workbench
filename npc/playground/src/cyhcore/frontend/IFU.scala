@@ -69,30 +69,9 @@ class IFU extends CyhCoreModule with HasResetVector {
   val rst = Wire(Bool())
   rst := reset
 
-  val RST  = "b00".U // 等待 !rst
-  val WAIT = "b01".U // 等待 redirect
-  val SEND = "b10".U // 发射
-  val state = RegInit(RST)  
-
-  when (state === RST) {
-    when(!rst) {
-      state := SEND // 发射指令
-    }
-  } .elsewhen (state === SEND) { 
-    when(bpu.io.isBranchJmp) {
-      state := WAIT  // 进入等待 redirect状态
-    } .otherwise {
-      state := SEND  // 维持 send 状态
-    }
-  } .otherwise { // 等待 redirect
-    when(io.redirect.valid) {
-      state := SEND // 可以发射指令了
-    } .otherwise {
-      state := WAIT // 等待 
-    }
-  }
-
-  io.out.valid := (state === SEND)
+  // 在果壳中，当读取到的指令（内存）为 true时，valid 为 true
+  // 我们这里读取到的指令随时为 true，所以只需要考虑 reset
+  io.out.valid := !rst
 
 // Debug info --------------------------------------------------
 
