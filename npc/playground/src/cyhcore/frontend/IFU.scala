@@ -21,7 +21,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   })
 
   // pc
-  val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
+  val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO: 果壳里，PC寄存器的长度是39
   val bpu = Module(new BPU)
   bpu.io.instr := io.imem.resp.rdata(INST_LEN-1, 0) // imem.resp.rdata 是从 imem 中读取的真正的指令
   // 当isNOP为 1，表示当前周期要产生气泡指令
@@ -62,13 +62,17 @@ class IFU extends CyhCoreModule with HasResetVector {
 // handshake ------------------------------------------------
   // 一个前提：所有时序电路，最早也是在下个时钟上升沿才会读取我们的输出
   // 因此，输出只要能在下个时钟上升沿之前准备好，就可以在下个时钟上升沿之前拉高valid（哪怕早于“数据真的准备好了”）
+
   // 目前，我们的指令内存读取可以在当时周期内完成，且输入并没有valid，输入不关心
   // 输出部分，当输出的ready不为真，我们的pc不能改变
   // 关于输出部分的valid，由于我们能在当前周期内读取到指令，所以永远为true, 除了 reset
+  // 但是，当
 
   val rst = Wire(Bool())
   rst := reset
-  io.out.valid := !rst // 目前，IFU只要不是reset，它的输出结果就是有效的
+  // reset 时候，输出不能为有效
+  // 在pc_reg进入阻塞状态（isbranchjmp & !redirect_valid）时候，valid不能为有效
+  io.out.valid := !rst || (bpu.io.isBranchJmp && !io.redirect.valid)
 
 // --- Jump wire of inst to ALU, for calculating next_pc in time ---
 
