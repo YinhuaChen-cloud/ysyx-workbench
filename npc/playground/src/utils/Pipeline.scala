@@ -6,13 +6,13 @@ import chisel3.util._
 // 当前假设：划分的每一个阶段，都能在一拍内完成自己的功能
 // IFU -> IDU reg -> IDU -> EXU reg -> EXU -> WBU reg -> WBU (不考虑跳转指令)
 object PipelineConnect {
-  def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
+  def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T], isFlush: Bool) = {
 
     // 这里 valid 和 regs 有一个约定: 下一拍大家一起有效
     val valid = RegInit(false.B)
-    valid := left.valid
+    valid := left.valid & !isFlush // 当 isFlush 为 false.B，left.valid 才会起作用
 
-    val regs = RegEnable(left.bits, left.valid)
+    val regs = RegEnable(left.bits, left.valid & !isFlush)
 
     right.bits := regs
     right.valid := valid

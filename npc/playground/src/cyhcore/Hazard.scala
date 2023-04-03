@@ -18,13 +18,14 @@ class Hazard extends CyhCoreModule {
   val HazardPC = WireInit(0.U(PC_LEN.W))
   BoringUtils.addSink(HazardPC, "HazardPC")
 
+  // 遇到数据冒险时，阻塞整个流水线一个周期
   when(RAWhazard) {
     printf("the hazard pc = 0x%x\n", HazardPC)
   }
 
-  // val IDUregHalt = Wire(Bool())
-  // val ISUregHalt = Wire(Bool())
-  // val EXUregHalt = Wire(Bool())
+  val IDUregHalt = Wire(Bool())
+  val ISUregHalt = Wire(Bool())
+  val EXUregHalt = Wire(Bool())
   
 }
 
