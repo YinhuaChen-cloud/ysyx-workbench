@@ -94,7 +94,8 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 // handshake ------------------------------------------ 
   
   io.in.ready  := DontCare
-  io.out.valid := io.in.valid
+  // io.out.valid := io.in.valid
+  io.out.valid := true.B
 
 // for difftest ---------------------------------------
 
