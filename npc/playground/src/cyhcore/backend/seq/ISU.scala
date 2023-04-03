@@ -45,7 +45,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   BoringUtils.addSource(RAWhazard, "RAWhazard")
 
   val HazardPC = WireInit(0.U(PC_LEN.W))
-  HazardPC := io.out.bits.cf.instr
+  HazardPC := io.out.bits.cf.pc
   BoringUtils.addSource(HazardPC, "HazardPC")
 
 // out(DecodeIO) -------------------------------------- cf(CtrlFlowIO)
