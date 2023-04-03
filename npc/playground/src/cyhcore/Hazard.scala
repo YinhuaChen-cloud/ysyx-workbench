@@ -15,8 +15,11 @@ class Hazard extends CyhCoreModule {
   dontTouch(RAWhazard)
   BoringUtils.addSink(RAWhazard, "RAWhazard")
 
+  val HazardPC = WireInit(0.U(PC_LEN.W))
+  BoringUtils.addSink(HazardPC, "HazardPC")
+
   when(RAWhazard) {
-    printf("wow\n")
+    printf("the hazard pc = 0x%x\n", HazardPC)
   }
 
   // val IDUregHalt = Wire(Bool())
