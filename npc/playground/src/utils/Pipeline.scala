@@ -21,6 +21,7 @@ object PipelineConnect {
     right.valid := pipeline_valid
 
     // ready 暂时不care
+    left.ready := DontCare
     // left.ready := right.ready
 
     pipeline_valid // 以 valid 作为返回值
