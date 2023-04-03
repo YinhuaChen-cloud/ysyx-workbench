@@ -2,6 +2,7 @@ package cyhcore
 
 import chisel3._
 import chisel3.util._
+import chisel3.util.experimental.BoringUtils
 
 import bus.simplebus._
 import utils._
@@ -37,13 +38,18 @@ class CyhCore extends CyhCoreModule {
   // 普通指令数据流
   frontend.io.imem <> io.imem 
   // backend.io.in <> frontend.io.out
-  PipelineConnect(frontend.io.out, backend.io.in) 
+  val ISUregHalt = WireInit(false.B)
+  BoringUtils.addSink(ISUregHalt, "ISUregHalt")
+  PipelineConnect(frontend.io.out, backend.io.in, ISUregHalt) 
 
   // 跳转指令支持
   frontend.io.redirect <> backend.io.redirect
 
   // 读写内存支持
   io.dmem <> backend.io.dmem
+
+  // 流水线冒险处理 
+  val hazard = Module(new Hazard) 
 
 }
 

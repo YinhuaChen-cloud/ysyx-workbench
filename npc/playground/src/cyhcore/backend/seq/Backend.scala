@@ -2,6 +2,7 @@ package cyhcore
 
 import chisel3._
 import chisel3.util._
+import chisel3.util.experimental.BoringUtils
 
 import bus.simplebus._
 import utils._
@@ -24,7 +25,9 @@ class Backend extends CyhCoreModule {
   //               |-------------|
   isu.io.in <> io.in
   // exu.io.in <> isu.io.out 
-  PipelineConnect(isu.io.out, exu.io.in) 
+  val EXUregHalt = WireInit(false.B)
+  BoringUtils.addSink(EXUregHalt, "EXUregHalt")
+  PipelineConnect(isu.io.out, exu.io.in, EXUregHalt) 
 
   // PipelineConnect(exu.io.out, wbu.io.in, io.in.valid)
   wbu.io.in <> exu.io.out 

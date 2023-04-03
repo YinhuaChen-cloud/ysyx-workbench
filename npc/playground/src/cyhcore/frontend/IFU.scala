@@ -28,7 +28,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   val isNOP = RegInit(false.B)
   // 如果预译码发现当前指令是 branch/jmp，说明下一周期开始要产生气泡指令，因此置 isNOP reg 为 1
   // 例外：当 io.redirect.valid 为 true 时，说明下一周期 pc_reg 会跳转到正确的指令地址上，因此下一周期不需要再产生气泡指令
-  isNOP := bpu.io.isBranchJmp && !io.redirect.valid
+  // isNOP := bpu.io.isBranchJmp && !io.redirect.valid
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
   // 思路：实现一个小译码，判断当前读到的指令（发送给下一级的指令）是否是branch指令（jmp属于无条件跳转指令）
@@ -36,7 +36,9 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 如果是jmp，也是阻塞流水线(pc不变，下一周期发送NOP)，...... TODO：无条件跳转指令应该能进一步优化
   // 如果不是，就 PC + 4
   // 如果这一周期 bpu.io.isBranchJmp 为真，说明下一周期不需要取指令（发出NOP）, 等待ALU计算redirect结果，再更新
-  pc_reg := Mux(bpu.io.isBranchJmp, Mux(io.redirect.valid, io.redirect.target, pc_reg), pc_reg + 4.U)
+  pc_reg := Mux(!bpu.io.isBranchJmp, pc_reg + 4.U, 
+    Mux(!io.redirect.valid, pc_reg, 
+    io.redirect.target))
 
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
   // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
@@ -52,14 +54,20 @@ class IFU extends CyhCoreModule with HasResetVector {
 
   io.out       := DontCare
   // 如果发现 isNOP = true.B，说明这一回合应该发送气泡指令，而非真正的指令，真正的指令需要保留一回合
-  io.out.bits.instr := Mux(isNOP, Instructions.NOP, io.imem.resp.rdata)(INST_LEN-1, 0)
+  // io.out.bits.instr := Mux(isNOP, Instructions.NOP, io.imem.resp.rdata)(INST_LEN-1, 0)
+  io.out.bits.instr := (io.imem.resp.rdata)(INST_LEN-1, 0)
   io.out.bits.pc    := pc_reg
 
 // handshake ------------------------------------------------
 
   val rst = Wire(Bool())
   rst := reset
-  io.out.valid := !rst // 目前，IFU只要不是reset，它的输出结果就是有效的
+  // rst 时，IFU输出不有效
+  // bpu.io.isBranchJmp && !io.redirect.valid 时，IFU只有一个周期是有效的
+  // 有效信号就是无效信号取反
+  // rst || (bpu.io.isBranchJmp && !io.redirect.valid)
+  // 取反就是 !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
+  io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
 
 // --- Jump wire of inst to ALU, for calculating next_pc in time ---
 
