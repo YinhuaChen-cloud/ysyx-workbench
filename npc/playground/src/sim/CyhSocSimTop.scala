@@ -1,12 +1,13 @@
 package sim
 
 import chisel3._
+import chisel3.util._
+import chisel3.util.experimental.BoringUtils
 
 import cyhcore._
 import device._
 import utils._
 import system._
-import chisel3.util.experimental.BoringUtils
 
 // TODO: 这个暂时用不上，除了工作量啥都没
 class DiffTestIO extends CyhCoreBundle with HasRegFileParameter {
