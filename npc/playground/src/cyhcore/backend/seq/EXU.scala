@@ -10,7 +10,7 @@ import utils._
 class EXU extends CyhCoreModule {
   val io = IO(new Bundle {
     val in = Flipped(Decoupled(new DecodeIO))
-    val out = new CommitIO  // TODO: 为什么叫做 Commit? 猜测：应该是EXU把执行结果交给WBU的过程叫做 Commit
+    val out = Decoupled(new CommitIO)  // TODO: 为什么叫做 Commit? 猜测：应该是EXU把执行结果交给WBU的过程叫做 Commit
     val dmem = new SimpleBusUC
   })
 
@@ -48,27 +48,27 @@ class EXU extends CyhCoreModule {
   // Debug(p"---------------- In EXU, alu.io.redirect ${alu.io.redirect}")
   // Debug(p"---------------- In EXU, alu.io.redirect ${alu.io.redirect}")
 
-  io.out.decode := DontCare
+  io.out.bits.decode := DontCare
 
-  io.out.decode.cf.pc := io.in.bits.cf.pc
-  io.out.decode.cf.instr := io.in.bits.cf.instr
-  io.out.decode.cf.redirect := alu.io.redirect
+  io.out.bits.decode.cf.pc := io.in.bits.cf.pc
+  io.out.bits.decode.cf.instr := io.in.bits.cf.instr
+  io.out.bits.decode.cf.redirect := alu.io.redirect
 
-  io.out.decode.ctrl <> io.in.bits.ctrl
+  io.out.bits.decode.ctrl <> io.in.bits.ctrl
 
 // out(CommitIO) ------------------------------------------ commits( Output(Vec(FuType.num, UInt(XLEN.W))) )
   // val commits = Output(Vec(FuType.num, UInt(XLEN.W))) // EXU 四个功能单元的输出都在这里，让 WBU 挑选
 
-  io.out.commits := DontCare
-  io.out.commits(FuType.alu) := aluOut
-  io.out.commits(FuType.lsu) := lsuOut
-  io.out.commits(FuType.mdu) := mduOut
-  // io.out.commits(FuType.csr) := csrOut
+  io.out.bits.commits := DontCare
+  io.out.bits.commits(FuType.alu) := aluOut
+  io.out.bits.commits(FuType.lsu) := lsuOut
+  io.out.bits.commits(FuType.mdu) := mduOut
+  // io.out.bits.commits(FuType.csr) := csrOut
 
 // handshake ------------------------------------------ 
   
   io.in.ready  := DontCare
-  // io.out.valid := io.in.valid
+  io.out.valid := io.in.valid
 
   Debug(p"In EXU ctrl, ${io.in.bits.ctrl}")
   Debug(p"In EXU data, ${io.in.bits.data}")
