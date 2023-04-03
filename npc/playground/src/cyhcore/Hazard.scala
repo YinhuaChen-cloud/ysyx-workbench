@@ -12,7 +12,7 @@ class Hazard extends CyhCoreModule {
 
   // 由 ISU-ScoreBoard 检测是否有 RAW 冒险
   val RAWhazard = WireInit(false.B)
-  BoringUtils.addSink(RAWhazard, "RAWhazard")
+  BoringUtils.addSink(RAWhazard, "RAWhazard0")
 
   val IDUregHalt = Wire(Bool())
   val ISUregHalt = Wire(Bool())
