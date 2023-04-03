@@ -47,7 +47,7 @@ class Hazard extends CyhCoreModule {
   // 注意，IDUregControl只是阻塞IDU的输入，不会阻塞IDU的输出
   val rst = Wire(Bool())
   rst := reset
-  IDUregControl := Mux(RAWhazard, false.B, !rst || !CtrlHazard)
+  IDUregControl := Mux(RAWhazard, false.B, !rst && !CtrlHazard)
   ISUregControl := Mux(RAWhazard, false.B, IDUregValid)
   // EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
 
