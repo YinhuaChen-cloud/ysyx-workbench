@@ -31,8 +31,8 @@ class IFU extends CyhCoreModule with HasResetVector {
   // isNOP := bpu.io.isBranchJmp && !io.redirect.valid
 
   val CtrlHazard = Wire(Bool())
-  CtrlHazard := RegNext(bpu.io.isBranchJmp && !io.redirect.valid)
-  BoringUtils.addSource(CtrlHazard, "CtrlHazard")
+  CtrlHazard := bpu.io.isBranchJmp && !io.redirect.valid
+  BoringUtils.addSource(RegNext(CtrlHazard), "CtrlHazard")
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
   // 思路：实现一个小译码，判断当前读到的指令（发送给下一级的指令）是否是branch指令（jmp属于无条件跳转指令）
