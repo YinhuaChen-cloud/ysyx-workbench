@@ -16,6 +16,8 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
     val valid = Input(Bool())
   })
 
+  dontTouch(io.in.decode.cf.instr)
+
 // wb(WriteBackIO) ------------------------------------------
   // val rfWen = Output(Bool())
   // val rfDest = Output(UInt(5.W))
