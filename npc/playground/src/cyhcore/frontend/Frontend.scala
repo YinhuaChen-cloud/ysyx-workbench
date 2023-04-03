@@ -25,7 +25,6 @@ class Frontend extends CyhCoreModule {
   val IDUregControl = WireInit(false.B)
   BoringUtils.addSink(IDUregControl, "IDUregControl")
   val IDUregValid = PipelineConnect(ifu.io.out, idu.io.in, IDUregControl) 
-  IDUregValid := true.B
   BoringUtils.addSource(IDUregValid, "IDUregValid")
 
   idu.io.out <> io.out // 注意, io.out不用处理握手信号，idu内部已经处理了
