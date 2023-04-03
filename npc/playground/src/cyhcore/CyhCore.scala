@@ -40,7 +40,8 @@ class CyhCore extends CyhCoreModule {
   // backend.io.in <> frontend.io.out
   val ISUregControl = WireInit(false.B)
   BoringUtils.addSink(ISUregControl, "ISUregControl")
-  PipelineConnect(frontend.io.out, backend.io.in, ISUregControl) 
+  val ISUregValid = PipelineConnect(frontend.io.out, backend.io.in, ISUregControl) 
+  BoringUtils.addSource(ISUregValid, "ISUregValid")
 
   // 跳转指令支持
   frontend.io.redirect <> backend.io.redirect

@@ -17,7 +17,7 @@ object PipelineConnect {
     // val pipeline_regs = RegEnable(left.bits, left.valid & !isFlush)
     // val regs = RegEnable(left.bits, left.valid)
 
-    right.bits := left.bits
+    right.bits := pipeline_regs
     right.valid := pipeline_valid
 
     // ready 暂时不care

@@ -25,6 +25,10 @@ class Hazard extends CyhCoreModule {
   // ISUreg控制信号
   val ISUregControl = Wire(Bool())
   BoringUtils.addSource(ISUregControl, "ISUregControl")
+  // ISUreg有效信号
+  val ISUregValid = WireInit(false.B)
+  BoringUtils.addSink(ISUregValid, "ISUregValid")
+
   // EXUreg控制信号
   val EXUregControl = Wire(Bool())
   BoringUtils.addSource(EXUregControl, "EXUregControl")
@@ -37,12 +41,9 @@ class Hazard extends CyhCoreModule {
   // 注意，IDUregControl只是阻塞IDU的输入，不会阻塞IDU的输出
   val rst = Wire(Bool())
   rst := reset
-  // IDUregControl := !rst & 
-  // ISUregControl := RAWhazard
-  // EXUregControl := 
-  IDUregControl := true.B
-  ISUregControl := IDUregValid
-  EXUregControl := true.B
+  IDUregControl := Mux(RAWhazard, false.B, !rst)
+  ISUregControl := Mux(RAWhazard, false.B, IDUregValid)
+  EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
 
 }
 
