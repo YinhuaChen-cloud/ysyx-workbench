@@ -30,7 +30,7 @@ class Hazard extends CyhCoreModule {
   BoringUtils.addSink(HazardPC, "HazardPC")
 
   // 遇到数据冒险时，阻塞整个流水线一个周期
-  Cat(IDUregHalt, ISUregHalt, EXUregHalt) := Cat(RAWhazard, RAWhazard, RAWhazard)
+  IDUregHalt :: ISUregHalt :: EXUregHalt :: Nil := VecInit(RAWhazard, RAWhazard, RAWhazard)
   
 }
 
