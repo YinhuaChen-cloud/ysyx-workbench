@@ -31,7 +31,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // isNOP := bpu.io.isBranchJmp && !io.redirect.valid
 
   val CtrlHazard = Wire(Bool())
-  CtrlHazard := bpu.io.isBranchJmp && !io.redirect.valid
+  CtrlHazard := RegNext(bpu.io.isBranchJmp && !io.redirect.valid)
   BoringUtils.addSource(CtrlHazard, "CtrlHazard")
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
