@@ -22,9 +22,10 @@ class Frontend extends CyhCoreModule {
   // 普通指令数据流 frontend -> backend
   io.imem <> ifu.io.imem
   // ifu.io.out <> idu.io.in
-  val IDUregHalt = WireInit(false.B)
-  BoringUtils.addSink(IDUregHalt, "IDUregHalt")
-  PipelineConnect(ifu.io.out, idu.io.in, IDUregHalt) 
+  val IDUregControl = WireInit(false.B)
+  BoringUtils.addSink(IDUregControl, "IDUregControl")
+  val IDUregValid = PipelineConnect(ifu.io.out, idu.io.in, IDUregControl) 
+  BoringUtils.addSource(IDUregValid, "IDUregValid")
 
   idu.io.out <> io.out // 注意, io.out不用处理握手信号，idu内部已经处理了
 

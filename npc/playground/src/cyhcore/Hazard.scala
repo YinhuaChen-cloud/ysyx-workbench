@@ -15,31 +15,34 @@ class Hazard extends CyhCoreModule {
   dontTouch(RAWhazard)
   BoringUtils.addSink(RAWhazard, "RAWhazard")
 
-  // IDU停住
-  val IDUregHalt = Wire(Bool())
-  BoringUtils.addSource(IDUregHalt, "IDUregHalt")
-  // ISU停住
-  val ISUregHalt = Wire(Bool())
-  BoringUtils.addSource(ISUregHalt, "ISUregHalt")
-  // EXU停住
-  val EXUregHalt = Wire(Bool())
-  BoringUtils.addSource(EXUregHalt, "EXUregHalt")
+  // IDUreg控制信号
+  val IDUregControl = Wire(Bool())
+  BoringUtils.addSource(IDUregControl, "IDUregControl")
+  // IDUreg有效信号
+  val IDUregValid = Wire(Bool())
+  BoringUtils.addSink(IDUregValid, "IDUregValid")
+  // ISUreg控制信号
+  val ISUregControl = Wire(Bool())
+  BoringUtils.addSource(ISUregControl, "ISUregControl")
+  // EXUreg控制信号
+  val EXUregControl = Wire(Bool())
+  BoringUtils.addSource(EXUregControl, "EXUregControl")
 
   // Debug之用 TODO: 后边可以去掉
   val HazardPC = WireInit(0.U(PC_LEN.W))
   BoringUtils.addSink(HazardPC, "HazardPC")
 
   // 遇到数据冒险时，阻塞整个流水线一个周期
-  // 注意，IDUregHalt只是阻塞IDU的输入，不会阻塞IDU的输出
+  // 注意，IDUregControl只是阻塞IDU的输入，不会阻塞IDU的输出
   val rst = Wire(Bool())
   rst := reset
-  IDUregHalt := RAWhazard
-  ISUregHalt := RAWhazard
-  EXUregHalt := Mux(RAWhazard, false.B, ISUregHalt) & !rst
+  // IDUregControl := !rst & 
+  // ISUregControl := RAWhazard
+  // EXUregControl := 
 
 }
 
-  // val ppregshalt = Seq(IDUregHalt, ISUregHalt, EXUregHalt)
+  // val ppregshalt = Seq(IDUregHalt, ISUregHalt, EXUregControl)
   // val vals = Seq(ppcontrol, ppcontrol, ppcontrol) // EXU 和 WBU 不能停住，要继续运行
   // ppregshalt.zip(vals).foreach{case (a, b) => a := b}
   

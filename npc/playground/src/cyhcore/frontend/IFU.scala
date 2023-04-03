@@ -67,6 +67,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 有效信号就是无效信号取反
   // rst || (bpu.io.isBranchJmp && !io.redirect.valid)
   // 取反就是 !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
+  // io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
   io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
 
 // --- Jump wire of inst to ALU, for calculating next_pc in time ---

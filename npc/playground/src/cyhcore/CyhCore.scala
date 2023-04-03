@@ -38,9 +38,9 @@ class CyhCore extends CyhCoreModule {
   // 普通指令数据流
   frontend.io.imem <> io.imem 
   // backend.io.in <> frontend.io.out
-  val ISUregHalt = WireInit(false.B)
-  BoringUtils.addSink(ISUregHalt, "ISUregHalt")
-  PipelineConnect(frontend.io.out, backend.io.in, ISUregHalt) 
+  val ISUregControl = WireInit(false.B)
+  BoringUtils.addSink(ISUregControl, "ISUregControl")
+  PipelineConnect(frontend.io.out, backend.io.in, ISUregControl) 
 
   // 跳转指令支持
   frontend.io.redirect <> backend.io.redirect
