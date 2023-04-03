@@ -13,7 +13,7 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
     val wb = new WriteBackIO // 写回寄存器用的端口
     val redirect = new RedirectIO
     
-    val valid = Input(Bool())
+    // val valid = Input(Bool())
   })
 
   dontTouch(io.in.bits.decode.cf.instr)
