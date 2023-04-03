@@ -19,7 +19,7 @@ class Hazard extends CyhCoreModule {
   val IDUregControl = Wire(Bool())
   BoringUtils.addSource(IDUregControl, "IDUregControl")
   // IDUreg有效信号
-  val IDUregValid = Wire(Bool())
+  val IDUregValid = WireInit(false.B)
   BoringUtils.addSink(IDUregValid, "IDUregValid")
 
   // ISUreg控制信号
