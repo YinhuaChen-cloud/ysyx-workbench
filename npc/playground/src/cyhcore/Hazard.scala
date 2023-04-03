@@ -33,10 +33,13 @@ class Hazard extends CyhCoreModule {
   // 注意，IDUregHalt只是阻塞IDU的输入，不会阻塞IDU的输出
   val rst = Wire(Bool())
   rst := reset
-  val ppcontrol = !rst & RAWhazard
-  val ppregshalt = Seq(IDUregHalt, ISUregHalt, EXUregHalt)
-  val vals = Seq(ppcontrol, ppcontrol, ppcontrol) // EXU 和 WBU 不能停住，要继续运行
-  ppregshalt.zip(vals).foreach{case (a, b) => a := b}
-  
+  IDUregHalt := RAWhazard
+  ISUregHalt := RAWhazard
+  EXUregHalt := RAWhazard
+
 }
 
+  // val ppregshalt = Seq(IDUregHalt, ISUregHalt, EXUregHalt)
+  // val vals = Seq(ppcontrol, ppcontrol, ppcontrol) // EXU 和 WBU 不能停住，要继续运行
+  // ppregshalt.zip(vals).foreach{case (a, b) => a := b}
+  
