@@ -42,7 +42,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   // 当 !src1Ready || !src2Ready 时，说明需要阻塞(除了WBU，都阻塞1周期)
   val RAWhazard = !src1Ready || !src2Ready
   dontTouch(RAWhazard)
-  BoringUtils.addSource(RAWhazard, "RAWhazard0")
+  BoringUtils.addSource(RAWhazard, "RAWhazard")
 
 // out(DecodeIO) -------------------------------------- cf(CtrlFlowIO)
 //   val instr = Output(UInt(64.W))
