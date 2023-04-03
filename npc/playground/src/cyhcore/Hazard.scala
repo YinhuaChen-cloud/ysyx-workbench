@@ -6,6 +6,7 @@ import chisel3.util.experimental.BoringUtils
 
 // 这个模块专门用来处理流水线冒险：数据冒险、（控制冒险）
 // 主要用于阻塞各流水线
+// 控制流水线寄存器
 class Hazard extends CyhCoreModule {
   val io = IO(new Bundle {
   })
