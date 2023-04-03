@@ -35,7 +35,7 @@ class Hazard extends CyhCoreModule {
   rst := reset
   IDUregHalt := RAWhazard
   ISUregHalt := RAWhazard
-  EXUregHalt := Mux(RAWhazard, false.B, ISUregHalt)
+  EXUregHalt := Mux(RAWhazard, false.B, ISUregHalt) & !rst
 
 }
 
