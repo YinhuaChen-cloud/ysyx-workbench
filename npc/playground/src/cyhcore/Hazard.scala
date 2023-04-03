@@ -30,7 +30,9 @@ class Hazard extends CyhCoreModule {
   BoringUtils.addSink(HazardPC, "HazardPC")
 
   // 遇到数据冒险时，阻塞整个流水线一个周期
-  IDUregHalt :: ISUregHalt :: EXUregHalt :: Nil := VecInit(RAWhazard, RAWhazard, RAWhazard)
+  val ppregshalt = Seq(IDUregHalt, ISUregHalt, EXUregHalt)
+  val vals = Seq(RAWhazard, RAWhazard, RAWhazard)
+  ppregshalt.zip(vals).foreach(_ := _)
   
 }
 
