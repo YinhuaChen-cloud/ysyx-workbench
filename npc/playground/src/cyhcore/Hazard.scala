@@ -15,7 +15,7 @@ class Hazard extends CyhCoreModule {
   dontTouch(RAWhazard)
   BoringUtils.addSink(RAWhazard, "RAWhazard")
 
-  // 译码级停住
+  // IDU停住
   val IDUregHalt = Wire(Bool())
   BoringUtils.addSource(IDUregHalt, "IDUregHalt")
   // ISU停住
@@ -32,7 +32,7 @@ class Hazard extends CyhCoreModule {
   // 遇到数据冒险时，阻塞整个流水线一个周期
   val ppregshalt = Seq(IDUregHalt, ISUregHalt, EXUregHalt)
   val vals = Seq(RAWhazard, RAWhazard, RAWhazard)
-  ppregshalt.zip(vals).map(p => (p._1 := p._2))
+  ppregshalt.zip(vals).foreach{case (a, b) => a := b}
   
 }
 
