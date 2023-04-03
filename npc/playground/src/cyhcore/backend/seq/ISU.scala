@@ -14,7 +14,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
     val out = Decoupled(new DecodeIO)
   })
 
-  // 简化命名(都是in，不是out)
+  // 简化命名(都是in，没有out)
   val rfSrc1 = io.in.bits.ctrl.rfSrc1 
   val rfSrc2 = io.in.bits.ctrl.rfSrc2
   val rfDest = io.in.bits.ctrl.rfDest
@@ -44,6 +44,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   dontTouch(RAWhazard)
   BoringUtils.addSource(RAWhazard, "RAWhazard")
 
+  // Debug之用 TODO: 后边可以去掉
   val HazardPC = WireInit(0.U(PC_LEN.W))
   HazardPC := io.out.bits.cf.pc
   BoringUtils.addSource(HazardPC, "HazardPC")
@@ -93,7 +94,8 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 // handshake ------------------------------------------ 
   
   io.in.ready  := DontCare
-  io.out.valid := io.in.valid
+  // io.out.valid := io.in.valid
+  io.out.valid := true.B
 
 // for difftest ---------------------------------------
 
