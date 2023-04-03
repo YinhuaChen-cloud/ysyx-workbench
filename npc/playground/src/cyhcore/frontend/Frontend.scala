@@ -2,6 +2,7 @@ package cyhcore
 
 import chisel3._
 import chisel3.util._
+import chisel3.util.experimental.BoringUtils
 
 import bus.simplebus._
 import utils._
@@ -21,7 +22,9 @@ class Frontend extends CyhCoreModule {
   // 普通指令数据流 frontend -> backend
   io.imem <> ifu.io.imem
   // ifu.io.out <> idu.io.in
-  PipelineConnect(ifu.io.out, idu.io.in) 
+  val IDUregHalt = WireInit(false.B)
+  BoringUtils.addSink(IDUregHalt, "IDUregHalt")
+  PipelineConnect(ifu.io.out, idu.io.in, IDUregHalt) 
 
   idu.io.out <> io.out // 注意, io.out不用处理握手信号，idu内部已经处理了
 
