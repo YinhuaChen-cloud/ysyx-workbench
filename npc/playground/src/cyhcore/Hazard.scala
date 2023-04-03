@@ -39,6 +39,9 @@ class Hazard extends CyhCoreModule {
   // IDUregControl := !rst & 
   // ISUregControl := RAWhazard
   // EXUregControl := 
+  IDUregControl := true.B
+  ISUregControl := true.B
+  EXUregControl := true.B
 
 }
 
