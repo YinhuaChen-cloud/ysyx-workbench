@@ -44,6 +44,7 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   dontTouch(RAWhazard)
   BoringUtils.addSource(RAWhazard, "RAWhazard")
 
+  // Debug之用 TODO: 后边可以去掉
   val HazardPC = WireInit(0.U(PC_LEN.W))
   HazardPC := io.out.bits.cf.pc
   BoringUtils.addSource(HazardPC, "HazardPC")
