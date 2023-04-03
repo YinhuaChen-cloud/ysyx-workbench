@@ -11,6 +11,10 @@ class Hazard extends CyhCoreModule {
   val io = IO(new Bundle {
   })
 
+  // 由 IFU 自己使用预译码判断是否有控制冒险
+  val CtrlHazard = WireInit(false.B)
+  BoringUtils.addSink(CtrlHazard, "CtrlHazard")
+
   // 由 ISU-ScoreBoard 检测是否有 RAW 冒险
   // val RAWhazard = WireInit(false.B)
   // dontTouch(RAWhazard)
@@ -43,7 +47,7 @@ class Hazard extends CyhCoreModule {
   // 注意，IDUregControl只是阻塞IDU的输入，不会阻塞IDU的输出
   val rst = Wire(Bool())
   rst := reset
-  IDUregControl := Mux(RAWhazard, false.B, !rst)
+  IDUregControl := Mux(RAWhazard, false.B, !rst || !CtrlHazard)
   ISUregControl := Mux(RAWhazard, false.B, IDUregValid)
   // EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
 
