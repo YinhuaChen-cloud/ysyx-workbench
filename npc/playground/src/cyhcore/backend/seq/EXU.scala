@@ -18,7 +18,7 @@ class EXU extends CyhCoreModule {
   val src1 = io.in.bits.data.src1(XLEN-1,0)
   val src2 = io.in.bits.data.src2(XLEN-1,0)
   val imm  = io.in.bits.data.imm
-  val (fuType, fuOpType) = (io.in.bits.ctrl.fuType, io.in.ctrl.fuOpType)
+  val (fuType, fuOpType) = (io.in.bits.ctrl.fuType, io.in.bits.ctrl.fuOpType)
 
   // fuValids 用来使能不同的功能单元
   val fuValids = Wire(Vec(FuType.num, Bool()))
