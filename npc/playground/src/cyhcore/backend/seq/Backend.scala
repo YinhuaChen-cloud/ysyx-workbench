@@ -24,10 +24,10 @@ class Backend extends CyhCoreModule {
   //               |             |
   //               |-------------|
   isu.io.in <> io.in
-  // exu.io.in <> isu.io.out 
-  val EXUregHalt = WireInit(false.B)
-  BoringUtils.addSink(EXUregHalt, "EXUregHalt")
-  PipelineConnect(isu.io.out, exu.io.in, EXUregHalt) 
+  exu.io.in <> isu.io.out 
+  // val EXUregControl = WireInit(false.B)
+  // BoringUtils.addSink(EXUregControl, "EXUregControl")
+  // PipelineConnect(isu.io.out, exu.io.in, EXUregControl) 
 
   // PipelineConnect(exu.io.out, wbu.io.in, io.in.valid)
   wbu.io.in <> exu.io.out 
@@ -38,7 +38,7 @@ class Backend extends CyhCoreModule {
   // PipelineConnect(exu.io.out, wbu.io.in, true.B, io.flush(1))
 
   // 跳转指令支持(EXU决定跳转指令的target，随后连线到 WBU, WBU再决定跳转指令的写入时机(valid))
-  dontTouch(exu.io.out.decode.cf.redirect)
+  dontTouch(exu.io.out.bits.decode.cf.redirect)
   dontTouch(wbu.io.redirect)
   io.redirect <> wbu.io.redirect
 
@@ -46,7 +46,7 @@ class Backend extends CyhCoreModule {
   io.dmem <> exu.io.dmem
 
   // 临时valid
-  wbu.io.valid := exu.io.in.valid
+  // wbu.io.valid := io.in.valid
   
   Debug(p"In Backend data, ${io.in.bits.data}")
   Debug(p"In Backend ctrl, ${io.in.bits.ctrl}")

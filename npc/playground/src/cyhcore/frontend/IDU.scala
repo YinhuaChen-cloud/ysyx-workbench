@@ -84,7 +84,8 @@ class Decoder extends CyhCoreModule with HasInstrType {
   
   io.in.ready  := DontCare
   // 由于假设IDU的运算能在一拍内完成，当 in 为 valid 时，就可以让 out 为 valid
-  io.out.valid := io.in.valid
+  // io.out.valid := io.in.valid
+  io.out.valid := DontCare
 
   Debug(p"In IDU-Decoder, ${io.out.bits.ctrl}")
 

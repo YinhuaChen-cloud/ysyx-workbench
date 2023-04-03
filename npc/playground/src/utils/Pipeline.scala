@@ -3,27 +3,30 @@ package utils
 import chisel3._
 import chisel3.util._
 
-// 当前假设：划分的每一个阶段，都能在一拍内完成自己的功能
-// IFU -> IDU reg -> IDU -> EXU reg -> EXU -> WBU reg -> WBU (不考虑跳转指令)
 object PipelineConnect {
-  def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T], isFlush: Bool) = {
-  // def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
+  // def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T], isFlush: Bool) = {
+  def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T], valid_in: Bool) = {
 
     // 这里 valid 和 regs 有一个约定: 下一拍大家一起有效
-    val valid = RegInit(false.B)
-    valid := left.valid & !isFlush // 当 isFlush 为 false.B，left.valid 才会起作用
+    val pipeline_valid = RegInit(false.B)
+    // valid := left.valid & !isFlush // 当 isFlush 为 false.B，left.valid 才会起作用
     // valid := left.valid
+    pipeline_valid := valid_in
 
-    val regs = RegEnable(left.bits, left.valid & !isFlush)
+    val pipeline_regs = RegEnable(left.bits, valid_in)
+    // val pipeline_regs = RegEnable(left.bits, left.valid & !isFlush)
     // val regs = RegEnable(left.bits, left.valid)
 
-    right.bits := regs
-    right.valid := valid
+    right.bits := pipeline_regs
+    right.valid := pipeline_valid
 
     // ready 暂时不care
-    left.ready := right.ready
+    left.ready := DontCare
+    // left.ready := right.ready
 
+    pipeline_valid // 以 valid 作为返回值
   }
+
 }
 
 // object PipelineConnect_noDecouple {

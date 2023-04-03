@@ -30,6 +30,10 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 例外：当 io.redirect.valid 为 true 时，说明下一周期 pc_reg 会跳转到正确的指令地址上，因此下一周期不需要再产生气泡指令
   // isNOP := bpu.io.isBranchJmp && !io.redirect.valid
 
+  val CtrlHazard = Wire(Bool())
+  CtrlHazard := bpu.io.isBranchJmp && !io.redirect.valid
+  BoringUtils.addSource(RegNext(CtrlHazard), "CtrlHazard") // 延迟一个周期进行阻塞，以便把跳转指令传给下一级
+
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
   // 思路：实现一个小译码，判断当前读到的指令（发送给下一级的指令）是否是branch指令（jmp属于无条件跳转指令）
   // 如果是branch，则阻塞流水线(pc不变，下一周期发送NOP)，直到io.redirect.valid为true，并且取用io.redirect.target
@@ -67,7 +71,8 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 有效信号就是无效信号取反
   // rst || (bpu.io.isBranchJmp && !io.redirect.valid)
   // 取反就是 !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
-  io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
+  // io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
+  // io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
 
 // --- Jump wire of inst to ALU, for calculating next_pc in time ---
 
