@@ -32,7 +32,7 @@ class Hazard extends CyhCoreModule {
   // 遇到数据冒险时，阻塞整个流水线一个周期
   val ppregshalt = Seq(IDUregHalt, ISUregHalt, EXUregHalt)
   val vals = Seq(RAWhazard, RAWhazard, RAWhazard)
-  ppregshalt.zip(vals).foreach(_ := _)
+  ppregshalt.zip(vals).map(p => (p._1 := p._2))
   
 }
 
