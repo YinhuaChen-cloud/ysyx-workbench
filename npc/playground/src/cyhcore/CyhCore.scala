@@ -45,5 +45,8 @@ class CyhCore extends CyhCoreModule {
   // 读写内存支持
   io.dmem <> backend.io.dmem
 
+  // 流水线冒险处理 
+  val hazard = Module(new Hazard) 
+
 }
 
