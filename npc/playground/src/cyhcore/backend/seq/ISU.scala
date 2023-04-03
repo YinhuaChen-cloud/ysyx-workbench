@@ -14,10 +14,31 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
     val out = Decoupled(new DecodeIO)
   })
 
-  val rf = new RegFile
+  // 简化命名(都是in，不是out)
+  val rfSrc1 = io.in.bits.ctrl.rfSrc1 
+  val rfSrc2 = io.in.bits.ctrl.rfSrc2
+  val rfDest = io.in.bits.ctrl.rfDest
+  val rfWen  = io.in.bits.ctrl.rfWen
 
+  // 寄存器堆
+  val rf = new RegFile
   // write rf
   when (io.wb.rfWen) { rf.write(io.wb.rfDest, io.wb.rfData) }
+
+  // 计分板（处理数据冒险如RAW）
+  // 考虑这两条连续的指令
+  // auipc   sp,0x9
+  // addi    sp,sp,-4 # 80009000 <_end>
+  val sb = new ScoreBoard
+  val src1Ready = !sb.isBusy(rfSrc1)
+  val src2Ready = !sb.isBusy(rfSrc2)
+  // 当IDU发现要写入某个寄存器时，把 busy(x) = 1
+  // 为了处理上述连续两条指令的情景，在给 busy(x) 置位为1之前还要等待 src1Ready 和 src2Ready 为1，放置目标寄存器和源寄存器是同一个
+  val idSetMask   = Mux(io.in.valid & rfWen & src1Ready & src2Ready, sb.mask(rfDest), 0.U)
+  // 当WBU完成写入某个寄存器时，把 busy(x) = 0
+  val wbClearMask = Mux(io.wb.rfWen, sb.mask(io.wb.rfDest), 0.U(NRReg.W))
+  // 每周期更新一遍busy数组(关于enable/disable，已经暗含在 idSetMask 和 wbClearMask里了)
+  sb.update(idSetMask, wbClearMask)
 
 // out(DecodeIO) -------------------------------------- cf(CtrlFlowIO)
 //   val instr = Output(UInt(64.W))
@@ -42,10 +63,6 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
 //   val src1 = Output(UInt(XLEN.W))
 //   val src2 = Output(UInt(XLEN.W))
 //   val imm  = Output(UInt(XLEN.W))
-
-  val rfSrc1 = io.in.bits.ctrl.rfSrc1
-  val rfSrc2 = io.in.bits.ctrl.rfSrc2
-  val rfDest = io.in.bits.ctrl.rfDest
 
   io.out.bits.data.src1 := Mux1H(List(
     (io.in.bits.ctrl.src1Type === SrcType.pc)                                            -> SignExt(io.in.bits.cf.pc, PC_LEN), // TODO: 为什么用 pc 作为src1要进行有符号扩展？ 为什么不是无符号扩展？
