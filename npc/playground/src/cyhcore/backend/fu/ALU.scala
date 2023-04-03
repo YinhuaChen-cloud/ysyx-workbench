@@ -174,7 +174,6 @@ class ALU extends CyhCoreModule {
 
   dontTouch(io.redirect.target)
   dontTouch(io.redirect.valid)
-  dontTouch(isBru)
   io.redirect.target := Mux((isBranch && taken) || isJump, target, io.cfIn.pc + 4.U)
   io.redirect.valid  := valid & isBru
 

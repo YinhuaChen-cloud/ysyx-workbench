@@ -14,7 +14,7 @@ class Backend extends CyhCoreModule {
   })
 
   // 根据果壳的代码，后端单元顺序应该如下
-  val isu = Module(new ISU) // 用于存放 regfile，以及负责regfile的读写，还有判断操作数是否准备完毕(处理数据冒险如RAW)
+  val isu = Module(new ISU) // 发射队列，目前只是用于存放 regfile，以及负责regfile的读写
   val exu = Module(new EXU)
   val wbu = Module(new WBU)
 
@@ -23,9 +23,7 @@ class Backend extends CyhCoreModule {
   //               |             |
   //               |-------------|
   isu.io.in <> io.in
-
-  PipelineConnect(isu.io.out, exu.io.in)
-  // exu.io.in <> isu.io.out 
+  exu.io.in <> isu.io.out 
 
   // PipelineConnect(exu.io.out, wbu.io.in, io.in.valid)
   wbu.io.in <> exu.io.out 
@@ -36,13 +34,16 @@ class Backend extends CyhCoreModule {
   // PipelineConnect(exu.io.out, wbu.io.in, true.B, io.flush(1))
 
   // 跳转指令支持(EXU决定跳转指令的target，随后连线到 WBU, WBU再决定跳转指令的写入时机(valid))
-  dontTouch(exu.io.out.bits.decode.cf.redirect)
+  dontTouch(exu.io.out.decode.cf.redirect)
   dontTouch(wbu.io.redirect)
   io.redirect <> wbu.io.redirect
 
   // 内存读写支持（使用总线）
   io.dmem <> exu.io.dmem
 
+  // 临时valid
+  wbu.io.valid := io.in.valid
+  
   Debug(p"In Backend data, ${io.in.bits.data}")
   Debug(p"In Backend ctrl, ${io.in.bits.ctrl}")
 

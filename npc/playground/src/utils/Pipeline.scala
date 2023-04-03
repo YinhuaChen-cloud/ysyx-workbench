@@ -2,16 +2,39 @@ package utils
 
 import chisel3._
 import chisel3.util._
-import chisel3.internal.firrtl.MemPortDirection
 
+// 当前假设：划分的每一个阶段，都能在一拍内完成自己的功能
+// IFU -> IDU reg -> IDU -> EXU reg -> EXU -> WBU reg -> WBU (不考虑跳转指令)
 object PipelineConnect {
   def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
-    val valid = RegInit(false.B)
-    when (left.valid && right.ready) { valid := true.B } // 和 right.bits 同时更新
 
-    left.ready := right.ready // 如果下游准备好了，我就准备好了
-    right.bits := RegEnable(left.bits, left.valid && right.ready) // 如果下游准备好了，并且上游数据有效，那就读取输入
+    // 这里 valid 和 regs 有一个约定: 下一拍大家一起有效
+    val valid = RegInit(false.B)
+    valid := left.valid
+
+    val regs = RegEnable(left.bits, left.valid)
+
+    right.bits := regs
     right.valid := valid
+
+    // ready 暂时不care
+    left.ready := right.ready
+
   }
 }
 
+// object PipelineConnect_noDecouple {
+//   def apply[T <: Data](left: T, right: T, valid_cond: Bool) = {
+//     // 每一回合都有新数据写入，每一回合数据都有效
+
+//     // 这里 valid 和 regs 有一个约定: 下一拍大家一起有效
+//     val valid = RegInit(false.B)
+//     valid := valid_cond
+
+//     val regs = RegEnable(left, valid_cond)
+
+//     right.bits := regs
+//     right.valid := valid
+
+//   }
+// }
