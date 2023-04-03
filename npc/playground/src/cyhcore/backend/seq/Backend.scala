@@ -38,6 +38,7 @@ class Backend extends CyhCoreModule {
   // PipelineConnect(exu.io.out, wbu.io.in, true.B, io.flush(1))
 
   // 跳转指令支持(EXU决定跳转指令的target，随后连线到 WBU, WBU再决定跳转指令的写入时机(valid))
+  dontTouch(exu.io.out.bits.decode.cf.redirect)
   dontTouch(wbu.io.redirect)
   io.redirect <> wbu.io.redirect
 
