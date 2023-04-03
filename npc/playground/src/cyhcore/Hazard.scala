@@ -15,6 +15,10 @@ class Hazard extends CyhCoreModule {
   dontTouch(RAWhazard)
   BoringUtils.addSink(RAWhazard, "RAWhazard")
 
+  when(RAWhazard) {
+    printf("wow\n")
+  }
+
   // val IDUregHalt = Wire(Bool())
   // val ISUregHalt = Wire(Bool())
   // val EXUregHalt = Wire(Bool())
