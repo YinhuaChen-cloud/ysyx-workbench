@@ -10,6 +10,7 @@ class Hazard extends CyhCoreModule {
   val io = IO(new Bundle {
   })
 
+  dontTouch(RAWhazard3)
   // 由 ISU-ScoreBoard 检测是否有 RAW 冒险
   val RAWhazard3 = WireInit(false.B)
   BoringUtils.addSink(RAWhazard3, "RAWhazard0")
