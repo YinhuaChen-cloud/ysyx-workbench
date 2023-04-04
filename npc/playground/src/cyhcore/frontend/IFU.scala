@@ -75,6 +75,8 @@ class IFU extends CyhCoreModule with HasResetVector {
     io.out.bits.instr := Mux(CtrlHazard_next_cycle, Instructions.NOP, (io.imem.resp.rdata)(INST_LEN-1, 0))
   } .elsewhen(CtrlHazard & RAWhazard) { // 当控制冒险和RAW同时出现的时候
     io.out.bits.instr := Instructions.NOP
+  } .otherwise {
+    io.out.bits.instr := (io.imem.resp.rdata)(INST_LEN-1, 0)
   }
 
 // handshake ------------------------------------------------
