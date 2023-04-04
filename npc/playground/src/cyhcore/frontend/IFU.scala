@@ -72,6 +72,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // rst || (bpu.io.isBranchJmp && !io.redirect.valid)
   // 取反就是 !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
   // io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
+  io.out.valid := DontCare
 
 // difftest --------------------------------------------------
   BoringUtils.addSource(pc_reg, "difftestJumpPC")
