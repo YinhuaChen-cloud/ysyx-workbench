@@ -26,7 +26,7 @@ void sv_regs_to_c() {
 	for(int i = 0; i < GPR_NR; i++) {
 		cpu.gpr[i] = cpu_gpr[i];
 	}
-	cpu.pc = *pc;
+	cpu.pc = pc[0];
 //	printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, cpu.pc);
 }
 
