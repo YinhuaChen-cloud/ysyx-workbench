@@ -45,7 +45,7 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // TODO: 上板的时候这个应该得去掉(果壳去掉了)
   // 当 io.in.valid 为 true 时，说明下一周期寄存器堆就会被写入（WBU和ISU之间没有流水线）
  // 所以，可以在下一个时钟上升沿启用 difftest
-  BoringUtils.addSource(RegNext(io.in.valid), "difftestCommit")
+  BoringUtils.addSource(RegNext(io.in.valid && io.in.bits.decode.cf.instr =/= Instructions.NOP), "difftestCommit")
   // 用于difftest的"平时pc"，指的是没有执行跳转指令时，用来做difftest的PC
   // 在执行跳转指令时做difftest的pc是IFU的pc_reg
   BoringUtils.addSource(io.in.bits.decode.cf.pc, "difftestCommonPC")
