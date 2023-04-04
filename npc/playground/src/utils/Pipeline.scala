@@ -20,9 +20,10 @@ object PipelineConnect {
     right.bits := pipeline_regs
     right.valid := pipeline_valid
 
-    // ready 暂时不care
-    left.ready := DontCare
-    // left.ready := right.ready
+    // 这里的ready仅仅用来反压IFU
+    // 当 valid_in == true.B 时，表示流水线寄存器能够接收来自IFU的数据
+    // 相反，表示不能接收，此时IFU应该停住，防止跳转导致指令丢失
+    left.ready := valid_in 
 
     pipeline_valid // 以 valid 作为返回值
   }

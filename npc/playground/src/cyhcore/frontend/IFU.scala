@@ -32,7 +32,10 @@ class IFU extends CyhCoreModule with HasResetVector {
 
   val CtrlHazard = Wire(Bool())
   CtrlHazard := bpu.io.isBranchJmp && !io.redirect.valid
-  BoringUtils.addSource(RegNext(CtrlHazard), "CtrlHazard") // 延迟一个周期进行阻塞，以便把跳转指令传给下一级
+  BoringUtils.addSource(CtrlHazard, "CtrlHazard") // 延迟一个周期进行阻塞，以便把跳转指令传给下一级，同时延迟一个周期使IDUregValid==true.B，腾时间让pc_reg跳转
+  //TODO: 当控制冒险和数据冒险一同出现时，之前放置流水级寄存器整体为 invalid 的行为会导致等不来 redirect_valid = true.B
+  // val sent = RegInit(true.B) // 在遇到控制冒险时，得等到当前指令发射出去后，才能对IFU进行阻塞，这个信号表示指令是否已经发射出去
+  // sent := Mux(sent, !CtrlHazard, )  // 平常 sent == true.B，当遇到控制冒险后，在下一周期
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
   // 思路：实现一个小译码，判断当前读到的指令（发送给下一级的指令）是否是branch指令（jmp属于无条件跳转指令）
@@ -40,9 +43,15 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 如果是jmp，也是阻塞流水线(pc不变，下一周期发送NOP)，...... TODO：无条件跳转指令应该能进一步优化
   // 如果不是，就 PC + 4
   // 如果这一周期 bpu.io.isBranchJmp 为真，说明下一周期不需要取指令（发出NOP）, 等待ALU计算redirect结果，再更新
-  pc_reg := Mux(!bpu.io.isBranchJmp, pc_reg + 4.U, 
+  // 由 ISU-ScoreBoard 检测是否有 RAW 冒险
+  val RAWhazard = WireInit(false.B)
+  BoringUtils.addSink(RAWhazard, "RAWhazard")
+
+  // 不能用 io.out.ready，因为 io.out.ready可以是控制冒险造成的
+  pc_reg := Mux(RAWhazard, pc_reg,  // 发生RAWhazard时，pc_reg停住不动，直到RAWhazard结束
+    Mux(!bpu.io.isBranchJmp, pc_reg + 4.U, 
     Mux(!io.redirect.valid, pc_reg, 
-    io.redirect.target))
+    io.redirect.target)))
 
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
   // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
@@ -72,6 +81,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // rst || (bpu.io.isBranchJmp && !io.redirect.valid)
   // 取反就是 !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
   // io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
+  io.out.valid := DontCare
 
 // difftest --------------------------------------------------
   BoringUtils.addSource(pc_reg, "difftestJumpPC")

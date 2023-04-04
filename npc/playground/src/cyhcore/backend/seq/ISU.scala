@@ -34,15 +34,15 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   val src2Ready = !sb.isBusy(rfSrc2)
   // 当IDU发现要写入某个寄存器时，把 busy(x) = 1
   // 为了处理上述连续两条指令的情景，在给 busy(x) 置位为1之前还要等待 src1Ready 和 src2Ready 为1，放置目标寄存器和源寄存器是同一个
-  val idSetMask   = Mux(io.in.valid & rfWen & src1Ready & src2Ready, sb.mask(rfDest), 0.U)
+  val idSetMask   = Mux(io.in.valid & rfWen & src1Ready & src2Ready, sb.mask(rfDest), 0.U) // TODO: 这里重点看看
   // 当WBU完成写入某个寄存器时，把 busy(x) = 0
   val wbClearMask = Mux(io.wb.rfWen, sb.mask(io.wb.rfDest), 0.U(NRReg.W))
   // 每周期更新一遍busy数组(关于enable/disable，已经暗含在 idSetMask 和 wbClearMask里了)
   sb.update(idSetMask, wbClearMask)
   // 当 !src1Ready || !src2Ready 时，说明需要阻塞(除了WBU，都阻塞1周期)
-  // val RAWhazard = !src1Ready || !src2Ready
-  // dontTouch(RAWhazard)
-  // BoringUtils.addSource(RAWhazard, "RAWhazard")
+  val RAWhazard = !src1Ready || !src2Ready
+  BoringUtils.addSource(RAWhazard, "RAWhazard")
+  dontTouch(RAWhazard)
 
   // Debug之用 TODO: 后边可以去掉
   val HazardPC = WireInit(0.U(PC_LEN.W))
