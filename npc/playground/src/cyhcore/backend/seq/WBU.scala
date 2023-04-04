@@ -50,8 +50,5 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // 在执行跳转指令时做difftest的pc是IFU的pc_reg
   BoringUtils.addSource(io.in.bits.decode.cf.pc, "difftestCommonPC")
 
-  printf("WBU pc = 0x%x\n", io.in.bits.decode.cf.pc)
-  printf("signext: WBU pc = 0x%x\n", SignExt(io.in.bits.decode.cf.pc, PC_LEN))
-
 }
 
