@@ -10,8 +10,8 @@ import chisel3.util.experimental.BoringUtils
 class WBU extends CyhCoreModule { // ------------- halfchecked
   val io = IO(new Bundle {
     val in = Flipped(Decoupled(new CommitIO))
-    val wb = new WriteBackIO // 写回寄存器用的端口
-    val redirect = new RedirectIO
+    val wb = new WriteBackIO // 写回寄存器用的端口     这里不接入流水是为了缓解数据冒险造成的延时
+    val redirect = new RedirectIO   // 这里不接入流水是为了缓解控制冒险造成的延时
     
     // val valid = Input(Bool())
   })
@@ -33,8 +33,8 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
 
   dontTouch(io.redirect)
   dontTouch(io.in.bits.decode.cf.redirect)
-  io.in.bits.decode.cf.redirect <> io.redirect
-  // io.redirect.valid := io.in.bits.bits.decode.cf.redirect.valid && io.in.bits.valid
+  io.redirect := io.in.bits.decode.cf.redirect 
+  io.redirect.valid := io.in.bits.decode.cf.redirect.valid && io.in.valid // 输入有效，redirect才有效
 
 // handshake ------------------------------------------ 
   
