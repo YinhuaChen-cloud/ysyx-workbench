@@ -48,10 +48,7 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // 注意：在传入的指令为 NOP 时，由于spike并不执行NOP指令，所以不应该启动difftest
   BoringUtils.addSource(RegNext(io.in.valid), "difftestCommit")
   // 用于difftest的PC
-
-  val pc = io.in.bits.decode.cf.pc // 简名
-  val pc_signext = Cat(Fill(PC_LEN - VAddrBits, io.in.bits.decode.cf.pc(VAddrBits-1)), io.in.bits.decode.cf.pc)
-  BoringUtils.addSource(Cat(Fill(PC_LEN - VAddrBits, io.in.bits.decode.cf.pc(VAddrBits-1)), io.in.bits.decode.cf.pc), "difftestThisPC")
+  BoringUtils.addSource(io.in.bits.decode.cf.pc, "difftestThisPC")
 
   printf("WBU pc = 0x%x\n", io.in.bits.decode.cf.pc)
   printf("signext: WBU pc = 0x%x\n", SignExt(io.in.bits.decode.cf.pc, PC_LEN))
