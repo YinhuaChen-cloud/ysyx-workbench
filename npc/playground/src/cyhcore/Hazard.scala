@@ -16,9 +16,10 @@ class Hazard extends CyhCoreModule {
   BoringUtils.addSink(CtrlHazard, "CtrlHazard")
 
   // 由 ISU-ScoreBoard 检测是否有 RAW 冒险
-  val RAWhazard = WireInit(false.B)
-  BoringUtils.addSink(RAWhazard, "RAWhazard")
-  dontTouch(RAWhazard)
+  // val RAWhazard = WireInit(false.B)
+  // dontTouch(RAWhazard)
+  // BoringUtils.addSink(RAWhazard, "RAWhazard")
+  val RAWhazard = false.B
 
   // IDUreg控制信号
   val IDUregControl = Wire(Bool())
@@ -34,12 +35,9 @@ class Hazard extends CyhCoreModule {
   val ISUregValid = WireInit(false.B)
   BoringUtils.addSink(ISUregValid, "ISUregValid")
 
-  // EXUreg控制信号
-  val EXUregControl = Wire(Bool())
-  BoringUtils.addSource(EXUregControl, "EXUregControl")
-  // EXUreg有效信号
-  val EXUregValid = WireInit(false.B)
-  BoringUtils.addSink(EXUregValid, "EXUregValid")
+  // // EXUreg控制信号
+  // val EXUregControl = Wire(Bool())
+  // BoringUtils.addSource(EXUregControl, "EXUregControl")
 
   // Debug之用 TODO: 后边可以去掉
   val HazardPC = WireInit(0.U(PC_LEN.W))
@@ -51,6 +49,6 @@ class Hazard extends CyhCoreModule {
   rst := reset
   IDUregControl := Mux(RAWhazard, false.B, !rst && !CtrlHazard)
   ISUregControl := Mux(RAWhazard, false.B, IDUregValid)
-  EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
+  // EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
 
 }
