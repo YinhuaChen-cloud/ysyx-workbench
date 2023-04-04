@@ -49,7 +49,7 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   BoringUtils.addSource(RegNext(io.in.valid), "difftestCommit")
   // 用于difftest的PC应该是上一周期的（相对于被写入的寄存器）
   BoringUtils.addSource(SignExt(io.in.bits.decode.cf.pc, PC_LEN), "difftestThisPC")
-  printf("WBU pc = 0x%x", io.in.bits.decode.cf.pc)
+  printf("WBU pc = 0x%x\n", io.in.bits.decode.cf.pc)
 
 }
 
