@@ -47,6 +47,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   val RAWhazard = WireInit(false.B)
   BoringUtils.addSink(RAWhazard, "RAWhazard")
 
+  // 不能用 io.out.ready，因为 io.out.ready可以是控制冒险造成的
   pc_reg := Mux(RAWhazard, pc_reg,  // 发生RAWhazard时，pc_reg停住不动，直到RAWhazard结束
     Mux(!bpu.io.isBranchJmp, pc_reg + 4.U, 
     Mux(!io.redirect.valid, pc_reg, 
