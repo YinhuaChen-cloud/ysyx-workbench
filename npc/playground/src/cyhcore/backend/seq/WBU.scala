@@ -51,7 +51,7 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // BoringUtils.addSource(SignExt(io.in.bits.decode.cf.pc, PC_LEN), "difftestThisPC")
   val pc_signext = SignExt(io.in.bits.decode.cf.pc, PC_LEN)
   val abc = Cat(Fill(64-39, false.B), io.in.bits.decode.cf.pc)
-  BoringUtils.addSource(abc, "difftestThisPC")
+  BoringUtils.addSource(pc_signext, "difftestThisPC")
   printf("WBU pc = 0x%x\n", io.in.bits.decode.cf.pc)
   printf("signext: WBU pc = 0x%x\n", SignExt(io.in.bits.decode.cf.pc, PC_LEN))
 
