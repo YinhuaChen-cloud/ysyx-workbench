@@ -29,8 +29,10 @@ class Backend extends CyhCoreModule {
   // BoringUtils.addSink(EXUregControl, "EXUregControl")
   // PipelineConnect(isu.io.out, exu.io.in, EXUregControl) 
 
-  // PipelineConnect(exu.io.out, wbu.io.in, io.in.valid)
-  wbu.io.in <> exu.io.out 
+  // wbu.io.in <> exu.io.out 
+  val WBUregControl = WireInit(false.B)
+  BoringUtils.addSink(WBUregControl, "WBUregControl")
+  PipelineConnect(exu.io.out, wbu.io.in, WBUregControl) 
 
   isu.io.wb <> wbu.io.wb  
 

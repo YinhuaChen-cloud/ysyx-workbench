@@ -38,6 +38,14 @@ class Hazard extends CyhCoreModule {
   // // EXUreg控制信号
   // val EXUregControl = Wire(Bool())
   // BoringUtils.addSource(EXUregControl, "EXUregControl")
+  // EXUreg有效信号
+  val EXUregValid = ISUregValid
+  // val EXUregValid = WireInit(false.B)
+  // BoringUtils.addSink(EXUregValid, "EXUregValid")
+
+  // WBUreg控制信号
+  val WBUregControl = Wire(Bool())
+  BoringUtils.addSource(WBUregControl, "WBUregControl")
 
   // Debug之用 TODO: 后边可以去掉
   val HazardPC = WireInit(0.U(PC_LEN.W))
@@ -50,5 +58,6 @@ class Hazard extends CyhCoreModule {
   IDUregControl := Mux(RAWhazard, false.B, !rst && !CtrlHazard)
   ISUregControl := Mux(RAWhazard, false.B, IDUregValid)
   // EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
+  WBUregControl := Mux(RAWhazard, false.B, EXUregValid)
 
 }
