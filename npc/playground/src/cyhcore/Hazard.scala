@@ -11,14 +11,17 @@ class Hazard extends CyhCoreModule {
   val io = IO(new Bundle {
   })
 
-  // 由 IFU 自己使用预译码判断是否有控制冒险
-  val CtrlHazard = WireInit(false.B)
-  BoringUtils.addSink(CtrlHazard, "CtrlHazard")
-  val CtrlHazard_next_cycle = RegNext(CtrlHazard) // 控制冒险的延时一周期
+  // // 由 IFU 自己使用预译码判断是否有控制冒险
+  // val CtrlHazard = WireInit(false.B)
+  // BoringUtils.addSink(CtrlHazard, "CtrlHazard")
+  // val CtrlHazard_next_cycle = RegNext(CtrlHazard) // 控制冒险的延时一周期
 
   // 由 ISU-ScoreBoard 检测是否有 RAW 冒险
   val RAWhazard = WireInit(false.B)
   BoringUtils.addSink(RAWhazard, "RAWhazard")
+  // 遇到数据冒险时，阻塞整个流水线一个周期，同时保存流水级Valids
+  // 在 RAWhazard后的一个周期，流水级Valids需要恢复，因此使用下面这个延时一个周期的信号
+  val RAWhazard_next_cycle = RegNext(RAWhazard)
 
   // IDUreg控制信号
   val IDUregControl = Wire(Bool())
@@ -53,17 +56,13 @@ class Hazard extends CyhCoreModule {
   val Flush = Wire(Bool())
   Flush := reset
 
-  // 遇到数据冒险时，阻塞整个流水线一个周期
-  // 在 RAWhazard后，部分流水线寄存器需要 valid=true.B 一个周期，因此使用下面这个延时一个周期的信号
-  val RAWhazard_next_cycle = RegNext(RAWhazard)
-
   // IDUregControl
   // ------------------------- 处理控制冒险和数据冒险同时出现的情况 -------------- start
 
   // 1. 先出现数据冒险，再出现控制冒险: WBU 是最后一级，这种情况不存在的 -- skip
-    // 方法1: 气泡指令
+    // 方法1: 气泡指令 --- 采用的方法：简单、容易迭代
     // 方法2: 检测冲突
-    // 方法3: 保存和恢复 --- 采用的方法(这种方法可扩展性应该比 1.硬性指定布尔值，以及 2.气泡指令 更强)
+    // 方法3: 保存和恢复 --- 也许可扩展性强？
   // 2. 先出现控制冒险，再出现数据冒险: 
     // 出现控制冒险时，IDUregValid := false.B
     // 在出现数据冒险时，先保存流水级Valids，然后所有流水级变成 false.B
@@ -83,14 +82,12 @@ class Hazard extends CyhCoreModule {
   // } .otherwise { // 在没有冲突时
 
   // 对流水级valid进行保存和恢复
-  val valid = RegInit(false.B) // 指的是保存组件里面是否存着有效值
   val pipeline_valids = RegInit(VecInit(Seq.fill(3)(false.B))) // 3 是目前流水级数-1 (流水线寄存器数量是流水线级数-1)
   when(RAWhazard) {
-    // pipeline_valids := Mux(RAWhazard, Seq(true.B, true.B, true.B, true.B), pipeline_valids)
     pipeline_valids := Seq(IDUregControl, ISUregValid, WBUregValid) // 保存寄存器Valids
-    when (CtrlHazard && !CtrlHazard_next_cycle) {
-      pipeline_valids(0) := true.B // 如果 RAWhazard 和 控制冒险同时出现，且控制冒险没来得及发射指令，那么 IDUregControl需要先设置为true.B一个周期
-    }
+    // when (CtrlHazard && !CtrlHazard_next_cycle) {
+    //   pipeline_valids(0) := true.B // 如果 RAWhazard 和 控制冒险同时出现，且控制冒险没来得及发射指令，那么 IDUregControl需要先设置为true.B一个周期
+    // }
   }
   // 关于先控制冒险、再数据冒险的处理，流水级寄存器保存和恢复已经处理好了
     
@@ -98,8 +95,8 @@ class Hazard extends CyhCoreModule {
   IDUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
     Mux(RAWhazard, false.B,             // RAWhazard 没消失时，置invalid，停住这一级
     Mux(RAWhazard_next_cycle, pipeline_valids(0),   // RAWhazard刚消失的那个周期，需要恢复流水级Valids
-    Mux(CtrlHazard_next_cycle, false.B,             // 遇到控制冒险，阻塞IFU->IDU，直到pc_reg跳转（延迟一周期，以便让IFU送出指令）
-    true.B))))                           // 平时设置 true.B 即可
+    // Mux(CtrlHazard_next_cycle, false.B,             // 遇到控制冒险，阻塞IFU->IDU，直到pc_reg跳转（延迟一周期，以便让IFU送出指令）
+    true.B)))                           // 平时设置 true.B 即可
 
   // }
   // conflict := Mux(!conflict, Mux(CtrlHazard && !CtrlHazard_next_cycle && RAWhazard, true.B, conflict), 
