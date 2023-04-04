@@ -48,10 +48,13 @@ class CyhSocSimTop extends CyhCoreModule with HasRegFileParameter {
   BoringUtils.addSink(difftestIO.commit  , "difftestCommit")
   BoringUtils.addSink(difftestIO.isRedirect, "difftestIsRedirect")
 
+  val difftestPC = Wire(UInt(PC_LEN.W))
+  difftestPC := Mux(difftestIO.isRedirect, difftestIO.jumpPC, difftestIO.commonPC)
+
   val difftest = Module(new DiffTest)
   difftest.io.clk    := clock
   difftest.io.rst    := reset
-  difftest.io.pc     := Mux(difftestIO.isRedirect, difftestIO.jumpPC, difftestIO.commonPC)
+  difftest.io.pc     := difftestPC
   difftest.io.commit := difftestIO.commit
 
   dontTouch(difftestIO.isRedirect)
