@@ -8,7 +8,7 @@ class DiffTest extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
-    val commit   = Input(Bool())
+    val commit  = Input(Bool())
     val pc      = Input(UInt(PC_LEN.W)) 
     val regfile = Input(UInt((NR_GPRS * XLEN).W))
   })
