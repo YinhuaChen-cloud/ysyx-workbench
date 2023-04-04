@@ -89,14 +89,14 @@ class Hazard extends CyhCoreModule {
     //   pipeline_valids(0) := true.B // 如果 RAWhazard 和 控制冒险同时出现，且控制冒险没来得及发射指令，那么 IDUregControl需要先设置为true.B一个周期
     // }
   }
-  // 关于先控制冒险、再数据冒险的处理，流水级寄存器保存和恢复已经处理好了
     
   // 两种冒险，优先处理数据冒险
   IDUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
     Mux(RAWhazard, false.B,             // RAWhazard 没消失时，置invalid，停住这一级
-    Mux(RAWhazard_next_cycle, pipeline_valids(0),   // RAWhazard刚消失的那个周期，需要恢复流水级Valids
+    Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，需要恢复流水级Valids
     // Mux(CtrlHazard_next_cycle, false.B,             // 遇到控制冒险，阻塞IFU->IDU，直到pc_reg跳转（延迟一周期，以便让IFU送出指令）
     true.B)))                           // 平时设置 true.B 即可
+  // 关于先控制冒险、再数据冒险的处理，流水级寄存器保存和恢复已经处理好了
 
   // }
   // conflict := Mux(!conflict, Mux(CtrlHazard && !CtrlHazard_next_cycle && RAWhazard, true.B, conflict), 
@@ -113,14 +113,14 @@ class Hazard extends CyhCoreModule {
   // ISUregControl := Mux(RAWhazard, false.B, IDUregValid)
   ISUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
     Mux(RAWhazard, false.B,             // RAWhazard 没消失时，置invalid，停住这一级
-    Mux(RAWhazard_next_cycle, pipeline_valids(1),   // RAWhazard刚消失的那个周期，需要设置 valid=true.B 一个周期
+    Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，需要设置 valid=true.B 一个周期
     IDUregValid)))                      // 平时读取 上级流水线Valid 即可
     
   // EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
   // WBUregControl := Mux(RAWhazard, false.B, EXUregValid)
   WBUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
     Mux(RAWhazard, false.B,             // 遇到RAWhazard时，设置invalid，让下一周期停住，这一周期依然会继续流动
-    Mux(RAWhazard_next_cycle, pipeline_valids(2),   // RAWhazard刚消失的那个周期，需要设置 valid=true.B 一个周期
+    Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，需要设置 valid=true.B 一个周期
     EXUregValid)))                      // 平时读取 上级流水线Valid 即可
 
   //TODO: 估计会直接冲刷整条流水  

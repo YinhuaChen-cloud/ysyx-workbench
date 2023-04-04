@@ -69,6 +69,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   io.out       := DontCare
   // 如果发现 isNOP = true.B，说明这一回合应该发送气泡指令，而非真正的指令，真正的指令需要保留一回合
   // io.out.bits.instr := Mux(isNOP, Instructions.NOP, io.imem.resp.rdata)(INST_LEN-1, 0)
+  // 发射NOP的时刻：RAWHazard, CtrlHazard && !io.redirect.valid
   io.out.bits.instr := Mux(CtrlHazard_next_cycle, Instructions.NOP, (io.imem.resp.rdata)(INST_LEN-1, 0))
   io.out.bits.pc    := pc_reg
 
