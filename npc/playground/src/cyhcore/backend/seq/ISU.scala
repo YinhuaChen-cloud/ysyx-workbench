@@ -40,9 +40,9 @@ class ISU extends CyhCoreModule with HasRegFileParameter {
   // 每周期更新一遍busy数组(关于enable/disable，已经暗含在 idSetMask 和 wbClearMask里了)
   sb.update(idSetMask, wbClearMask)
   // 当 !src1Ready || !src2Ready 时，说明需要阻塞(除了WBU，都阻塞1周期)
-  // val RAWhazard = !src1Ready || !src2Ready
-  // dontTouch(RAWhazard)
-  // BoringUtils.addSource(RAWhazard, "RAWhazard")
+  val RAWhazard = !src1Ready || !src2Ready
+  BoringUtils.addSource(RAWhazard, "RAWhazard")
+  dontTouch(RAWhazard)
 
   // Debug之用 TODO: 后边可以去掉
   val HazardPC = WireInit(0.U(PC_LEN.W))

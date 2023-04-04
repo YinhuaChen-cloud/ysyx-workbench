@@ -16,10 +16,9 @@ class Hazard extends CyhCoreModule {
   BoringUtils.addSink(CtrlHazard, "CtrlHazard")
 
   // 由 ISU-ScoreBoard 检测是否有 RAW 冒险
-  // val RAWhazard = WireInit(false.B)
-  // dontTouch(RAWhazard)
-  // BoringUtils.addSink(RAWhazard, "RAWhazard")
-  val RAWhazard = false.B
+  val RAWhazard = WireInit(false.B)
+  BoringUtils.addSink(RAWhazard, "RAWhazard")
+  dontTouch(RAWhazard)
 
   // IDUreg控制信号
   val IDUregControl = Wire(Bool())
