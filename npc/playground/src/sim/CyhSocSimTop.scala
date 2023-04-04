@@ -54,6 +54,9 @@ class CyhSocSimTop extends CyhCoreModule with HasRegFileParameter {
   difftest.io.pc     := Mux(difftestIO.isRedirect, difftestIO.jumpPC, difftestIO.commonPC)
   difftest.io.commit := difftestIO.commit
 
+  dontTouch(difftestIO.isRedirect)
+  dontTouch(difftestIO.jumpPC)
+
   printf("difftestIO.isRedirect = %d, difftestIO.jumpPC = 0x%x, difftestIO.commonPC = 0x%x\n",
   difftestIO.isRedirect, difftestIO.jumpPC, difftestIO.commonPC)
 
