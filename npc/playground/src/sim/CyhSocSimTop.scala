@@ -43,6 +43,7 @@ class CyhSocSimTop extends CyhCoreModule with HasRegFileParameter {
   BoringUtils.addSink(difftestIO.regfile, "difftestRegs")
   BoringUtils.addSink(difftestIO.thisPC , "difftestThisPC")
   BoringUtils.addSink(difftestIO.commit , "difftestCommit")
+  printf("In difftestIO.thisPC = 0x%x\n", difftestIO.thisPC)
 
   val difftest = Module(new DiffTest)
   difftest.io.clk    := clock
