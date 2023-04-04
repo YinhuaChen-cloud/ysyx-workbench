@@ -33,7 +33,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   val CtrlHazard = Wire(Bool())
   CtrlHazard := bpu.io.isBranchJmp && !io.redirect.valid
   // BoringUtils.addSource(CtrlHazard, "CtrlHazard") // 延迟一个周期进行阻塞，以便把跳转指令传给下一级，同时延迟一个周期使IDUregValid==true.B，腾时间让pc_reg跳转
-  val CtrlHazard_next_cycle := RegNext(CtrlHazard) // 延迟一个周期发送气泡指令，因此使用这个延时信号
+  val CtrlHazard_next_cycle = RegNext(CtrlHazard) // 延迟一个周期发送气泡指令，因此使用这个延时信号
   //TODO: 当控制冒险和数据冒险一同出现时，之前放置流水级寄存器整体为 invalid 的行为会导致等不来 redirect_valid = true.B
   // val sent = RegInit(true.B) // 在遇到控制冒险时，得等到当前指令发射出去后，才能对IFU进行阻塞，这个信号表示指令是否已经发射出去
   // sent := Mux(sent, !CtrlHazard, )  // 平常 sent == true.B，当遇到控制冒险后，在下一周期
