@@ -50,7 +50,7 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // 用于difftest的PC
 
   val pc = io.in.bits.decode.cf.pc // 简名
-  val pc_signext = Cat(Fill(PC_LEN - VAddrBits, pc(VAddrBits-1)), pc)
+  val pc_signext = Cat(Fill(PC_LEN - VAddrBits, io.in.bits.decode.cf.pc(VAddrBits-1)), io.in.bits.decode.cf.pc)
   BoringUtils.addSource(pc_signext, "difftestThisPC")
 
   printf("WBU pc = 0x%x\n", io.in.bits.decode.cf.pc)
