@@ -13,7 +13,7 @@ import system._
 class DiffTestIO extends CyhCoreBundle with HasRegFileParameter {
   val regfile = Input(Vec(NRReg, UInt(XLEN.W)))
   val commonPC = Output(UInt(PC_LEN.W))
-  val jumpPC = Output(UInt(PC_LEN.W))
+  val jumpPC   = Output(UInt(PC_LEN.W))
   val commit = Output(Bool())
   val isRedirect = Output(Bool())
 }
@@ -53,6 +53,9 @@ class CyhSocSimTop extends CyhCoreModule with HasRegFileParameter {
   difftest.io.rst    := reset
   difftest.io.pc     := Mux(difftestIO.isRedirect, difftestIO.jumpPC, difftestIO.commonPC)
   difftest.io.commit := difftestIO.commit
+
+  printf("difftestIO.isRedirect = %d, difftestIO.jumpPC = 0x%x, difftestIO.commonPC = 0x%x\n",
+  difftestIO.isRedirect, difftestIO.jumpPC, difftestIO.commonPC)
 
   // val difftest_valid = RegNext(io.in.valid & (io.in.bits.cf.instr =/= Instructions.NOP)) // 告诉仿真环境可以做difftest了
   val rf = difftestIO.regfile
