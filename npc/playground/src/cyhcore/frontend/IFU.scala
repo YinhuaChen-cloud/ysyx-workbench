@@ -40,9 +40,10 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 如果是jmp，也是阻塞流水线(pc不变，下一周期发送NOP)，...... TODO：无条件跳转指令应该能进一步优化
   // 如果不是，就 PC + 4
   // 如果这一周期 bpu.io.isBranchJmp 为真，说明下一周期不需要取指令（发出NOP）, 等待ALU计算redirect结果，再更新
-  pc_reg := Mux(!bpu.io.isBranchJmp, pc_reg + 4.U, 
+  pc_reg := Mux(io.out.ready, pc_reg,  // IDUreg 没有准备好接收当前指令，停住 pc_reg 不让其跳转
+    Mux(!bpu.io.isBranchJmp, pc_reg + 4.U, 
     Mux(!io.redirect.valid, pc_reg, 
-    io.redirect.target))
+    io.redirect.target)))
 
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
   // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
