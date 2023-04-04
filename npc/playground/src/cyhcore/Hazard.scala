@@ -85,7 +85,6 @@ class Hazard extends CyhCoreModule {
 
   // ------------------------- 处理控制冒险和数据冒险同时出现的情况 -------------- end
 
-
   // ISUregControl := Mux(RAWhazard, false.B, IDUregValid)
   ISUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
     Mux(RAWhazard, false.B,             // RAWhazard 没消失时，置invalid，停住这一级
