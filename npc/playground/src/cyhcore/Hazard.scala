@@ -88,7 +88,11 @@ class Hazard extends CyhCoreModule {
   when(RAWhazard) {
     // pipeline_valids := Mux(RAWhazard, Seq(true.B, true.B, true.B, true.B), pipeline_valids)
     pipeline_valids := Seq(IDUregControl, ISUregValid, WBUregValid) // 保存寄存器Valids
+    when (CtrlHazard && !CtrlHazard_next_cycle) {
+      pipeline_valids(0) := true.B // 如果 RAWhazard 和 控制冒险同时出现，且控制冒险没来得及发射指令，那么 IDUregControl需要先设置为true.B一个周期
+    }
   }
+  // 关于先控制冒险、再数据冒险的处理，流水级寄存器保存和恢复已经处理好了
     
   // 两种冒险，优先处理数据冒险
   IDUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
