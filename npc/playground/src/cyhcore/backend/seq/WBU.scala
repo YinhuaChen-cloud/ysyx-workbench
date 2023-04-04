@@ -47,10 +47,9 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // TODO: 上板的时候这个应该得去掉(果壳去掉了)
   // 注意：在传入的指令为 NOP 时，由于spike并不执行NOP指令，所以不应该启动difftest
   BoringUtils.addSource(RegNext(io.in.valid), "difftestCommit")
-  // 用于difftest的PC应该是上一周期的（相对于被写入的寄存器）
-  // BoringUtils.addSource(SignExt(io.in.bits.decode.cf.pc, PC_LEN), "difftestThisPC")
-  val pc_signext = SignExt(io.in.bits.decode.cf.pc, PC_LEN)
-  val abc = Cat(Fill(64-39, false.B), io.in.bits.decode.cf.pc)
+  // 用于difftest的PC
+  val pc = io.in.bits.decode.cf.pc // 简名
+  val pc_signext = Cat(Fill(PC_LEN - VAddrBits, pc(VAddrBits-1)), pc)
   BoringUtils.addSource(pc_signext, "difftestThisPC")
   printf("WBU pc = 0x%x\n", io.in.bits.decode.cf.pc)
   printf("signext: WBU pc = 0x%x\n", SignExt(io.in.bits.decode.cf.pc, PC_LEN))
