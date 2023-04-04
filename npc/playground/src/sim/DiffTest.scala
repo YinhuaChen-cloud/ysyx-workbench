@@ -32,7 +32,7 @@ class DiffTest extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
               |  // expose pc to cpp simulation environment
               |  // import "DPI-C" function void set_pc(input logic [${PC_LEN}-1:0] a []);
               |  import "DPI-C" function void transfer_pc(input longint pc);
-              |  always@(posedge) begin
+              |  always@(posedge clk) begin
               |    if(~rst)
               |      transfer_pc(pc);
               |  end
