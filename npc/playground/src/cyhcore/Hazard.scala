@@ -70,9 +70,10 @@ class Hazard extends CyhCoreModule {
     conflict := true.B
   } .otherwise { // 在没有冲突时
     IDUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
+      Mux(RAWhazard, false.B,             // RAWhazard 没消失时，置invalid，停住这一级
+      Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，需要设置 valid=true.B 一个周期
       Mux(CtrlHazard_next_cycle, false.B,             // 遇到控制冒险，阻塞IFU->IDU，直到pc_reg跳转（延迟一周期，以便让IFU送出指令）
-      Mux(RAWhazard, false.B,             // RAWhazard 没消失时，置invalid，停住这一级，防止冲刷下级指令
-      true.B)))                           // 平时设置 true.B 即可
+      true.B))))                           // 平时设置 true.B 即可
   }
   // conflict := Mux(!conflict, Mux(CtrlHazard && !CtrlHazard_next_cycle && RAWhazard, true.B, conflict), 
   //   Mux(!RAWhazard, false.B, conflict))
