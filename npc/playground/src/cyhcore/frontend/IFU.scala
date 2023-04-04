@@ -71,13 +71,38 @@ class IFU extends CyhCoreModule with HasResetVector {
   // io.out.bits.instr := Mux(isNOP, Instructions.NOP, io.imem.resp.rdata)(INST_LEN-1, 0)
   // 发射NOP的时刻：RAWHazard, CtrlHazard && !io.redirect.valid
   io.out.bits.pc    := pc_reg
-  when(CtrlHazard & !RAWhazard) { // 当只有控制冒险的时候
-    io.out.bits.instr := Mux(CtrlHazard_next_cycle, Instructions.NOP, (io.imem.resp.rdata)(INST_LEN-1, 0))
-  } .elsewhen(CtrlHazard & RAWhazard) { // 当控制冒险和RAW同时出现的时候
+
+  val next_pipeline_valid = WireInit(false.B)
+  BoringUtils.addSink(next_pipeline_valid, "IDUregControl")
+  val isBranchSent = RegInit(false.B) // 表示在CtrlHazard时，跳转指令是否成功发射(监控下级流水的valid即可)
+
+  // 当读取到了跳转指令，且跳转指令没有成功发射时; inst发射 真正指令, isBranchSent等于下一级流水valid_in
+  when(bpu.io.isBranchJmp && !isBranchSent) {
+    io.out.bits.instr := (io.imem.resp.rdata)(INST_LEN-1, 0)
+    isBranchSent := next_pipeline_valid
+  } 
+  // 当读取到了跳转指令，且跳转指令发射成功时，但还没等到 redirect_valid时; inst发射NOP
+  .elsewhen(bpu.io.isBranchJmp && isBranchSent && !io.redirect.valid) {
     io.out.bits.instr := Instructions.NOP
-  } .otherwise {
+  }
+  // 当redirect_valid = true.B 时，说明下一个时钟上升沿pc_reg会跳转到正确的地方; 此时 inst发射最后一次NOP, isBranchSent 置 false.B
+  .elsewhen(bpu.io.isBranchJmp && isBranchSent && io.redirect.valid) {
+    io.out.bits.instr := Instructions.NOP
+    isBranchSent := false.B
+  }
+  // 其它时候; inst正常, isBranchSent保持不变(false.B)
+  .otherwise {
     io.out.bits.instr := (io.imem.resp.rdata)(INST_LEN-1, 0)
   }
+
+
+  // when(CtrlHazard & !RAWhazard) { // 当只有控制冒险的时候
+  //   io.out.bits.instr := Mux(CtrlHazard_next_cycle, Instructions.NOP, (io.imem.resp.rdata)(INST_LEN-1, 0))
+  // } .elsewhen(CtrlHazard & RAWhazard) { // 当控制冒险和RAW同时出现的时候
+  //   io.out.bits.instr := Instructions.NOP
+  // } .otherwise {
+  //   io.out.bits.instr := (io.imem.resp.rdata)(INST_LEN-1, 0)
+  // }
 
 // handshake ------------------------------------------------
 
