@@ -52,8 +52,3 @@ class Hazard extends CyhCoreModule {
   // EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
 
 }
-
-  // val ppregshalt = Seq(IDUregHalt, ISUregHalt, EXUregControl)
-  // val vals = Seq(ppcontrol, ppcontrol, ppcontrol) // EXU 和 WBU 不能停住，要继续运行
-  // ppregshalt.zip(vals).foreach{case (a, b) => a := b}
-  

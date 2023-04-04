@@ -25,7 +25,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   val bpu = Module(new BPU)
   bpu.io.instr := io.imem.resp.rdata(INST_LEN-1, 0) // imem.resp.rdata 是从 imem 中读取的真正的指令
   // 当isNOP为 1，表示当前周期要产生气泡指令
-  val isNOP = RegInit(false.B)
+  // val isNOP = RegInit(false.B)
   // 如果预译码发现当前指令是 branch/jmp，说明下一周期开始要产生气泡指令，因此置 isNOP reg 为 1
   // 例外：当 io.redirect.valid 为 true 时，说明下一周期 pc_reg 会跳转到正确的指令地址上，因此下一周期不需要再产生气泡指令
   // isNOP := bpu.io.isBranchJmp && !io.redirect.valid
@@ -64,17 +64,15 @@ class IFU extends CyhCoreModule with HasResetVector {
 
 // handshake ------------------------------------------------
 
-  val rst = Wire(Bool())
-  rst := reset
+  // val rst = Wire(Bool())
+  // rst := reset
   // rst 时，IFU输出不有效
   // bpu.io.isBranchJmp && !io.redirect.valid 时，IFU只有一个周期是有效的
   // 有效信号就是无效信号取反
   // rst || (bpu.io.isBranchJmp && !io.redirect.valid)
   // 取反就是 !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
   // io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
-  // io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
 
-// --- Jump wire of inst to ALU, for calculating next_pc in time ---
 
   Debug("In IFU, The inst read is 0x%x", io.imem.resp.rdata)
 
