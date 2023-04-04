@@ -33,6 +33,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   val CtrlHazard = Wire(Bool())
   CtrlHazard := bpu.io.isBranchJmp && !io.redirect.valid
   BoringUtils.addSource(RegNext(CtrlHazard), "CtrlHazard") // 延迟一个周期进行阻塞，以便把跳转指令传给下一级
+  //TODO: 当控制冒险和数据冒险一同出现时，之前放置流水级寄存器整体为 invalid 的行为会导致等不来 redirect_valid = true.B
 
   // io.redirect.valid, io.redirect.target 需要在第二拍才能计算出来
   // 思路：实现一个小译码，判断当前读到的指令（发送给下一级的指令）是否是branch指令（jmp属于无条件跳转指令）
