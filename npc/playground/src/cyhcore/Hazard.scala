@@ -46,19 +46,27 @@ class Hazard extends CyhCoreModule {
   val WBUregControl = Wire(Bool())
   BoringUtils.addSource(WBUregControl, "WBUregControl")
 
+  // Flush 控制信号，决定是否冲刷整条流水线(置所有流水级寄存器为false一个周期，然后置它们为正常)
+  val Flush = Wire(Bool())
+  Flush := reset
+
+  // 遇到数据冒险时，阻塞整个流水线一个周期
+  // IDUregControl := Mux(RAWhazard, false.B, !rst && !CtrlHazard)
+  IDUregControl := Mux(Flush, false.B,
+    true.B)
+  // ISUregControl := Mux(RAWhazard, false.B, IDUregValid)
+  ISUregControl := Mux(Flush, false.B,
+    IDUregValid)
+  // EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
+  // WBUregControl := Mux(RAWhazard, false.B, EXUregValid)
+  WBUregControl := Mux(Flush, false.B, 
+    EXUregValid)
+
+  //TODO: 估计会直接冲刷整条流水  
+  //TODO: 当控制冒险和数据冒险一同出现时，之前放置流水级寄存器整体为 invalid 的行为会导致等不来 redirect_valid = true.B
+
   // Debug之用 TODO: 后边可以去掉
   val HazardPC = WireInit(0.U(PC_LEN.W))
   BoringUtils.addSink(HazardPC, "HazardPC")
-
-  // 遇到数据冒险时，阻塞整个流水线一个周期
-  // 注意，IDUregControl只是阻塞IDU的输入，不会阻塞IDU的输出
-  val rst = Wire(Bool())
-  rst := reset
-  IDUregControl := Mux(RAWhazard, false.B, !rst && !CtrlHazard)
-  ISUregControl := Mux(RAWhazard, false.B, IDUregValid)
-  // EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
-  WBUregControl := Mux(RAWhazard, false.B, EXUregValid)
-
-  //TODO: 估计会直接冲刷整条流水  
 
 }
