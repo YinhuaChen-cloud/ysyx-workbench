@@ -51,16 +51,26 @@ class Hazard extends CyhCoreModule {
   Flush := reset
 
   // 遇到数据冒险时，阻塞整个流水线一个周期
+  // 在 RAWhazard后，部分流水线寄存器需要 valid=true.B 一个周期，因此使用下面这个延时一个周期的信号
+  val RAWhazard_next_cycle = RegNext(RAWhazard)
   // IDUregControl := Mux(RAWhazard, false.B, !rst && !CtrlHazard)
-  IDUregControl := Mux(Flush, false.B,
-    true.B)
+  IDUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
+    Mux(RAWhazard, false.B,             // RAWhazard 没消失时，置invalid，停住这一级，防止冲刷下级指令
+    // TODO: 还要处理控制冒险
+    true.B))                            // 平时设置 true.B 即可
+
   // ISUregControl := Mux(RAWhazard, false.B, IDUregValid)
-  ISUregControl := Mux(Flush, false.B,
-    IDUregValid)
+  ISUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
+    Mux(RAWhazard, false.B,             // RAWhazard 没消失时，置invalid，停住这一级
+    Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，需要设置 valid 一个周期
+    IDUregValid)))                      // 平时读取 上级流水线Valid 即可
+    
   // EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
   // WBUregControl := Mux(RAWhazard, false.B, EXUregValid)
-  WBUregControl := Mux(Flush, false.B, 
-    EXUregValid)
+  WBUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
+    Mux(RAWhazard, EXUregValid,         // WBU 正常流动，等待 RAWhazard消失
+    Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，需要设置 valid 一个周期
+    EXUregValid)))                      // 平时读取 上级流水线Valid 即可
 
   //TODO: 估计会直接冲刷整条流水  
   //TODO: 当控制冒险和数据冒险一同出现时，之前放置流水级寄存器整体为 invalid 的行为会导致等不来 redirect_valid = true.B
