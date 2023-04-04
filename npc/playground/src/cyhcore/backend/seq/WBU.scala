@@ -50,7 +50,8 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // 用于difftest的PC应该是上一周期的（相对于被写入的寄存器）
   // BoringUtils.addSource(SignExt(io.in.bits.decode.cf.pc, PC_LEN), "difftestThisPC")
   val pc_signext = SignExt(io.in.bits.decode.cf.pc, PC_LEN)
-  BoringUtils.addSource(pc_signext, "difftestThisPC")
+  val abc = Cat(Fill(64-39, false.B), io.in.bits.decode.cf.pc)
+  BoringUtils.addSource(abc, "difftestThisPC")
   printf("WBU pc = 0x%x\n", io.in.bits.decode.cf.pc)
   printf("signext: WBU pc = 0x%x\n", SignExt(io.in.bits.decode.cf.pc, PC_LEN))
 
