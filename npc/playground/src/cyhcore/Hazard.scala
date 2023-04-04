@@ -69,7 +69,7 @@ class Hazard extends CyhCoreModule {
   // WBUregControl := Mux(RAWhazard, false.B, EXUregValid)
   WBUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
     Mux(RAWhazard, EXUregValid,         // WBU 正常流动，等待 RAWhazard消失
-    Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，需要设置 valid 一个周期
+    Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，正常等待ISU
     EXUregValid)))                      // 平时读取 上级流水线Valid 即可
 
   //TODO: 估计会直接冲刷整条流水  
