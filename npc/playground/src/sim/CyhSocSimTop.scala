@@ -12,8 +12,10 @@ import system._
 // TODO: 这个暂时用不上，除了工作量啥都没
 class DiffTestIO extends CyhCoreBundle with HasRegFileParameter {
   val regfile = Input(Vec(NRReg, UInt(XLEN.W)))
-  val thisPC = Output(UInt(PC_LEN.W))
+  val commonPC = Output(UInt(PC_LEN.W))
+  val jumpPC   = Output(UInt(PC_LEN.W))
   val commit = Output(Bool())
+  val isRedirect = Output(Bool())
 }
 
 // 目前的设备有：
@@ -40,15 +42,26 @@ class CyhSocSimTop extends CyhCoreModule with HasRegFileParameter {
   // 因此 difftest 也要在下一个时钟上升沿去做
   // 一个例外：当接收到的指令为NOP时，下一个时钟上升沿不能做difftest
   val difftestIO = WireInit(0.U.asTypeOf(new DiffTestIO))
-  BoringUtils.addSink(difftestIO.regfile, "difftestRegs")
-  BoringUtils.addSink(difftestIO.thisPC , "difftestThisPC")
-  BoringUtils.addSink(difftestIO.commit , "difftestCommit")
+  BoringUtils.addSink(difftestIO.regfile , "difftestRegs")
+  BoringUtils.addSink(difftestIO.commonPC, "difftestCommonPC")
+  BoringUtils.addSink(difftestIO.jumpPC  , "difftestJumpPC")
+  BoringUtils.addSink(difftestIO.commit  , "difftestCommit")
+  BoringUtils.addSink(difftestIO.isRedirect, "difftestIsRedirect")
+
+  val difftestPC = Wire(UInt(PC_LEN.W))
+  difftestPC := Mux(difftestIO.isRedirect, difftestIO.jumpPC, difftestIO.commonPC)
 
   val difftest = Module(new DiffTest)
   difftest.io.clk    := clock
   difftest.io.rst    := reset
-  difftest.io.pc     := difftestIO.thisPC 
+  difftest.io.pc     := difftestPC
   difftest.io.commit := difftestIO.commit
+
+  dontTouch(difftestIO.isRedirect)
+  dontTouch(difftestIO.jumpPC)
+
+  // printf("difftestIO.isRedirect = %d, difftestIO.jumpPC = 0x%x, difftestIO.commonPC = 0x%x\n",
+  // difftestIO.isRedirect, difftestIO.jumpPC, difftestIO.commonPC)
 
   // val difftest_valid = RegNext(io.in.valid & (io.in.bits.cf.instr =/= Instructions.NOP)) // 告诉仿真环境可以做difftest了
   val rf = difftestIO.regfile

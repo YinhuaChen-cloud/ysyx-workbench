@@ -73,6 +73,10 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 取反就是 !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
   // io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
 
+// difftest --------------------------------------------------
+  BoringUtils.addSource(pc_reg, "difftestJumpPC")
+  // 这玩意儿有效，说明下一回合pc会跳转，所以要延迟一个周期生效
+  BoringUtils.addSource(RegNext(io.redirect.valid), "difftestIsRedirect") 
 
   Debug("In IFU, The inst read is 0x%x", io.imem.resp.rdata)
 

@@ -80,12 +80,12 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 void ebreak() {
-	npc_state.halt_pc = *pc;
+	npc_state.halt_pc = difftest_pc;
 	dealWithExit();
 }
 
 void invalid() { 
-	invalid_inst(*pc); 
+	invalid_inst(difftest_pc); 
 	dealWithExit();
 }
 
@@ -126,8 +126,6 @@ static void reset(int n) {
   top->reset = 1;
   while (n -- > 0) single_cycle();
   top->reset = 0;
-//	printf("In reset, *pc = 0x%lx\n", *pc);
-//	printf("In reset, *(uint32_t *)(*pc) = 0x%lx\n", *(uint32_t *)(*pc));
 }
 
 int main(int argc, char** argv, char** env) {

@@ -2,7 +2,7 @@
 #include "common.h"
 
 uint64_t *cpu_gpr = NULL;
-uint64_t *pc = NULL;
+uint64_t difftest_pc;
 uint64_t *difftest_valid = NULL;
 
 riscv64_CPU_state cpu = {};
@@ -11,9 +11,8 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
   cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
-extern "C" void set_pc(const svOpenArrayHandle a) {
-  pc = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
-//	printf("In set_pc, *pc = %lx\n", *pc);
+extern "C" void transfer_pc(long long pc) {
+  difftest_pc = pc;
 }
 
 // TODO: 也许有只暴露 1 bit 的方法？（要求能够实时暴露）
@@ -26,8 +25,11 @@ void sv_regs_to_c() {
 	for(int i = 0; i < GPR_NR; i++) {
 		cpu.gpr[i] = cpu_gpr[i];
 	}
-	cpu.pc = *pc;
-//	printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, cpu.pc);
+	cpu.pc = difftest_pc;
+	// printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, pc[]);
+	// printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, cpu.pc);
+	// printf("%s\t0x%lx\t0x%lx\n", "pc", cpu.pc, pc[0]);
+	// printf("%s\t0x%lx\t0x%lx\n", "pc", cpu.pc, *pc);
 }
 
 const char *regs[] = {

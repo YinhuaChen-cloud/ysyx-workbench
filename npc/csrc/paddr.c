@@ -22,7 +22,7 @@ static char mtrace_buf[MTRACE_BUF_LEN];
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
 uint8_t* cpu_to_sim(paddr_t paddr) { 
 	Assert(paddr >= CONFIG_MBASE && paddr < CONFIG_MBASE + CONFIG_MSIZE, \
-			"[%s:%d] In %s, out of mem bound, paddr = 0x%lx.\nAnd now pc is 0x%lx", __FILENAME__, __LINE__, __FUNCTION__, paddr, *pc);
+			"[%s:%d] In %s, out of mem bound, paddr = 0x%lx.\nAnd now pc is 0x%lx", __FILENAME__, __LINE__, __FUNCTION__, paddr, difftest_pc);
 	return (uint8_t *)((uint64_t)pmem + paddr - CONFIG_MBASE); 
 }
 
@@ -64,7 +64,7 @@ extern "C" void pmem_read(long long raddr, long long *rdata) {
 	*rdata = *(long long *)cpu_to_sim(raddr & ~0x7ull);
 //	 mtrace -> NOTE: we need to judge whether raddr is a inst or a data -> human assistance	
 #ifdef CONFIG_MTRACE
-	if(raddr == *pc) // filter out inst reading
+	if(raddr == difftest_pc) // filter out inst reading
 		return;
 	snprintf(mtrace_buf, MTRACE_BUF_LEN, "pc:0x%8lx %5s addr:0x%8llx data:0x%8llx\n", cpu.pc, "Read", raddr, *rdata); 
 	fwrite(mtrace_buf, strlen(mtrace_buf), 1, mtrace_fp);
