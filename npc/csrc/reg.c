@@ -27,7 +27,10 @@ void sv_regs_to_c() {
 		cpu.gpr[i] = cpu_gpr[i];
 	}
 	cpu.pc = pc[0];
-//	printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, cpu.pc);
+	// printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, pc[]);
+	// printf("%s\t0x%lx\t%ld\n", "pc", cpu.pc, cpu.pc);
+	printf("%s\t0x%lx\t0x%lx\n", "pc", cpu.pc, pc[0]);
+	printf("%s\t0x%lx\t0x%lx\n", "pc", cpu.pc, *pc);
 }
 
 const char *regs[] = {
