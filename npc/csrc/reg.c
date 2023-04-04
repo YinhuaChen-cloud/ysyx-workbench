@@ -13,7 +13,8 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
 
 extern "C" void set_pc(const svOpenArrayHandle a) {
   pc = (uint64_t *)(((VerilatedDpiOpenVar*)a)->datap());
-//	printf("In set_pc, *pc = %lx\n", *pc);
+	printf("In set_pc, *pc = 0x%lx\n", *pc);
+	printf("In set_pc, pc[0] = 0x%lx\n", pc[0]);
 }
 
 // TODO: 也许有只暴露 1 bit 的方法？（要求能够实时暴露）
