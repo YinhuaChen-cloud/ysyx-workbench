@@ -30,8 +30,12 @@ class DiffTest extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter 
               |  initial set_valid(valid_expose);  
               |
               |  // expose pc to cpp simulation environment
-              |  import "DPI-C" function void set_pc(input logic [${PC_LEN}-1:0] a []);
-              |  initial set_pc(pc);  
+              |  // import "DPI-C" function void set_pc(input logic [${PC_LEN}-1:0] a []);
+              |  import "DPI-C" function void transfer_pc(input longint pc);
+              |  always@(posedge) begin
+              |    if(~rst)
+              |      transfer_pc(pc);
+              |  end
               |
               |  // expose regfile for difftest
               |  import "DPI-C" function void set_gpr_ptr(input logic [${XLEN}-1:0] a []);
