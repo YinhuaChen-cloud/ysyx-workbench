@@ -51,16 +51,16 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   BoringUtils.addSource(io.in.bits.decode.cf.pc, "difftestCommonPC")
 
   // 比较寄存器堆和pc的世纪就是 “传入WBU的pc改变的时候”
-  val pc_delay = RegNext(io.in.bits.decode.cf.instr) // WBU传入的pc延迟一周期
+  val pc_delay = RegNext(io.in.bits.decode.cf.pc) // WBU传入的pc延迟一周期
   // 当WBU传入的周期和pc_delay不同时，说明WBU_pc改变了，可以进行 difftest对比了
   // 第一次改变不能进行对比
   val first = RegInit(true.B)
   val commit = Wire(Bool())
 
-  when(first && pc_delay =/= io.in.bits.decode.cf.instr) {
+  when(first && pc_delay =/= io.in.bits.decode.cf.pc) {
     first := false.B  // 第一次改变不能进行对比
     commit := false.B
-  } .elsewhen(pc_delay =/= io.in.bits.decode.cf.instr) {
+  } .elsewhen(pc_delay =/= io.in.bits.decode.cf.pc) {
     commit := true.B // 当pc改变的时候，说明上一个WBU的指令执行完毕，可以进行对比
   } .otherwise {
     commit := false.B // 其它时候，不进行对比
