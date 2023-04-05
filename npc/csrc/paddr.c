@@ -43,7 +43,7 @@ void close_mtrace() {
 }
 
 extern "C" void pmem_read(long long raddr, long long *rdata) {
-	printf("In pmem_read, raddr = 0x%lx\n", raddr);
+	printf("In pmem_read, raddr = 0x%llx\n", raddr);
 	// if raddr is clock
 	if(raddr >= CONFIG_RTC_ADDR && raddr < CONFIG_RTC_ADDR + 8) {
 		difftest_skip_ref();
