@@ -74,6 +74,7 @@ extern "C" void pmem_read(long long raddr, long long *rdata) {
 }
 
 extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
+	printf("In pmem_write, waddr = 0x%llx\n", waddr);
 	// if waddr is uart
 	if(waddr == CONFIG_SERIAL_PORT) {
 		printf("%c", (char)(wdata & 0xff));
