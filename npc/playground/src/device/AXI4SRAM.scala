@@ -50,6 +50,7 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |  assign external_pc[${V_MACRO_ADDR_LEN}-1:0] = addr;
               |
               |  // always@(*) begin
+              |  //   $$display("external_pc is %x\n", external_pc);
               |  // end
               |
               |  // for mem_r
