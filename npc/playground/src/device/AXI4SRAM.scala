@@ -58,8 +58,8 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |  //  ------------------------------------ inst reading ---- start
               |  // for inst read from pmem // TODO: the pmem_read implementation will be changed greatly after implement BUS
               |  reg [${V_MACRO_XLEN}-1:0]	inst_aux;
-              |  always@(*) begii
-iiiiiiiiiiiiiii    if(~rst)
+              |  always@(*) begin
+              |    if(~rst)
               |      pmem_read(external_pc, inst_aux); 
               |    else
               |      inst_aux = '0; 
