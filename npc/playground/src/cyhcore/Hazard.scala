@@ -117,14 +117,14 @@ class Hazard extends CyhCoreModule {
     IDUregValid)))                      // 平时读取 上级流水线Valid 即可
 
   EXUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
-    Mux(RAWhazard, false.B,             // RAWhazard 没消失时，置invalid，停住这一级
+    Mux(RAWhazard, false.B,             // 发生 RAWhazard时，EXU不能在下一回合接收来自ISU的输入，因此置为false.B
     Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，需要设置 valid=true.B 一个周期
     ISUregValid)))                      // 平时读取 上级流水线Valid 即可
     
   // EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
   // WBUregControl := Mux(RAWhazard, false.B, EXUregValid)
   WBUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
-    Mux(RAWhazard, false.B,             // 遇到RAWhazard时，设置invalid，让下一周期停住，这一周期依然会继续流动
+    Mux(RAWhazard, true.B,             // 遇到RAWhazard时，为了迎接来自EXU的数据，保证WBU继续流动，这里要置为true.B
     Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，需要设置 valid=true.B 一个周期
     EXUregValid)))                      // 平时读取 上级流水线Valid 即可
 

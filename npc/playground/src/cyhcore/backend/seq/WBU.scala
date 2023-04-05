@@ -34,7 +34,7 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   dontTouch(io.redirect)
   dontTouch(io.in.bits.decode.cf.redirect)
   io.redirect := io.in.bits.decode.cf.redirect 
-  io.redirect.valid := io.in.bits.decode.cf.redirect.valid && io.in.valid // 输入有效，redirect才有效
+  io.redirect.valid := io.in.bits.decode.cf.redirect.valid && io.in.valid // 输入有效，redirect才有效 因此，redirect实际上在WBU生效
 
 // handshake ------------------------------------------ 
   
