@@ -18,7 +18,7 @@ class AXI4DRAM extends CyhCoreModule {
   rwmem.io.isRead    := io.dmem.req.isRead()
   io.dmem.resp.rdata := rwmem.io.rdata
 
-  rwmem.io.addr  := Mux(io.dmem.req.isWrite(), RegNext(io.dmem.req.addr), io.dmem.req.addr) // TODO: 为了匹配difftest, 延迟一个周期写入内存
+  rwmem.io.addr  := Mux(RegNext(io.dmem.req.isWrite()), RegNext(io.dmem.req.addr), io.dmem.req.addr) // TODO: 为了匹配difftest, 延迟一个周期写入内存
 
   rwmem.io.isWrite := RegNext(io.dmem.req.isWrite()) // TODO: 为了匹配difftest, 延迟一个周期写入内存
   rwmem.io.mem_write_data := RegNext(io.dmem.req.wdata)
