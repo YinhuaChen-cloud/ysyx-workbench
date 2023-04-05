@@ -49,7 +49,8 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |  wire [${V_MACRO_PC_LEN}-1:0] external_pc;
               |  assign external_pc[${V_MACRO_ADDR_LEN}-1:0] = addr;
               |
-              |  $$display("external_pc is %0x\n", external_pc);
+              |  always@(*)
+              |    $$display("external_pc is %0x\n", external_pc);
               |
               |  // for mem_r
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
