@@ -18,11 +18,13 @@ class AXI4DRAM extends CyhCoreModule {
   rwmem.io.isRead    := io.dmem.req.isRead()
   io.dmem.resp.rdata := rwmem.io.rdata
 
-  rwmem.io.addr  := Mux(RegNext(io.dmem.req.isWrite()), RegNext(io.dmem.req.addr), io.dmem.req.addr) // TODO: 为了匹配difftest, 延迟一个周期写入内存
+  rwmem.io.raddr  := io.dmem.req.addr 
 
   rwmem.io.isWrite := RegNext(io.dmem.req.isWrite()) // TODO: 为了匹配difftest, 延迟一个周期写入内存
   rwmem.io.mem_write_data := RegNext(io.dmem.req.wdata)
   rwmem.io.mem_write_msk  := RegNext(io.dmem.req.wmask)
+
+  rwmem.io.raddr  := RegNext(io.dmem.req.addr) // TODO: 为了匹配difftest, 延迟一个周期写入内存
 
 }
 
@@ -33,12 +35,14 @@ class RWMEM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
     // read
     val isRead = Input(Bool())
     val rdata = Output(UInt(XLEN.W))
-    // addr for r/w
-    val addr = Input(UInt(PAddrBits.W))
+    // addr for r
+    val raddr = Input(UInt(PAddrBits.W))
     // write
     val isWrite = Input(Bool())
     val mem_write_data = Input(UInt(XLEN.W))
     val mem_write_msk = Input(UInt(8.W))
+    // addr for w
+    val waddr = Input(UInt(PAddrBits.W))
   })
 
   setInline("RWMEM.v",
@@ -50,14 +54,18 @@ class RWMEM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
               |           input isRead,
               |           output reg [${XLEN}-1:0] rdata,
               |
-              |           input [${PAddrBits}-1:0] addr,
+              |           input [${PAddrBits}-1:0] raddr,
               |
               |           input isWrite,
               |           input [${XLEN}-1:0] mem_write_data,
-              |           input [7:0] mem_write_msk);
+              |           input [7:0] mem_write_msk,
               |
-              |  wire [${XLEN}-1:0] mem_addr;
-              |  assign mem_addr[${PAddrBits}-1:0] = addr;
+              |           input [${PAddrBits}-1:0] waddr);
+              |
+              |  wire [${XLEN}-1:0] mem_raddr;
+              |  assign mem_raddr[${PAddrBits}-1:0] = raddr;
+              |  wire [${XLEN}-1:0] mem_waddr;
+              |  assign mem_waddr[${PAddrBits}-1:0] = waddr;
               |
               |  always@(*) begin
               |    $$display("mem_addr is %x", mem_addr);
@@ -69,14 +77,14 @@ class RWMEM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
               |  // for data reading from mem
               |  always@(*) begin
               |    if(~rst && isRead)
-			        |      pmem_read(mem_addr, rdata); 
+			        |      pmem_read(mem_raddr, rdata); 
               |    else
               |      rdata = '0;
               |  end
               |  // for writing mem
               |  always@(posedge clk) 
               |    if(~rst && isWrite) 
-              |      pmem_write(mem_addr, mem_write_data, mem_write_msk);
+              |      pmem_write(mem_waddr, mem_write_data, mem_write_msk);
               |
               |endmodule
             """.stripMargin)
