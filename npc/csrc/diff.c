@@ -86,8 +86,8 @@ void difftest_step(uint64_t *pc_just_exec) {
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
   *pc_just_exec = ref_r.pc; // 将要执行的指令的pc
 
-  printf("In difftest_step, ref_r.pc = 0x%lx\n", ref_r.pc);
-  printf("In difftest_step, inst = 0x%x\n", *(uint32_t *)(&pmem[ref_r.pc - CONFIG_MBASE]));
+  // printf("In difftest_step, ref_r.pc = 0x%lx\n", ref_r.pc);
+  // printf("In difftest_step, inst = 0x%x\n", *(uint32_t *)(&pmem[ref_r.pc - CONFIG_MBASE]));
 
   if (is_skip_ref) {
     // to skip the checking of an instruction, just copy the reg state to reference design
@@ -96,7 +96,7 @@ void difftest_step(uint64_t *pc_just_exec) {
     return;
   }
 
-  printf("omgomgomgomg\n");
+  // printf("omgomgomgomg\n");
 
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
