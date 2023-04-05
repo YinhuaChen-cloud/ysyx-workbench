@@ -24,7 +24,7 @@ class WBU extends CyhCoreModule { // ------------- halfchecked
   // val rfData = Output(UInt(XLEN.W))
 
   // io.wb.rfWen  := io.in.bits.decode.ctrl.rfWen
-  io.wb.rfWen  := io.in.bits.decode.ctrl.rfWen & io.in.valid
+  io.wb.rfWen  := io.in.bits.decode.ctrl.rfWen & io.in.valid & (io.in.bits.decode.cf.instr =/= Instructions.NOP)
   io.wb.rfDest := io.in.bits.decode.ctrl.rfDest
   io.wb.rfData := io.in.bits.commits(io.in.bits.decode.ctrl.fuType) // EXU 四个功能单元的输出都在commit，让 WBU 挑选
 
