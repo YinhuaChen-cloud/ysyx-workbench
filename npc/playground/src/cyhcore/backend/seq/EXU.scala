@@ -51,7 +51,7 @@ class EXU extends CyhCoreModule {
   io.out.bits.decode := DontCare
 
   io.out.bits.decode.cf.pc := io.in.bits.cf.pc
-  io.out.bits.decode.cf.instr := io.in.bits.cf.instr
+  io.out.bits.decode.cf.instr := Mux(io.in.valid, io.in.bits.cf.instr, Instructions.NOP) // 当输入有效为false，就向后面发射气泡指令
   io.out.bits.decode.cf.redirect := alu.io.redirect
 
   io.out.bits.decode.ctrl <> io.in.bits.ctrl
