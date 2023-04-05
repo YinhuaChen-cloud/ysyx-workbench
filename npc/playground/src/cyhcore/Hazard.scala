@@ -38,12 +38,12 @@ class Hazard extends CyhCoreModule {
   BoringUtils.addSink(ISUregValid, "ISUregValid")
 
   // // EXUreg控制信号
-  // val EXUregControl = Wire(Bool())
-  // BoringUtils.addSource(EXUregControl, "EXUregControl")
+  val EXUregControl = Wire(Bool())
+  BoringUtils.addSource(EXUregControl, "EXUregControl")
   // EXUreg有效信号
-  val EXUregValid = ISUregValid
-  // val EXUregValid = WireInit(false.B)
-  // BoringUtils.addSink(EXUregValid, "EXUregValid")
+  val EXUregValid = WireInit(false.B)
+  BoringUtils.addSink(EXUregValid, "EXUregValid")
+  // val EXUregValid = ISUregValid
 
   // WBUreg控制信号
   val WBUregControl = Wire(Bool())
@@ -115,6 +115,11 @@ class Hazard extends CyhCoreModule {
     Mux(RAWhazard, false.B,             // RAWhazard 没消失时，置invalid，停住这一级
     Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，需要设置 valid=true.B 一个周期
     IDUregValid)))                      // 平时读取 上级流水线Valid 即可
+
+  EXUregControl := Mux(Flush, false.B,  // flush 时，置 invalid
+    Mux(RAWhazard, false.B,             // RAWhazard 没消失时，置invalid，停住这一级
+    Mux(RAWhazard_next_cycle, true.B,   // RAWhazard刚消失的那个周期，需要设置 valid=true.B 一个周期
+    ISUregValid)))                      // 平时读取 上级流水线Valid 即可
     
   // EXUregControl := Mux(RAWhazard, false.B, ISUregValid)
   // WBUregControl := Mux(RAWhazard, false.B, EXUregValid)
