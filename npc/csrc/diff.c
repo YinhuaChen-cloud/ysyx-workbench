@@ -96,6 +96,8 @@ void difftest_step(uint64_t *pc_just_exec) {
     return;
   }
 
+  printf("omgomgomgomg\n");
+
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
 
