@@ -59,6 +59,10 @@ class RWMEM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
               |  wire [${XLEN}-1:0] mem_addr;
               |  assign mem_addr[${PAddrBits}-1:0] = addr;
               |
+              |  always@(*) begin
+              |    $$display("mem_addr is %x", mem_addr);
+              |  end
+              |
               |  // for mem_rw
               |  import "DPI-C" function void pmem_read(input longint raddr, output longint rdata);
               |  import "DPI-C" function void pmem_write(input longint waddr, input longint wdata, input byte wmask);
