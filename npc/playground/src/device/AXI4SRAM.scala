@@ -22,6 +22,7 @@ class AXI4SRAM extends Module with HasCyhCoreParameter {
   read_inst.io.addr    := io.imem.req.bits.addr
 
   io.imem.resp.bits.rdata := read_inst.io.inst 
+  io.imem.resp.valid   := io.imem.req.valid // TODO: 由于可以在一拍内读完内存，所以目前输出valid = 输入valid
 
 }
 

@@ -92,11 +92,17 @@ class IFU extends CyhCoreModule with HasResetVector {
     io.out.bits.instr := Instructions.NOP
     isBranchSent := false.B
   }
+  // 当 imem.resp.valid == false.B 时，说明当前指令无效，IFU输出NOP
+  // 当 imem.req.ready == false.B 时，说明暂时读取不了指令，IFU输出NOP
+  .elsewhen(io.imem.resp.valid === false.B || io.imem.req.ready === false.B) {
+    io.out.bits.instr := Instructions.NOP
+    // isBranchSent 保持不变(false.B)
+  }
   // 其它时候; inst正常, isBranchSent保持不变(false.B)
   .otherwise {
     io.out.bits.instr := (io.imem.resp.bits.rdata)(INST_LEN-1, 0)
+    // isBranchSent 保持不变
   }
-
 
   // when(CtrlHazard & !RAWhazard) { // 当只有控制冒险的时候
   //   io.out.bits.instr := Mux(CtrlHazard_next_cycle, Instructions.NOP, (io.imem.resp.rdata)(INST_LEN-1, 0))
@@ -106,7 +112,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   //   io.out.bits.instr := (io.imem.resp.rdata)(INST_LEN-1, 0)
   // }
 
-// handshake ------------------------------------------------
+// 流水级 handshake ------------------------------------------------
 
   // val rst = Wire(Bool())
   // rst := reset
@@ -117,6 +123,9 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 取反就是 !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
   // io.out.valid := !rst && (!bpu.io.isBranchJmp || io.redirect.valid)
   io.out.valid := DontCare
+
+// 和AXI4SRAM handshake ------------------------------------------------
+  io.imem.resp.ready := io.imem.resp.ready // TODO: 我相信自己一拍内能处理好指令
 
 // difftest --------------------------------------------------
   BoringUtils.addSource(pc_reg, "difftestJumpPC")
