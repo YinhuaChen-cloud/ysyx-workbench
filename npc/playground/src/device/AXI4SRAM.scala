@@ -18,9 +18,9 @@ class AXI4SRAM extends Module with HasCyhCoreParameter {
   val read_inst = Module(new READ_INST)
   read_inst.io.clk  := clock
   read_inst.io.rst  := reset
-  read_inst.io.addr := io.imem.req.addr
+  read_inst.io.addr := io.imem.req.bits.addr
 
-  io.imem.resp.rdata := read_inst.io.inst 
+  io.imem.resp.bits.rdata := read_inst.io.inst 
 
 }
 
