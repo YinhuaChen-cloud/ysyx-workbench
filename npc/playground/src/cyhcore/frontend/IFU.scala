@@ -125,7 +125,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   io.out.valid := DontCare
 
 // 和AXI4SRAM handshake ------------------------------------------------
-  io.imem.resp.ready := io.imem.resp.ready // TODO: 我相信自己一拍内能处理好指令
+  io.imem.resp.ready := io.imem.resp.valid // TODO: 我相信自己一拍内能处理好指令
 
 // difftest --------------------------------------------------
   BoringUtils.addSource(pc_reg, "difftestJumpPC")
