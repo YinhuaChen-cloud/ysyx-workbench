@@ -59,6 +59,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // handshake
 
   io.imem.req       := DontCare
+  io.imem.req.valid      := true.B // 每周期都取指
   io.imem.req.bits.addr  := pc_reg
   io.imem.req.bits.cmd   := SimpleBusCmd.read
 
