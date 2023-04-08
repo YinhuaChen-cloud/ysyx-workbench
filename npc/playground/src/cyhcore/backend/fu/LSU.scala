@@ -77,11 +77,11 @@ class LSU extends CyhCoreModule {
   val isPartialLoad = !isStore && (func =/= LSUOpType.ld) // 如果不是 Store　指令，同时又不是load指令
 
   // 总线的请求端设置
-  io.dmem.req.cmd   := Mux(!valid, SimpleBusCmd.disable, Mux(isStore, SimpleBusCmd.write, SimpleBusCmd.read))
-  io.dmem.req.addr  := addr
-  io.dmem.req.wdata := io.wdata
+  io.dmem.req.bits.cmd   := Mux(!valid, SimpleBusCmd.disable, Mux(isStore, SimpleBusCmd.write, SimpleBusCmd.read))
+  io.dmem.req.bits.addr  := addr
+  io.dmem.req.bits.wdata := io.wdata
   // 为什么使用 func(1,0)? 原因：LSUOpType 的位宽是由 bit0 和 bit1 决定的
-  io.dmem.req.wmask := OneHotTree(func(1, 0), List(
+  io.dmem.req.bits.wmask := OneHotTree(func(1, 0), List(
       "b00".U -> 0x1.U, //0001 << addr(2:0)
       "b01".U -> 0x3.U, //0011
       "b10".U -> 0xf.U, //1111
@@ -90,7 +90,7 @@ class LSU extends CyhCoreModule {
 
   // 总线的接收端设置
   // ld, lw...的接收处理
-  val rdata    = io.dmem.resp.rdata // 从 simplebus 传来的读数据, 注意：rdata默认是对齐8字节读取内存
+  val rdata    = io.dmem.resp.bits.rdata // 从 simplebus 传来的读数据, 注意：rdata默认是对齐8字节读取内存
   // 在没有发生非对齐访存的前提下，以下代码的逻辑是没有问题的
   val rdataSel = OneHotTree(addr(2, 0), List(
     "b000".U -> rdata(63, 0), 
