@@ -16,9 +16,10 @@ class AXI4SRAM extends Module with HasCyhCoreParameter {
   // TODO: 等下试试 io 命名简化法
 
   val read_inst = Module(new READ_INST)
-  read_inst.io.clk  := clock
-  read_inst.io.rst  := reset
-  read_inst.io.addr := io.imem.req.bits.addr
+  read_inst.io.clk     := clock
+  read_inst.io.rst     := reset
+  read_inst.io.isRead  := io.imem.req.valid
+  read_inst.io.addr    := io.imem.req.bits.addr
 
   io.imem.resp.bits.rdata := read_inst.io.inst 
 
@@ -32,10 +33,11 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
   val V_MACRO_INST_LEN = INST_LEN
 
   val io = IO(new Bundle {
-    val clk  = Input(Clock())
-    val rst  = Input(Bool())
-    val addr = Input(UInt(V_MACRO_ADDR_LEN.W)) 
-    val inst = Output(UInt(V_MACRO_INST_LEN.W))
+    val clk    = Input(Clock())
+    val rst    = Input(Bool())
+    val isRead = Input(Bool())  // 可以认为是读内存的使能信号
+    val addr   = Input(UInt(V_MACRO_ADDR_LEN.W)) 
+    val inst   = Output(UInt(V_MACRO_INST_LEN.W))
   })
 
   setInline("READ_INST.v",
@@ -43,6 +45,7 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |module READ_INST (
               |           input clk,
               |           input rst,
+              |           input isRead,
               |           input [${V_MACRO_ADDR_LEN}-1:0] addr,
               |           output reg [${V_MACRO_INST_LEN}-1:0] inst);
               |
@@ -59,7 +62,7 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
               |  // for inst read from pmem // TODO: the pmem_read implementation will be changed greatly after implement BUS
               |  reg [${V_MACRO_XLEN}-1:0]	inst_aux;
               |  always@(*) begin
-              |    if(~rst)
+              |    if(~rst & isRead)
               |      pmem_read(external_pc, inst_aux); 
               |    else
               |      inst_aux = '0; 
@@ -77,13 +80,3 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
             """.stripMargin)
 
 }
-
-
-
-
-
-
-
-
-
-
