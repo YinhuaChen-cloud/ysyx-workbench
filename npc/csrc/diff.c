@@ -78,7 +78,6 @@ static void checkregs(riscv64_CPU_state *ref) {
   }
 }
 
-
 void difftest_step(uint64_t *pc_just_exec) { 
 
 	riscv64_CPU_state ref_r;

@@ -71,8 +71,8 @@ class SimpleBusRespBundle extends SimpleBusBundle {
 // Uncache
 // SimpleBusUC 是 SimpleBus 的最基本实现, 用于非 Cache 的访存通路中, 它包含了 req 和 resp 两个通路, 使用 Decoupled 方式握手
 class SimpleBusUC extends SimpleBusBundle { // 默认是主模块端
-  val req  = new SimpleBusReqBundle
-  val resp = Flipped(new SimpleBusRespBundle)
+  val req  = Decoupled(new SimpleBusReqBundle)
+  val resp = Flipped(Decoupled(new SimpleBusRespBundle))
 
   // def isWrite() = req.valid && req.bits.isWrite()
   // def isRead()  = req.valid && req.bits.isRead()

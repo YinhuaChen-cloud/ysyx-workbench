@@ -23,7 +23,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   // pc
   val pc_reg = RegInit(resetVector.U(PC_LEN.W)) // TODO：果壳里，PC寄存器的长度是39
   val bpu = Module(new BPU)
-  bpu.io.instr := io.imem.resp.rdata(INST_LEN-1, 0) // imem.resp.rdata 是从 imem 中读取的真正的指令
+  bpu.io.instr := io.imem.resp.bits.rdata(INST_LEN-1, 0) // imem.resp.rdata 是从 imem 中读取的真正的指令
   // 当isNOP为 1，表示当前周期要产生气泡指令
   // val isNOP = RegInit(false.B)
   // 如果预译码发现当前指令是 branch/jmp，说明下一周期开始要产生气泡指令，因此置 isNOP reg 为 1
@@ -56,10 +56,11 @@ class IFU extends CyhCoreModule with HasResetVector {
 
 // imem(SimpleBusUC) ------------------------------------ req(SimpleBusReqBundle)
   // val addr = Output(UInt(PAddrBits.W)) // 访存地址（位宽与体系结构实现相关）, 默认 32 位
+  // handshake
 
   io.imem.req       := DontCare
-  io.imem.req.addr  := pc_reg
-  io.imem.req.cmd   := SimpleBusCmd.read
+  io.imem.req.bits.addr  := pc_reg
+  io.imem.req.bits.cmd   := SimpleBusCmd.read
 
 // out(CtrlFlowIO) ------------------------------------------ 
   // val instr = Output(UInt(64.W))
@@ -78,7 +79,7 @@ class IFU extends CyhCoreModule with HasResetVector {
 
   // 当读取到了跳转指令，且跳转指令没有成功发射时; inst发射 真正指令, isBranchSent等于下一级流水valid_in
   when(bpu.io.isBranchJmp && !isBranchSent) {
-    io.out.bits.instr := (io.imem.resp.rdata)(INST_LEN-1, 0)
+    io.out.bits.instr := (io.imem.resp.bits.rdata)(INST_LEN-1, 0)
     isBranchSent := next_pipeline_valid
   } 
   // 当读取到了跳转指令，且跳转指令发射成功时，但还没等到 redirect_valid时; inst发射NOP
@@ -92,7 +93,7 @@ class IFU extends CyhCoreModule with HasResetVector {
   }
   // 其它时候; inst正常, isBranchSent保持不变(false.B)
   .otherwise {
-    io.out.bits.instr := (io.imem.resp.rdata)(INST_LEN-1, 0)
+    io.out.bits.instr := (io.imem.resp.bits.rdata)(INST_LEN-1, 0)
   }
 
 
@@ -121,6 +122,6 @@ class IFU extends CyhCoreModule with HasResetVector {
   // 这玩意儿有效，说明下一回合pc会跳转，所以要延迟一个周期生效
   BoringUtils.addSource(RegNext(io.redirect.valid), "difftestIsRedirect") 
 
-  Debug("In IFU, The inst read is 0x%x", io.imem.resp.rdata)
+  Debug("In IFU, The inst read is 0x%x", io.imem.resp.bits.rdata)
 
 }
