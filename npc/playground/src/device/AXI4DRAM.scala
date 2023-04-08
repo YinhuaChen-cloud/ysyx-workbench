@@ -26,6 +26,10 @@ class AXI4DRAM extends CyhCoreModule {
 
   rwmem.io.waddr  := RegNext(io.dmem.req.bits.addr) // TODO: 为了匹配difftest, 延迟一个周期写入内存
 
+  // 和 LSU handshake -----------------------------------------------
+  io.dmem.resp.valid   := DontCare
+  io.dmem.req.ready    := DontCare
+
 }
 
 class RWMEM extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {

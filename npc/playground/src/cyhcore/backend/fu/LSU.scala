@@ -116,6 +116,10 @@ class LSU extends CyhCoreModule {
 
   // sd, sw...的接收处理 ---- 暂无
 
+  // 和 AXI4SRAM handshake -----------------------------------------------
+  io.dmem.req.valid   := DontCare
+  io.dmem.resp.ready  := DontCare
+
 }
 
 
