@@ -4,6 +4,8 @@ import chisel3._
 import chisel3.util._
 import cyhcore.HasCyhCoreParameter
 
+import bus.axi4._
+
 // 以下来自ChatGPT:
 // Scala 中的 sealed 关键字用于限制一个 trait 或者 class 的子类的定义范围。如果一个 trait 或者 class 被 sealed 修饰，
 // 那么它的所有子类必须定义在同一个源文件中，不能在其他文件中定义新的子类。
@@ -20,9 +22,9 @@ object SimpleBusCmd {
   def write          = "b0001".U //  write   |   refill
   // def readBurst      = "b0010".U //  read    |   refill
   // def writeBurst     = "b0011".U //  write   |   refill
-  // def writeLast      = "b0111".U //  write   |   refill   TODO: 这也是 Burst 吗？
-  // def probe          = "b1000".U //  read    | do nothing   TODO： 这不是 READ 吗?
-  // def prefetch       = "b0100".U //  read    |   refill    TODO： 这也是 READ 吗？
+  // def writeLast      = "b0111".U //  write   |   refill     TODO: 这也是 Burst 吗？
+  // def probe          = "b1000".U //  read    | do nothing   TODO: 这不是 READ 吗?
+  // def prefetch       = "b0100".U //  read    |   refill     TODO: 这也是 READ 吗？
 
   // // resp
   // def readLast       = "b0110".U
@@ -74,10 +76,12 @@ class SimpleBusUC extends SimpleBusBundle { // 默认是主模块端
   val req  = Decoupled(new SimpleBusReqBundle)
   val resp = Flipped(Decoupled(new SimpleBusRespBundle))
 
-  // def isWrite() = req.valid && req.bits.isWrite()
-  // def isRead()  = req.valid && req.bits.isRead()
-  // def isWrite() = req.isWrite()
-  // def isRead()  = req.isRead()
+  // 判断这条简单总线正在执行的是 write/read
+  def isWrite() = req.valid && req.bits.isWrite()
+  def isRead()  = req.valid && req.bits.isRead()
+  // 支持从 simplebus 到 AXI4Lite 的转换
+  def toAXI4Lite() = SimpleBus2AXI4Converter(this, new AXI4Lite, false)
+
   // def toMemPort() = SimpleBus2MemPortConverter(this, new MemPortIo(32)) // TODO: 连接内存需要用到这个吗？
 
   // 这个 dump 函数看起来是用来 DEBUG 的

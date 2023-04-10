@@ -5,31 +5,35 @@ import chisel3.util._
 
 import cyhcore.HasCyhCoreParameter
 import bus.simplebus._
+import bus.axi4._
 
 // 因为 SRAM 属于外设，不属于 core，不建议直接 extends CyhCoreModule
 // 注意：我认为 AXI4SRAM 和 READ_INST 模块之间的连接，不需要再用总线了
-class AXI4SRAM extends Module with HasCyhCoreParameter {
-  val io = IO(new Bundle {
-    val imem = Flipped(new SimpleBusUC)
-  })
+// 连接AXI4SRAM的可能是 AXI4 总线，也可能是 AXI4Lite 总线，通过参数 _type 指明
+class AXI4SRAM[T <: AXI4Lite](_type: T = new AXI4) extends AXI4SlaveModule(_type) {
 
-  // TODO: 等下试试 io 命名简化法
+  // AXI4SRAM 需要处理的信号包括:
+  // 1. ar_addr ar_valid ar_ready ar_prot
+  // 2. r_data r_valid r_ready r_resp
 
-  val read_inst = Module(new READ_INST)
-  read_inst.io.clk     := clock
-  read_inst.io.rst     := reset
-  read_inst.io.isRead  := io.imem.req.valid
-  read_inst.io.addr    := io.imem.req.bits.addr
+  val sramhelper = Module(new SRAMHelper) // 封装DPIC代码的模块
+  sramhelper.io.clk     := clock
+  sramhelper.io.rst     := reset
+  sramhelper.io.isRead  := axislave.ar.fire
+  sramhelper.io.addr    := axislave.ar.bits.addr
 
-  io.imem.resp.bits.rdata := read_inst.io.inst 
+  // 输出有：ar_ready, r_data, r_valid, r_resp 其中除了 r_data，都已经在 AXI4Slave 中处理了
+
+  axislave.r.bits.data := sramhelper.io.inst 
 
   // 和 IFU handshake -----------------------------------------------
-  io.imem.resp.valid   := io.imem.req.valid // TODO: 由于可以在一拍内读完内存，所以目前输出valid = 输入valid
-  io.imem.req.ready    := true.B // TODO: 有自信在每一拍都能完成指令读取
+  // io.imem.resp.valid   := io.imem.req.valid // TODO: 由于可以在一拍内读完内存，所以目前输出valid = 输入valid
+  // io.imem.req.ready    := true.B // TODO: 有自信在每一拍都能完成指令读取
 
 }
 
-class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
+// 封装DPIC代码的模块
+class SRAMHelper extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter {
 
   val V_MACRO_XLEN     = XLEN
   val V_MACRO_PC_LEN   = PC_LEN
@@ -44,9 +48,9 @@ class READ_INST extends BlackBox with HasBlackBoxInline with HasCyhCoreParameter
     val inst   = Output(UInt(V_MACRO_INST_LEN.W))
   })
 
-  setInline("READ_INST.v",
+  setInline("SRAMHelper.v",
             s"""
-              |module READ_INST (
+              |module SRAMHelper (
               |           input clk,
               |           input rst,
               |           input isRead,
