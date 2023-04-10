@@ -8,6 +8,7 @@ import cyhcore._
 import device._
 import utils._
 import system._
+import bus.axi4._
 
 // TODO: 这个暂时用不上，除了工作量啥都没
 class DiffTestIO extends CyhCoreBundle with HasRegFileParameter {
@@ -27,14 +28,14 @@ class CyhSocSimTop extends CyhCoreModule with HasRegFileParameter {
   })
 
 	// device: AXI4SRAM -- for inst reading
-  val axi4sram = Module(new AXI4SRAM)
+  val axi4sram = Module(new AXI4SRAM(new AXI4Lite))
 	// device: AXI4DRAM -- for sd, ld instructions
   val axi4dram = Module(new AXI4DRAM)
   // CyhSoC   SOC = Core + Cache + 总线 + 外设通信电路
   val cyhsoc   = Module(new CyhSoc)
 
   // SRAM -> SOC <-> DRAM
-  cyhsoc.io.imem <> axi4sram.io.imem
+  cyhsoc.io.imem.toAXI4Lite() <> axi4sram.io.axislave
   cyhsoc.io.dmem <> axi4dram.io.dmem
 
   // difftest ------------------- start 

@@ -15,16 +15,20 @@ class AXI4DRAM extends CyhCoreModule {
   rwmem.io.clk  := clock
   rwmem.io.rst  := reset
 
-  rwmem.io.isRead    := io.dmem.req.isRead()
-  io.dmem.resp.rdata := rwmem.io.rdata
+  rwmem.io.isRead    := io.dmem.req.bits.isRead()
+  io.dmem.resp.bits.rdata := rwmem.io.rdata
 
-  rwmem.io.raddr  := io.dmem.req.addr 
+  rwmem.io.raddr  := io.dmem.req.bits.addr 
 
-  rwmem.io.isWrite := RegNext(io.dmem.req.isWrite()) // TODO: 为了匹配difftest, 延迟一个周期写入内存
-  rwmem.io.mem_write_data := RegNext(io.dmem.req.wdata)
-  rwmem.io.mem_write_msk  := RegNext(io.dmem.req.wmask)
+  rwmem.io.isWrite := RegNext(io.dmem.req.bits.isWrite()) // TODO: 为了匹配difftest, 延迟一个周期写入内存
+  rwmem.io.mem_write_data := RegNext(io.dmem.req.bits.wdata)
+  rwmem.io.mem_write_msk  := RegNext(io.dmem.req.bits.wmask)
 
-  rwmem.io.waddr  := RegNext(io.dmem.req.addr) // TODO: 为了匹配difftest, 延迟一个周期写入内存
+  rwmem.io.waddr  := RegNext(io.dmem.req.bits.addr) // TODO: 为了匹配difftest, 延迟一个周期写入内存
+
+  // 和 LSU handshake -----------------------------------------------
+  io.dmem.resp.valid   := DontCare
+  io.dmem.req.ready    := DontCare
 
 }
 
