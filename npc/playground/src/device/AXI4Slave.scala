@@ -26,6 +26,8 @@ abstract class AXI4SlaveModule[T <: AXI4Lite, B <: Data](_type :T = new AXI4, _e
 
   // 1. ar_addr ar_valid ar_ready ar_prot ----------------------------------------- 除了 ar_ready 都是输入
 
+  val ren = Wire(Bool()) // 读使能
+
   // 读忙碌内部信号。当ar.fire，r_busy 在下一周期为真； 表示正在读取
   // 当 r.fire 且 rLast(表示传输最后一个数据) 都为真，r_busy 在下一周期为假，表示不在读取 (AXI4Lite 不支持 rLast 信号, 我们一次只能读一个地址)
   // start信号优先级更高，当 ar.fire 和 r.fire 同时为真，下一周期 r_busy 为真，表示正在读取
@@ -33,6 +35,7 @@ abstract class AXI4SlaveModule[T <: AXI4Lite, B <: Data](_type :T = new AXI4, _e
 
   // 当不忙碌的时候，ar处于ready状态
   axislave.ar.ready := !r_busy 
+  ren := axislave.ar.fire // 读使能信号，由继承 AXI4Slave 的模块使用
 
   // 2. r_data r_valid r_ready r_resp --------------------------------------------- 出入 r_ready 都是输出
 
