@@ -12,7 +12,7 @@ bash init.sh subproject-name
 
 ## Run Mario on NEMU
 
-The following commands are tested ubuntu22.04
+The following commands are tested ubuntu22.04 (换 20.04 吧，22.04 有些包很难用)
 
 ```bash
 sudo apt install gcc-riscv64-linux-gnu
