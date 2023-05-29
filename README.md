@@ -15,6 +15,8 @@ bash init.sh subproject-name
 ```bash
 clone this repo
 git submodule update --init
+cd fceux-am
+make ARCH=riscv64-nemu run mainargs=mario
 ```
 
 
