@@ -17,6 +17,8 @@ The following commands are tested ubuntu22.04
 ```bash
 sudo apt install gcc-riscv64-linux-gnu
 sudo apt install g++-riscv64-linux-gnu
+sudo apt install bison
+sudo apt install flex
 clone this repo
 cd this repo
 git submodule update --init
