@@ -14,7 +14,9 @@ bash init.sh subproject-name
 
 ```bash
 clone this repo
+cd this repo
 git submodule update --init
+echo "export AM_HOME=$(pwd)/abstract-machine" >> ~/.bashrc  (if you use zsh, then switch to .zshrc)
 cd fceux-am
 make ARCH=riscv64-nemu run mainargs=mario
 ```
