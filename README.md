@@ -12,7 +12,10 @@ bash init.sh subproject-name
 
 ## Run Mario on NEMU
 
+The following commands are tested ubuntu22.04
+
 ```bash
+sudo apt install gcc-riscv64-linux-gnu
 clone this repo
 cd this repo
 git submodule update --init
