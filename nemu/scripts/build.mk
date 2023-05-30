@@ -27,13 +27,16 @@ CFLAGS  := -ggdb3 -O0 -MMD -Wall -Werror $(INCLUDES) $(CFLAGS)
 LDFLAGS := -O2 $(LDFLAGS)
 
 # added by chenyinhua
+ifeq ($(NAME),)
 CXXSRC += src/monitor/sdb/intStackforC.cc
+endif
 # added by chenyinhua ends
 
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 
 # Compilation patterns 	
 $(OBJ_DIR)/%.o: %.c
+	@echo "cyh: .c -> .o"
 	@echo "INC_PATH = $(INC_PATH)"
 	@echo "CFLAGS = $(CFLAGS)"
 	@echo + CC $<

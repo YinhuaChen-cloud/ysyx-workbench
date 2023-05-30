@@ -36,6 +36,8 @@ $(CONF):
 	$(Q)$(MAKE) $(silent) -C $(KCONFIG_PATH) NAME=conf
 
 $(MCONF):
+	@echo "MCONF = $(MCONF)"
+	@echo "KCONFIG_PATH = $(KCONFIG_PATH)"
 	$(Q)$(MAKE) $(silent) -C $(KCONFIG_PATH) NAME=mconf
 
 $(FIXDEP):
