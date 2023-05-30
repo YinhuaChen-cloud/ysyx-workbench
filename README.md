@@ -19,6 +19,17 @@ git submodule update --init
 echo "export AM_HOME=$(pwd)/abstract-machine" >> ~/.bashrc  (if you use zsh, then switch to .zshrc)
 echo "export NEMU_HOME=$(pwd)/nemu" >> ~/.bashrc  (if you use zsh, then switch to .zshrc)
 source ~/.bashrc
+cd nemu
+make menuconfig
+```
+
+Then you will see such an interface:
+
+![image](https://github.com/YinhuaChen-cloud/ysyx-workbench/assets/57990071/d4e2651c-43c8-496b-834f-8ce495461e5b)
+
+
+
+```
 cd fceux-am
 make ARCH=riscv64-nemu run mainargs=mario
 ```
