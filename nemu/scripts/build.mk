@@ -11,7 +11,9 @@ WORK_DIR  = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
 
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
-INC_PATH += /home/chenyinhua/sda3/ysyx-workbench/nemu/src/monitor/sdb
+# added by cyh --- start
+INC_PATH += $(NEMU_HOME)/src/monitor/sdb
+# added by cyh --- end
 OBJ_DIR  = $(BUILD_DIR)/obj-$(NAME)$(SO)
 BINARY   = $(BUILD_DIR)/$(NAME)$(SO)
 
