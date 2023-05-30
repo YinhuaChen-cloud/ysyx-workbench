@@ -12,7 +12,7 @@ bash init.sh subproject-name
 
 ## Run Mario on NEMU
 
-The following commands are tested ubuntu22.04 (换 20.04 吧，22.04 有些包很难用)
+The following commands are tested ubuntu20.04 
 
 ```bash
 sudo apt install gcc-riscv64-linux-gnu
@@ -22,6 +22,7 @@ sudo apt install flex
 sudo apt-get install libncurses5-dev
 sudo apt-get install libsdl2-dev
 sudo apt-get install libsdl1.2-dev
+sudo apt-get install libreadline-dev
 clone this repo
 cd this repo
 git submodule update --init
