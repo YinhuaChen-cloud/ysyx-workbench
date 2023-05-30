@@ -28,9 +28,12 @@ Then you will see such an interface:
 
 Just exit this interface directly (Press Left Key and Enter)
 
+Continue following commands
 ```
-cd fceux-am
+make run
+cd ../fceux-am/
 make ARCH=riscv64-nemu run mainargs=mario
 ```
+
 
 
