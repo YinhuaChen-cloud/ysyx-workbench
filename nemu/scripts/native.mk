@@ -44,7 +44,6 @@ NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
 run-env: $(BINARY) $(DIFF_REF_SO)
 	@echo "We are generating cscopes and ctags"
-	cd $(NEMU_HOME)/..; ctags -R; cscope -b -R;
 	@echo "In run-env, BINARY = $(BINARY), DIFF_REF_SO = $(DIFF_REF_SO)"
 
 run: run-env
