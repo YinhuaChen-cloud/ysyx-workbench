@@ -28,17 +28,19 @@ INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS  := -ggdb3 -O0 -MMD -Wall -Werror $(INCLUDES) $(CFLAGS)
 LDFLAGS := -O2 $(LDFLAGS)
 
+OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
+
 # added by chenyinhua
-ifeq ($(NAME),)
+ifeq ($(NAME),riscv64-nemu-interpreter)
 CXXSRC += src/monitor/sdb/intStackforC.cc
+OBJS += $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 endif
 # added by chenyinhua ends
-
-OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 
 # Compilation patterns 	
 $(OBJ_DIR)/%.o: %.c
 	@echo "cyh: .c -> .o"
+	@echo "NAME = $(NAME)"
 	@echo "INC_PATH = $(INC_PATH)"
 	@echo "CFLAGS = $(CFLAGS)"
 	@echo + CC $<
