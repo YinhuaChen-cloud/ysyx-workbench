@@ -18,6 +18,7 @@ cd this repo
 git submodule update --init
 echo "export AM_HOME=$(pwd)/abstract-machine" >> ~/.bashrc  (if you use zsh, then switch to .zshrc)
 echo "export NEMU_HOME=$(pwd)/nemu" >> ~/.bashrc  (if you use zsh, then switch to .zshrc)
+source ~/.bashrc
 cd fceux-am
 make ARCH=riscv64-nemu run mainargs=mario
 ```
