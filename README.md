@@ -35,5 +35,10 @@ cd ../fceux-am/
 make ARCH=riscv64-nemu run mainargs=mario
 ```
 
+If everything goes well, we can see mario game as following:
+
+![image](https://github.com/YinhuaChen-cloud/ysyx-workbench/assets/57990071/f149d47b-8a59-4111-be7d-2015c5017709)
+
+
 
 
