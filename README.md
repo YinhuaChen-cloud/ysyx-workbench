@@ -24,10 +24,9 @@ make menuconfig
 ```
 
 Then you will see such an interface:
+![image](https://github.com/YinhuaChen-cloud/ysyx-workbench/assets/57990071/f32b355e-27a6-4da3-b7a3-51c0b3c772e9)
 
-![image](https://github.com/YinhuaChen-cloud/ysyx-workbench/assets/57990071/d4e2651c-43c8-496b-834f-8ce495461e5b)
-
-
+Just exit this interface directly (Press Left Key and Enter)
 
 ```
 cd fceux-am
