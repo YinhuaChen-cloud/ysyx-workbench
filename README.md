@@ -26,7 +26,7 @@ make menuconfig
 Then you will see such an interface:
 ![image](https://github.com/YinhuaChen-cloud/ysyx-workbench/assets/57990071/f32b355e-27a6-4da3-b7a3-51c0b3c772e9)
 
-Just exit this interface directly (Press Left Key and Enter)
+Just exit this interface directly (Press Right Key and Enter)
 
 Continue following commands
 ```
