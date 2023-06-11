@@ -39,6 +39,19 @@ If everything goes well, we can see mario game as following:
 
 ![image](https://github.com/YinhuaChen-cloud/ysyx-workbench/assets/57990071/f149d47b-8a59-4111-be7d-2015c5017709)
 
+## Run pal on NEMU
+
+Since running pal is more complicated. You should do "Run mario on NEMU" first.
+
+After running mario successfully, do the following to run pal:
+
+```
+cd <rootdir-of-this-repo>
+echo "export NAVY_HOME=$(pwd)/navy-apps" >> ~/.bashrc  (if you use zsh, then switch to .zshrc)
+source ~/.bashrc
+cd nanos-lite
+make ARCH=riscv64-nemu update
+```
 
 
 
