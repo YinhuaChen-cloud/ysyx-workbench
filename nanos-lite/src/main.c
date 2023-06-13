@@ -13,19 +13,23 @@ int main() {
   Log("'Hello World!' from Nanos-lite");
   Log("Build time: %s, %s", __TIME__, __DATE__);
 
+  // 初始化内存管理
   init_mm();
 
+  // 初始化设备
   init_device();
 
+  // 初始化磁盘
   init_ramdisk();
 
 #ifdef HAS_CTE
   init_irq();
 #endif
 
+  // 初始化文件系统
   init_fs();
 
-//  init_proc();
+  init_proc();
 
   Log("Finish initialization");
 

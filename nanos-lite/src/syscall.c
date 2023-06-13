@@ -69,7 +69,7 @@ void do_syscall(Context *c) {
 				c->GPR2 = 0;
 			}
 			break;
-    default: panic("Unhandled syscall ID = %d", a[0]);
+    default: panic("Unhandled syscall ID = 1%d1", a[0]);
   }
 
 #ifdef STRACE
