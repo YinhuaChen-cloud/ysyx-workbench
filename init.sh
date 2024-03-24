@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# define a function named addenv.
 # usage: addenv env_name path
 function addenv() {
   sed -i -e "/^export $1=.*/d" ~/.bashrc
@@ -9,15 +10,19 @@ function addenv() {
   echo "If you use shell other than bash, please add these environment variables manually."
 }
 
+# define a function named init.
 # usage: init repo branch directory trace [env]
 # trace = true|false
+# init NJU-ProjectN/am-kernels ics2021 am-kernels false
 function init() {
+  # am-kernels dir exists in the current dir, then just skip
   if [ -d $3 ]; then
     echo "$3 is already initialized, skipping..."
     return
   fi
 
   while [ ! -d $3 ]; do
+    # git clone -b ics2021 git@github.com:NJU-ProjectN/am-kernels.git am-kernels
     git clone -b $2 git@github.com:$1.git $3
   done
   log="$1 `cd $3 && git log --oneline --no-abbrev-commit -n1`"$'\n'
